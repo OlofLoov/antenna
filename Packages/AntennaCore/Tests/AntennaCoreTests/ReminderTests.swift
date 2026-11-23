@@ -145,7 +145,7 @@ enum ReminderFixture {
         #expect(schedule.fireDate(Fix.reminder()) == fire)
     }
 
-    @Test("programme-reminders/a-banner-while-antenna-is-open: due once, then not again, and the next one is known")
+    @Test("programme-reminders/a-banner-while-antuna-is-open: due once, then not again, and the next one is known")
     func dueOnce() {
         let schedule = ReminderSchedule(lead: .five)
         let reminder = Fix.reminder(start: 30, stop: 90)
@@ -157,7 +157,7 @@ enum ReminderFixture {
         #expect(schedule.nextFire([reminder], delivery: shown, now: Fix.now) == nil)
     }
 
-    @Test("programme-reminders/a-banner-while-antenna-is-open: a missed reminder is due while its programme is on, not after")
+    @Test("programme-reminders/a-banner-while-antuna-is-open: a missed reminder is due while its programme is on, not after")
     func missed() {
         let schedule = ReminderSchedule(lead: .five)
         let reminder = Fix.reminder(start: -30, stop: 30)
@@ -189,7 +189,7 @@ enum ReminderFixture {
         #expect(text.notificationBody(Fix.reminder(), lead: .atStart) == "Starts now on Sport One")
     }
 
-    @Test("programme-reminders/a-banner-while-antenna-is-open: the banner's lines")
+    @Test("programme-reminders/a-banner-while-antuna-is-open: the banner's lines")
     func banner() {
         #expect(text.bannerEyebrow(Fix.reminder(), now: Fix.at(115)) == "Starts in 5 min")
         #expect(text.bannerEyebrow(Fix.reminder(), now: Fix.at(119.5)) == "Starts now")

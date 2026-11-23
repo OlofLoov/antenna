@@ -31,11 +31,11 @@ Checked on 2026-11-13. Prices marked unverified come from third-party pages only
 | Wikidata | IMDb and TMDB ids | CC0 ([licensing](https://www.wikidata.org/wiki/Wikidata:Licensing)) | Free; no scores. |
 
 TMDB details used below:
-- Attribution: the TMDB logo, less prominent than Antenna's own mark, and the notice "This product uses the TMDB API but is not endorsed or certified by TMDB" in the app's About or Credits ([FAQ](https://developer.themoviedb.org/docs/faq), [logos](https://www.themoviedb.org/about/logos-attribution)).
+- Attribution: the TMDB logo, less prominent than Antuna's own mark, and the notice "This product uses the TMDB API but is not endorsed or certified by TMDB" in the app's About or Credits ([FAQ](https://developer.themoviedb.org/docs/faq), [logos](https://www.themoviedb.org/about/logos-attribution)).
 - Rate limit: about 40 requests a second, with HTTP 429 to honour ([rate limiting](https://developer.themoviedb.org/docs/rate-limiting), updated 2025-10-20).
 - Caching: no TMDB data kept "longer than 6 months", and all of it deleted when the agreement ends (terms).
 - Endpoints: `/3/search/movie` (`primary_release_year`), `/3/search/tv` (`first_air_date_year`), `/3/movie/{id}`, `/3/tv/{id}` with `append_to_response=credits,external_ids`, `/3/find/{imdb id}?external_source=imdb_id`, `/3/trending/{movie|tv}/{day|week}`, `/3/person/{id}/combined_credits` ([reference](https://developer.themoviedb.org/reference)).
-- Nothing in the terms names IPTV; they bar use "that violates any law". Antenna plays the user's own sources and shows only titles those sources have.
+- Nothing in the terms names IPTV; they bar use "that violates any law". Antuna plays the user's own sources and shows only titles those sources have.
 
 Apple:
 - Guideline 5.2.2: an app that "displays content from a third-party service" must be "specifically permitted to do so under the service's terms of use. Authorization must be provided upon request." The TMDB agreement is that authorization ([guidelines](https://developer.apple.com/app-store/review/guidelines/)).
@@ -66,7 +66,7 @@ Cost of B, estimated from AWS list prices and not measured: HTTP API about $1 pe
 
 This amends the hard constraint "with no server of our own" in `openspec/config.yaml`. `add-aws-hosting` decision 10 words the amendment once for every Code Crave service, in the PR that adds its API stack. The C4 context and container diagrams gain the lookup service and TMDB.
 
-The service runs on the infrastructure from `add-aws-hosting`, which this change depends on: the CDK app in `Infra/`, the `AntennaApi` stack (HTTP API in eu-north-1 behind CloudFront at `api.<antenna-domain>`, the WAF web ACL, the origin header check), the `infra.yml` workflow and its OIDC roles, and no request logs. This change adds the lookup Lambda (code in `Services/lookup/`, a TypeScript package), its routes, its Secrets Manager key and a CloudFront cache behavior for its routes to that stack; it builds no stack, workflow or role of its own. Endpoints, all `GET`, all cacheable:
+The service runs on the infrastructure from `add-aws-hosting`, which this change depends on: the CDK app in `Infra/`, the `AntennaApi` stack (HTTP API in eu-north-1 behind CloudFront at `api.antuna.app`, the WAF web ACL, the origin header check), the `infra.yml` workflow and its OIDC roles, and no request logs. This change adds the lookup Lambda (code in `Services/lookup/`, a TypeScript package), its routes, its Secrets Manager key and a CloudFront cache behavior for its routes to that stack; it builds no stack, workflow or role of its own. Endpoints, all `GET`, all cacheable:
 - `/v1/match?kind=movie|tv&name=&year=` and `/v1/match?kind=&tmdb=` and `/v1/match?kind=&imdb=` return one match or none: TMDB id, name, year, details, credits (top 15 cast, directors), scores.
 - `/v1/trending?kind=&window=week` and `/v1/person/{id}` are reserved for the next two changes.
 
@@ -154,7 +154,7 @@ The list is kept in `Caches/discover/trending-<kind>.json` with its fetch date a
 Options considered for the list:
 - TMDB trending (chosen): covered by the same agreement as the title lookups.
 - Trakt trending: its commercial terms could not be read, and its free limits tightened in 2025.
-- Most watched across Antenna users: would need the app to report what people watch, which ends "Data Not Collected".
+- Most watched across Antuna users: would need the app to report what people watch, which ends "Data Not Collected".
 
 The row sits after My list and before Recently watched: what the user is in the middle of, then what they saved, then what is popular, then their history, then the provider's order.
 
@@ -166,7 +166,7 @@ Moved from `add-browse-by-person` on 2026-11-20. That change shipped person page
 - Photo from TMDB's image CDN at `w185` through the poster cache, and "Filmography from TMDB" under the name.
 - Filmographies in `Caches/people/<tmdb id>.json` for seven days, at most 200 files, deleted when lookups are turned off; offline shows what was kept or "You're offline" with Retry; a failure shows "Could not load this filmography" with Retry.
 - `/v1/people?query=` calls TMDB `/3/search/person`, keeps the five most popular with their credits. The app sends the query after 500 ms without a keystroke and three characters, never with lookups off or offline, and merges those people with the provider-name ones.
-- What leaves the device is typed text. The Settings footer from `add-title-metadata` becomes "Titles and people you open, and names you search for, are looked up in TMDB.", and the Privacy Policy (`antenna-website/the-privacy-policy-rules-out-tracking`) names person pages and names typed in Search among what the movie info service receives. The service logs nothing, so "Data Not Collected" holds. The first version of this change already wrote that footer line on `iPhone-Settings-Lookups` and `TV-Settings-Lookups`; it stays, since the footer ships only with the lookup service.
+- What leaves the device is typed text. The Settings footer from `add-title-metadata` becomes "Titles and people you open, and names you search for, are looked up in TMDB.", and the Privacy Policy (`antuna-website/the-privacy-policy-rules-out-tracking`) names person pages and names typed in Search among what the movie info service receives. The service logs nothing, so "Data Not Collected" holds. The first version of this change already wrote that footer line on `iPhone-Settings-Lookups` and `TV-Settings-Lookups`; it stays, since the footer ships only with the lookup service.
 - Owner's open questions from the first design still apply then: People from TMDB in Search given it sends typed text (recommend yes, behind the switch), and no biography.
 
 ## Risks / Trade-offs

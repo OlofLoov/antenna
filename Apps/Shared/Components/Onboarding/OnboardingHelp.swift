@@ -10,7 +10,7 @@ enum OnboardingHelp {
         A second link, in XMLTV format, carries the programme guide and is optional.
         """
     static let xtreamHeading: LocalizedStringResource = "Xtream login"
-    static let intro: LocalizedStringResource = "Antenna includes no channels. A source is the playlist or login a TV provider gives you."
+    static let intro: LocalizedStringResource = "Antuna includes no channels. A source is the playlist or login a TV provider gives you."
 
     /// The sheet on iPhone, iPad and Mac, with the title in the bar and
     /// Done as its confirming action.
@@ -23,8 +23,8 @@ enum OnboardingHelp {
                     VStack(alignment: .leading, spacing: Metrics.Spacing.large) {
                         Text(
                             """
-                            Antenna includes no channels. A source is the playlist or login a TV provider gives you. \
-                            Antenna has no servers of its own; everything you add stays between you and your provider.
+                            Antuna includes no channels. A source is the playlist or login a TV provider gives you. \
+                            Antuna has no servers of its own; everything you add stays between you and your provider.
                             """
                         )
                         .foregroundStyle(.secondary)

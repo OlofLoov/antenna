@@ -125,7 +125,7 @@ import Testing
         #expect(try context.fetchCount(FetchDescriptor<ReminderRecord>()) == 0)
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open: once, and only without notifications
+    // programme-reminders/a-banner-while-antuna-is-open: once, and only without notifications
     @Test func aBannerShowsOnceWhenNotificationsAreOff() async throws {
         var clock = now
         let notifier = RecordingNotifier(state: .denied)
@@ -142,7 +142,7 @@ import Testing
         #expect(allowed.banner == nil)
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open, returning to a missed reminder
+    // programme-reminders/a-banner-while-antuna-is-open, returning to a missed reminder
     @Test func aReminderMissedInTheBackgroundShowsOnReturn() async throws {
         var clock = now
         let center = await center(RecordingNotifier(state: .denied)) { clock }
@@ -160,7 +160,7 @@ import Testing
         #expect(center.banner == nil, "the banner came back")
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open: a programme that ended is not shown on return
+    // programme-reminders/a-banner-while-antuna-is-open: a programme that ended is not shown on return
     @Test func anEndedProgrammeShowsNoBannerOnReturn() async throws {
         var clock = now
         let center = await center(RecordingNotifier(state: .denied)) { clock }

@@ -23,7 +23,7 @@ struct AntennaApp: App {
         @State private var shelfLinks = TopShelfInbox.launching()
     #endif
     #if !os(tvOS)
-        /// Files shared to Antenna wait here, outside every gate, until a
+        /// Files shared to Antuna wait here, outside every gate, until a
         /// screen can show the import sheet (local-m3u-file-import/bring-a-file-in).
         @State private var inbox = ImportInbox()
         /// Setup links from an Apple TV wait here the same way (iphone-as-setup-device capability).

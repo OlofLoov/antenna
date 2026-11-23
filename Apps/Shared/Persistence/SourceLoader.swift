@@ -68,7 +68,7 @@ struct SourceLoader: Sendable {
             case .forbidden: ConnectFailure.forbidden.message
             case .untrustedCertificate: ConnectFailure.untrustedCertificate.message
             case .badStatus(let status): String(localized: "The server answered with status \(status).")
-            case .transport, .decoding: String(localized: "The server replied with something Antenna could not read.")
+            case .transport, .decoding: String(localized: "The server replied with something Antuna could not read.")
             }
         }
 
@@ -79,7 +79,7 @@ struct SourceLoader: Sendable {
             case .deviceRefused(let message): String(localized: "The portal turned this device down. It said “\(message)”.")
             case .noPortal: String(localized: "No Stalker portal answered at this address.")
             case .transport, .unreadable, .notStalkerChannel, .noLink:
-                String(localized: "The portal replied with something Antenna could not read.")
+                String(localized: "The portal replied with something Antuna could not read.")
             }
         }
     }

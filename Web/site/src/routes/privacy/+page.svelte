@@ -4,7 +4,7 @@
 
 <Meta
 	title="Privacy Policy"
-	description="Antenna collects nothing about you. What it keeps stays on your devices and in your own iCloud."
+	description="Antuna collects nothing about you. What it keeps stays on your devices and in your own iCloud."
 />
 
 <article class="prose">
@@ -12,14 +12,14 @@
 	<p class="updated">Last updated: November 23, 2026</p>
 
 	<p>
-		This policy covers Antenna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
-		Crave. Antenna collects nothing about you. What you set up in the app stays on your devices and
+		This policy covers Antuna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
+		Crave. Antuna collects nothing about you. What you set up in the app stays on your devices and
 		in your own iCloud account, and Code Crave runs no server that receives it.
 	</p>
 
-	<h2>What Antenna stores</h2>
+	<h2>What Antuna stores</h2>
 	<p>
-		Antenna keeps these in your private iCloud database and syncs them to your devices signed in to
+		Antuna keeps these in your private iCloud database and syncs them to your devices signed in to
 		the same iCloud account:
 	</p>
 	<ul>
@@ -56,7 +56,7 @@
 	</p>
 
 	<h2>Network connections</h2>
-	<p>Antenna connects only to:</p>
+	<p>Antuna connects only to:</p>
 	<ul>
 		<li>
 			the sources and guide sources you add, and the addresses they list, such as streams, channel
@@ -65,13 +65,13 @@
 		<li>Apple, for iCloud sync, the App Store and notifications</li>
 	</ul>
 	<p>
-		Those servers see your IP address and what Antenna asks for, as with any connection, and their
+		Those servers see your IP address and what Antuna asks for, as with any connection, and their
 		own privacy policies apply. If you tap Trailer on a movie, the trailer address your source gives
-		opens outside Antenna.
+		opens outside Antuna.
 	</p>
 	<p>
 		This website is served by Amazon CloudFront, part of Amazon Web Services. When you open a page
-		here, including the setup page your iPhone opens when Antenna is not installed, Amazon's servers
+		here, including the setup page your iPhone opens when Antuna is not installed, Amazon's servers
 		receive the request and your IP address under Amazon's <a href="https://aws.amazon.com/privacy/"
 			>privacy notice</a
 		>. The site's request logs are turned off, so no record is kept of who opened which page. Code
@@ -80,37 +80,37 @@
 
 	<h2>Analytics and tracking</h2>
 	<p>
-		Antenna has no analytics, crash reporting, advertising or tracking, and includes no third-party
+		Antuna has no analytics, crash reporting, advertising or tracking, and includes no third-party
 		SDK. It does not track you across apps or websites, and Code Crave has no data about you to sell
 		or share.
 	</p>
 	<p>
 		If you have turned on sharing with app developers in your device's privacy settings, Apple may
-		send Code Crave crash reports and usage statistics from Antenna. Apple controls that setting,
-		and you can turn it off at any time.
+		send Code Crave crash reports and usage statistics from Antuna. Apple controls that setting, and
+		you can turn it off at any time.
 	</p>
 
 	<h2>Purchases</h2>
 	<p>
-		Apple handles every purchase. Antenna asks the App Store whether you have an active purchase and
+		Apple handles every purchase. Antuna asks the App Store whether you have an active purchase and
 		keeps the answer on the device so the app works offline. Code Crave never sees your name, your
 		Apple Account or your payment details.
 	</p>
 
 	<h2>Deleting your data</h2>
 	<p>
-		Removing a source in Antenna's settings deletes it, its login, and its favorites, groups and
+		Removing a source in Antuna's settings deletes it, its login, and its favorites, groups and
 		reminders on every device signed in to your iCloud account. Remove your sources before you
 		delete the app, since logins in your iCloud Keychain stay there when the app is deleted.
 	</p>
 	<p>
-		To delete everything Antenna keeps in iCloud, open Settings on your iPhone, tap your name, then
-		iCloud, then Manage Storage, and delete Antenna's data. Deleting the app removes what it kept on
+		To delete everything Antuna keeps in iCloud, open Settings on your iPhone, tap your name, then
+		iCloud, then Manage Storage, and delete Antuna's data. Deleting the app removes what it kept on
 		that device.
 	</p>
 
 	<h2>Children</h2>
-	<p>Antenna is not aimed at children. It collects no data from anyone, children included.</p>
+	<p>Antuna is not aimed at children. It collects no data from anyone, children included.</p>
 
 	<h2>Changes to this policy</h2>
 	<p>

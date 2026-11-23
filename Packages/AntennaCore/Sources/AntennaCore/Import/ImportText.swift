@@ -70,15 +70,15 @@ public struct ImportText: Sendable {
         let split = words("Split the file, or host it and add the link as an M3U source instead.")
         switch outcome {
         case .tooLarge(let bytes?):
-            return Problem(title: words("This file is \(size(bytes)). Antenna imports playlists up to 16 MB."), body: split)
+            return Problem(title: words("This file is \(size(bytes)). Antuna imports playlists up to 16 MB."), body: split)
         case .tooLarge(nil):
-            return Problem(title: words("This file is larger than 16 MB. Antenna imports playlists up to 16 MB."), body: split)
+            return Problem(title: words("This file is larger than 16 MB. Antuna imports playlists up to 16 MB."), body: split)
         case .noChannels(let sawEntries):
             return Problem(
                 title: words("No channels found in \(words.source(fileName))."),
                 body: sawEntries
                     ? words("The entries in this file are not links.")
-                    : words("Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair."))
+                    : words("Antuna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair."))
         case .linkList(let links) where links.count == 1:
             return Problem(
                 title: words("This file is a link, not a playlist."),

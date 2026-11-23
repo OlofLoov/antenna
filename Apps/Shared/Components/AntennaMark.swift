@@ -75,7 +75,7 @@ extension AppIconChoice {
     /// The icon's name in Settings.
     var title: LocalizedStringResource {
         switch self {
-        case .standard: return "Antenna"
+        case .standard: return "Antuna"
         case .mono: return "Mono"
         case .light: return "Light"
         case .teal: return ProfileAccent.teal.title
@@ -86,7 +86,7 @@ extension AppIconChoice {
     }
 }
 
-#Preview("Antenna mark") {
+#Preview("Antuna mark") {
     HStack(spacing: Metrics.Spacing.xLarge) {
         AntennaMark(size: 112)
         AntennaMark(size: 160)

@@ -1,6 +1,6 @@
 ---
 name: sim
-description: Build and run Antenna on an iOS or tvOS simulator, run UI tests, or take a screenshot. Use when asked to run the app, see a change on screen, run XCUITests, or check that a build works on simulator.
+description: Build and run Antuna on an iOS or tvOS simulator, run UI tests, or take a screenshot. Use when asked to run the app, see a change on screen, run XCUITests, or check that a build works on simulator.
 ---
 
 # Running on simulator
@@ -27,7 +27,7 @@ iOS:
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna \
   -destination 'platform=iOS Simulator,name=<name>' CODE_SIGNING_ALLOWED=NO \
   -derivedDataPath .build/dd 2>&1 | tail -20
-xcrun simctl install booted .build/dd/Build/Products/Debug-iphonesimulator/Antenna.app
+xcrun simctl install booted .build/dd/Build/Products/Debug-iphonesimulator/Antuna.app
 xcrun simctl launch booted se.codecrave.antenna
 ```
 
@@ -50,7 +50,7 @@ Adding it is a change to `project.yml`, not the pbxproj.
 ## Screenshot
 
 ```sh
-xcrun simctl io booted screenshot /private/tmp/antenna-shot.png
+xcrun simctl io booted screenshot /private/tmp/antuna-shot.png
 ```
 
 Then read the PNG and describe what is on screen.

@@ -40,7 +40,7 @@ def stamp(moment):
 def guide(playlist, start, days):
     begin = datetime.datetime.combine(start, datetime.time(), datetime.timezone.utc)
     end = begin + datetime.timedelta(days=days)
-    lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<tv generator-info-name="Antenna review guide">']
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<tv generator-info-name="Antuna review guide">']
     listed = channels(playlist)
     for guide_id, name in listed:
         lines.append(f"  <channel id={quoteattr(guide_id)}><display-name>{escape(name)}</display-name></channel>")

@@ -29,7 +29,7 @@ enum TopShelfItems {
     }
 
     /// A 16:9 tile with its image file at 1x and 2x. A channel or title
-    /// plays on select and on play; the add-favorites tile opens Antenna.
+    /// plays on select and on play; the add-favorites tile opens Antuna.
     static func item(_ item: TopShelfContent.Item, in store: any TopShelfStoring) -> TVTopShelfSectionedItem? {
         guard let image = store.tileURL(item.tileFile) else { return nil }
         let tile = TVTopShelfSectionedItem(identifier: item.id)

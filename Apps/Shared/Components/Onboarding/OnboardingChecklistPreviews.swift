@@ -26,7 +26,7 @@ private enum Fixture {
         OnboardingSummary.Tile(id: "catchUp", value: .verbatim("7 days"), caption: .verbatim("of catch-up on 212 channels")),
     ]
 
-    static let note: LocalizedStringResource = "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own."
+    static let note: LocalizedStringResource = "Synced through iCloud. Antuna on Apple TV, iPad and Mac shows this source on its own."
     @MainActor static var actions: OnboardingChecklist.Actions { .init(primary: {}, addAnother: {}) }
 }
 

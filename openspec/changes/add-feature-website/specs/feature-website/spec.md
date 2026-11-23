@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
-### Requirement: The home page says what Antenna is
-The system SHALL publish a home page that says in its first screen that Antenna plays the TV sources the visitor already has, on iPhone, iPad, Mac and Apple TV, that it includes no channels, and that it needs a purchase, with a link to Antenna on the App Store.
+### Requirement: The home page says what Antuna is
+The system SHALL publish a home page that says in its first screen that Antuna plays the TV sources the visitor already has, on iPhone, iPad, Mac and Apple TV, that it includes no channels, and that it needs a purchase, with a link to Antuna on the App Store.
 
 #### Scenario: A first visit on a laptop
 - **WHEN** someone opens the home page on a laptop
@@ -12,7 +12,7 @@ The system SHALL publish a home page that says in its first screen that Antenna 
 - **THEN** the same line, the platforms and the App Store link show before the first screenshot, with no sideways scrolling
 
 #### Scenario: Before the app is on the App Store
-- **GIVEN** Antenna has no App Store page yet
+- **GIVEN** Antuna has no App Store page yet
 - **WHEN** someone opens the home page
 - **THEN** it says "Coming soon to the App Store" in place of the link
 
@@ -53,14 +53,14 @@ The system SHALL name no IPTV provider, channel, broadcaster, league or streamin
 
 #### Scenario: Asking where to get channels
 - **WHEN** someone looks for where to get a source
-- **THEN** the site says Antenna plays sources they already have and names none
+- **THEN** the site says Antuna plays sources they already have and names none
 
 #### Scenario: Checking the text
 - **WHEN** the site check runs
 - **THEN** it fails on any page that names a provider, broadcaster, league or streaming service from the listing check's list
 
 ### Requirement: Pricing says how buying works
-The system SHALL publish a pricing page that says Antenna is free to download and needs a purchase to use, offers a yearly subscription that renews until canceled and a one-time lifetime unlock, that both unlock every feature on every device on the buyer's Apple Account, that both work with Family Sharing, and that the App Store shows the price for the buyer's region before they buy.
+The system SHALL publish a pricing page that says Antuna is free to download and needs a purchase to use, offers a yearly subscription that renews until canceled and a one-time lifetime unlock, that both unlock every feature on every device on the buyer's Apple Account, that both work with Family Sharing, and that the App Store shows the price for the buyer's region before they buy.
 
 #### Scenario: Looking for the price
 - **WHEN** someone opens the pricing page
@@ -86,7 +86,7 @@ The system SHALL publish a support page with answers to common questions and a s
 - **THEN** there is none, and the support and legal pages point to Report a problem in the app
 
 #### Scenario: Restoring a purchase
-- **WHEN** someone reads how to unlock Antenna on a new device
+- **WHEN** someone reads how to unlock Antuna on a new device
 - **THEN** an answer says it unlocks on its own with the same Apple Account and how to use Restore Purchases on the paywall
 
 ### Requirement: Every page reads without scripts
@@ -132,7 +132,7 @@ The system SHALL, once a page has loaded with scripts on, open other pages of th
 - **THEN** "Page not found" shows with a link to the home page, as it does when the address is typed
 
 ### Requirement: Every page shares one header and footer
-The system SHALL show the same header on every page, with Antenna's name linking home and links to Features, Pricing and Support, and the same footer with links to Support, the Terms of Use and the Privacy Policy.
+The system SHALL show the same header on every page, with Antuna's name linking home and links to Features, Pricing and Support, and the same footer with links to Support, the Terms of Use and the Privacy Policy.
 
 #### Scenario: From the Privacy Policy to pricing
 - **GIVEN** the Privacy Policy is open
@@ -140,7 +140,7 @@ The system SHALL show the same header on every page, with Antenna's name linking
 - **THEN** the pricing page opens
 
 #### Scenario: The setup page
-- **WHEN** an iPhone without Antenna opens a setup link
+- **WHEN** an iPhone without Antuna opens a setup link
 - **THEN** the setup page shows its one line and its App Store link, without the header and footer
 
 ### Requirement: Languages are added when their listing is ready

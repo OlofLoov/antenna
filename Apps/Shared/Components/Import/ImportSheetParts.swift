@@ -189,7 +189,7 @@
                     .background(Palette.surface(0.06), in: cornerShape(.medium))
                     Label(
                         """
-                        Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. \
+                        Antuna keeps a copy of this file and syncs it through iCloud, Apple TV included. \
                         Changes to the file are not picked up; re-import to update.
                         """,
                         systemImage: "icloud"
@@ -304,7 +304,7 @@
             ImportSheetParts.FileCard(fileName: "everything.m3u", size: "41.7 MB") { EmptyView() }
             ImportSheetParts.Problem(
                 problem: .init(
-                    title: "This file is 41.7 MB. Antenna imports playlists up to 16 MB.",
+                    title: "This file is 41.7 MB. Antuna imports playlists up to 16 MB.",
                     body: "Split the file, or host it and add the link as an M3U source instead."))
             ImportSheetParts.FileCard(fileName: "channels.m3u", size: nil) { ImportSheetParts.Reading(fileName: "channels.m3u") }
             ImportSheetParts.Primary(title: "Import", id: "import.import") {}.disabled(true)

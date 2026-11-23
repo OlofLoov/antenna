@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""App Store listing checks for Antenna (add-store-localization).
+"""App Store listing checks for Antuna (add-store-localization).
 
 The listing lives in fastlane/metadata/<store-locale>/<field>.txt, the
 layout fastlane deliver reads. Nothing here talks to App Store Connect.
@@ -46,7 +46,7 @@ LIMITS = {
 }
 URL_FIELDS = ["privacy_url", "support_url"]
 TEXT_FIELDS = ["name", "subtitle", "description", "keywords", "promotional_text", "release_notes"]
-SITE = "https://antenna.code-crave.se/"
+SITE = "https://antuna.app/"
 
 # Providers, broadcasters, leagues, streaming services and other players.
 # App Review 5.2.3 and 2.3.7: the listing names none of them.

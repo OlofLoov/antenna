@@ -4,7 +4,7 @@ import SwiftUI
 /// `iPhone-Onboard-1` and `TV-Onboard-1`). Compiles on every platform so
 /// the snapshot job renders both variants.
 enum OnboardingWelcome {
-    static let title: LocalizedStringResource = "Welcome to Antenna"
+    static let title: LocalizedStringResource = "Welcome to Antuna"
 
     /// What the welcome screen's buttons do. Each variant also takes
     /// `signedInToICloud`; when false it leaves out what it says about sync.
@@ -30,7 +30,7 @@ enum OnboardingWelcome {
                                 .accessibilityAddTraits(.isHeader)
                             Text(
                                 """
-                                Antenna plays the TV sources you already have. \
+                                Antuna plays the TV sources you already have. \
                                 It comes with no channels, so start by adding a playlist or a login from your provider.
                                 """
                             )
@@ -92,7 +92,7 @@ enum OnboardingWelcome {
                         .accessibilityAddTraits(.isHeader)
                     Text(
                         """
-                        Antenna plays the TV sources you already have. It does not come with any channels, \
+                        Antuna plays the TV sources you already have. It does not come with any channels, \
                         so the first step is to add a playlist or a login from your provider.
                         """
                     )
@@ -113,7 +113,7 @@ enum OnboardingWelcome {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(alignment: .bottom) {
                 if signedInToICloud {
-                    Text("Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own.")
+                    Text("Signed in to iCloud. Sources added in Antuna on iPhone, iPad or Mac appear here on their own.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .accessibilityIdentifier("onboarding.iCloudNote")

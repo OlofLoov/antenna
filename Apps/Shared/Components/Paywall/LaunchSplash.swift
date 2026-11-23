@@ -12,7 +12,7 @@ struct LaunchSplash: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Palette.ground)
             .accessibilityElement()
-            .accessibilityLabel("Antenna")
+            .accessibilityLabel("Antuna")
             .accessibilityIdentifier("paywall.splash")
     }
 }

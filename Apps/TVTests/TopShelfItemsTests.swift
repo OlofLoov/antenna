@@ -64,13 +64,13 @@ import Testing
         #expect(content.sections.first?.items.map(\.title) == ["BBC · BBC show"])
     }
 
-    @Test("top-shelf/an-empty-shelf-says-how-to-fill-it nothing to show gives the add-favorites tile, which opens Antenna")
+    @Test("top-shelf/an-empty-shelf-says-how-to-fill-it nothing to show gives the add-favorites tile, which opens Antuna")
     func emptyShelf() throws {
         let content = try #require(TopShelfItems.content(from: try store(.cleared(now: now)), now: now))
         let tile = try #require(content.sections.first?.items.first)
         #expect(content.sections.count == 1)
         #expect(tile.identifier == "topShelf.emptyItem")
-        #expect(tile.title == "Add favorites in Antenna to see them here")
+        #expect(tile.title == "Add favorites in Antuna to see them here")
         #expect(tile.displayAction?.url == TopShelfLink.empty.url)
         #expect(tile.playAction == nil)
     }

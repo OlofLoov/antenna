@@ -63,7 +63,7 @@
         func setFavorite(_ channel: Channel, to favorite: Bool, in catalogue: Catalogue<PersistentIdentifier>)
         /// Hands `request` to the app's screens.
         func open(_ request: IntentRequest)
-        /// Brings Antenna forward for `intent`; throws when the system refuses.
+        /// Brings Antuna forward for `intent`; throws when the system refuses.
         func bringForward<Intent: AppIntent>(_ intent: Intent) async throws
     }
 

@@ -140,7 +140,7 @@ import Testing
         #expect(model.shelfItem == nil)
     }
 
-    @Test("top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was the add-favorites tile and damaged links are not kept")
+    @Test("top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was the add-favorites tile and damaged links are not kept")
     func inboxIgnores() throws {
         let inbox = TopShelfInbox()
         inbox.receive(TopShelfLink.empty.url)

@@ -63,9 +63,9 @@ enum OnboardingForm {
     static func keychainLine(_ kind: SourceKind) -> LocalizedStringResource? {
         guard [.xtream, .stalker, .jellyfin].contains(kind) else { return nil }
         #if os(tvOS)
-            return "Saved in the Keychain on this Apple TV. Antenna has no servers."
+            return "Saved in the Keychain on this Apple TV. Antuna has no servers."
         #else
-            return "Saved in your iCloud Keychain only. Antenna has no servers and never sees your login."
+            return "Saved in your iCloud Keychain only. Antuna has no servers and never sees your login."
         #endif
     }
 
@@ -367,7 +367,7 @@ enum OnboardingForm {
             fields: $fields, revealsPassword: $reveals,
             status: .init(
                 error: "Could not reach 192.168.1.20. Check the address and try again. "
-                    + "Allow local network access for Antenna in Settings."),
+                    + "Allow local network access for Antuna in Settings."),
             actions: .init(choose: { _ in }, connect: {}, fillIn: {}, cancel: {})
         )
         .navigationTitle("Add a source")
@@ -450,7 +450,7 @@ enum OnboardingForm {
     @Previewable @State var fields = SourceFields(kind: .jellyfin, url: "https://jellyfin.example.net", username: "anna")
     OnboardingForm.Television(
         fields: $fields,
-        status: .init(error: "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate."),
+        status: .init(error: "Antuna can't verify this server's certificate. Use http on your network or a trusted certificate."),
         actions: .init(choose: { _ in }, connect: {}, fillIn: {}, cancel: {}, changeKind: {}))
 }
 

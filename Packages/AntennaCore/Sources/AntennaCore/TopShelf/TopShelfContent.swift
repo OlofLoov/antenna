@@ -43,7 +43,7 @@ public enum TopShelfContent: Sendable, Hashable {
 
     /// The add-favorites tile's text.
     public static func emptyTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Add favorites in Antenna to see them here")
+        Words(locale)("Add favorites in Antuna to see them here")
     }
 
     /// The shelf for `snapshot` at `now`. Nil, a blank shelf, when there is

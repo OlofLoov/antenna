@@ -38,7 +38,7 @@ describe('the built site', () => {
 		expect(checkLinks()).toEqual([]);
 	});
 
-	// antenna-website/the-pages-read-on-a-phone-and-in-dark-mode
+	// antuna-website/the-pages-read-on-a-phone-and-in-dark-mode
 	test('no inline script or style, and nothing from another address', () => {
 		expect(checkPolicy()).toEqual([]);
 	});
@@ -49,7 +49,7 @@ describe('the built site', () => {
 		expect(checkStyleHashes()).toEqual([]);
 	});
 
-	// antenna-website/the-pages-read-on-a-phone-and-in-dark-mode
+	// antuna-website/the-pages-read-on-a-phone-and-in-dark-mode
 	test('images, scripts and the home page fit their budgets', () => {
 		expect(checkBudgets()).toEqual([]);
 		for (const size of Object.values(scriptSizes()))
@@ -73,10 +73,10 @@ describe('the built site', () => {
 		}
 	});
 
-	// antenna-website/the-legal-pages-are-dated-and-link-to-each-other
+	// antuna-website/the-legal-pages-are-dated-and-link-to-each-other
 	test('the legal pages keep their text in the first answer', () => {
 		const privacy = textOf(readFileSync(join(BUILD, 'privacy/index.html'), 'utf8'));
-		expect(privacy).toContain('Antenna collects nothing about you.');
+		expect(privacy).toContain('Antuna collects nothing about you.');
 		expect(privacy).toMatch(/Last updated: [A-Z][a-z]+ \d{1,2}, \d{4}/);
 		const terms = textOf(readFileSync(join(BUILD, 'terms/index.html'), 'utf8'));
 		expect(terms).toContain('You are responsible for having the right to watch everything you add');
@@ -98,8 +98,8 @@ describe('the pages', () => {
 		'privacy'
 	];
 
-	// feature-website/the-home-page-says-what-antenna-is
-	test('the home page says what Antenna is before its first screenshot', () => {
+	// feature-website/the-home-page-says-what-antuna-is
+	test('the home page says what Antuna is before its first screenshot', () => {
 		const home = html('index.html');
 		const beforeImage = textOf(home.slice(0, home.indexOf('<img')));
 		expect(beforeImage).toContain('Your TV sources, on every Apple screen.');
@@ -165,7 +165,7 @@ describe('the pages', () => {
 	test('support answers the common questions and names Report a problem', () => {
 		const page = html('support/index.html');
 		for (const id of [
-			'does-antenna-include-channels',
+			'does-antuna-include-channels',
 			'a-channel-will-not-play',
 			'the-guide-is-empty-or-wrong',
 			'unlocking-on-a-new-device',

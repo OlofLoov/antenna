@@ -49,7 +49,7 @@ public struct KeyCombination: Hashable, Sendable {
     }()
 }
 
-/// The menus Antenna adds to, in the menu bar's order.
+/// The menus Antuna adds to, in the menu bar's order.
 public enum KeyCommandMenu: Hashable, Sendable, CaseIterable {
     case edit, view, playback, go
 }

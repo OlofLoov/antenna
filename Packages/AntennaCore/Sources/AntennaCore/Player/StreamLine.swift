@@ -50,7 +50,7 @@ public enum SoundFormat {
 }
 
 /// The one-line description of what is playing, such as
-/// "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player". It is built from the
+/// "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player". It is built from the
 /// engine's reports and never from the stream address.
 public enum StreamLine {
 
@@ -77,7 +77,7 @@ public enum StreamLine {
     /// The name of the path that plays the stream.
     public static func playerName(_ route: EngineRouter.Route, locale: Locale = .autoupdatingCurrent) -> String {
         switch route {
-        case .demuxer: Words(locale)("Antenna player")
+        case .demuxer: Words(locale)("Antuna player")
         case .system: Words(locale)("Apple player")
         }
     }

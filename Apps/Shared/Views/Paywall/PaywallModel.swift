@@ -17,7 +17,7 @@ final class PaywallModel {
     private(set) var prices: [ProductKind: Paywall.Price] = [:]
     private(set) var status: PaywallStatus?
     private(set) var busy: Busy?
-    /// Why the app is locked; a lapse puts "Antenna is locked again" on top.
+    /// Why the app is locked; a lapse puts "Antuna is locked again" on top.
     private(set) var lapse: Lapse
     /// Yearly's offer once eligibility is known; nil before and when there is none.
     private(set) var offer: IntroOffer?

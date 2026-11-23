@@ -4,13 +4,13 @@
 
 See proposal.md for why. What exists on 2026-11-22:
 
-- `Web/` has four hand-written pages: `setup/` (one line and an App Store link, dark only, inline styles), `terms/` and `privacy/` (inline `<style>`, light and dark, `max-width: 40em`), and `review/antenna-review.m3u`. No home page: `/` answers 404 on GitHub Pages today.
-- `WebsiteTests` fails on `<script`, `<iframe`, `<img`, `<link`, `<object`, `<embed`, `@import` and `url(` on every page. `SetupPageTests` checks the setup page's text, its one App Store link, and that its head holds only `meta` and `title`. The `antenna-website` spec and CLAUDE.md say "No scripts, images or third-party content".
+- `Web/` has four hand-written pages: `setup/` (one line and an App Store link, dark only, inline styles), `terms/` and `privacy/` (inline `<style>`, light and dark, `max-width: 40em`), and `review/antuna-review.m3u`. No home page: `/` answers 404 on GitHub Pages today.
+- `WebsiteTests` fails on `<script`, `<iframe`, `<img`, `<link`, `<object`, `<embed`, `@import` and `url(` on every page. `SetupPageTests` checks the setup page's text, its one App Store link, and that its head holds only `meta` and `title`. The `antuna-website` spec and CLAUDE.md say "No scripts, images or third-party content".
 - `scripts/publish-web.sh` copies `Web/` to a folder, fills the team id into the association file and writes the review guide. `WebsiteTests` and `ReleaseTests` run it in `swift test`, so it must keep working without Node.
 - The App Store support address is `/terms` in all nine locales; there is no marketing address.
 - The `App screenshots` workflow uploads `store-screenshots` every night: iPhone, iPad, Mac and Apple TV in each ready language, at App Store sizes, made from fixtures (`store-listing/store-screenshots-in-every-ready-language`). The artifact is kept 14 days.
 - The store description in `fastlane/metadata/en-US/description.txt` already groups the features as sources, live TV, movies and series, Apple TV, every device, purchase and privacy.
-- `add-aws-hosting` moves the site to CloudFront at `<antenna-domain>`, with one fixed Content-Security-Policy header for the site and a stricter one for `/setup*`, and answers unknown addresses with `/404.html` and status 404. It also sets up `infra.yml`, whose site job builds and uploads the site.
+- `add-aws-hosting` moves the site to CloudFront at `antuna.app`, with one fixed Content-Security-Policy header for the site and a stricter one for `/setup*`, and answers unknown addresses with `/404.html` and status 404. It also sets up `infra.yml`, whose site job builds and uploads the site.
 - `add-support-requests` adds Report a problem in Settings and on the player's error screen. Not built.
 - The owner took every recommendation in the first version of this design on 2026-11-22, except the page builder: he wants a single-page app. Decisions 1 to 8 record each choice; decision 2 is the single-page app.
 
@@ -52,16 +52,16 @@ Every capability in `openspec/specs/` on 2026-11-22, by area. A capability can f
 | Apple TV (`/features/apple-tv/`) | `tvos-shell`, `tv-channel-overlay`, `tv-zap-bar-and-number-entry`, `control-hints`, `top-shelf`, `tv-guide-grid` | Opens on the last channel full screen, the channel list over the picture, up and down to change channel, numbers from a keyboard, hints for what the remote does, favorites and titles in progress on the Top Shelf. |
 | Setup from iPhone (`/features/setup-from-iphone/`) | `iphone-as-setup-device`, `apple-tv-login-from-iphone` | Scan the TV's code or accept Handoff, fill in the source on the phone, sign a TV in without typing the password with the remote; the login travels sealed and only that TV can read it. |
 | Sync and profiles (`/features/sync-and-profiles/`) | `source-management`, `watch-progress-sync`, `favorites`, `profiles`, `group-management` | Add a source once and it reaches every device on the Apple Account through iCloud, progress and My list follow you, a profile per person with their own favorites and history. |
-| Privacy (`/features/privacy/`) | `source-management`, `paywall-and-entitlement`, `app-release` (privacy manifest), `antenna-website` (Privacy Policy) | No account, no ads, no analytics, passwords in iCloud Keychain only, data in the user's own iCloud, connects only to their sources, iCloud and the App Store. Links to the Privacy Policy. Updated when `add-support-requests` and `add-title-metadata` ship, since both change what leaves the device. |
+| Privacy (`/features/privacy/`) | `source-management`, `paywall-and-entitlement`, `app-release` (privacy manifest), `antuna-website` (Privacy Policy) | No account, no ads, no analytics, passwords in iCloud Keychain only, data in the user's own iCloud, connects only to their sources, iCloud and the App Store. Links to the Privacy Policy. Updated when `add-support-requests` and `add-title-metadata` ship, since both change what leaves the device. |
 
-On no feature page: `antenna-website`, `app-release`, `store-listing`, `design-system`, `localization` (the footer lists the app's languages instead), and `paywall-and-entitlement`, which is the pricing page.
+On no feature page: `antuna-website`, `app-release`, `store-listing`, `design-system`, `localization` (the footer lists the app's languages instead), and `paywall-and-entitlement`, which is the pricing page.
 
 Not on the site until their changes are archived (`feature-website/the-site-shows-only-what-the-app-does`): scores, trending and TMDB people from `add-title-metadata`, Report a problem from `add-support-requests`.
 
 ## Goals / Non-Goals
 
 **Goals:**
-- A buyer can tell in one page whether Antenna fits their sources and devices, and in two clicks what it costs.
+- A buyer can tell in one page whether Antuna fits their sources and devices, and in two clicks what it costs.
 - Every shipped feature is on the site, and nothing that is not.
 - Every address is real HTML a reader without scripts, a search engine, a link preview and App Review can read. Moving between pages after the first one happens in the page, without a reload.
 - The site runs only its own code: no third-party script, font, tracker, analytics, cookie or request to another address.
@@ -115,7 +115,7 @@ SvelteKit's prerendered pages start the app with an inline `<script>` that diffe
 Settings: `adapter-static` with `fallback` unset, so there is no catch-all `index.html`; `export const prerender = true` and `trailingSlash = 'always'` in the root layout, so `/pricing/` becomes `pricing/index.html`; `kit.prerender.handleHttpError = 'fail'` and `handleMissingId = 'fail'`, so a broken internal link or `#anchor` fails the build; `kit.paths.relative = false`; `kit.inlineStyleThreshold = 0`, so every style is a file. The `404` route sets `trailingSlash = 'never'` and is written as `/404.html`, which CloudFront answers for unknown addresses with status 404 (`add-aws-hosting` decision 3). A link to an unknown address inside the app shows the same page through `+error.svelte`.
 
 What stays outside the app, as plain files in `Web/` that `scripts/publish-web.sh` copies next to the build:
-- **`/setup/`.** It is the universal link landing page: an iPhone with Antenna opens the app for `/setup` addresses, and one without it shows this page (`iphone-as-setup-device/an-iphone-without-antenna-gets-a-plain-page`). That requirement says no scripts, images or third-party content, and `SetupPageTests` checks the file at `Web/setup/index.html`. It stays exactly as it is, with its own stricter CSP on `/setup*`. Links from the app to it carry `data-sveltekit-reload`, so the browser loads it as a page and the router never tries to draw it.
+- **`/setup/`.** It is the universal link landing page: an iPhone with Antuna opens the app for `/setup` addresses, and one without it shows this page (`iphone-as-setup-device/an-iphone-without-antuna-gets-a-plain-page`). That requirement says no scripts, images or third-party content, and `SetupPageTests` checks the file at `Web/setup/index.html`. It stays exactly as it is, with its own stricter CSP on `/setup*`. Links from the app to it carry `data-sveltekit-reload`, so the browser loads it as a page and the router never tries to draw it.
 - **`/.well-known/apple-app-site-association`.** A JSON file Apple's CDN fetches; it is no page.
 - **`/review/`.** The App Review playlist and the guide `publish-web.sh` writes. Data files, which the app never names.
 - **Not the Terms of Use and the Privacy Policy.** They become routes in the app, prerendered like every other page, so the paywall's links, the App Store's privacy link and a reader without scripts get the full text in the first HTML. Keeping them outside would mean a second copy of the header, footer and stylesheet. Their text is English HTML in their `+page.svelte` files, with no strings file, since they stay English only (decision 8).
@@ -144,7 +144,7 @@ Test changes in AntennaCore:
 
 The owner chose committed screenshots, picked by a script and reviewed in a PR, on 2026-11-22.
 
-The site needs screenshots, and the `antenna-website` rule forbids images and scripts. The rule is amended to allow images and scripts the site publishes itself, and to keep forbidding third-party scripts, fonts, trackers, analytics and anything from another address (`antenna-website/the-pages-read-on-a-phone-and-in-dark-mode`). `add-aws-hosting`'s CSP enforces `script-src 'self'` and `img-src 'self'`.
+The site needs screenshots, and the `antuna-website` rule forbids images and scripts. The rule is amended to allow images and scripts the site publishes itself, and to keep forbidding third-party scripts, fonts, trackers, analytics and anything from another address (`antuna-website/the-pages-read-on-a-phone-and-in-dark-mode`). `add-aws-hosting`'s CSP enforces `script-src 'self'` and `img-src 'self'`.
 
 How screenshots get in. Options considered:
 - **Download the latest `store-screenshots` artifact at publish time.** Always current, but the published images are never reviewed, a publish fails when no artifact is younger than 14 days, and two publishes of the same commit can show different pictures.
@@ -178,19 +178,19 @@ The owner wants no email (2026-11-22), and chose on the same day to ship `add-su
 
 The support page has:
 - "Report a problem from the app": Settings, Report a problem; on a failed stream, Report this problem; what is sent is shown first; a reference code comes back. Shipped with `add-support-requests`.
-- An FAQ, each question an `<h2>` with an id so a store reply or a form can link to it: does Antenna include channels, which sources work, a channel will not play (what each error message means, from `player-controls-and-playback-errors`), the guide is empty or wrong, a source will not load, setting up an Apple TV from an iPhone, unlocking on a new device and Restore Purchases, Family Sharing, canceling the yearly subscription, refunds (from Apple), deleting your data.
+- An FAQ, each question an `<h2>` with an id so a store reply or a form can link to it: does Antuna include channels, which sources work, a channel will not play (what each error message means, from `player-controls-and-playback-errors`), the guide is empty or wrong, a source will not load, setting up an Apple TV from an iPhone, unlocking on a new device and Restore Purchases, Family Sharing, canceling the yearly subscription, refunds (from Apple), deleting your data.
 
 The Terms of Use and Privacy Policy say "how to reach the publisher" by linking to the support page, replacing `support@code-crave.se`. App Store Connect's support URL becomes `/support/` (`store-listing/the-listing-links-to-the-site-s-pages`); App Review's guideline 1.5 asks that it gives "an easy way to contact you", which the Report a problem section does once that form ships.
 
 ### 7. Page structure and ids
 
-Every page: `<html lang="en">`, a `<title>` of "<Page> · Antenna", a `<meta name="description">`, `<meta name="referrer" content="no-referrer">`, the viewport meta, `<header id="site-header">` and `<footer id="site-footer">`, and one `<h1>`. The header and footer live in the root `+layout.svelte`, so they stay on screen while the page below changes. After a client-side navigation the router moves focus to the new page's `<h1>` and updates the title, so a screen reader announces the new page (SvelteKit does both by default; the site check confirms each page has one `<h1>`). Home sections are `<section id="<area>">`; FAQ questions are `<h2 id="<question-slug>">`. No cookie, no form, no `<iframe>`, no `localStorage`.
+Every page: `<html lang="en">`, a `<title>` of "<Page> · Antuna", a `<meta name="description">`, `<meta name="referrer" content="no-referrer">`, the viewport meta, `<header id="site-header">` and `<footer id="site-footer">`, and one `<h1>`. The header and footer live in the root `+layout.svelte`, so they stay on screen while the page below changes. After a client-side navigation the router moves focus to the new page's `<h1>` and updates the title, so a screen reader announces the new page (SvelteKit does both by default; the site check confirms each page has one `<h1>`). Home sections are `<section id="<area>">`; FAQ questions are `<h2 id="<question-slug>">`. No cookie, no form, no `<iframe>`, no `localStorage`.
 
 Dark mode follows `prefers-color-scheme` in the stylesheet only, as the legal pages do today. There is no toggle, so no script decides the colors and a page never flashes the wrong appearance before a script runs.
 
 The home page's hero line is "Your TV sources, on every Apple screen.", which the owner chose on 2026-11-22 from the boards. The rest of the copy follows the store description.
 
-The setup page stays as it is, with no header, footer or stylesheet (`iphone-as-setup-device/an-iphone-without-antenna-gets-a-plain-page`).
+The setup page stays as it is, with no header, footer or stylesheet (`iphone-as-setup-device/an-iphone-without-antuna-gets-a-plain-page`).
 
 ### 8. Languages (decided)
 
@@ -225,4 +225,4 @@ Additive for visitors. The existing addresses keep their paths: `/setup/`, `/.we
 
 ## Open Questions
 
-None in this change. The owner decided every question on 2026-11-22: pages per feature area, committed screenshots, no prices, the support page before the form, English then Swedish, a single-page app, and the hero line. The exact `<antenna-domain>` name is open in `add-aws-hosting` task 1.1.
+None in this change. The owner decided every question on 2026-11-22: pages per feature area, committed screenshots, no prices, the support page before the form, English then Swedish, a single-page app, and the hero line. The owner picked `antuna.app` on 2026-11-23; registering it is `add-aws-hosting` task 1.1.

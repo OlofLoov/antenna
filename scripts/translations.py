@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""String Catalog checks and sync for Antenna.
+"""String Catalog checks and sync for Antuna.
 
 check [catalog ...]
     Fails when a key that should be translated has no text, or an incomplete
@@ -34,7 +34,7 @@ SEARCH_DIRS = ["Apps", "Packages"]
 REQUIRED_PLURALS = {"ar": {"zero", "one", "two", "few", "many", "other"}}
 DEFAULT_PLURALS = {"one", "other"}
 
-# Info.plist keys that name the app. The name is "Antenna" in every language.
+# Info.plist keys that name the app. The name is "Antuna" in every language.
 UNTRANSLATED_KEYS = {"CFBundleName", "CFBundleDisplayName"}
 
 # Nouns a count stands before. A key with "%@ <noun>" or "1 <noun>" fails;

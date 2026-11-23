@@ -89,7 +89,7 @@ enum Base64URL {
 public struct SetupLink: Hashable, Sendable {
     /// The host serving the association file and the fallback page.
     /// An assumption until the hosting decision picks one.
-    public static let host = "antenna.code-crave.se"
+    public static let host = "antuna.app"
     /// The newest version this build writes and reads.
     public static let version = "2"
     /// The versions this build reads.
@@ -100,7 +100,7 @@ public struct SetupLink: Hashable, Sendable {
     public static let activityType = "se.codecrave.antenna.setup"
     /// The Handoff activity's title.
     public static func activityTitle(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Set up Antenna on Apple TV")
+        Words(locale)("Set up Antuna on Apple TV")
     }
     /// The key of a version 1 Handoff activity's user info.
     public static let tokenKey = "token"
@@ -126,7 +126,7 @@ public struct SetupLink: Hashable, Sendable {
         /// Another host or path, or a repeated `v`, `t`, `k` or `s`.
         case notASetupLink
         case missingVersion
-        /// From a newer Antenna.
+        /// From a newer Antuna.
         case unsupportedVersion(String)
         case missingToken
         case malformedToken

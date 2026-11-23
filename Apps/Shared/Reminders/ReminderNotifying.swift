@@ -40,7 +40,7 @@ protocol ReminderNotifying: AnyObject {
     /// Keeps exactly `requests` pending among the reminder notifications.
     func schedule(_ requests: [ReminderNotificationRequest]) async
     /// Told the reminder key of a notification the user tapped, and of one
-    /// that showed while Antenna was in front.
+    /// that showed while Antuna was in front.
     func listen(opened: @escaping @MainActor (String) -> Void, presented: @escaping @MainActor (String) -> Void)
 }
 

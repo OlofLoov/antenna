@@ -2917,42 +2917,42 @@
         }
       }
     },
-    "A source arrived from iCloud that this Apple TV can't set up here. Update Antenna, or type the source here." : {
+    "A source arrived from iCloud that this Apple TV can't set up here. Update Antuna, or type the source here." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "وصل من iCloud مصدر لا يستطيع Apple TV هذا إعداده هنا. حدّث Antenna، أو اكتب المصدر هنا."
+            "value" : "وصل من iCloud مصدر لا يستطيع Apple TV هذا إعداده هنا. حدّث Antuna، أو اكتب المصدر هنا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus iCloud kam eine Quelle, die dieses Apple TV hier nicht einrichten kann. Aktualisiere Antenna oder gib die Quelle hier ein."
+            "value" : "Aus iCloud kam eine Quelle, die dieses Apple TV hier nicht einrichten kann. Aktualisiere Antuna oder gib die Quelle hier ein."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Llegó una fuente desde iCloud que este Apple TV no puede configurar aquí. Actualiza Antenna o escribe la fuente aquí."
+            "value" : "Llegó una fuente desde iCloud que este Apple TV no puede configurar aquí. Actualiza Antuna o escribe la fuente aquí."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une source arrivée depuis iCloud ne peut pas être configurée sur cette Apple TV. Mettez à jour Antenna ou saisissez la source ici."
+            "value" : "Une source arrivée depuis iCloud ne peut pas être configurée sur cette Apple TV. Mettez à jour Antuna ou saisissez la source ici."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chegou do iCloud uma fonte que este Apple TV não consegue configurar aqui. Atualize o Antenna ou digite a fonte aqui."
+            "value" : "Chegou do iCloud uma fonte que este Apple TV não consegue configurar aqui. Atualize o Antuna ou digite a fonte aqui."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En källa kom från iCloud som den här Apple TV:n inte kan ställa in här. Uppdatera Antenna eller skriv in källan här."
+            "value" : "En källa kom från iCloud som den här Apple TV:n inte kan ställa in här. Uppdatera Antuna eller skriv in källan här."
           }
         }
       }
@@ -4164,402 +4164,402 @@
         }
       }
     },
-    "An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antenna on iPhone and it syncs over." : {
+    "An unlocked iPhone or iPad nearby offers its keyboard for this Apple TV. Tap that notification and the fields fill in here as you type. Or add the source in Antuna on iPhone and it syncs over." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يعرض iPhone أو iPad قريب وغير مقفل لوحة مفاتيحه لـ Apple TV هذا. اضغط على ذلك الإشعار وستمتلئ الحقول هنا أثناء الكتابة. أو أضف المصدر في Antenna على iPhone وستتم مزامنته."
+            "value" : "يعرض iPhone أو iPad قريب وغير مقفل لوحة مفاتيحه لـ Apple TV هذا. اضغط على ذلك الإشعار وستمتلئ الحقول هنا أثناء الكتابة. أو أضف المصدر في Antuna على iPhone وستتم مزامنته."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein entsperrtes iPhone oder iPad in der Nähe bietet seine Tastatur für dieses Apple TV an. Tippe auf die Mitteilung, dann füllen sich die Felder hier beim Tippen. Oder füge die Quelle in Antenna auf dem iPhone hinzu, dann wird sie hierher synchronisiert."
+            "value" : "Ein entsperrtes iPhone oder iPad in der Nähe bietet seine Tastatur für dieses Apple TV an. Tippe auf die Mitteilung, dann füllen sich die Felder hier beim Tippen. Oder füge die Quelle in Antuna auf dem iPhone hinzu, dann wird sie hierher synchronisiert."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un iPhone o iPad cercano y desbloqueado ofrece su teclado para este Apple TV. Toca esa notificación y los campos se completan aquí mientras escribes. O añade la fuente en Antenna en el iPhone y se sincronizará."
+            "value" : "Un iPhone o iPad cercano y desbloqueado ofrece su teclado para este Apple TV. Toca esa notificación y los campos se completan aquí mientras escribes. O añade la fuente en Antuna en el iPhone y se sincronizará."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un iPhone ou iPad déverrouillé à proximité propose son clavier pour cette Apple TV. Touchez la notification et les champs se remplissent ici pendant que vous tapez. Ou ajoutez la source dans Antenna sur l’iPhone et elle sera synchronisée."
+            "value" : "Un iPhone ou iPad déverrouillé à proximité propose son clavier pour cette Apple TV. Touchez la notification et les champs se remplissent ici pendant que vous tapez. Ou ajoutez la source dans Antuna sur l’iPhone et elle sera synchronisée."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um iPhone ou iPad desbloqueado por perto oferece o teclado para este Apple TV. Toque na notificação e os campos são preenchidos aqui enquanto você digita. Ou adicione a fonte no Antenna no iPhone e ela sincroniza."
+            "value" : "Um iPhone ou iPad desbloqueado por perto oferece o teclado para este Apple TV. Toque na notificação e os campos são preenchidos aqui enquanto você digita. Ou adicione a fonte no Antuna no iPhone e ela sincroniza."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En upplåst iPhone eller iPad i närheten erbjuder sitt tangentbord för den här Apple TV:n. Tryck på notisen så fylls fälten i här medan du skriver. Eller lägg till källan i Antenna på iPhone så synkas den hit."
+            "value" : "En upplåst iPhone eller iPad i närheten erbjuder sitt tangentbord för den här Apple TV:n. Tryck på notisen så fylls fälten i här medan du skriver. Eller lägg till källan i Antuna på iPhone så synkas den hit."
           }
         }
       }
     },
-    "Antenna" : {
+    "Antuna" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna"
+            "value" : "Antuna"
           }
         }
       }
     },
-    "Antenna also appears in the App Switcher on your iPhone. Prefer the remote? Type here; your iPhone offers its keyboard too." : {
+    "Antuna also appears in the App Switcher on your iPhone. Prefer the remote? Type here; your iPhone offers its keyboard too." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يظهر Antenna أيضًا في مبدّل التطبيقات على iPhone. تفضّل جهاز التحكم؟ اكتب هنا؛ يعرض iPhone لوحة مفاتيحه أيضًا."
+            "value" : "يظهر Antuna أيضًا في مبدّل التطبيقات على iPhone. تفضّل جهاز التحكم؟ اكتب هنا؛ يعرض iPhone لوحة مفاتيحه أيضًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna erscheint auch im App-Umschalter auf deinem iPhone. Lieber die Fernbedienung? Gib es hier ein; dein iPhone bietet auch seine Tastatur an."
+            "value" : "Antuna erscheint auch im App-Umschalter auf deinem iPhone. Lieber die Fernbedienung? Gib es hier ein; dein iPhone bietet auch seine Tastatur an."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna también aparece en el selector de apps de tu iPhone. ¿Prefieres el control remoto? Escribe aquí; tu iPhone también ofrece su teclado."
+            "value" : "Antuna también aparece en el selector de apps de tu iPhone. ¿Prefieres el control remoto? Escribe aquí; tu iPhone también ofrece su teclado."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna apparaît aussi dans le sélecteur d’apps de votre iPhone. Vous préférez la télécommande ? Saisissez ici ; votre iPhone propose aussi son clavier."
+            "value" : "Antuna apparaît aussi dans le sélecteur d’apps de votre iPhone. Vous préférez la télécommande ? Saisissez ici ; votre iPhone propose aussi son clavier."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna também aparece no Seletor de Apps do seu iPhone. Prefere o controle remoto? Digite aqui; seu iPhone também oferece o teclado."
+            "value" : "O Antuna também aparece no Seletor de Apps do seu iPhone. Prefere o controle remoto? Digite aqui; seu iPhone também oferece o teclado."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna finns också i appväxlaren på din iPhone. Föredrar du fjärrkontrollen? Skriv här; din iPhone erbjuder också sitt tangentbord."
+            "value" : "Antuna finns också i appväxlaren på din iPhone. Föredrar du fjärrkontrollen? Skriv här; din iPhone erbjuder också sitt tangentbord."
           }
         }
       }
     },
-    "Antenna includes no channels. A source is the playlist or login a TV provider gives you." : {
+    "Antuna includes no channels. A source is the playlist or login a TV provider gives you." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يتضمن Antenna أي قنوات. المصدر هو قائمة التشغيل أو تسجيل الدخول الذي يقدمه لك مزود التلفزيون."
+            "value" : "لا يتضمن Antuna أي قنوات. المصدر هو قائمة التشغيل أو تسجيل الدخول الذي يقدمه لك مزود التلفزيون."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna enthält keine Sender. Eine Quelle ist die Playlist oder Anmeldung, die dir ein TV-Anbieter gibt."
+            "value" : "Antuna enthält keine Sender. Eine Quelle ist die Playlist oder Anmeldung, die dir ein TV-Anbieter gibt."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna no incluye canales. Una fuente es la lista o el inicio de sesión que te da un proveedor de TV."
+            "value" : "Antuna no incluye canales. Una fuente es la lista o el inicio de sesión que te da un proveedor de TV."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ne contient aucune chaîne. Une source est la playlist ou la connexion que vous donne un fournisseur TV."
+            "value" : "Antuna ne contient aucune chaîne. Une source est la playlist ou la connexion que vous donne un fournisseur TV."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna não inclui canais. Uma fonte é a playlist ou o login que um provedor de TV dá a você."
+            "value" : "O Antuna não inclui canais. Uma fonte é a playlist ou o login que um provedor de TV dá a você."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig."
+            "value" : "Antuna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig."
           }
         }
       }
     },
-    "Antenna includes no channels. A source is the playlist or login a TV provider gives you. Antenna has no servers of its own; everything you add stays between you and your provider." : {
+    "Antuna includes no channels. A source is the playlist or login a TV provider gives you. Antuna has no servers of its own; everything you add stays between you and your provider." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يتضمن Antenna أي قنوات. المصدر هو قائمة التشغيل أو تسجيل الدخول الذي يقدمه لك مزود التلفزيون. ليس لدى Antenna خوادم خاصة به؛ كل ما تضيفه يبقى بينك وبين مزودك."
+            "value" : "لا يتضمن Antuna أي قنوات. المصدر هو قائمة التشغيل أو تسجيل الدخول الذي يقدمه لك مزود التلفزيون. ليس لدى Antuna خوادم خاصة به؛ كل ما تضيفه يبقى بينك وبين مزودك."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna enthält keine Sender. Eine Quelle ist die Playlist oder Anmeldung, die dir ein TV-Anbieter gibt. Antenna hat keine eigenen Server; alles, was du hinzufügst, bleibt zwischen dir und deinem Anbieter."
+            "value" : "Antuna enthält keine Sender. Eine Quelle ist die Playlist oder Anmeldung, die dir ein TV-Anbieter gibt. Antuna hat keine eigenen Server; alles, was du hinzufügst, bleibt zwischen dir und deinem Anbieter."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna no incluye canales. Una fuente es la lista o el inicio de sesión que te da un proveedor de TV. Antenna no tiene servidores propios; todo lo que añades queda entre tú y tu proveedor."
+            "value" : "Antuna no incluye canales. Una fuente es la lista o el inicio de sesión que te da un proveedor de TV. Antuna no tiene servidores propios; todo lo que añades queda entre tú y tu proveedor."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ne contient aucune chaîne. Une source est la playlist ou la connexion que vous donne un fournisseur TV. Antenna n’a aucun serveur ; tout ce que vous ajoutez reste entre vous et votre fournisseur."
+            "value" : "Antuna ne contient aucune chaîne. Une source est la playlist ou la connexion que vous donne un fournisseur TV. Antuna n’a aucun serveur ; tout ce que vous ajoutez reste entre vous et votre fournisseur."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna não inclui canais. Uma fonte é a playlist ou o login que um provedor de TV dá a você. O Antenna não tem servidores próprios; tudo o que você adiciona fica entre você e seu provedor."
+            "value" : "O Antuna não inclui canais. Uma fonte é a playlist ou o login que um provedor de TV dá a você. O Antuna não tem servidores próprios; tudo o que você adiciona fica entre você e seu provedor."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig. Antenna har inga egna servrar; allt du lägger till stannar mellan dig och din leverantör."
+            "value" : "Antuna innehåller inga kanaler. En källa är spellistan eller inloggningen som en TV-leverantör ger dig. Antuna har inga egna servrar; allt du lägger till stannar mellan dig och din leverantör."
           }
         }
       }
     },
-    "Antenna keeps a copy of this file and syncs it through iCloud, Apple TV included. Changes to the file are not picked up; re-import to update." : {
+    "Antuna keeps a copy of this file and syncs it through iCloud, Apple TV included. Changes to the file are not picked up; re-import to update." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يحتفظ Antenna بنسخة من هذا الملف ويزامنها عبر iCloud، بما في ذلك Apple TV. لا تُلتقط التغييرات على الملف؛ أعد الاستيراد للتحديث."
+            "value" : "يحتفظ Antuna بنسخة من هذا الملف ويزامنها عبر iCloud، بما في ذلك Apple TV. لا تُلتقط التغييرات على الملف؛ أعد الاستيراد للتحديث."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna speichert eine Kopie dieser Datei und synchronisiert sie über iCloud, auch mit dem Apple TV. Änderungen an der Datei werden nicht übernommen; importiere sie erneut, um sie zu aktualisieren."
+            "value" : "Antuna speichert eine Kopie dieser Datei und synchronisiert sie über iCloud, auch mit dem Apple TV. Änderungen an der Datei werden nicht übernommen; importiere sie erneut, um sie zu aktualisieren."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna guarda una copia de este archivo y la sincroniza a través de iCloud, Apple TV incluido. Los cambios en el archivo no se recogen; vuelve a importarlo para actualizarlo."
+            "value" : "Antuna guarda una copia de este archivo y la sincroniza a través de iCloud, Apple TV incluido. Los cambios en el archivo no se recogen; vuelve a importarlo para actualizarlo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna conserve une copie de ce fichier et la synchronise via iCloud, Apple TV comprise. Les modifications du fichier ne sont pas prises en compte ; importez-le à nouveau pour le mettre à jour."
+            "value" : "Antuna conserve une copie de ce fichier et la synchronise via iCloud, Apple TV comprise. Les modifications du fichier ne sont pas prises en compte ; importez-le à nouveau pour le mettre à jour."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna guarda uma cópia deste arquivo e a sincroniza pelo iCloud, incluindo o Apple TV. Mudanças no arquivo não são aplicadas; importe de novo para atualizar."
+            "value" : "O Antuna guarda uma cópia deste arquivo e a sincroniza pelo iCloud, incluindo o Apple TV. Mudanças no arquivo não são aplicadas; importe de novo para atualizar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna sparar en kopia av filen och synkar den via iCloud, även till Apple TV. Ändringar i filen hämtas inte; importera igen för att uppdatera."
+            "value" : "Antuna sparar en kopia av filen och synkar den via iCloud, även till Apple TV. Ändringar i filen hämtas inte; importera igen för att uppdatera."
           }
         }
       }
     },
-    "Antenna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed under the GNU Lesser General Public License, version 2.1 or later. Antenna links its own build of FFmpeg as a separate library and changes none of FFmpeg's code." : {
+    "Antuna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed under the GNU Lesser General Public License, version 2.1 or later. Antuna links its own build of FFmpeg as a separate library and changes none of FFmpeg's code." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يشغّل Antenna بث التلفزيون وملفات Matroska وAVI باستخدام FFmpeg 7.1، المرخّص بموجب رخصة جنو العمومية الصغرى (GNU LGPL)، الإصدار 2.1 أو أحدث. يربط Antenna نسخته الخاصة من FFmpeg كمكتبة منفصلة ولا يغيّر شيئًا من شيفرة FFmpeg."
+            "value" : "يشغّل Antuna بث التلفزيون وملفات Matroska وAVI باستخدام FFmpeg 7.1، المرخّص بموجب رخصة جنو العمومية الصغرى (GNU LGPL)، الإصدار 2.1 أو أحدث. يربط Antuna نسخته الخاصة من FFmpeg كمكتبة منفصلة ولا يغيّر شيئًا من شيفرة FFmpeg."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spielt Broadcast-Streams, Matroska und AVI mit FFmpeg 7.1 ab, das unter der GNU Lesser General Public License, Version 2.1 oder neuer, lizenziert ist. Antenna bindet einen eigenen Build von FFmpeg als separate Bibliothek ein und ändert keinen Code von FFmpeg."
+            "value" : "Antuna spielt Broadcast-Streams, Matroska und AVI mit FFmpeg 7.1 ab, das unter der GNU Lesser General Public License, Version 2.1 oder neuer, lizenziert ist. Antuna bindet einen eigenen Build von FFmpeg als separate Bibliothek ein und ändert keinen Code von FFmpeg."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna reproduce emisiones de televisión, Matroska y AVI con FFmpeg 7.1, que tiene licencia GNU Lesser General Public License, versión 2.1 o posterior. Antenna enlaza su propia compilación de FFmpeg como biblioteca independiente y no cambia nada del código de FFmpeg."
+            "value" : "Antuna reproduce emisiones de televisión, Matroska y AVI con FFmpeg 7.1, que tiene licencia GNU Lesser General Public License, versión 2.1 o posterior. Antuna enlaza su propia compilación de FFmpeg como biblioteca independiente y no cambia nada del código de FFmpeg."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lit les flux de diffusion, Matroska et AVI avec FFmpeg 7.1, distribué sous la GNU Lesser General Public License, version 2.1 ou ultérieure. Antenna lie sa propre version de FFmpeg comme bibliothèque distincte et ne modifie aucun code de FFmpeg."
+            "value" : "Antuna lit les flux de diffusion, Matroska et AVI avec FFmpeg 7.1, distribué sous la GNU Lesser General Public License, version 2.1 ou ultérieure. Antuna lie sa propre version de FFmpeg comme bibliothèque distincte et ne modifie aucun code de FFmpeg."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna reproduz transmissões de TV, Matroska e AVI com o FFmpeg 7.1, licenciado sob a GNU Lesser General Public License, versão 2.1 ou posterior. O Antenna vincula uma compilação própria do FFmpeg como biblioteca separada e não altera nenhum código do FFmpeg."
+            "value" : "O Antuna reproduz transmissões de TV, Matroska e AVI com o FFmpeg 7.1, licenciado sob a GNU Lesser General Public License, versão 2.1 ou posterior. O Antuna vincula uma compilação própria do FFmpeg como biblioteca separada e não altera nenhum código do FFmpeg."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spelar upp sändningsströmmar, Matroska och AVI med FFmpeg 7.1, som är licensierat under GNU Lesser General Public License, version 2.1 eller senare. Antenna länkar sin egen version av FFmpeg som ett separat bibliotek och ändrar inget i FFmpegs kod."
+            "value" : "Antuna spelar upp sändningsströmmar, Matroska och AVI med FFmpeg 7.1, som är licensierat under GNU Lesser General Public License, version 2.1 eller senare. Antuna länkar sin egen version av FFmpeg som ett separat bibliotek och ändrar inget i FFmpegs kod."
           }
         }
       }
     },
-    "Antenna plays the TV sources you already have. It comes with no channels, so start by adding a playlist or a login from your provider." : {
+    "Antuna plays the TV sources you already have. It comes with no channels, so start by adding a playlist or a login from your provider." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يشغّل Antenna مصادر التلفزيون التي لديك. لا يأتي بأي قنوات، فابدأ بإضافة قائمة تشغيل أو تسجيل دخول من مزودك."
+            "value" : "يشغّل Antuna مصادر التلفزيون التي لديك. لا يأتي بأي قنوات، فابدأ بإضافة قائمة تشغيل أو تسجيل دخول من مزودك."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spielt die TV-Quellen ab, die du schon hast. Es enthält keine Sender, also füge zuerst eine Playlist oder eine Anmeldung von deinem Anbieter hinzu."
+            "value" : "Antuna spielt die TV-Quellen ab, die du schon hast. Es enthält keine Sender, also füge zuerst eine Playlist oder eine Anmeldung von deinem Anbieter hinzu."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna reproduce las fuentes de TV que ya tienes. No incluye canales, así que empieza añadiendo una lista o un inicio de sesión de tu proveedor."
+            "value" : "Antuna reproduce las fuentes de TV que ya tienes. No incluye canales, así que empieza añadiendo una lista o un inicio de sesión de tu proveedor."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lit les sources TV que vous avez déjà. L’app ne contient aucune chaîne, commencez donc par ajouter une playlist ou une connexion de votre fournisseur."
+            "value" : "Antuna lit les sources TV que vous avez déjà. L’app ne contient aucune chaîne, commencez donc par ajouter une playlist ou une connexion de votre fournisseur."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna reproduz as fontes de TV que você já tem. Ele não vem com canais, então comece adicionando uma playlist ou um login do seu provedor."
+            "value" : "O Antuna reproduz as fontes de TV que você já tem. Ele não vem com canais, então comece adicionando uma playlist ou um login do seu provedor."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spelar upp de TV-källor du redan har. Appen har inga kanaler, så börja med att lägga till en spellista eller en inloggning från din leverantör."
+            "value" : "Antuna spelar upp de TV-källor du redan har. Appen har inga kanaler, så börja med att lägga till en spellista eller en inloggning från din leverantör."
           }
         }
       }
     },
-    "Antenna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider." : {
+    "Antuna plays the TV sources you already have. It does not come with any channels, so the first step is to add a playlist or a login from your provider." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يشغّل Antenna مصادر التلفزيون التي لديك. لا يأتي بأي قنوات، لذا فالخطوة الأولى هي إضافة قائمة تشغيل أو تسجيل دخول من مزودك."
+            "value" : "يشغّل Antuna مصادر التلفزيون التي لديك. لا يأتي بأي قنوات، لذا فالخطوة الأولى هي إضافة قائمة تشغيل أو تسجيل دخول من مزودك."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spielt die TV-Quellen ab, die du schon hast. Es enthält keine Sender, deshalb ist der erste Schritt, eine Playlist oder eine Anmeldung von deinem Anbieter hinzuzufügen."
+            "value" : "Antuna spielt die TV-Quellen ab, die du schon hast. Es enthält keine Sender, deshalb ist der erste Schritt, eine Playlist oder eine Anmeldung von deinem Anbieter hinzuzufügen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna reproduce las fuentes de TV que ya tienes. No incluye ningún canal, así que el primer paso es añadir una lista o un inicio de sesión de tu proveedor."
+            "value" : "Antuna reproduce las fuentes de TV que ya tienes. No incluye ningún canal, así que el primer paso es añadir una lista o un inicio de sesión de tu proveedor."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lit les sources TV que vous avez déjà. L’app ne contient aucune chaîne, la première étape consiste donc à ajouter une playlist ou une connexion de votre fournisseur."
+            "value" : "Antuna lit les sources TV que vous avez déjà. L’app ne contient aucune chaîne, la première étape consiste donc à ajouter une playlist ou une connexion de votre fournisseur."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna reproduz as fontes de TV que você já tem. Ele não vem com nenhum canal, então o primeiro passo é adicionar uma playlist ou um login do seu provedor."
+            "value" : "O Antuna reproduz as fontes de TV que você já tem. Ele não vem com nenhum canal, então o primeiro passo é adicionar uma playlist ou um login do seu provedor."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spelar upp de TV-källor du redan har. Appen har inga kanaler, så första steget är att lägga till en spellista eller en inloggning från din leverantör."
+            "value" : "Antuna spelar upp de TV-källor du redan har. Appen har inga kanaler, så första steget är att lägga till en spellista eller en inloggning från din leverantör."
           }
         }
       }
     },
-    "Antenna reads the clipboard only when you tap Fill in." : {
+    "Antuna reads the clipboard only when you tap Fill in." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يقرأ Antenna الحافظة إلا عندما تضغط على «املأ»."
+            "value" : "لا يقرأ Antuna الحافظة إلا عندما تضغط على «املأ»."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna liest die Zwischenablage nur, wenn du auf „Ausfüllen“ tippst."
+            "value" : "Antuna liest die Zwischenablage nur, wenn du auf „Ausfüllen“ tippst."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna solo lee el portapapeles cuando tocas Completar."
+            "value" : "Antuna solo lee el portapapeles cuando tocas Completar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ne lit le presse-papiers que lorsque vous touchez Remplir."
+            "value" : "Antuna ne lit le presse-papiers que lorsque vous touchez Remplir."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna só lê a área de transferência quando você toca em Preencher."
+            "value" : "O Antuna só lê a área de transferência quando você toca em Preencher."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna läser urklippet bara när du trycker på Fyll i."
+            "value" : "Antuna läser urklippet bara när du trycker på Fyll i."
           }
         }
       }
@@ -8715,42 +8715,42 @@
         }
       }
     },
-    "Forgot it? Reset the passcode in Antenna on your iPhone, iPad or Mac." : {
+    "Forgot it? Reset the passcode in Antuna on your iPhone, iPad or Mac." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نسيته؟ أعد تعيين رمز الدخول في Antenna على iPhone أو iPad أو Mac."
+            "value" : "نسيته؟ أعد تعيين رمز الدخول في Antuna على iPhone أو iPad أو Mac."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vergessen? Setze den Code in Antenna auf deinem iPhone, iPad oder Mac zurück."
+            "value" : "Vergessen? Setze den Code in Antuna auf deinem iPhone, iPad oder Mac zurück."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Lo olvidaste? Restablece el código en Antenna en tu iPhone, iPad o Mac."
+            "value" : "¿Lo olvidaste? Restablece el código en Antuna en tu iPhone, iPad o Mac."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oublié ? Réinitialisez le code dans Antenna sur votre iPhone, iPad ou Mac."
+            "value" : "Oublié ? Réinitialisez le code dans Antuna sur votre iPhone, iPad ou Mac."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esqueceu? Redefina o código no Antenna no seu iPhone, iPad ou Mac."
+            "value" : "Esqueceu? Redefina o código no Antuna no seu iPhone, iPad ou Mac."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Glömt den? Återställ lösenkoden i Antenna på din iPhone, iPad eller Mac."
+            "value" : "Glömt den? Återställ lösenkoden i Antuna på din iPhone, iPad eller Mac."
           }
         }
       }
@@ -9515,42 +9515,42 @@
         }
       }
     },
-    "Handed to iCloud. Open Antenna on your Apple TV." : {
+    "Handed to iCloud. Open Antuna on your Apple TV." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تم التسليم إلى iCloud. افتح Antenna على Apple TV."
+            "value" : "تم التسليم إلى iCloud. افتح Antuna على Apple TV."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An iCloud übergeben. Öffne Antenna auf deinem Apple TV."
+            "value" : "An iCloud übergeben. Öffne Antuna auf deinem Apple TV."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entregado a iCloud. Abre Antenna en tu Apple TV."
+            "value" : "Entregado a iCloud. Abre Antuna en tu Apple TV."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transmis à iCloud. Ouvrez Antenna sur votre Apple TV."
+            "value" : "Transmis à iCloud. Ouvrez Antuna sur votre Apple TV."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entregue ao iCloud. Abra o Antenna no seu Apple TV."
+            "value" : "Entregue ao iCloud. Abra o Antuna no seu Apple TV."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Överlämnad till iCloud. Öppna Antenna på din Apple TV."
+            "value" : "Överlämnad till iCloud. Öppna Antuna på din Apple TV."
           }
         }
       }
@@ -14127,42 +14127,42 @@
         }
       }
     },
-    "Nothing yet? Your iPhone needs Antenna installed, an internet connection and the same iCloud account as this Apple TV." : {
+    "Nothing yet? Your iPhone needs Antuna installed, an internet connection and the same iCloud account as this Apple TV." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لم يصل شيء بعد؟ يحتاج iPhone إلى تثبيت Antenna واتصال بالإنترنت وحساب iCloud نفسه الذي على Apple TV هذا."
+            "value" : "لم يصل شيء بعد؟ يحتاج iPhone إلى تثبيت Antuna واتصال بالإنترنت وحساب iCloud نفسه الذي على Apple TV هذا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noch nichts? Dein iPhone braucht Antenna, eine Internetverbindung und denselben iCloud-Account wie dieses Apple TV."
+            "value" : "Noch nichts? Dein iPhone braucht Antuna, eine Internetverbindung und denselben iCloud-Account wie dieses Apple TV."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Aún nada? Tu iPhone necesita Antenna instalada, conexión a internet y la misma cuenta de iCloud que este Apple TV."
+            "value" : "¿Aún nada? Tu iPhone necesita Antuna instalada, conexión a internet y la misma cuenta de iCloud que este Apple TV."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toujours rien ? Votre iPhone doit avoir Antenna, une connexion Internet et le même compte iCloud que cette Apple TV."
+            "value" : "Toujours rien ? Votre iPhone doit avoir Antuna, une connexion Internet et le même compte iCloud que cette Apple TV."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nada ainda? Seu iPhone precisa ter o Antenna instalado, conexão com a internet e a mesma conta do iCloud que este Apple TV."
+            "value" : "Nada ainda? Seu iPhone precisa ter o Antuna instalado, conexão com a internet e a mesma conta do iCloud que este Apple TV."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inget än? Din iPhone behöver ha Antenna installerat, en internetanslutning och samma iCloud-konto som den här Apple TV:n."
+            "value" : "Inget än? Din iPhone behöver ha Antuna installerat, en internetanslutning och samma iCloud-konto som den här Apple TV:n."
           }
         }
       }
@@ -14727,122 +14727,122 @@
         }
       }
     },
-    "Opens Antenna and resumes the movie, or opens the series." : {
+    "Opens Antuna and resumes the movie, or opens the series." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يفتح Antenna ويستأنف الفيلم، أو يفتح المسلسل."
+            "value" : "يفتح Antuna ويستأنف الفيلم، أو يفتح المسلسل."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet Antenna und setzt den Film fort oder öffnet die Serie."
+            "value" : "Öffnet Antuna und setzt den Film fort oder öffnet die Serie."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Antenna y reanuda la película, o abre la serie."
+            "value" : "Abre Antuna y reanuda la película, o abre la serie."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre Antenna et reprend le film, ou ouvre la série."
+            "value" : "Ouvre Antuna et reprend le film, ou ouvre la série."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre o Antenna e retoma o filme, ou abre a série."
+            "value" : "Abre o Antuna e retoma o filme, ou abre a série."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppnar Antenna och fortsätter filmen, eller öppnar serien."
+            "value" : "Öppnar Antuna och fortsätter filmen, eller öppnar serien."
           }
         }
       }
     },
-    "Opens Antenna on Live with the channel playing." : {
+    "Opens Antuna on Live with the channel playing." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يفتح Antenna على البث المباشر والقناة قيد التشغيل."
+            "value" : "يفتح Antuna على البث المباشر والقناة قيد التشغيل."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet Antenna bei „Live“ mit dem laufenden Sender."
+            "value" : "Öffnet Antuna bei „Live“ mit dem laufenden Sender."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Antenna en la pestaña En vivo con el canal en reproducción."
+            "value" : "Abre Antuna en la pestaña En vivo con el canal en reproducción."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre Antenna sur En direct avec la chaîne en cours."
+            "value" : "Ouvre Antuna sur En direct avec la chaîne en cours."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre o Antenna em Ao vivo com o canal em reprodução."
+            "value" : "Abre o Antuna em Ao vivo com o canal em reprodução."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppnar Antenna på Live med kanalen igång."
+            "value" : "Öppnar Antuna på Live med kanalen igång."
           }
         }
       }
     },
-    "Opens Antenna on Search." : {
+    "Opens Antuna on Search." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يفتح Antenna على البحث."
+            "value" : "يفتح Antuna على البحث."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet Antenna bei „Suchen“."
+            "value" : "Öffnet Antuna bei „Suchen“."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre Antenna en Buscar."
+            "value" : "Abre Antuna en Buscar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre Antenna sur Recherche."
+            "value" : "Ouvre Antuna sur Recherche."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abre o Antenna em Busca."
+            "value" : "Abre o Antuna em Busca."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppnar Antenna på Sök."
+            "value" : "Öppnar Antuna på Sök."
           }
         }
       }
@@ -15979,42 +15979,42 @@
         }
       }
     },
-    "Point your iPhone camera at the code. Antenna opens there with this form, and what you enter syncs to this Apple TV through iCloud." : {
+    "Point your iPhone camera at the code. Antuna opens there with this form, and what you enter syncs to this Apple TV through iCloud." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "وجّه كاميرا iPhone نحو الرمز. سيفتح Antenna هناك بهذا النموذج، وما تُدخله تتم مزامنته مع Apple TV هذا عبر iCloud."
+            "value" : "وجّه كاميرا iPhone نحو الرمز. سيفتح Antuna هناك بهذا النموذج، وما تُدخله تتم مزامنته مع Apple TV هذا عبر iCloud."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Richte die iPhone-Kamera auf den Code. Antenna öffnet sich dort mit diesem Formular, und deine Eingaben werden über iCloud mit diesem Apple TV synchronisiert."
+            "value" : "Richte die iPhone-Kamera auf den Code. Antuna öffnet sich dort mit diesem Formular, und deine Eingaben werden über iCloud mit diesem Apple TV synchronisiert."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apunta la cámara del iPhone al código. Antenna se abre allí con este formulario, y lo que introduzcas se sincroniza con este Apple TV a través de iCloud."
+            "value" : "Apunta la cámara del iPhone al código. Antuna se abre allí con este formulario, y lo que introduzcas se sincroniza con este Apple TV a través de iCloud."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dirigez l’appareil photo de l’iPhone vers le code. Antenna s’y ouvre avec ce formulaire, et ce que vous saisissez se synchronise avec cette Apple TV via iCloud."
+            "value" : "Dirigez l’appareil photo de l’iPhone vers le code. Antuna s’y ouvre avec ce formulaire, et ce que vous saisissez se synchronise avec cette Apple TV via iCloud."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aponte a câmera do iPhone para o código. O Antenna abre lá com este formulário, e o que você digitar sincroniza com este Apple TV pelo iCloud."
+            "value" : "Aponte a câmera do iPhone para o código. O Antuna abre lá com este formulário, e o que você digitar sincroniza com este Apple TV pelo iCloud."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rikta iPhone-kameran mot koden. Antenna öppnas där med det här formuläret, och det du anger synkas till den här Apple TV:n via iCloud."
+            "value" : "Rikta iPhone-kameran mot koden. Antuna öppnas där med det här formuläret, och det du anger synkas till den här Apple TV:n via iCloud."
           }
         }
       }
@@ -18551,42 +18551,42 @@
         }
       }
     },
-    "Saved in the Keychain on this Apple TV. Antenna has no servers." : {
+    "Saved in the Keychain on this Apple TV. Antuna has no servers." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "محفوظ في سلسلة المفاتيح على Apple TV هذا. ليس لدى Antenna خوادم."
+            "value" : "محفوظ في سلسلة المفاتيح على Apple TV هذا. ليس لدى Antuna خوادم."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Im Schlüsselbund auf diesem Apple TV gespeichert. Antenna hat keine Server."
+            "value" : "Im Schlüsselbund auf diesem Apple TV gespeichert. Antuna hat keine Server."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guardado en el llavero de este Apple TV. Antenna no tiene servidores."
+            "value" : "Guardado en el llavero de este Apple TV. Antuna no tiene servidores."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré dans le trousseau de cette Apple TV. Antenna n’a aucun serveur."
+            "value" : "Enregistré dans le trousseau de cette Apple TV. Antuna n’a aucun serveur."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guardado nas Chaves deste Apple TV. O Antenna não tem servidores."
+            "value" : "Guardado nas Chaves deste Apple TV. O Antuna não tem servidores."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sparas i nyckelringen på den här Apple TV:n. Antenna har inga servrar."
+            "value" : "Sparas i nyckelringen på den här Apple TV:n. Antuna har inga servrar."
           }
         }
       }
@@ -18631,42 +18631,42 @@
         }
       }
     },
-    "Saved in your iCloud Keychain only. Antenna has no servers and never sees your login." : {
+    "Saved in your iCloud Keychain only. Antuna has no servers and never sees your login." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "محفوظ في سلسلة مفاتيح iCloud فقط. ليس لدى Antenna خوادم ولا يرى تسجيل دخولك أبدًا."
+            "value" : "محفوظ في سلسلة مفاتيح iCloud فقط. ليس لدى Antuna خوادم ولا يرى تسجيل دخولك أبدًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur in deinem iCloud-Schlüsselbund gespeichert. Antenna hat keine Server und sieht deine Anmeldung nie."
+            "value" : "Nur in deinem iCloud-Schlüsselbund gespeichert. Antuna hat keine Server und sieht deine Anmeldung nie."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guardado solo en tu llavero de iCloud. Antenna no tiene servidores y nunca ve tu inicio de sesión."
+            "value" : "Guardado solo en tu llavero de iCloud. Antuna no tiene servidores y nunca ve tu inicio de sesión."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré uniquement dans votre trousseau iCloud. Antenna n’a aucun serveur et ne voit jamais votre connexion."
+            "value" : "Enregistré uniquement dans votre trousseau iCloud. Antuna n’a aucun serveur et ne voit jamais votre connexion."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guardado só nas suas Chaves do iCloud. O Antenna não tem servidores e nunca vê seu login."
+            "value" : "Guardado só nas suas Chaves do iCloud. O Antuna não tem servidores e nunca vê seu login."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sparas bara i din iCloud-nyckelring. Antenna har inga servrar och ser aldrig din inloggning."
+            "value" : "Sparas bara i din iCloud-nyckelring. Antuna har inga servrar och ser aldrig din inloggning."
           }
         }
       }
@@ -18711,42 +18711,42 @@
         }
       }
     },
-    "Scan the code with your iPhone camera. Antenna there sends the login to this Apple TV, encrypted, through iCloud." : {
+    "Scan the code with your iPhone camera. Antuna there sends the login to this Apple TV, encrypted, through iCloud." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "امسح الرمز بكاميرا iPhone. سيرسل Antenna هناك تسجيل الدخول إلى Apple TV هذا، مشفرًا، عبر iCloud."
+            "value" : "امسح الرمز بكاميرا iPhone. سيرسل Antuna هناك تسجيل الدخول إلى Apple TV هذا، مشفرًا، عبر iCloud."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scanne den Code mit deiner iPhone-Kamera. Antenna sendet die Anmeldung von dort verschlüsselt über iCloud an dieses Apple TV."
+            "value" : "Scanne den Code mit deiner iPhone-Kamera. Antuna sendet die Anmeldung von dort verschlüsselt über iCloud an dieses Apple TV."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escanea el código con la cámara del iPhone. Antenna allí envía el inicio de sesión a este Apple TV, cifrado, a través de iCloud."
+            "value" : "Escanea el código con la cámara del iPhone. Antuna allí envía el inicio de sesión a este Apple TV, cifrado, a través de iCloud."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scannez le code avec l’appareil photo de votre iPhone. Antenna y envoie la connexion chiffrée à cette Apple TV via iCloud."
+            "value" : "Scannez le code avec l’appareil photo de votre iPhone. Antuna y envoie la connexion chiffrée à cette Apple TV via iCloud."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escaneie o código com a câmera do iPhone. O Antenna lá envia o login a este Apple TV, criptografado, pelo iCloud."
+            "value" : "Escaneie o código com a câmera do iPhone. O Antuna lá envia o login a este Apple TV, criptografado, pelo iCloud."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skanna koden med iPhone-kameran. Antenna på iPhone skickar sedan inloggningen krypterad via iCloud till den här Apple TV:n."
+            "value" : "Skanna koden med iPhone-kameran. Antuna på iPhone skickar sedan inloggningen krypterad via iCloud till den här Apple TV:n."
           }
         }
       }
@@ -20393,42 +20393,42 @@
         }
       }
     },
-    "Signed in to iCloud. Sources added in Antenna on iPhone, iPad or Mac appear here on their own." : {
+    "Signed in to iCloud. Sources added in Antuna on iPhone, iPad or Mac appear here on their own." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تم تسجيل الدخول إلى iCloud. المصادر المضافة في Antenna على iPhone أو iPad أو Mac تظهر هنا تلقائيًا."
+            "value" : "تم تسجيل الدخول إلى iCloud. المصادر المضافة في Antuna على iPhone أو iPad أو Mac تظهر هنا تلقائيًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bei iCloud angemeldet. Quellen, die in Antenna auf iPhone, iPad oder Mac hinzugefügt werden, erscheinen hier automatisch."
+            "value" : "Bei iCloud angemeldet. Quellen, die in Antuna auf iPhone, iPad oder Mac hinzugefügt werden, erscheinen hier automatisch."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesión iniciada en iCloud. Las fuentes añadidas en Antenna en iPhone, iPad o Mac aparecen aquí automáticamente."
+            "value" : "Sesión iniciada en iCloud. Las fuentes añadidas en Antuna en iPhone, iPad o Mac aparecen aquí automáticamente."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connecté à iCloud. Les sources ajoutées dans Antenna sur iPhone, iPad ou Mac apparaissent ici automatiquement."
+            "value" : "Connecté à iCloud. Les sources ajoutées dans Antuna sur iPhone, iPad ou Mac apparaissent ici automatiquement."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conectado ao iCloud. Fontes adicionadas no Antenna no iPhone, iPad ou Mac aparecem aqui automaticamente."
+            "value" : "Conectado ao iCloud. Fontes adicionadas no Antuna no iPhone, iPad ou Mac aparecem aqui automaticamente."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inloggad på iCloud. Källor som läggs till i Antenna på iPhone, iPad eller Mac visas här automatiskt."
+            "value" : "Inloggad på iCloud. Källor som läggs till i Antuna på iPhone, iPad eller Mac visas här automatiskt."
           }
         }
       }
@@ -21113,42 +21113,42 @@
         }
       }
     },
-    "Synced through iCloud. Antenna on Apple TV, iPad and Mac shows this source on its own." : {
+    "Synced through iCloud. Antuna on Apple TV, iPad and Mac shows this source on its own." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تمت المزامنة عبر iCloud. يعرض Antenna على Apple TV وiPad وMac هذا المصدر تلقائيًا."
+            "value" : "تمت المزامنة عبر iCloud. يعرض Antuna على Apple TV وiPad وMac هذا المصدر تلقائيًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Über iCloud synchronisiert. Antenna auf Apple TV, iPad und Mac zeigt diese Quelle automatisch."
+            "value" : "Über iCloud synchronisiert. Antuna auf Apple TV, iPad und Mac zeigt diese Quelle automatisch."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sincronizado a través de iCloud. Antenna en Apple TV, iPad y Mac muestra esta fuente automáticamente."
+            "value" : "Sincronizado a través de iCloud. Antuna en Apple TV, iPad y Mac muestra esta fuente automáticamente."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronisé via iCloud. Antenna sur Apple TV, iPad et Mac affiche automatiquement cette source."
+            "value" : "Synchronisé via iCloud. Antuna sur Apple TV, iPad et Mac affiche automatiquement cette source."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sincronizado pelo iCloud. O Antenna no Apple TV, iPad e Mac mostra esta fonte automaticamente."
+            "value" : "Sincronizado pelo iCloud. O Antuna no Apple TV, iPad e Mac mostra esta fonte automaticamente."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synkad via iCloud. Antenna på Apple TV, iPad och Mac visar den här källan automatiskt."
+            "value" : "Synkad via iCloud. Antuna på Apple TV, iPad och Mac visar den här källan automatiskt."
           }
         }
       }
@@ -21953,42 +21953,42 @@
         }
       }
     },
-    "The portal replied with something Antenna could not read." : {
+    "The portal replied with something Antuna could not read." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ردت البوابة بشيء لم يستطع Antenna قراءته."
+            "value" : "ردت البوابة بشيء لم يستطع Antuna قراءته."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Portal hat etwas gesendet, das Antenna nicht lesen konnte."
+            "value" : "Das Portal hat etwas gesendet, das Antuna nicht lesen konnte."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El portal respondió con algo que Antenna no pudo leer."
+            "value" : "El portal respondió con algo que Antuna no pudo leer."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le portail a répondu par quelque chose qu’Antenna n’a pas pu lire."
+            "value" : "Le portail a répondu par quelque chose qu’Antuna n’a pas pu lire."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O portal respondeu com algo que o Antenna não conseguiu ler."
+            "value" : "O portal respondeu com algo que o Antuna não conseguiu ler."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Portalen svarade med något som Antenna inte kunde läsa."
+            "value" : "Portalen svarade med något som Antuna inte kunde läsa."
           }
         }
       }
@@ -22153,42 +22153,42 @@
         }
       }
     },
-    "The server replied with something Antenna could not read." : {
+    "The server replied with something Antuna could not read." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رد الخادم بشيء لم يستطع Antenna قراءته."
+            "value" : "رد الخادم بشيء لم يستطع Antuna قراءته."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Server hat etwas gesendet, das Antenna nicht lesen konnte."
+            "value" : "Der Server hat etwas gesendet, das Antuna nicht lesen konnte."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El servidor respondió con algo que Antenna no pudo leer."
+            "value" : "El servidor respondió con algo que Antuna no pudo leer."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le serveur a répondu par quelque chose qu’Antenna n’a pas pu lire."
+            "value" : "Le serveur a répondu par quelque chose qu’Antuna n’a pas pu lire."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O servidor respondeu com algo que o Antenna não conseguiu ler."
+            "value" : "O servidor respondeu com algo que o Antuna não conseguiu ler."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Servern svarade med något som Antenna inte kunde läsa."
+            "value" : "Servern svarade med något som Antuna inte kunde läsa."
           }
         }
       }
@@ -22657,42 +22657,42 @@
         }
       }
     },
-    "This code is from a newer Antenna. Update Antenna on this %@ to set up your Apple TV from here." : {
+    "This code is from a newer Antuna. Update Antuna on this %@ to set up your Apple TV from here." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هذا الرمز من إصدار أحدث من Antenna. حدّث Antenna على %@ هذا لإعداد Apple TV من هنا."
+            "value" : "هذا الرمز من إصدار أحدث من Antuna. حدّث Antuna على %@ هذا لإعداد Apple TV من هنا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieser Code stammt von einer neueren Antenna-Version. Aktualisiere Antenna auf diesem %@, um dein Apple TV von hier einzurichten."
+            "value" : "Dieser Code stammt von einer neueren Antuna-Version. Aktualisiere Antuna auf diesem %@, um dein Apple TV von hier einzurichten."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este código es de una versión más nueva de Antenna. Actualiza Antenna en este %@ para configurar tu Apple TV desde aquí."
+            "value" : "Este código es de una versión más nueva de Antuna. Actualiza Antuna en este %@ para configurar tu Apple TV desde aquí."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce code vient d’une version plus récente d’Antenna. Mettez à jour Antenna sur votre %@ pour configurer votre Apple TV d’ici."
+            "value" : "Ce code vient d’une version plus récente d’Antuna. Mettez à jour Antuna sur votre %@ pour configurer votre Apple TV d’ici."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este código é de um Antenna mais novo. Atualize o Antenna neste %@ para configurar seu Apple TV por aqui."
+            "value" : "Este código é de um Antuna mais novo. Atualize o Antuna neste %@ para configurar seu Apple TV por aqui."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här koden kommer från en nyare version av Antenna. Uppdatera Antenna på den här %@ för att ställa in din Apple TV härifrån."
+            "value" : "Den här koden kommer från en nyare version av Antuna. Uppdatera Antuna på den här %@ för att ställa in din Apple TV härifrån."
           }
         }
       }
@@ -22937,42 +22937,42 @@
         }
       }
     },
-    "Through iCloud. Antenna on the Apple TV picks it up on its own." : {
+    "Through iCloud. Antuna on the Apple TV picks it up on its own." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عبر iCloud. يستلمه Antenna على Apple TV تلقائيًا."
+            "value" : "عبر iCloud. يستلمه Antuna على Apple TV تلقائيًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Über iCloud. Antenna auf dem Apple TV holt sie automatisch ab."
+            "value" : "Über iCloud. Antuna auf dem Apple TV holt sie automatisch ab."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A través de iCloud. Antenna en el Apple TV lo recoge automáticamente."
+            "value" : "A través de iCloud. Antuna en el Apple TV lo recoge automáticamente."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Via iCloud. Antenna sur l’Apple TV la récupère automatiquement."
+            "value" : "Via iCloud. Antuna sur l’Apple TV la récupère automatiquement."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pelo iCloud. O Antenna no Apple TV recebe automaticamente."
+            "value" : "Pelo iCloud. O Antuna no Apple TV recebe automaticamente."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Via iCloud. Antenna på Apple TV:n hämtar den automatiskt."
+            "value" : "Via iCloud. Antuna på Apple TV:n hämtar den automatiskt."
           }
         }
       }
@@ -23771,42 +23771,42 @@
         }
       }
     },
-    "Update Antenna on both, or type the login here." : {
+    "Update Antuna on both, or type the login here." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "حدّث Antenna على الجهازين، أو اكتب تسجيل الدخول هنا."
+            "value" : "حدّث Antuna على الجهازين، أو اكتب تسجيل الدخول هنا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktualisiere Antenna auf beiden Geräten oder gib die Anmeldung hier ein."
+            "value" : "Aktualisiere Antuna auf beiden Geräten oder gib die Anmeldung hier ein."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualiza Antenna en ambos o escribe aquí el inicio de sesión."
+            "value" : "Actualiza Antuna en ambos o escribe aquí el inicio de sesión."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mettez à jour Antenna sur les deux appareils, ou saisissez la connexion ici."
+            "value" : "Mettez à jour Antuna sur les deux appareils, ou saisissez la connexion ici."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atualize o Antenna nos dois ou digite o login aqui."
+            "value" : "Atualize o Antuna nos dois ou digite o login aqui."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uppdatera Antenna på båda, eller skriv inloggningen här."
+            "value" : "Uppdatera Antuna på båda, eller skriv inloggningen här."
           }
         }
       }
@@ -24565,42 +24565,42 @@
         }
       }
     },
-    "Welcome to Antenna" : {
+    "Welcome to Antuna" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "مرحبًا بك في Antenna"
+            "value" : "مرحبًا بك في Antuna"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Willkommen bei Antenna"
+            "value" : "Willkommen bei Antuna"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te damos la bienvenida a Antenna"
+            "value" : "Te damos la bienvenida a Antuna"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue dans Antenna"
+            "value" : "Bienvenue dans Antuna"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Boas-vindas ao Antenna"
+            "value" : "Boas-vindas ao Antuna"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välkommen till Antenna"
+            "value" : "Välkommen till Antuna"
           }
         }
       }

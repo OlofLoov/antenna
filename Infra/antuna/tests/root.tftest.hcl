@@ -8,7 +8,7 @@ mock_provider "aws" {
 }
 
 variables {
-  domain      = "antenna.example"
+  domain      = "antuna.example"
   alert_email = "owner@example.com"
 }
 
@@ -19,14 +19,14 @@ override_resource {
     arn = "arn:aws:acm:us-east-1:123456789012:certificate/site"
     domain_validation_options = [
       {
-        domain_name           = "antenna.example"
-        resource_record_name  = "_a.antenna.example."
+        domain_name           = "antuna.example"
+        resource_record_name  = "_a.antuna.example."
         resource_record_type  = "CNAME"
         resource_record_value = "_a.acm-validations.aws."
       },
       {
-        domain_name           = "www.antenna.example"
-        resource_record_name  = "_b.www.antenna.example."
+        domain_name           = "www.antuna.example"
+        resource_record_name  = "_b.www.antuna.example."
         resource_record_type  = "CNAME"
         resource_record_value = "_b.acm-validations.aws."
       },
@@ -34,12 +34,12 @@ override_resource {
   }
 }
 
-# hosting/the-site-is-served-over-https-on-antenna-s-domain
+# hosting/the-site-is-served-over-https-on-antuna-s-domain
 run "the_modules_connect" {
   command = plan
 
   assert {
-    condition     = startswith(output.site_bucket, "antenna-site-")
+    condition     = startswith(output.site_bucket, "antuna-site-")
     error_message = "the root must name the site bucket for SITE_BUCKET"
   }
 }
@@ -48,7 +48,7 @@ run "a_www_domain_is_refused" {
   command = plan
 
   variables {
-    domain = "www.antenna.example"
+    domain = "www.antuna.example"
   }
 
   expect_failures = [var.domain]

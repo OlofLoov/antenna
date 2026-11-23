@@ -2,12 +2,12 @@ import Foundation
 
 /// Reading and writing the bits of Jellyfin's HTTP API the client shares.
 enum JellyfinWire {
-    /// `MediaBrowser Client="Antenna", Device=…, DeviceId=…, Version=…`,
+    /// `MediaBrowser Client="Antuna", Device=…, DeviceId=…, Version=…`,
     /// then `Token=…` when there is one. Each value is cleaned to one line
     /// with quotes and backslashes removed.
     static func authorization(device: JellyfinDevice, token: String?) -> String {
         var pairs = [
-            ("Client", "Antenna"), ("Device", device.name), ("DeviceId", device.id), ("Version", device.appVersion),
+            ("Client", "Antuna"), ("Device", device.name), ("DeviceId", device.id), ("Version", device.appVersion),
         ]
         if let token { pairs.append(("Token", token)) }
         return "MediaBrowser " + pairs.map { "\($0)=\"\(clean($1))\"" }.joined(separator: ", ")

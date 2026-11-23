@@ -18,7 +18,7 @@
                 /// "Sign in your Apple TV" for a code that asks for logins
                 /// (apple-tv-login-from-iphone/the-iphone-asks-before-it-sends).
                 case signIn(SetupLink)
-                /// A link from a newer Antenna: the plain form with a line asking to update.
+                /// A link from a newer Antuna: the plain form with a line asking to update.
                 case newer
                 /// A setup link that does not parse: the plain form, no banner, no error.
                 case damaged
@@ -35,7 +35,7 @@
         /// Onboarding's welcome screen stays under the sheet until it closes.
         var holdsApp: Bool { pending != nil }
 
-        /// A link opened with Antenna. Returns false when it is not a setup link at all.
+        /// A link opened with Antuna. Returns false when it is not a setup link at all.
         @discardableResult
         func receive(_ url: URL) -> Bool {
             let kind: Request.Kind

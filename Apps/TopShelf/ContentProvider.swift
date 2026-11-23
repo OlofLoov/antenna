@@ -2,7 +2,7 @@ import AntennaCore
 import Foundation
 import TVServices
 
-/// Antenna's Top Shelf: favorites with what is on now and Continue
+/// Antuna's Top Shelf: favorites with what is on now and Continue
 /// watching, read from the App Group folder the app writes.
 final class ContentProvider: TVTopShelfContentProvider {
     override func loadTopShelfContent(completionHandler: @escaping ((any TVTopShelfContent)?) -> Void) {

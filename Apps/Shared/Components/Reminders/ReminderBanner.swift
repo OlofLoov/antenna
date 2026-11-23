@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The reminder banner over any screen while Antenna is open
-/// (programme-reminders/a-banner-while-antenna-is-open; `iPhone-Reminder-Banner`,
+/// The reminder banner over any screen while Antuna is open
+/// (programme-reminders/a-banner-while-antuna-is-open; `iPhone-Reminder-Banner`,
 /// `TV-Reminder-Banner`): when it starts, the title, the time and channel,
 /// Watch and Dismiss.
 enum ReminderBanner {

@@ -12,8 +12,8 @@ struct FFmpegNoticeView: View {
             Section {
                 Text(
                     """
-                    Antenna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed \
-                    under the GNU Lesser General Public License, version 2.1 or later. Antenna links its own build \
+                    Antuna plays broadcast streams, Matroska and AVI with FFmpeg 7.1, which is licensed \
+                    under the GNU Lesser General Public License, version 2.1 or later. Antuna links its own build \
                     of FFmpeg as a separate library and changes none of FFmpeg's code.
                     """
                 )

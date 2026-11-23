@@ -41,7 +41,7 @@ final class ReminderBannerUITests: XCTestCase {
         ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n").map(String.init)
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open
+    // programme-reminders/a-banner-while-antuna-is-open
     // programme-reminders/watch-plays-the-channel, a channel outside the current group
     func testTheBannerShowsOverAnyScreenAndWatchPlaysInAllChannels() throws {
         // Picking Sport goes through the Groups sheet, so the banner stays up longer than its usual 20 seconds.
@@ -83,7 +83,7 @@ final class ReminderBannerUITests: XCTestCase {
         XCTAssertFalse(app.element("browse.nowPlaying").waitForExistence(timeout: 3), "something plays")
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open, close the banner
+    // programme-reminders/a-banner-while-antuna-is-open, close the banner
     func testTheBannerClosesOnDismiss() throws {
         let app = try launch()
         let banner = app.element("reminders.banner")
@@ -92,7 +92,7 @@ final class ReminderBannerUITests: XCTestCase {
         XCTAssertTrue(banner.waitForNonExistence(timeout: 5))
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open, close the banner after a short time
+    // programme-reminders/a-banner-while-antuna-is-open, close the banner after a short time
     func testTheBannerClosesByItself() throws {
         let app = try launch(seed: "soon", environment: ["UITESTING_REMINDER_BANNER_SECONDS": "3"])
         let shown = app.element("reminders.banner")
@@ -100,7 +100,7 @@ final class ReminderBannerUITests: XCTestCase {
         XCTAssertTrue(shown.waitForNonExistence(timeout: 10), "the banner stayed")
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open, only when notifications are off
+    // programme-reminders/a-banner-while-antuna-is-open, only when notifications are off
     // programme-reminders/a-notification-before-the-programme-starts, set closer to start than the lead time
     func testWithNotificationsAllowedTheNotificationGoesOffInstead() throws {
         let app = try launch("allowed")
@@ -120,7 +120,7 @@ final class ReminderBannerUITests: XCTestCase {
         XCTAssertTrue(app.tabBars.buttons["Live"].isSelected)
     }
 
-    // programme-reminders/a-banner-while-antenna-is-open, on iPad
+    // programme-reminders/a-banner-while-antuna-is-open, on iPad
     // programme-reminders/watch-plays-the-channel, the paid unlock has lapsed
     // paywall-and-entitlement/when-access-ends-the-app-locks-and-keeps-your-data
     func testBehindThePaywallNoBannerShowsAndANotificationTapPlaysNothing() throws {

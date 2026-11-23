@@ -1,4 +1,4 @@
-Antenna plays the TV sources you already have, on iPhone, iPad, Mac and Apple TV. It comes with no channels, playlists or provider addresses. You add your own source, and Antenna turns it into a channel list, a TV guide and a movie and series library.
+Antuna plays the TV sources you already have, on iPhone, iPad, Mac and Apple TV. It comes with no channels, playlists or provider addresses. You add your own source, and Antuna turns it into a channel list, a TV guide and a movie and series library.
 
 YOUR SOURCES
 • M3U playlists, from a link or a file
@@ -34,9 +34,9 @@ ON EVERY DEVICE
 • Keyboard shortcuts on Mac and iPad
 
 PURCHASE
-Antenna is free to download and needs a purchase to use: a yearly subscription or a one-time lifetime unlock. Both work with Family Sharing. The app shows the price for your region before you buy.
+Antuna is free to download and needs a purchase to use: a yearly subscription or a one-time lifetime unlock. Both work with Family Sharing. The app shows the price for your region before you buy.
 
 PRIVACY
-Antenna has no account, no ads and no analytics. It connects only to the sources you add, your iCloud account and the App Store.
+Antuna has no account, no ads and no analytics. It connects only to the sources you add, your iCloud account and the App Store.
 
-You need the right to watch what your sources play. Antenna does not sell or recommend TV subscriptions.
+You need the right to watch what your sources play. Antuna does not sell or recommend TV subscriptions.

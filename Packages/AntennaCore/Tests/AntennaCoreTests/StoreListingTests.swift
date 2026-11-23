@@ -88,6 +88,16 @@ import Testing
             #expect(result.output.contains("de-DE: subtitle.txt is empty"))
         }
 
+        @Test("app-release/the-app-store-addresses-are-on-antuna-s-domain: an address on the old domain fails and is named")
+        func oldDomain() throws {
+            let copy = try Copy()
+            defer { copy.remove() }
+            try copy.write("fastlane/metadata/sv/support_url.txt", "https://antenna.code-crave.se/terms\n")
+            let result = try run(["check"], root: copy.folder)
+            #expect(result.status != 0)
+            #expect(result.output.contains("sv: support_url must start with https://antuna.app/"))
+        }
+
         @Test("store-listing/the-listing-fits-app-store-connect: every field is within Apple's limit")
         func limits() throws {
             let limits = ["name": 30, "subtitle": 30, "keywords": 100, "promotional_text": 170, "description": 4000, "release_notes": 4000]
@@ -146,7 +156,7 @@ import Testing
         func saysNoChannelsAndPurchase() throws {
             let copy = try Copy()
             defer { copy.remove() }
-            try copy.write("fastlane/metadata/de-DE/description.txt", "Antenna spielt TV ab.\n")
+            try copy.write("fastlane/metadata/de-DE/description.txt", "Antuna spielt TV ab.\n")
             let result = try run(["check"], root: copy.folder)
             #expect(result.status != 0)
             #expect(result.output.contains("de-DE: description must say 'keine Sender'"))

@@ -2,7 +2,7 @@ import SwiftUI
 
 extension Browse {
     /// The iPad and Mac sidebar (`iPad`, "Sidebar: sections + groups"): the
-    /// Antenna mark, the sections, the Groups eyebrow with one row per
+    /// Antuna mark, the sections, the Groups eyebrow with one row per
     /// group, and Sources & Settings at the bottom. 232 wide on the
     /// sidebar color.
     struct Sidebar<Sections: View, Groups: View, Footer: View>: View {
@@ -17,7 +17,7 @@ extension Browse {
                 HStack(spacing: 10) {
                     Image(systemName: "antenna.radiowaves.left.and.right")
                         .accessibilityHidden(true)
-                    Text("Antenna")
+                    Text("Antuna")
                 }
                 .font(.title3.weight(.bold))
                 .padding(EdgeInsets(top: 0, leading: 12, bottom: 18, trailing: 12))

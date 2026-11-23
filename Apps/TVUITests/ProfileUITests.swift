@@ -163,7 +163,7 @@ extension ShellUITests {
         for _ in 0..<2 where !confirm.hasFocus { press(.right) }
         expect(confirm, "hasFocus == true")
         press(.select)
-        // One profile is left, so Antenna opens straight on it.
+        // One profile is left, so Antuna opens straight on it.
         expectEngine("playing loads=1 file=a1.ts")
         XCTAssertFalse(element("profiles.picker").exists)
         XCTAssertFalse(element("shell.profile").exists, "no profile button with one profile")

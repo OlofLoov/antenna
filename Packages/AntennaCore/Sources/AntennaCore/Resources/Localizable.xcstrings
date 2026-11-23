@@ -636,42 +636,42 @@
         }
       }
     },
-    "%@ is in a locked group. Unlock it in Antenna first." : {
+    "%@ is in a locked group. Unlock it in Antuna first." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ في مجموعة مقفلة. افتح قفلها في Antenna أولًا."
+            "value" : "%@ في مجموعة مقفلة. افتح قفلها في Antuna أولًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ ist in einer gesperrten Gruppe. Entsperre sie zuerst in Antenna."
+            "value" : "%@ ist in einer gesperrten Gruppe. Entsperre sie zuerst in Antuna."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ está en un grupo bloqueado. Desbloquéalo primero en Antenna."
+            "value" : "%@ está en un grupo bloqueado. Desbloquéalo primero en Antuna."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ est dans un groupe verrouillé. Déverrouillez-le d’abord dans Antenna."
+            "value" : "%@ est dans un groupe verrouillé. Déverrouillez-le d’abord dans Antuna."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ está em um grupo bloqueado. Desbloqueie no Antenna primeiro."
+            "value" : "%@ está em um grupo bloqueado. Desbloqueie no Antuna primeiro."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ finns i en låst grupp. Lås upp den i Antenna först."
+            "value" : "%@ finns i en låst grupp. Lås upp den i Antuna först."
           }
         }
       }
@@ -5925,42 +5925,42 @@
         }
       }
     },
-    "Add favorites in Antenna to see them here" : {
+    "Add favorites in Antuna to see them here" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "أضف قنوات إلى المفضلة في Antenna لتراها هنا"
+            "value" : "أضف قنوات إلى المفضلة في Antuna لتراها هنا"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Füge Favoriten in Antenna hinzu, um sie hier zu sehen"
+            "value" : "Füge Favoriten in Antuna hinzu, um sie hier zu sehen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Añade favoritos en Antenna para verlos aquí"
+            "value" : "Añade favoritos en Antuna para verlos aquí"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoutez des favoris dans Antenna pour les voir ici"
+            "value" : "Ajoutez des favoris dans Antuna pour les voir ici"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adicione favoritos no Antenna para vê-los aqui"
+            "value" : "Adicione favoritos no Antuna para vê-los aqui"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till favoriter i Antenna för att se dem här"
+            "value" : "Lägg till favoriter i Antuna för att se dem här"
           }
         }
       }
@@ -6285,42 +6285,42 @@
         }
       }
     },
-    "Allow local network access for Antenna in Settings." : {
+    "Allow local network access for Antuna in Settings." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اسمح لـ Antenna بالوصول إلى الشبكة المحلية في الإعدادات."
+            "value" : "اسمح لـ Antuna بالوصول إلى الشبكة المحلية في الإعدادات."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erlaube Antenna in den Einstellungen den Zugriff auf das lokale Netzwerk."
+            "value" : "Erlaube Antuna in den Einstellungen den Zugriff auf das lokale Netzwerk."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permite el acceso a la red local para Antenna en Ajustes."
+            "value" : "Permite el acceso a la red local para Antuna en Ajustes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorisez l’accès au réseau local pour Antenna dans Réglages."
+            "value" : "Autorisez l’accès au réseau local pour Antuna dans Réglages."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permita o acesso à rede local para o Antenna em Ajustes."
+            "value" : "Permita o acesso à rede local para o Antuna em Ajustes."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tillåt åtkomst till lokalt nätverk för Antenna i Inställningar."
+            "value" : "Tillåt åtkomst till lokalt nätverk för Antuna i Inställningar."
           }
         }
       }
@@ -6405,602 +6405,602 @@
         }
       }
     },
-    "Antenna can't be bought in this App Store region yet." : {
+    "Antuna can't be bought in this App Store region yet." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يمكن شراء Antenna في منطقة App Store هذه بعد."
+            "value" : "لا يمكن شراء Antuna في منطقة App Store هذه بعد."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna kann in dieser App Store-Region noch nicht gekauft werden."
+            "value" : "Antuna kann in dieser App Store-Region noch nicht gekauft werden."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna aún no se puede comprar en esta región del App Store."
+            "value" : "Antuna aún no se puede comprar en esta región del App Store."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ne peut pas encore être acheté dans cette région de l’App Store."
+            "value" : "Antuna ne peut pas encore être acheté dans cette région de l’App Store."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna ainda não pode ser comprado nesta região da App Store."
+            "value" : "O Antuna ainda não pode ser comprado nesta região da App Store."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna kan inte köpas i den här App Store-regionen än."
+            "value" : "Antuna kan inte köpas i den här App Store-regionen än."
           }
         }
       }
     },
-    "Antenna can't verify this server's certificate. Use http on your network or a trusted certificate." : {
+    "Antuna can't verify this server's certificate. Use http on your network or a trusted certificate." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يستطيع Antenna التحقق من شهادة هذا الخادم. استخدم http على شبكتك أو شهادة موثوقة."
+            "value" : "لا يستطيع Antuna التحقق من شهادة هذا الخادم. استخدم http على شبكتك أو شهادة موثوقة."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna kann das Zertifikat dieses Servers nicht prüfen. Verwende http in deinem Netzwerk oder ein vertrauenswürdiges Zertifikat."
+            "value" : "Antuna kann das Zertifikat dieses Servers nicht prüfen. Verwende http in deinem Netzwerk oder ein vertrauenswürdiges Zertifikat."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna no puede verificar el certificado de este servidor. Usa http en tu red o un certificado de confianza."
+            "value" : "Antuna no puede verificar el certificado de este servidor. Usa http en tu red o un certificado de confianza."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ne peut pas vérifier le certificat de ce serveur. Utilisez http sur votre réseau ou un certificat de confiance."
+            "value" : "Antuna ne peut pas vérifier le certificat de ce serveur. Utilisez http sur votre réseau ou un certificat de confiance."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna não consegue verificar o certificado deste servidor. Use http na sua rede ou um certificado confiável."
+            "value" : "O Antuna não consegue verificar o certificado deste servidor. Use http na sua rede ou um certificado confiável."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna kan inte verifiera serverns certifikat. Använd http i ditt nätverk eller ett betrott certifikat."
+            "value" : "Antuna kan inte verifiera serverns certifikat. Använd http i ditt nätverk eller ett betrott certifikat."
           }
         }
       }
     },
-    "Antenna couldn't reach %@. Try again later." : {
+    "Antuna couldn't reach %@. Try again later." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تعذّر على Antenna الوصول إلى %@. حاول مرة أخرى لاحقًا."
+            "value" : "تعذّر على Antuna الوصول إلى %@. حاول مرة أخرى لاحقًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna konnte %@ nicht erreichen. Versuche es später erneut."
+            "value" : "Antuna konnte %@ nicht erreichen. Versuche es später erneut."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna no pudo conectar con %@. Vuelve a intentarlo más tarde."
+            "value" : "Antuna no pudo conectar con %@. Vuelve a intentarlo más tarde."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna n’a pas pu joindre %@. Réessayez plus tard."
+            "value" : "Antuna n’a pas pu joindre %@. Réessayez plus tard."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna não conseguiu acessar %@. Tente de novo mais tarde."
+            "value" : "O Antuna não conseguiu acessar %@. Tente de novo mais tarde."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna kunde inte nå %@. Försök igen senare."
+            "value" : "Antuna kunde inte nå %@. Försök igen senare."
           }
         }
       }
     },
-    "Antenna downloads the guide when the source finishes loading." : {
+    "Antuna downloads the guide when the source finishes loading." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ينزّل Antenna الدليل عندما ينتهي تحميل المصدر."
+            "value" : "ينزّل Antuna الدليل عندما ينتهي تحميل المصدر."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lädt den Programmführer, wenn die Quelle fertig geladen ist."
+            "value" : "Antuna lädt den Programmführer, wenn die Quelle fertig geladen ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna descarga la guía cuando la fuente termina de cargarse."
+            "value" : "Antuna descarga la guía cuando la fuente termina de cargarse."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna télécharge le guide quand la source a fini de se charger."
+            "value" : "Antuna télécharge le guide quand la source a fini de se charger."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna baixa o guia quando a fonte termina de carregar."
+            "value" : "O Antuna baixa o guia quando a fonte termina de carregar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna hämtar tablån när källan har lästs in."
+            "value" : "Antuna hämtar tablån när källan har lästs in."
           }
         }
       }
     },
-    "Antenna has no sources yet. Open Antenna to add one." : {
+    "Antuna has no sources yet. Open Antuna to add one." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا توجد مصادر في Antenna بعد. افتح Antenna لإضافة واحد."
+            "value" : "لا توجد مصادر في Antuna بعد. افتح Antuna لإضافة واحد."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna hat noch keine Quellen. Öffne Antenna, um eine hinzuzufügen."
+            "value" : "Antuna hat noch keine Quellen. Öffne Antuna, um eine hinzuzufügen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna aún no tiene fuentes. Abre Antenna para añadir una."
+            "value" : "Antuna aún no tiene fuentes. Abre Antuna para añadir una."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna n’a encore aucune source. Ouvrez Antenna pour en ajouter une."
+            "value" : "Antuna n’a encore aucune source. Ouvrez Antuna pour en ajouter une."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna ainda não tem fontes. Abra o Antenna para adicionar uma."
+            "value" : "O Antuna ainda não tem fontes. Abra o Antuna para adicionar uma."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna har inga källor än. Öppna Antenna för att lägga till en."
+            "value" : "Antuna har inga källor än. Öppna Antuna för att lägga till en."
           }
         }
       }
     },
-    "Antenna has not asked to send notifications. Reminders show only while the app is open." : {
+    "Antuna has not asked to send notifications. Reminders show only while the app is open." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لم يطلب Antenna إذن إرسال الإشعارات. تظهر التذكيرات فقط أثناء فتح التطبيق."
+            "value" : "لم يطلب Antuna إذن إرسال الإشعارات. تظهر التذكيرات فقط أثناء فتح التطبيق."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna hat noch nicht gefragt, ob es Mitteilungen senden darf. Erinnerungen erscheinen nur, während die App geöffnet ist."
+            "value" : "Antuna hat noch nicht gefragt, ob es Mitteilungen senden darf. Erinnerungen erscheinen nur, während die App geöffnet ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna no ha pedido permiso para enviar notificaciones. Los recordatorios solo aparecen con la app abierta."
+            "value" : "Antuna no ha pedido permiso para enviar notificaciones. Los recordatorios solo aparecen con la app abierta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna n’a pas demandé à envoyer des notifications. Les rappels ne s’affichent que lorsque l’app est ouverte."
+            "value" : "Antuna n’a pas demandé à envoyer des notifications. Les rappels ne s’affichent que lorsque l’app est ouverte."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna não pediu para enviar notificações. Os lembretes só aparecem com o app aberto."
+            "value" : "O Antuna não pediu para enviar notificações. Os lembretes só aparecem com o app aberto."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna har inte bett om att få skicka notiser. Påminnelser visas bara medan appen är öppen."
+            "value" : "Antuna har inte bett om att få skicka notiser. Påminnelser visas bara medan appen är öppen."
           }
         }
       }
     },
-    "Antenna is locked again" : {
+    "Antuna is locked again" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تم قفل Antenna مرة أخرى"
+            "value" : "تم قفل Antuna مرة أخرى"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ist wieder gesperrt"
+            "value" : "Antuna ist wieder gesperrt"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna se ha bloqueado de nuevo"
+            "value" : "Antuna se ha bloqueado de nuevo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna est à nouveau verrouillé"
+            "value" : "Antuna est à nouveau verrouillé"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna está bloqueado de novo"
+            "value" : "O Antuna está bloqueado de novo"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna är låst igen"
+            "value" : "Antuna är låst igen"
           }
         }
       }
     },
-    "Antenna is still loading your library. Try again in a moment." : {
+    "Antuna is still loading your library. Try again in a moment." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يزال Antenna يحمّل مكتبتك. حاول مرة أخرى بعد قليل."
+            "value" : "لا يزال Antuna يحمّل مكتبتك. حاول مرة أخرى بعد قليل."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lädt noch deine Bibliothek. Versuche es gleich noch einmal."
+            "value" : "Antuna lädt noch deine Bibliothek. Versuche es gleich noch einmal."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna sigue cargando tu biblioteca. Vuelve a intentarlo en un momento."
+            "value" : "Antuna sigue cargando tu biblioteca. Vuelve a intentarlo en un momento."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna charge encore votre bibliothèque. Réessayez dans un instant."
+            "value" : "Antuna charge encore votre bibliothèque. Réessayez dans un instant."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna ainda está carregando sua biblioteca. Tente de novo em instantes."
+            "value" : "O Antuna ainda está carregando sua biblioteca. Tente de novo em instantes."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna läser fortfarande in ditt bibliotek. Försök igen om en stund."
+            "value" : "Antuna läser fortfarande in ditt bibliotek. Försök igen om en stund."
           }
         }
       }
     },
-    "Antenna isn't playing a channel right now. Say which channel instead." : {
+    "Antuna isn't playing a channel right now. Say which channel instead." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يشغّل Antenna أي قناة الآن. قل اسم القناة بدلًا من ذلك."
+            "value" : "لا يشغّل Antuna أي قناة الآن. قل اسم القناة بدلًا من ذلك."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spielt gerade keinen Sender ab. Sag stattdessen, welcher Sender."
+            "value" : "Antuna spielt gerade keinen Sender ab. Sag stattdessen, welcher Sender."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna no está reproduciendo ningún canal ahora mismo. Di qué canal quieres."
+            "value" : "Antuna no está reproduciendo ningún canal ahora mismo. Di qué canal quieres."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ne lit aucune chaîne pour le moment. Indiquez plutôt quelle chaîne."
+            "value" : "Antuna ne lit aucune chaîne pour le moment. Indiquez plutôt quelle chaîne."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna não está reproduzindo nenhum canal agora. Diga qual canal você quer."
+            "value" : "O Antuna não está reproduzindo nenhum canal agora. Diga qual canal você quer."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spelar ingen kanal just nu. Säg vilken kanal i stället."
+            "value" : "Antuna spelar ingen kanal just nu. Säg vilken kanal i stället."
           }
         }
       }
     },
-    "Antenna isn't unlocked on this device yet. Open Antenna to continue." : {
+    "Antuna isn't unlocked on this device yet. Open Antuna to continue." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لم يُفتح قفل Antenna على هذا الجهاز بعد. افتح Antenna للمتابعة."
+            "value" : "لم يُفتح قفل Antuna على هذا الجهاز بعد. افتح Antuna للمتابعة."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna ist auf diesem Gerät noch nicht freigeschaltet. Öffne Antenna, um fortzufahren."
+            "value" : "Antuna ist auf diesem Gerät noch nicht freigeschaltet. Öffne Antuna, um fortzufahren."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna aún no está desbloqueada en este dispositivo. Abre Antenna para continuar."
+            "value" : "Antuna aún no está desbloqueada en este dispositivo. Abre Antuna para continuar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna n’est pas encore déverrouillé sur cet appareil. Ouvrez Antenna pour continuer."
+            "value" : "Antuna n’est pas encore déverrouillé sur cet appareil. Ouvrez Antuna pour continuer."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna ainda não está desbloqueado neste dispositivo. Abra o Antenna para continuar."
+            "value" : "O Antuna ainda não está desbloqueado neste dispositivo. Abra o Antuna para continuar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna är inte upplåst på den här enheten än. Öppna Antenna för att fortsätta."
+            "value" : "Antuna är inte upplåst på den här enheten än. Öppna Antuna för att fortsätta."
           }
         }
       }
     },
-    "Antenna player" : {
+    "Antuna player" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "مشغّل Antenna"
+            "value" : "مشغّل Antuna"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna-Player"
+            "value" : "Antuna-Player"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reproductor de Antenna"
+            "value" : "Reproductor de Antuna"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lecteur Antenna"
+            "value" : "Lecteur Antuna"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Player do Antenna"
+            "value" : "Player do Antuna"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna-spelaren"
+            "value" : "Antuna-spelaren"
           }
         }
       }
     },
-    "Antenna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." : {
+    "Antuna plays the TV sources you already have and includes no channels. One purchase unlocks every feature on iPhone, iPad, Mac and Apple TV, for everyone in your Family Sharing group." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يشغّل Antenna مصادر التلفزيون التي لديك ولا يتضمن أي قنوات. شراء واحد يفتح كل الميزات على iPhone وiPad وMac وApple TV، لكل من في مجموعة المشاركة العائلية."
+            "value" : "يشغّل Antuna مصادر التلفزيون التي لديك ولا يتضمن أي قنوات. شراء واحد يفتح كل الميزات على iPhone وiPad وMac وApple TV، لكل من في مجموعة المشاركة العائلية."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spielt die TV-Quellen ab, die du schon hast, und enthält keine Sender. Ein Kauf schaltet jede Funktion auf iPhone, iPad, Mac und Apple TV frei, für alle in deiner Familienfreigabe."
+            "value" : "Antuna spielt die TV-Quellen ab, die du schon hast, und enthält keine Sender. Ein Kauf schaltet jede Funktion auf iPhone, iPad, Mac und Apple TV frei, für alle in deiner Familienfreigabe."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna reproduce las fuentes de TV que ya tienes y no incluye canales. Una compra desbloquea todas las funciones en iPhone, iPad, Mac y Apple TV, para todos los miembros de tu grupo En familia."
+            "value" : "Antuna reproduce las fuentes de TV que ya tienes y no incluye canales. Una compra desbloquea todas las funciones en iPhone, iPad, Mac y Apple TV, para todos los miembros de tu grupo En familia."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lit les sources TV que vous avez déjà et ne contient aucune chaîne. Un seul achat déverrouille toutes les fonctionnalités sur iPhone, iPad, Mac et Apple TV, pour tous les membres de votre groupe de Partage familial."
+            "value" : "Antuna lit les sources TV que vous avez déjà et ne contient aucune chaîne. Un seul achat déverrouille toutes les fonctionnalités sur iPhone, iPad, Mac et Apple TV, pour tous les membres de votre groupe de Partage familial."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna reproduz as fontes de TV que você já tem e não inclui canais. Uma compra desbloqueia todos os recursos no iPhone, iPad, Mac e Apple TV, para todos do seu grupo de Compartilhamento Familiar."
+            "value" : "O Antuna reproduz as fontes de TV que você já tem e não inclui canais. Uma compra desbloqueia todos os recursos no iPhone, iPad, Mac e Apple TV, para todos do seu grupo de Compartilhamento Familiar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna spelar upp de TV-källor du redan har och innehåller inga kanaler. Ett köp låser upp alla funktioner på iPhone, iPad, Mac och Apple TV, för alla i din familjegrupp."
+            "value" : "Antuna spelar upp de TV-källor du redan har och innehåller inga kanaler. Ett köp låser upp alla funktioner på iPhone, iPad, Mac och Apple TV, för alla i din familjegrupp."
           }
         }
       }
     },
-    "Antenna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." : {
+    "Antuna reads M3U playlists: #EXTINF lines, each followed by a stream link. This file has no such pair." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يقرأ Antenna قوائم تشغيل M3U: أسطر ‎#EXTINF، يتبع كلًا منها رابط بث. لا يحتوي هذا الملف على مثل هذا الزوج."
+            "value" : "يقرأ Antuna قوائم تشغيل M3U: أسطر ‎#EXTINF، يتبع كلًا منها رابط بث. لا يحتوي هذا الملف على مثل هذا الزوج."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna liest M3U-Playlists: #EXTINF-Zeilen, jeweils gefolgt von einem Stream-Link. Diese Datei hat kein solches Paar."
+            "value" : "Antuna liest M3U-Playlists: #EXTINF-Zeilen, jeweils gefolgt von einem Stream-Link. Diese Datei hat kein solches Paar."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lee listas M3U: líneas #EXTINF, cada una seguida de un enlace de transmisión. Este archivo no tiene ninguna pareja así."
+            "value" : "Antuna lee listas M3U: líneas #EXTINF, cada una seguida de un enlace de transmisión. Este archivo no tiene ninguna pareja así."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lit les playlists M3U : des lignes #EXTINF, chacune suivie d’un lien de flux. Ce fichier ne contient aucune paire de ce type."
+            "value" : "Antuna lit les playlists M3U : des lignes #EXTINF, chacune suivie d’un lien de flux. Ce fichier ne contient aucune paire de ce type."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna lê playlists M3U: linhas #EXTINF, cada uma seguida de um link de transmissão. Este arquivo não tem nenhum par assim."
+            "value" : "O Antuna lê playlists M3U: linhas #EXTINF, cada uma seguida de um link de transmissão. Este arquivo não tem nenhum par assim."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna läser M3U-spellistor: #EXTINF-rader, var och en följd av en strömlänk. Den här filen har inget sådant par."
+            "value" : "Antuna läser M3U-spellistor: #EXTINF-rader, var och en följd av en strömlänk. Den här filen har inget sådant par."
           }
         }
       }
     },
-    "Antenna reads the guide links from the playlist when it finishes loading." : {
+    "Antuna reads the guide links from the playlist when it finishes loading." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يقرأ Antenna روابط الدليل من قائمة التشغيل عندما ينتهي تحميلها."
+            "value" : "يقرأ Antuna روابط الدليل من قائمة التشغيل عندما ينتهي تحميلها."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna liest die Programmführer-Links aus der Playlist, wenn sie fertig geladen ist."
+            "value" : "Antuna liest die Programmführer-Links aus der Playlist, wenn sie fertig geladen ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lee los enlaces de guía de la lista cuando termina de cargarse."
+            "value" : "Antuna lee los enlaces de guía de la lista cuando termina de cargarse."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna lit les liens de guide de la playlist quand elle a fini de se charger."
+            "value" : "Antuna lit les liens de guide de la playlist quand elle a fini de se charger."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antenna lê os links de guia da playlist quando ela termina de carregar."
+            "value" : "O Antuna lê os links de guia da playlist quando ela termina de carregar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna läser tablålänkarna från spellistan när den har lästs in."
+            "value" : "Antuna läser tablålänkarna från spellistan när den har lästs in."
           }
         }
       }
     },
-    "Apple TV cannot show notifications. Reminders show as a banner while Antenna is open." : {
+    "Apple TV cannot show notifications. Reminders show as a banner while Antuna is open." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا يستطيع Apple TV عرض الإشعارات. تظهر التذكيرات كلافتة أثناء فتح Antenna."
+            "value" : "لا يستطيع Apple TV عرض الإشعارات. تظهر التذكيرات كلافتة أثناء فتح Antuna."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple TV kann keine Mitteilungen anzeigen. Erinnerungen erscheinen als Banner, während Antenna geöffnet ist."
+            "value" : "Apple TV kann keine Mitteilungen anzeigen. Erinnerungen erscheinen als Banner, während Antuna geöffnet ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El Apple TV no puede mostrar notificaciones. Los recordatorios aparecen como un banner mientras Antenna está abierta."
+            "value" : "El Apple TV no puede mostrar notificaciones. Los recordatorios aparecen como un banner mientras Antuna está abierta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’Apple TV ne peut pas afficher de notifications. Les rappels s’affichent sous forme de bannière tant qu’Antenna est ouvert."
+            "value" : "L’Apple TV ne peut pas afficher de notifications. Les rappels s’affichent sous forme de bannière tant qu’Antuna est ouvert."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Apple TV não consegue mostrar notificações. Os lembretes aparecem como banner enquanto o Antenna está aberto."
+            "value" : "O Apple TV não consegue mostrar notificações. Os lembretes aparecem como banner enquanto o Antuna está aberto."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple TV kan inte visa notiser. Påminnelser visas som en banner medan Antenna är öppen."
+            "value" : "Apple TV kan inte visa notiser. Påminnelser visas som en banner medan Antuna är öppen."
           }
         }
       }
@@ -8355,42 +8355,42 @@
         }
       }
     },
-    "Check the connection and try again. If you already bought Antenna, Restore purchase finds it once the connection is back." : {
+    "Check the connection and try again. If you already bought Antuna, Restore purchase finds it once the connection is back." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تحقق من الاتصال وحاول مرة أخرى. إذا كنت قد اشتريت Antenna من قبل، فإن «استعادة الشراء» تجده عندما يعود الاتصال."
+            "value" : "تحقق من الاتصال وحاول مرة أخرى. إذا كنت قد اشتريت Antuna من قبل، فإن «استعادة الشراء» تجده عندما يعود الاتصال."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prüfe die Verbindung und versuche es erneut. Wenn du Antenna bereits gekauft hast, findet „Kauf wiederherstellen“ den Kauf, sobald die Verbindung wieder da ist."
+            "value" : "Prüfe die Verbindung und versuche es erneut. Wenn du Antuna bereits gekauft hast, findet „Kauf wiederherstellen“ den Kauf, sobald die Verbindung wieder da ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comprueba la conexión y vuelve a intentarlo. Si ya compraste Antenna, Restaurar compra la encontrará cuando vuelva la conexión."
+            "value" : "Comprueba la conexión y vuelve a intentarlo. Si ya compraste Antuna, Restaurar compra la encontrará cuando vuelva la conexión."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vérifiez la connexion et réessayez. Si vous avez déjà acheté Antenna, Restaurer l’achat le retrouvera une fois la connexion rétablie."
+            "value" : "Vérifiez la connexion et réessayez. Si vous avez déjà acheté Antuna, Restaurer l’achat le retrouvera une fois la connexion rétablie."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verifique a conexão e tente de novo. Se você já comprou o Antenna, Restaurar compra encontra a compra quando a conexão voltar."
+            "value" : "Verifique a conexão e tente de novo. Se você já comprou o Antuna, Restaurar compra encontra a compra quando a conexão voltar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontrollera anslutningen och försök igen. Om du redan har köpt Antenna hittar Återställ köp det när anslutningen är tillbaka."
+            "value" : "Kontrollera anslutningen och försök igen. Om du redan har köpt Antuna hittar Återställ köp det när anslutningen är tillbaka."
           }
         }
       }
@@ -15069,42 +15069,42 @@
         }
       }
     },
-    "No purchase found for this Apple Account. If a family member bought Antenna, check that purchase sharing is on in Family Sharing." : {
+    "No purchase found for this Apple Account. If a family member bought Antuna, check that purchase sharing is on in Family Sharing." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لم يُعثر على عملية شراء لحساب Apple هذا. إذا اشترى أحد أفراد العائلة Antenna، فتأكد من تشغيل مشاركة المشتريات في المشاركة العائلية."
+            "value" : "لم يُعثر على عملية شراء لحساب Apple هذا. إذا اشترى أحد أفراد العائلة Antuna، فتأكد من تشغيل مشاركة المشتريات في المشاركة العائلية."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Für diesen Apple Account wurde kein Kauf gefunden. Wenn ein Familienmitglied Antenna gekauft hat, prüfe, ob die Kauffreigabe in der Familienfreigabe aktiv ist."
+            "value" : "Für diesen Apple Account wurde kein Kauf gefunden. Wenn ein Familienmitglied Antuna gekauft hat, prüfe, ob die Kauffreigabe in der Familienfreigabe aktiv ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se encontró ninguna compra para esta cuenta de Apple. Si un familiar compró Antenna, comprueba que compartir compras esté activado en En familia."
+            "value" : "No se encontró ninguna compra para esta cuenta de Apple. Si un familiar compró Antuna, comprueba que compartir compras esté activado en En familia."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun achat trouvé pour ce compte Apple. Si un membre de la famille a acheté Antenna, vérifiez que le partage des achats est activé dans le Partage familial."
+            "value" : "Aucun achat trouvé pour ce compte Apple. Si un membre de la famille a acheté Antuna, vérifiez que le partage des achats est activé dans le Partage familial."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nenhuma compra encontrada para esta Conta Apple. Se alguém da família comprou o Antenna, verifique se o compartilhamento de compras está ativado no Compartilhamento Familiar."
+            "value" : "Nenhuma compra encontrada para esta Conta Apple. Se alguém da família comprou o Antuna, verifique se o compartilhamento de compras está ativado no Compartilhamento Familiar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inget köp hittades för det här Apple-kontot. Om en familjemedlem köpte Antenna, kontrollera att köpdelning är på i Familjedelning."
+            "value" : "Inget köp hittades för det här Apple-kontot. Om en familjemedlem köpte Antuna, kontrollera att köpdelning är på i Familjedelning."
           }
         }
       }
@@ -15601,42 +15601,42 @@
         }
       }
     },
-    "Notifications are off for Antenna. Reminders show only while the app is open." : {
+    "Notifications are off for Antuna. Reminders show only while the app is open." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الإشعارات متوقفة لـ Antenna. تظهر التذكيرات فقط أثناء فتح التطبيق."
+            "value" : "الإشعارات متوقفة لـ Antuna. تظهر التذكيرات فقط أثناء فتح التطبيق."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mitteilungen für Antenna sind aus. Erinnerungen erscheinen nur, während die App geöffnet ist."
+            "value" : "Mitteilungen für Antuna sind aus. Erinnerungen erscheinen nur, während die App geöffnet ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las notificaciones de Antenna están desactivadas. Los recordatorios solo aparecen con la app abierta."
+            "value" : "Las notificaciones de Antuna están desactivadas. Los recordatorios solo aparecen con la app abierta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notifications sont désactivées pour Antenna. Les rappels ne s’affichent que lorsque l’app est ouverte."
+            "value" : "Les notifications sont désactivées pour Antuna. Les rappels ne s’affichent que lorsque l’app est ouverte."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As notificações do Antenna estão desativadas. Os lembretes só aparecem com o app aberto."
+            "value" : "As notificações do Antuna estão desativadas. Os lembretes só aparecem com o app aberto."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notiser är avstängda för Antenna. Påminnelser visas bara medan appen är öppen."
+            "value" : "Notiser är avstängda för Antuna. Påminnelser visas bara medan appen är öppen."
           }
         }
       }
@@ -17173,42 +17173,42 @@
         }
       }
     },
-    "Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antenna is open." : {
+    "Reminders sync to your other devices through iCloud. Each device reminds you in its own way: a notification on iPhone, iPad and Mac, a banner on Apple TV while Antuna is open." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تتم مزامنة التذكيرات مع أجهزتك الأخرى عبر iCloud. يذكّرك كل جهاز بطريقته: إشعار على iPhone وiPad وMac، ولافتة على Apple TV أثناء فتح Antenna."
+            "value" : "تتم مزامنة التذكيرات مع أجهزتك الأخرى عبر iCloud. يذكّرك كل جهاز بطريقته: إشعار على iPhone وiPad وMac، ولافتة على Apple TV أثناء فتح Antuna."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erinnerungen werden über iCloud mit deinen anderen Geräten synchronisiert. Jedes Gerät erinnert dich auf seine Art: eine Mitteilung auf iPhone, iPad und Mac, ein Banner auf Apple TV, während Antenna geöffnet ist."
+            "value" : "Erinnerungen werden über iCloud mit deinen anderen Geräten synchronisiert. Jedes Gerät erinnert dich auf seine Art: eine Mitteilung auf iPhone, iPad und Mac, ein Banner auf Apple TV, während Antuna geöffnet ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los recordatorios se sincronizan con tus otros dispositivos a través de iCloud. Cada dispositivo te avisa a su manera: una notificación en iPhone, iPad y Mac, y un banner en el Apple TV mientras Antenna está abierta."
+            "value" : "Los recordatorios se sincronizan con tus otros dispositivos a través de iCloud. Cada dispositivo te avisa a su manera: una notificación en iPhone, iPad y Mac, y un banner en el Apple TV mientras Antuna está abierta."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les rappels se synchronisent avec vos autres appareils via iCloud. Chaque appareil vous prévient à sa façon : une notification sur iPhone, iPad et Mac, une bannière sur l’Apple TV tant qu’Antenna est ouvert."
+            "value" : "Les rappels se synchronisent avec vos autres appareils via iCloud. Chaque appareil vous prévient à sa façon : une notification sur iPhone, iPad et Mac, une bannière sur l’Apple TV tant qu’Antuna est ouvert."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os lembretes sincronizam com seus outros dispositivos pelo iCloud. Cada dispositivo lembra você do seu jeito: uma notificação no iPhone, iPad e Mac, e um banner no Apple TV enquanto o Antenna está aberto."
+            "value" : "Os lembretes sincronizam com seus outros dispositivos pelo iCloud. Cada dispositivo lembra você do seu jeito: uma notificação no iPhone, iPad e Mac, e um banner no Apple TV enquanto o Antuna está aberto."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Påminnelser synkas till dina andra enheter via iCloud. Varje enhet påminner dig på sitt sätt: en notis på iPhone, iPad och Mac, en banner på Apple TV medan Antenna är öppen."
+            "value" : "Påminnelser synkas till dina andra enheter via iCloud. Varje enhet påminner dig på sitt sätt: en notis på iPhone, iPad och Mac, en banner på Apple TV medan Antuna är öppen."
           }
         }
       }
@@ -18419,42 +18419,42 @@
         }
       }
     },
-    "Set up Antenna on Apple TV" : {
+    "Set up Antuna on Apple TV" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "إعداد Antenna على Apple TV"
+            "value" : "إعداد Antuna على Apple TV"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna auf Apple TV einrichten"
+            "value" : "Antuna auf Apple TV einrichten"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurar Antenna en el Apple TV"
+            "value" : "Configurar Antuna en el Apple TV"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurer Antenna sur l’Apple TV"
+            "value" : "Configurer Antuna sur l’Apple TV"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurar o Antenna no Apple TV"
+            "value" : "Configurar o Antuna no Apple TV"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ställ in Antenna på Apple TV"
+            "value" : "Ställ in Antuna på Apple TV"
           }
         }
       }
@@ -20511,42 +20511,42 @@
         }
       }
     },
-    "That channel's source is no longer in Antenna." : {
+    "That channel's source is no longer in Antuna." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لم يعد مصدر تلك القناة في Antenna."
+            "value" : "لم يعد مصدر تلك القناة في Antuna."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Quelle dieses Senders ist nicht mehr in Antenna."
+            "value" : "Die Quelle dieses Senders ist nicht mehr in Antuna."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fuente de ese canal ya no está en Antenna."
+            "value" : "La fuente de ese canal ya no está en Antuna."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La source de cette chaîne n’est plus dans Antenna."
+            "value" : "La source de cette chaîne n’est plus dans Antuna."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A fonte desse canal não está mais no Antenna."
+            "value" : "A fonte desse canal não está mais no Antuna."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den kanalens källa finns inte längre i Antenna."
+            "value" : "Den kanalens källa finns inte längre i Antuna."
           }
         }
       }
@@ -20591,42 +20591,42 @@
         }
       }
     },
-    "That title's source is no longer in Antenna." : {
+    "That title's source is no longer in Antuna." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لم يعد مصدر ذلك العنوان في Antenna."
+            "value" : "لم يعد مصدر ذلك العنوان في Antuna."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Quelle dieses Titels ist nicht mehr in Antenna."
+            "value" : "Die Quelle dieses Titels ist nicht mehr in Antuna."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La fuente de ese título ya no está en Antenna."
+            "value" : "La fuente de ese título ya no está en Antuna."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La source de ce titre n’est plus dans Antenna."
+            "value" : "La source de ce titre n’est plus dans Antuna."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A fonte desse título não está mais no Antenna."
+            "value" : "A fonte desse título não está mais no Antuna."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den titelns källa finns inte längre i Antenna."
+            "value" : "Den titelns källa finns inte längre i Antuna."
           }
         }
       }
@@ -21591,42 +21591,42 @@
         }
       }
     },
-    "The server replied with something Antenna could not read." : {
+    "The server replied with something Antuna could not read." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "رد الخادم بشيء لم يستطع Antenna قراءته."
+            "value" : "رد الخادم بشيء لم يستطع Antuna قراءته."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Server hat etwas gesendet, das Antenna nicht lesen konnte."
+            "value" : "Der Server hat etwas gesendet, das Antuna nicht lesen konnte."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El servidor respondió con algo que Antenna no pudo leer."
+            "value" : "El servidor respondió con algo que Antuna no pudo leer."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le serveur a répondu par quelque chose qu’Antenna n’a pas pu lire."
+            "value" : "Le serveur a répondu par quelque chose qu’Antuna n’a pas pu lire."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O servidor respondeu com algo que o Antenna não conseguiu ler."
+            "value" : "O servidor respondeu com algo que o Antuna não conseguiu ler."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Servern svarade med något som Antenna inte kunde läsa."
+            "value" : "Servern svarade med något som Antuna inte kunde läsa."
           }
         }
       }
@@ -21911,42 +21911,42 @@
         }
       }
     },
-    "This file is %@. Antenna imports playlists up to 16 MB." : {
+    "This file is %@. Antuna imports playlists up to 16 MB." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "حجم هذا الملف %@. يستورد Antenna قوائم تشغيل حتى 16 ميغابايت."
+            "value" : "حجم هذا الملف %@. يستورد Antuna قوائم تشغيل حتى 16 ميغابايت."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese Datei ist %@ groß. Antenna importiert Playlists bis 16 MB."
+            "value" : "Diese Datei ist %@ groß. Antuna importiert Playlists bis 16 MB."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este archivo ocupa %@. Antenna importa listas de hasta 16 MB."
+            "value" : "Este archivo ocupa %@. Antuna importa listas de hasta 16 MB."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce fichier fait %@. Antenna importe des playlists jusqu’à 16 Mo."
+            "value" : "Ce fichier fait %@. Antuna importe des playlists jusqu’à 16 Mo."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este arquivo tem %@. O Antenna importa playlists de até 16 MB."
+            "value" : "Este arquivo tem %@. O Antuna importa playlists de até 16 MB."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här filen är %@. Antenna importerar spellistor upp till 16 MB."
+            "value" : "Den här filen är %@. Antuna importerar spellistor upp till 16 MB."
           }
         }
       }
@@ -22031,42 +22031,42 @@
         }
       }
     },
-    "This file is larger than 16 MB. Antenna imports playlists up to 16 MB." : {
+    "This file is larger than 16 MB. Antuna imports playlists up to 16 MB." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هذا الملف أكبر من 16 ميغابايت. يستورد Antenna قوائم تشغيل حتى 16 ميغابايت."
+            "value" : "هذا الملف أكبر من 16 ميغابايت. يستورد Antuna قوائم تشغيل حتى 16 ميغابايت."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese Datei ist größer als 16 MB. Antenna importiert Playlists bis 16 MB."
+            "value" : "Diese Datei ist größer als 16 MB. Antuna importiert Playlists bis 16 MB."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este archivo ocupa más de 16 MB. Antenna importa listas de hasta 16 MB."
+            "value" : "Este archivo ocupa más de 16 MB. Antuna importa listas de hasta 16 MB."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce fichier dépasse 16 Mo. Antenna importe des playlists jusqu’à 16 Mo."
+            "value" : "Ce fichier dépasse 16 Mo. Antuna importe des playlists jusqu’à 16 Mo."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este arquivo tem mais de 16 MB. O Antenna importa playlists de até 16 MB."
+            "value" : "Este arquivo tem mais de 16 MB. O Antuna importa playlists de até 16 MB."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här filen är större än 16 MB. Antenna importerar spellistor upp till 16 MB."
+            "value" : "Den här filen är större än 16 MB. Antuna importerar spellistor upp till 16 MB."
           }
         }
       }
@@ -22271,37 +22271,37 @@
         }
       }
     },
-    "This profile hides adult content. Show it in Antenna's Settings first." : {
+    "This profile hides adult content. Show it in Antuna's Settings first." : {
       "comment" : "Siri and Shortcuts reply when a channel or title is adult content the current profile hides.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هذا الملف الشخصي يخفي محتوى البالغين. أظهره من إعدادات Antenna أولًا."
+            "value" : "هذا الملف الشخصي يخفي محتوى البالغين. أظهره من إعدادات Antuna أولًا."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieses Profil blendet Inhalte für Erwachsene aus. Blende sie zuerst in den Einstellungen von Antenna ein."
+            "value" : "Dieses Profil blendet Inhalte für Erwachsene aus. Blende sie zuerst in den Einstellungen von Antuna ein."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este perfil oculta el contenido para adultos. Muéstralo primero en los Ajustes de Antenna."
+            "value" : "Este perfil oculta el contenido para adultos. Muéstralo primero en los Ajustes de Antuna."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce profil masque le contenu pour adultes. Affichez-le d’abord dans les réglages d’Antenna."
+            "value" : "Ce profil masque le contenu pour adultes. Affichez-le d’abord dans les réglages d’Antuna."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este perfil oculta conteúdo adulto. Mostre-o primeiro nos Ajustes do Antenna."
+            "value" : "Este perfil oculta conteúdo adulto. Mostre-o primeiro nos Ajustes do Antuna."
           }
         },
         "sv" : {
@@ -22312,42 +22312,42 @@
         }
       }
     },
-    "This server asks for a username and password, which Antenna cannot send yet." : {
+    "This server asks for a username and password, which Antuna cannot send yet." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يطلب هذا الخادم اسم مستخدم وكلمة سر، ولا يستطيع Antenna إرسالهما بعد."
+            "value" : "يطلب هذا الخادم اسم مستخدم وكلمة سر، ولا يستطيع Antuna إرسالهما بعد."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieser Server verlangt Benutzername und Passwort, die Antenna noch nicht senden kann."
+            "value" : "Dieser Server verlangt Benutzername und Passwort, die Antuna noch nicht senden kann."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este servidor pide usuario y contraseña, que Antenna aún no puede enviar."
+            "value" : "Este servidor pide usuario y contraseña, que Antuna aún no puede enviar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce serveur demande un nom d’utilisateur et un mot de passe, qu’Antenna ne peut pas encore envoyer."
+            "value" : "Ce serveur demande un nom d’utilisateur et un mot de passe, qu’Antuna ne peut pas encore envoyer."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este servidor pede usuário e senha, que o Antenna ainda não consegue enviar."
+            "value" : "Este servidor pede usuário e senha, que o Antuna ainda não consegue enviar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här servern ber om användarnamn och lösenord, som Antenna inte kan skicka än."
+            "value" : "Den här servern ber om användarnamn och lösenord, som Antuna inte kan skicka än."
           }
         }
       }
@@ -23084,42 +23084,42 @@
         }
       }
     },
-    "Unlock Antenna" : {
+    "Unlock Antuna" : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فتح قفل Antenna"
+            "value" : "فتح قفل Antuna"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antenna freischalten"
+            "value" : "Antuna freischalten"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desbloquear Antenna"
+            "value" : "Desbloquear Antuna"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déverrouiller Antenna"
+            "value" : "Déverrouiller Antuna"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desbloquear o Antenna"
+            "value" : "Desbloquear o Antuna"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lås upp Antenna"
+            "value" : "Lås upp Antuna"
           }
         }
       }
@@ -23508,42 +23508,42 @@
         }
       }
     },
-    "Waiting for approval. Antenna unlocks as soon as the purchase is approved." : {
+    "Waiting for approval. Antuna unlocks as soon as the purchase is approved." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بانتظار الموافقة. يُفتح قفل Antenna فور الموافقة على الشراء."
+            "value" : "بانتظار الموافقة. يُفتح قفل Antuna فور الموافقة على الشراء."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Warten auf Bestätigung. Antenna wird freigeschaltet, sobald der Kauf bestätigt ist."
+            "value" : "Warten auf Bestätigung. Antuna wird freigeschaltet, sobald der Kauf bestätigt ist."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esperando aprobación. Antenna se desbloquea en cuanto se apruebe la compra."
+            "value" : "Esperando aprobación. Antuna se desbloquea en cuanto se apruebe la compra."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En attente d’approbation. Antenna se déverrouille dès que l’achat est approuvé."
+            "value" : "En attente d’approbation. Antuna se déverrouille dès que l’achat est approuvé."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aguardando aprovação. O Antenna é desbloqueado assim que a compra for aprovada."
+            "value" : "Aguardando aprovação. O Antuna é desbloqueado assim que a compra for aprovada."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Väntar på godkännande. Antenna låses upp så snart köpet har godkänts."
+            "value" : "Väntar på godkännande. Antuna låses upp så snart köpet har godkänts."
           }
         }
       }

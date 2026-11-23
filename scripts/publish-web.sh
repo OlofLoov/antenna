@@ -53,7 +53,7 @@ fi
 
 yesterday='import datetime; print(datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(days=1))'
 start=${REVIEW_GUIDE_START:-$(python3 -c "$yesterday")}
-python3 scripts/make-review-guide.py Web/review/antenna-review.m3u "$start" 36 >"$out/review/guide.xml"
+python3 scripts/make-review-guide.py Web/review/antuna-review.m3u "$start" 36 >"$out/review/guide.xml"
 
 if [[ -n "$site" ]]; then
   clashes=""

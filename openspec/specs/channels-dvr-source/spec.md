@@ -11,7 +11,7 @@ The system SHALL turn a typed Channels DVR address into one tidy server address,
 #### Scenario: Tidy the address
 - **GIVEN** a user who types a server address as an IP, a `.local` name or a remote host name, with or without `http://`, a port, a path or a trailing slash
 - **WHEN** the form checks it
-- **THEN** Antenna turns it into one tidy server address, adding `http://` and port 8089 only when the user gave neither
+- **THEN** Antuna turns it into one tidy server address, adding `http://` and port 8089 only when the user gave neither
 
 #### Scenario: Turn down a bad address
 - **WHEN** the typed address has a username or password in it, another scheme such as `ftp`, or no host
@@ -77,8 +77,8 @@ The system SHALL list every channel in a full lineup, treat an empty lineup as n
 - **WHEN** the source loads
 - **THEN** a full lineup gives all its channels, an empty one gives no channels and no error, and a web page, an empty answer or a server error fails with an error that says which
 
-#### Scenario: An older Antenna
-- **GIVEN** an older Antenna that receives a Channels DVR source through iCloud
+#### Scenario: An older Antuna
+- **GIVEN** an older Antuna that receives a Channels DVR source through iCloud
 - **WHEN** it loads the source as a playlist
 - **THEN** it gets a web page and lists no channels without crashing
 
@@ -107,12 +107,12 @@ The system SHALL keep the proxy username, password, their encoded form and the p
 - **THEN** none shows the username, password, their encoded form or the port, and the source prints as the server's host name only
 
 ### Requirement: The guide lines up without manual matching
-The system SHALL fetch the guide from the Channels DVR server itself and match every guide channel to exactly one Antenna channel, with no guide link for the user to add.
+The system SHALL fetch the guide from the Channels DVR server itself and match every guide channel to exactly one Antuna channel, with no guide link for the user to add.
 
 #### Scenario: Lineup and guide from one server
 - **GIVEN** a lineup and the guide file (XMLTV, the common guide format) exported by the same server
 - **WHEN** both are loaded
-- **THEN** every guide channel matches exactly one Antenna channel and every programme lands on a channel, so the user never matches channels to the guide by hand
+- **THEN** every guide channel matches exactly one Antuna channel and every programme lands on a channel, so the user never matches channels to the guide by hand
 - **AND** the guide is fetched from the server with no guide link for the user to add
 
 #### Scenario: A guide link set by hand

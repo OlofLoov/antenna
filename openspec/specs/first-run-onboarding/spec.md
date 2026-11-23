@@ -1,7 +1,7 @@
 # first-run-onboarding Specification
 
 ## Purpose
-Takes someone who has just paid for Antenna and has nothing in it from an empty app to a playing channel. It asks for their provider, checks it, shows what loads, and lets them start watching before the guide is done.
+Takes someone who has just paid for Antuna and has nothing in it from an empty app to a playing channel. It asks for their provider, checks it, shows what loads, and lets them start watching before the guide is done.
 
 ## Requirements
 
@@ -10,9 +10,9 @@ The system SHALL show the welcome screen, not an empty app, when the user has pa
 
 #### Scenario: First launch with no provider
 - **GIVEN** the user has paid and has added no provider
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** they see the welcome screen instead of an empty app
-- **AND** Antenna has not contacted any server
+- **AND** Antuna has not contacted any server
 
 #### Scenario: Not signed into iCloud
 - **GIVEN** the device is not signed into iCloud
@@ -35,23 +35,23 @@ The system SHALL open on the user's channels, with no onboarding, when a provide
 
 #### Scenario: Provider with its password on this device
 - **GIVEN** the user has a provider whose password, if it needs one, is on this device
-- **WHEN** they open Antenna
+- **WHEN** they open Antuna
 - **THEN** they see their channels and no onboarding
 
 #### Scenario: The user left during loading
 - **GIVEN** the user left onboarding while it was loading, after the provider was saved
-- **WHEN** they open Antenna again
+- **WHEN** they open Antuna again
 - **THEN** they see their channels and no onboarding
 
 #### Scenario: Password not yet on an iPhone, iPad or Mac
 - **GIVEN** the user's providers have reached an iPhone, iPad or Mac but their passwords have not
-- **WHEN** they open Antenna there
+- **WHEN** they open Antuna there
 - **THEN** onboarding is not shown
 - **AND** Live shows that it is waiting for the password
 
 #### Scenario: A saved provider with no channels after a relaunch
 - **GIVEN** a saved provider has no channels
-- **WHEN** the user opens Antenna again
+- **WHEN** the user opens Antuna again
 - **THEN** they see the empty home on Apple TV or the empty Live screen elsewhere, not onboarding
 
 ### Requirement: Mistakes in the form are caught before connecting
@@ -78,7 +78,7 @@ The system SHALL check the form when the user chooses Connect, using the same ru
 The system SHALL tell the user under the form which failure happened when a connection fails, SHALL save nothing, and SHALL keep what the user typed so they can try again.
 
 #### Scenario: The server turns the user down
-- **GIVEN** the server rejects the login, says the account is not active, answers with an error, or sends back something Antenna cannot read
+- **GIVEN** the server rejects the login, says the account is not active, answers with an error, or sends back something Antuna cannot read
 - **WHEN** the user chooses Connect
 - **THEN** a message under the form says which of these happened
 - **AND** nothing is saved
@@ -191,7 +191,7 @@ The system SHALL offer, on iPhone, iPad and Mac, to fill the add-source form fro
 #### Scenario: A link with a username and password
 - **GIVEN** the user has copied a link that carries a username and password and the add-source sheet offers to fill it in
 - **WHEN** they tap Fill in
-- **THEN** Antenna reads the clipboard only now
+- **THEN** Antuna reads the clipboard only now
 - **AND** the Xtream fields are filled from the link
 
 #### Scenario: Any other link
@@ -219,14 +219,14 @@ The system SHALL ask on Apple TV for the username and password of each Xtream pr
 
 #### Scenario: Providers synced without passwords
 - **GIVEN** every provider is an Xtream login and none of their passwords is on this Apple TV
-- **WHEN** the user opens Antenna on Apple TV
+- **WHEN** the user opens Antuna on Apple TV
 - **THEN** they are asked for the username and password of each provider in turn with the server already filled in
 - **AND** each password is kept on this Apple TV without adding a new provider
 - **AND** after the last one the loading checklist appears
 
 #### Scenario: A Stalker portal synced without its MAC address
 - **GIVEN** the providers are Xtream logins and Stalker portals and none of their logins is on this Apple TV
-- **WHEN** the user opens Antenna on Apple TV
+- **WHEN** the user opens Antuna on Apple TV
 - **THEN** each portal asks for its MAC address, and a login and password only if the provider gave one, with the portal address already filled in
 - **AND** the portal is checked the way Connect checks it before the MAC address is kept on this Apple TV
 
@@ -250,13 +250,13 @@ The system SHALL offer a Stalker portal as a third kind of provider on every pla
 #### Scenario: A portal with only a MAC address
 - **GIVEN** a provider that gave the user a portal address and a MAC address and nothing else
 - **WHEN** the user picks Stalker portal, fills in those two and chooses Connect
-- **THEN** Antenna signs in to the portal and shows the loading checklist with the portal's channels
+- **THEN** Antuna signs in to the portal and shows the loading checklist with the portal's channels
 - **AND** the user was never asked to fill in a login or password
 
 #### Scenario: A portal that also has a login
 - **GIVEN** a provider that gave the user a login and password for the portal as well
 - **WHEN** the user fills in the optional login and password and chooses Connect
-- **THEN** Antenna signs in with them
+- **THEN** Antuna signs in with them
 
 #### Scenario: Picking the portal on Apple TV
 - **GIVEN** the "What kind of source?" step on Apple TV
@@ -269,7 +269,7 @@ The system SHALL offer a Jellyfin server as a kind of provider on every platform
 #### Scenario: A Jellyfin server with Live TV
 - **GIVEN** a user with a Jellyfin server address, username and password
 - **WHEN** the user picks Jellyfin, fills in those three and chooses Connect
-- **THEN** Antenna signs in to the server and shows the loading checklist with the server's Live TV channels
+- **THEN** Antuna signs in to the server and shows the loading checklist with the server's Live TV channels
 
 #### Scenario: Not a Jellyfin server
 - **GIVEN** an address where something other than a Jellyfin server answers
@@ -278,7 +278,7 @@ The system SHALL offer a Jellyfin server as a kind of provider on every platform
 - **AND** the password was not sent and nothing is saved
 
 #### Scenario: The server keeps the account out or its certificate is not trusted
-- **GIVEN** a server that turns down the password, does not let this account sign in from this device, or has a certificate Antenna cannot verify
+- **GIVEN** a server that turns down the password, does not let this account sign in from this device, or has a certificate Antuna cannot verify
 - **WHEN** the user chooses Connect
 - **THEN** a message under the form says which of these happened, and for the certificate suggests `http` on the home network or a trusted certificate
 - **AND** nothing is saved
@@ -290,7 +290,7 @@ The system SHALL offer a Jellyfin server as a kind of provider on every platform
 
 #### Scenario: A Jellyfin server synced without its password
 - **GIVEN** the providers are logins and none of them is on this Apple TV, one of them a Jellyfin server
-- **WHEN** the user opens Antenna on Apple TV
+- **WHEN** the user opens Antuna on Apple TV
 - **THEN** the Jellyfin server asks for its username and password with the server address already filled in
 - **AND** the server is checked the way Connect checks it before the login is kept on this Apple TV
 
@@ -300,13 +300,13 @@ The system SHALL offer a Channels DVR server as a kind of provider on every plat
 #### Scenario: A server at home
 - **GIVEN** a Channels DVR server on the home network at 192.168.1.20
 - **WHEN** the user picks Channels DVR, types "192.168.1.20" and chooses Connect
-- **THEN** Antenna checks the server, shows the loading checklist with a Server line naming its version, and lists its channels
+- **THEN** Antuna checks the server, shows the loading checklist with a Server line naming its version, and lists its channels
 - **AND** the user was never asked for a password
 
 #### Scenario: Local network access refused
-- **GIVEN** an iPhone, iPad or Mac where Antenna may not reach the home network, and a server address at home
+- **GIVEN** an iPhone, iPad or Mac where Antuna may not reach the home network, and a server address at home
 - **WHEN** Connect cannot reach the server
-- **THEN** the message under the form also asks the user to allow local network access for Antenna in Settings
+- **THEN** the message under the form also asks the user to allow local network access for Antuna in Settings
 
 #### Scenario: Picking the server on Apple TV
 - **GIVEN** the "What kind of source?" step on Apple TV

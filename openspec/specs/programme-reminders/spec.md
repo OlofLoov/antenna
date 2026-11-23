@@ -1,7 +1,7 @@
 # programme-reminders Specification
 
 ## Purpose
-Lets a viewer who finds a programme that starts later ask to be reminded, so that a few minutes before it starts their iPhone, iPad or Mac notifies them, or any open Antenna shows a banner, and one tap plays the channel.
+Lets a viewer who finds a programme that starts later ask to be reminded, so that a few minutes before it starts their iPhone, iPad or Mac notifies them, or any open Antuna shows a banner, and one tap plays the channel.
 
 ## Requirements
 
@@ -67,7 +67,7 @@ The system SHALL let the user choose, per device, how long before start reminder
 The system SHALL show a notification on iPhone, iPad and Mac at the chosen time before a reminded programme starts, for reminders set on this or any other device on the same iCloud account.
 
 #### Scenario: The reminder goes off
-- **GIVEN** an iPhone, iPad or Mac where Antenna may send notifications, and a reminder set on this or another device
+- **GIVEN** an iPhone, iPad or Mac where Antuna may send notifications, and a reminder set on this or another device
 - **WHEN** the chosen number of minutes before start arrives
 - **THEN** a notification shows the programme title and "Starts at <time> on <channel>", or "Starts now" when reminding at start
 
@@ -95,16 +95,16 @@ The system SHALL ask for notification permission only when the user sets their f
 - **THEN** the reminder is saved first, the system asks once, and the reminder stays saved whatever they answer
 
 #### Scenario: No early prompt
-- **WHEN** Antenna launches or Settings opens
-- **THEN** Antenna does not ask about notifications
+- **WHEN** Antuna launches or Settings opens
+- **THEN** Antuna does not ask about notifications
 
 ### Requirement: The app says when reminders cannot notify
-The system SHALL tell the user on the Reminders page when this device cannot notify, saying reminders show only while Antenna is open, and offer a way to allow notifications where the device has one.
+The system SHALL tell the user on the Reminders page when this device cannot notify, saying reminders show only while Antuna is open, and offer a way to allow notifications where the device has one.
 
 #### Scenario: Notifications unavailable
-- **GIVEN** Antenna cannot notify on this device because notifications are off, the user has not been asked yet, or it is an Apple TV
+- **GIVEN** Antuna cannot notify on this device because notifications are off, the user has not been asked yet, or it is an Apple TV
 - **WHEN** the user opens Settings › Reminders
-- **THEN** a notice says reminders show only while Antenna is open, with a way to allow notifications where the device has one
+- **THEN** a notice says reminders show only while Antuna is open, with a way to allow notifications where the device has one
 
 #### Scenario: Notifications allowed later
 - **GIVEN** the notice is showing on an iPhone, iPad or Mac
@@ -117,7 +117,7 @@ The system SHALL open Live and play the reminder's channel when the user taps it
 #### Scenario: Watch from a reminder
 - **GIVEN** a reminder has gone off, as a notification on iPhone, iPad or Mac or as a banner on any device
 - **WHEN** the user taps the notification or chooses Watch
-- **THEN** Antenna opens Live and plays the channel, switching to All channels if the group on screen lacks it, leaving it alone if it is already playing, and waiting for its source to load when Antenna was closed
+- **THEN** Antuna opens Live and plays the channel, switching to All channels if the group on screen lacks it, leaving it alone if it is already playing, and waiting for its source to load when Antuna was closed
 
 #### Scenario: The channel cannot be found
 - **GIVEN** a reminder whose source or login has not synced, or whose channel is gone
@@ -134,17 +134,17 @@ The system SHALL open Live and play the reminder's channel when the user taps it
 - **WHEN** the user taps it
 - **THEN** the paywall shows instead of the channel, and no banner shows while locked
 
-### Requirement: A banner while Antenna is open
-The system SHALL show a reminder as a banner over any screen while Antenna is open, and once on return while a missed programme is still on, without pausing what is playing.
+### Requirement: A banner while Antuna is open
+The system SHALL show a reminder as a banner over any screen while Antuna is open, and once on return while a missed programme is still on, without pausing what is playing.
 
 #### Scenario: The reminder goes off in the app
-- **GIVEN** Antenna is open on any screen, on iPhone, iPad and Mac only when notifications are off
+- **GIVEN** Antuna is open on any screen, on iPhone, iPad and Mac only when notifications are off
 - **WHEN** the reminder goes off
 - **THEN** a banner with the title, start time, channel, Watch and Dismiss appears once over the screen without pausing what is playing, with Watch highlighted on Apple TV
 
 #### Scenario: Returning to a missed reminder
 - **GIVEN** a reminder went off unseen and its programme is still on
-- **WHEN** the user returns to Antenna
+- **WHEN** the user returns to Antuna
 - **THEN** the banner appears once
 
 #### Scenario: Close the banner

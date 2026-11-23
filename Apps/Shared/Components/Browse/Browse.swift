@@ -76,7 +76,7 @@ enum Browse {
         }
     }
 
-    /// The Antenna mark and "Select a channel" in the picture area before
+    /// The Antuna mark and "Select a channel" in the picture area before
     /// anything plays (live-tv-on-iphone-ipad-mac/sidebar-list-and-picture-side-by-side).
     struct NothingSelected: View {
         var body: some View {

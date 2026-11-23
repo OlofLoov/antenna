@@ -1,4 +1,4 @@
-Antenna spielt die TV-Quellen ab, die du schon hast, auf iPhone, iPad, Mac und Apple TV. Die App bringt keine Sender, Playlists oder Anbieteradressen mit. Du fügst deine eigene Quelle hinzu, und Antenna macht daraus eine Senderliste, einen Programmführer und eine Bibliothek mit Filmen und Serien.
+Antuna spielt die TV-Quellen ab, die du schon hast, auf iPhone, iPad, Mac und Apple TV. Die App bringt keine Sender, Playlists oder Anbieteradressen mit. Du fügst deine eigene Quelle hinzu, und Antuna macht daraus eine Senderliste, einen Programmführer und eine Bibliothek mit Filmen und Serien.
 
 DEINE QUELLEN
 • M3U-Playlists, per Link oder als Datei
@@ -34,9 +34,9 @@ AUF JEDEM GERÄT
 • Tastaturkurzbefehle auf Mac und iPad
 
 KAUF
-Antenna kannst du kostenlos laden. Zum Nutzen ist ein Kauf nötig: ein Jahresabo oder eine dauerhafte Freischaltung mit einer einzigen Zahlung. Beides funktioniert mit der Familienfreigabe. Die App zeigt den Preis für deine Region, bevor du kaufst.
+Antuna kannst du kostenlos laden. Zum Nutzen ist ein Kauf nötig: ein Jahresabo oder eine dauerhafte Freischaltung mit einer einzigen Zahlung. Beides funktioniert mit der Familienfreigabe. Die App zeigt den Preis für deine Region, bevor du kaufst.
 
 DATENSCHUTZ
-Antenna braucht kein Konto und hat keine Werbung und keine Nutzungsanalyse. Die App verbindet sich nur mit den Quellen, die du hinzufügst, mit deinem iCloud-Konto und mit dem App Store.
+Antuna braucht kein Konto und hat keine Werbung und keine Nutzungsanalyse. Die App verbindet sich nur mit den Quellen, die du hinzufügst, mit deinem iCloud-Konto und mit dem App Store.
 
-Du brauchst das Recht, anzusehen, was deine Quellen abspielen. Antenna verkauft und empfiehlt keine TV-Abos.
+Du brauchst das Recht, anzusehen, was deine Quellen abspielen. Antuna verkauft und empfiehlt keine TV-Abos.

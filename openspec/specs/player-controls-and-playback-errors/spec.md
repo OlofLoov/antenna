@@ -13,7 +13,7 @@ The system SHALL open a panel over the still-playing picture when the user holds
 - **WHEN** the user holds select
 - **THEN** a panel opens over the top of the still-playing picture showing the channel number, name and source
 - **AND** the current programme with its times, minutes left, a progress bar and its summary
-- **AND** the format badges and a stream line such as "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player", or "Stream details not available yet" while loading
+- **AND** the format badges and a stream line such as "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player", or "Stream details not available yet" while loading
 
 #### Scenario: Inside the panel
 - **GIVEN** the panel is open
@@ -71,7 +71,7 @@ The system SHALL add to the controls on iPhone, iPad and Mac the audio-and-subti
 - **AND** each button has a spoken label
 
 #### Scenario: A stream that cannot go to AirPlay
-- **GIVEN** a stream Antenna reads itself rather than through Apple's player
+- **GIVEN** a stream Antuna reads itself rather than through Apple's player
 - **WHEN** the user opens the audio-and-subtitles menu
 - **THEN** there is no AirPlay button and the menu's last section says "AirPlay not available for this stream"
 

@@ -1,7 +1,7 @@
 # app-release Specification
 
 ## Purpose
-How a version of Antenna is approved and published, which version the apps
+How a version of Antuna is approved and published, which version the apps
 report, what each app bundle declares about privacy, and the test source App
 Review uses.
 
@@ -56,7 +56,7 @@ one place the release process updates.
 
 ### Requirement: Each bundle declares its privacy
 The system SHALL ship a privacy manifest in each app and in the Top Shelf
-extension that says Antenna does not track, collects no data, contacts no
+extension that says Antuna does not track, collects no data, contacts no
 tracking domain, and names a permitted reason for each required-reason API
 the bundle calls.
 
@@ -70,7 +70,7 @@ the bundle calls.
 
 ### Requirement: App Review gets a test source outside the app
 The system SHALL serve a reviewer playlist and a matching guide from the
-Antenna site, made only of freely available public test streams, and SHALL
+Antuna site, made only of freely available public test streams, and SHALL
 not name, bundle or link that playlist anywhere in the app.
 
 #### Scenario: The reviewer adds the source
@@ -97,43 +97,43 @@ every release.
 - **THEN** every test channel shows what is on now and next
 
 ### Requirement: Every app shows its icon
-Antenna on iPhone, iPad, Mac and Apple TV MUST show the Antenna icon wherever the system shows an app icon: the Home Screen, the Dock, Settings, Spotlight, the App Switcher and the App Store. The icon MUST contain no text and no third-party mark.
+Antuna on iPhone, iPad, Mac and Apple TV MUST show the Antuna icon wherever the system shows an app icon: the Home Screen, the Dock, Settings, Spotlight, the App Switcher and the App Store. The icon MUST contain no text and no third-party mark.
 
 #### Scenario: Installing on iPhone
-- **WHEN** the user installs Antenna on an iPhone or iPad
-- **THEN** the Home Screen shows the Antenna icon, not the blank placeholder
+- **WHEN** the user installs Antuna on an iPhone or iPad
+- **THEN** the Home Screen shows the Antuna icon, not the blank placeholder
 
 #### Scenario: Opening on a Mac
-- **WHEN** the user opens Antenna on a Mac
-- **THEN** the Dock and Finder show the Antenna icon, and the mark is still recognizable at 16 pixels in a list
+- **WHEN** the user opens Antuna on a Mac
+- **THEN** the Dock and Finder show the Antuna icon, and the mark is still recognizable at 16 pixels in a list
 
 #### Scenario: Focusing the icon on Apple TV
-- **WHEN** the user moves focus to Antenna on the Apple TV Home Screen
+- **WHEN** the user moves focus to Antuna on the Apple TV Home Screen
 - **THEN** the icon lifts and its layers shift apart as the user moves a finger on the Siri Remote
 
 #### Scenario: Top Shelf with nothing to list
-- **GIVEN** Antenna sits in the top row on Apple TV and has no favorites or recents to show
+- **GIVEN** Antuna sits in the top row on Apple TV and has no favorites or recents to show
 - **WHEN** the user focuses it
-- **THEN** the Top Shelf shows the Antenna mark on the dark ground instead of an empty area
+- **THEN** the Top Shelf shows the Antuna mark on the dark ground instead of an empty area
 
 ### Requirement: The icon follows the Home Screen appearance
 On iPhone, iPad and Mac the icon MUST have a dark, a tinted and a clear version in which the mark stays legible, matching the icon appearance the user picked.
 
 #### Scenario: Dark icons
 - **WHEN** the user sets Home Screen icons to dark
-- **THEN** Antenna's icon shows the blue mark on a black ground
+- **THEN** Antuna's icon shows the blue mark on a black ground
 
 #### Scenario: Tinted icons
 - **WHEN** the user sets Home Screen icons to tinted with any color
-- **THEN** Antenna's mark shows in that tint and stays readable at Home Screen size
+- **THEN** Antuna's mark shows in that tint and stays readable at Home Screen size
 
 ### Requirement: Alternate icons keep the mark
-Antenna on iPhone, iPad and Apple TV MUST ship six alternate icons, Mono, Light, Teal, Amber, Pink and Violet, each the standard mark in one color on a plain ground, with no text and no third-party mark. On iPhone and iPad each MUST have a dark, a tinted and a clear version in which the mark stays legible, as the standard icon does. On Apple TV each MUST be a layered icon that lifts and shifts on focus.
+Antuna on iPhone, iPad and Apple TV MUST ship six alternate icons, Mono, Light, Teal, Amber, Pink and Violet, each the standard mark in one color on a plain ground, with no text and no third-party mark. On iPhone and iPad each MUST have a dark, a tinted and a clear version in which the mark stays legible, as the standard icon does. On Apple TV each MUST be a layered icon that lifts and shifts on focus.
 
 #### Scenario: An alternate on the Home Screen
 - **GIVEN** the user picked Amber in Settings
 - **WHEN** they look at the Home Screen
-- **THEN** the icon shows the Antenna mark in amber on the dark ground
+- **THEN** the icon shows the Antuna mark in amber on the dark ground
 
 #### Scenario: The Light icon in dark mode
 - **GIVEN** the Light icon and Home Screen icons set to dark
@@ -147,5 +147,5 @@ Antenna on iPhone, iPad and Apple TV MUST ship six alternate icons, Mono, Light,
 
 #### Scenario: Focusing an alternate on Apple TV
 - **GIVEN** the Violet icon on Apple TV
-- **WHEN** the user moves focus to Antenna on the Home Screen
+- **WHEN** the user moves focus to Antuna on the Home Screen
 - **THEN** the violet mark lifts and its layers shift apart as the user moves a finger on the Siri Remote

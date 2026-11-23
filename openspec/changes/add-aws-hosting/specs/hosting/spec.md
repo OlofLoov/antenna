@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
-### Requirement: The site is served over HTTPS on Antenna's domain
-The system SHALL serve the website at Antenna's own domain over HTTPS with a certificate for that name, SHALL answer a plain HTTP request with a permanent redirect to the same address over HTTPS, and SHALL tell browsers to use HTTPS for that domain from then on.
+### Requirement: The site is served over HTTPS on Antuna's domain
+The system SHALL serve the website at Antuna's own domain over HTTPS with a certificate for that name, SHALL answer a plain HTTP request with a permanent redirect to the same address over HTTPS, and SHALL tell browsers to use HTTPS for that domain from then on.
 
 #### Scenario: Opening the site
 - **WHEN** someone opens the domain's home address in a browser
@@ -43,11 +43,11 @@ The system SHALL tell browsers, with every page, to run only scripts and styles 
 - **THEN** the screen reader reads the new page's title, the announcement stays hidden on screen, and the browser reports no blocked style
 
 #### Scenario: The setup page
-- **WHEN** an iPhone without Antenna opens a setup link
+- **WHEN** an iPhone without Antuna opens a setup link
 - **THEN** the page shows with its styling, and the browser would refuse any script on it
 
 #### Scenario: Framing the site
-- **WHEN** another site puts a page of Antenna's site in a frame
+- **WHEN** another site puts a page of Antuna's site in a frame
 - **THEN** the browser refuses to show it
 
 ### Requirement: The site's files cannot be read around it
@@ -58,7 +58,7 @@ The system SHALL keep the site's stored files private, readable only through the
 - **THEN** the request is refused
 
 ### Requirement: The API answers on its own address
-The system SHALL serve the API at `api.` on Antenna's domain over HTTPS only, SHALL answer an address it has no route for with a not-found status and no detail, and SHALL refuse requests that reach the API without passing through that address.
+The system SHALL serve the API at `api.` on Antuna's domain over HTTPS only, SHALL answer an address it has no route for with a not-found status and no detail, and SHALL refuse requests that reach the API without passing through that address.
 
 #### Scenario: A route that does not exist
 - **WHEN** someone requests a path the API has no route for
@@ -111,8 +111,8 @@ The system SHALL alert the owner when the month's AWS cost passes half of the mo
 - **THEN** the owner gets an alert that day
 
 ### Requirement: The domain receives no email
-The system SHALL publish no mail records for Antenna's domain, so mail sent to any address at it is not accepted.
+The system SHALL publish no mail records for Antuna's domain, so mail sent to any address at it is not accepted.
 
 #### Scenario: Someone writes to the domain
-- **WHEN** someone sends an email to an address at Antenna's domain
+- **WHEN** someone sends an email to an address at Antuna's domain
 - **THEN** their mail server reports that it could not be delivered

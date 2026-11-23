@@ -2,7 +2,7 @@
 
 ### Requirement: Each bundle declares its privacy
 The system SHALL ship a privacy manifest in each app and in the Top Shelf
-extension that says Antenna does not track, contacts no tracking domain, and
+extension that says Antuna does not track, contacts no tracking domain, and
 names a permitted reason for each required-reason API the bundle calls. The
 iOS and tvOS app manifests SHALL declare the data a problem report collects,
 each for App Functionality, not linked to the user and not for tracking, and the Top Shelf extension

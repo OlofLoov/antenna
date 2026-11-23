@@ -24,7 +24,7 @@ The system SHALL find the portal from any address form a provider hands out, sig
 #### Scenario: Address forms
 - **GIVEN** a portal address with or without a trailing `/c/`, under `/stalker_portal` or not, with a port, and, if the portal asks for one, a login and password
 - **WHEN** the user taps Connect
-- **THEN** Antenna finds the portal, signs in with the login when there is one, and saves the source under a tidied address, so the sources list shows the portal's host name
+- **THEN** Antuna finds the portal, signs in with the login when there is one, and saves the source under a tidied address, so the sources list shows the portal's host name
 
 #### Scenario: Plain http
 - **GIVEN** a portal and stream hosts on plain `http`
@@ -46,11 +46,11 @@ The system SHALL report a distinct error for no connection, a server error, an u
 - **THEN** the portal refuses the device or sends an empty list, and the app reports that as not authorized or an empty source
 
 ### Requirement: Portals that remember your device still let you in
-The system SHALL send, for a given MAC, the same serial number, device id and signature that other players such as StbEmu and TiviMate send, so a portal that tied the MAC to those ids accepts Antenna.
+The system SHALL send, for a given MAC, the same serial number, device id and signature that other players such as StbEmu and TiviMate send, so a portal that tied the MAC to those ids accepts Antuna.
 
 #### Scenario: A MAC already tied to another player
 - **GIVEN** a MAC address that a portal has already tied to the device id of another player such as StbEmu or TiviMate
-- **WHEN** Antenna signs in with that MAC
+- **WHEN** Antuna signs in with that MAC
 - **THEN** it sends the same serial number, device id and signature those players send for that MAC, so the portal accepts it
 
 ### Requirement: Channels, guide and playback share one sign-in
@@ -59,15 +59,15 @@ The system SHALL sign in to a portal once per session and share that session bet
 #### Scenario: Two requests at once
 - **GIVEN** a portal source that has not signed in yet in this session
 - **WHEN** the channel loader, the guide or playback asks for something, even two of them at the same moment
-- **THEN** Antenna signs in once, answers both, and reuses the same session for later requests
+- **THEN** Antuna signs in once, answers both, and reuses the same session for later requests
 
 ### Requirement: An expired session renews itself once
-The system SHALL sign in again once and repeat the request when the portal turns down Antenna's session key, and SHALL fail as not authorized if the repeat is turned down too.
+The system SHALL sign in again once and repeat the request when the portal turns down Antuna's session key, and SHALL fail as not authorized if the repeat is turned down too.
 
 #### Scenario: The session key expired
-- **GIVEN** a portal that has expired or replaced Antenna's session key, for example because another device signed in with the same MAC
+- **GIVEN** a portal that has expired or replaced Antuna's session key, for example because another device signed in with the same MAC
 - **WHEN** the portal turns down a request
-- **THEN** Antenna signs in again once, repeats the request and returns the answer, even when several requests were turned down at the same time
+- **THEN** Antuna signs in again once, repeats the request and returns the answer, even when several requests were turned down at the same time
 
 #### Scenario: The repeat is turned down
 - **GIVEN** a renewed session that the portal also turns down
@@ -99,7 +99,7 @@ The system SHALL ask the portal for a channel's stream address each time the use
 #### Scenario: Tune a portal channel
 - **GIVEN** a channel from a Stalker source
 - **WHEN** the user tunes to it
-- **THEN** Antenna asks the portal for that channel's stream address and hands back the playable address from the answer
+- **THEN** Antuna asks the portal for that channel's stream address and hands back the playable address from the answer
 
 #### Scenario: No usable address
 - **GIVEN** a channel that is not from a portal, or a portal answer with no usable address
@@ -134,12 +134,12 @@ The system SHALL turn a portal answer it cannot read into a reading error that q
 
 #### Scenario: Unreadable answers
 - **GIVEN** a portal answer that is an HTML login page, XML, or empty
-- **WHEN** Antenna reads it
+- **WHEN** Antuna reads it
 - **THEN** it becomes a reading error that quotes nothing from the answer
 
 #### Scenario: Some broken rows
 - **GIVEN** a channel list with some broken rows
-- **WHEN** Antenna reads it
+- **WHEN** Antuna reads it
 - **THEN** the broken channel or genre rows are skipped and counted while the rest load
 
 ### Requirement: Your MAC and login stay in the Keychain

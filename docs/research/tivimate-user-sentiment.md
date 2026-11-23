@@ -1,12 +1,12 @@
 # TiviMate user sentiment: what people love, hate and wish for
 
-Research note, 2026-11-03. Input for Antenna product specs. Not a spec itself.
+Research note, 2026-11-03. Input for Antuna product specs. Not a spec itself.
 
 TiviMate (Armobsoft FZE) is the de-facto reference IPTV player on Android TV
-and Fire TV. Antenna targets the platforms TiviMate does not serve (iPhone,
+and Fire TV. Antuna targets the platforms TiviMate does not serve (iPhone,
 iPad, Mac, Apple TV), so the question this note answers is: what does the
-TiviMate community value enough that Antenna must match it, and what do they
-complain about that Antenna can do better?
+TiviMate community value enough that Antuna must match it, and what do they
+complain about that Antuna can do better?
 
 ## TL;DR
 
@@ -195,7 +195,7 @@ posts that raise it, not votes.
 - **IPTV Smarters Pro.** The free, cross-platform fallback and the one Apple
   users are pushed to. Verdicts: "B+ grade copy", "almost too simple", "makes
   me want to pay for cable", "tivimate puts smarters to shame". Repeatedly
-  pulled from stores. Antenna's main comparison point on iOS.
+  pulled from stores. Antuna's main comparison point on iOS.
 - **Sparkle TV.** Closest layout to TiviMate; better timeshift and recording;
   also a PVR front end (Tvheadend, HDHomeRun, Plex, Jellyfin). "Many have
   reported that it records better than tivimate." Weaker multi-pane view and
@@ -241,7 +241,7 @@ Takeaway: no creator is doing critical review. Sentiment lives in forums,
 Trustpilot and Reddit, and the YouTube narrative is uniformly "TiviMate is
 the best, buy Premium, here is the Downloader code".
 
-## Implications for Antenna
+## Implications for Antuna
 
 Things to match, because the community treats them as table stakes:
 
@@ -258,7 +258,7 @@ Things to match, because the community treats them as table stakes:
    companion app, no device counting. Family Sharing instead of a five-device
    cap removes TiviMate complaints 2 and 8 outright.
 
-Things to do better, where the complaints are loudest and Antenna's platform
+Things to do better, where the complaints are loudest and Antuna's platform
 helps:
 
 1. **Sync via CloudKit** (already decided). Sources, favourites, groups,
@@ -270,7 +270,7 @@ helps:
 3. **Timeshift that works.** A real local buffer with pause, rewind and
    fast-forward, plus provider catch-up when available. Users have wanted
    this for three years.
-4. **Recording that either works or is honest.** If Antenna records, it must
+4. **Recording that either works or is honest.** If Antuna records, it must
    not stop at 30 minutes, must produce playable files, and must keep
    recording while the app is in use. If it does not record at launch, say
    so clearly rather than ship a hit-and-miss PVR.

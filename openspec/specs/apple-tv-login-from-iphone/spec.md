@@ -70,7 +70,7 @@ The system SHALL send logins encrypted to the key in the code, only through the 
 
 #### Scenario: Nobody picks it up
 - **GIVEN** a delivery the TV never picked up
-- **WHEN** ten minutes have passed and any of the user's devices opens Antenna
+- **WHEN** ten minutes have passed and any of the user's devices opens Antuna
 - **THEN** the delivery is deleted unread
 
 #### Scenario: A code shown by someone else's TV
@@ -82,7 +82,7 @@ The system SHALL send logins encrypted to the key in the code, only through the 
 The system SHALL open a "Sign in your Apple TV" sheet on iPhone, iPad or Mac when the user scans the code or accepts the Handoff offer, list the sources the TV asked for with whether this device has each login, and send only after the user chooses Send.
 
 #### Scenario: Scan the code
-- **GIVEN** Antenna on an iPhone that has the logins of the sources the TV asked for
+- **GIVEN** Antuna on an iPhone that has the logins of the sources the TV asked for
 - **WHEN** the user scans the code
 - **THEN** a sheet lists those sources by name with "Ready to send", and nothing leaves the iPhone until the user chooses Send
 
@@ -97,8 +97,8 @@ The system SHALL open a "Sign in your Apple TV" sheet on iPhone, iPad or Mac whe
 - **THEN** the sheet opens once the purchase goes through
 
 #### Scenario: A damaged or newer code
-- **WHEN** the user opens a damaged sign-in link, or one from a newer Antenna
-- **THEN** no sheet sends anything, and for a newer link the user is asked to update Antenna
+- **WHEN** the user opens a damaged sign-in link, or one from a newer Antuna
+- **THEN** no sheet sends anything, and for a newer link the user is asked to update Antuna
 
 ### Requirement: The iPhone takes a login it does not have
 The system SHALL let the user enter a listed source's missing login on the iPhone, check it with the server before accepting it, and keep it in the iPhone's Keychain as well as sending it.
@@ -142,12 +142,12 @@ The system SHALL check each delivered login with its server the way the TV's sig
 #### Scenario: The TV is offline
 - **GIVEN** the QR card on an Apple TV that is offline
 - **WHEN** the user sends from the iPhone
-- **THEN** nothing arrives, and after two minutes a hint names the internet connection, Antenna on the iPhone and the same iCloud account
+- **THEN** nothing arrives, and after two minutes a hint names the internet connection, Antuna on the iPhone and the same iCloud account
 
 #### Scenario: A delivery the TV cannot read
 - **GIVEN** the QR card on screen
 - **WHEN** a delivery for its code arrives that this TV cannot open or understand
-- **THEN** the card says so and suggests updating Antenna or typing the login on the TV
+- **THEN** the card says so and suggests updating Antuna or typing the login on the TV
 
 ### Requirement: Every kind of source with a login
 The system SHALL send and receive the login of an Xtream source, the MAC address and optional login of a Stalker portal, the username and password of a Jellyfin server, and the optional username and password of a Channels DVR server, and SHALL never ask for a playlist source.

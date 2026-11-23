@@ -147,8 +147,8 @@ import Testing
         let cases: [(String, String)] = [
             (starting, "Channels DVR is starting. Try again in a moment."),
             (notServer, "No Channels DVR server at dvr-ob-router.test."),
-            (locked, "This server asks for a username and password, which Antenna cannot send yet."),
-            (away, "You're offline. Connect to the internet and try again. Allow local network access for Antenna in Settings."),
+            (locked, "This server asks for a username and password, which Antuna cannot send yet."),
+            (away, "You're offline. Connect to the internet and try again. Allow local network access for Antuna in Settings."),
             ("ftp://\(starting)", "Enter a valid server address."),
             ("http://alice:secret@\(starting)", "Remove the username and password from the address."),
         ]

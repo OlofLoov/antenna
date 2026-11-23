@@ -17,7 +17,7 @@ import SwiftData
         var logins: Set<UUID>
         private(set) var loads: [UUID] = []
         private(set) var forwardRequests = 0
-        /// True when the system refuses to bring Antenna forward.
+        /// True when the system refuses to bring Antuna forward.
         var refuseForeground = false
         /// Holds every load until released, to test the deadline and shared
         /// loads. While set the deadline passes at once; otherwise it is a

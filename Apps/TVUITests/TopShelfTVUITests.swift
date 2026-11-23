@@ -60,13 +60,13 @@ final class TopShelfTVUITests: XCTestCase {
         expectEngine(contains: "loads=2 ")
     }
 
-    // top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was
+    // top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was
     func testARemovedFavoriteAtLaunchOpensAsUsual() {
         launch(link: Self.removed)
         expectEngine(contains: "loads=1 file=b1.ts")
     }
 
-    // top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was
+    // top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was
     func testADamagedOrEmptyLinkAtLaunchOpensAsUsual() {
         for link in ["antenna://topShelf/not-an-id", "antenna://topShelf/empty"] {
             launch(link: link)
@@ -75,7 +75,7 @@ final class TopShelfTVUITests: XCTestCase {
         }
     }
 
-    // top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was
+    // top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was
     // tvos-shell/play-or-resume-from-a-shelf-link
     func testARemovedFavoriteWhileRunningChangesNothing() {
         launch(link: Self.removed, running: true)

@@ -63,7 +63,7 @@ import Testing
         #expect(String(decoding: signIn.body, as: UTF8.self).contains(#"p\"w\\d&+ å"#))
         #expect(signIn.request.url?.query() == nil)
         let header = try #require(signIn.authorization)
-        #expect(header == #"MediaBrowser Client="Antenna", Device="iPhone", DeviceId="device-1", Version="1.0""#)
+        #expect(header == #"MediaBrowser Client="Antuna", Device="iPhone", DeviceId="device-1", Version="1.0""#)
 
         for request in requests where request !== signIn {
             #expect(FakeJellyfin.token(request.authorization) == "K1")
@@ -92,7 +92,7 @@ import Testing
     func headerCleaning() {
         let device = JellyfinDevice(id: "a\"b\\c\nd", name: " Apple TV\r\n", appVersion: "1.2")
         let header = JellyfinWire.authorization(device: device, token: "t\"k")
-        #expect(header == #"MediaBrowser Client="Antenna", Device="Apple TV", DeviceId="abc d", Version="1.2", Token="tk""#)
+        #expect(header == #"MediaBrowser Client="Antuna", Device="Apple TV", DeviceId="abc d", Version="1.2", Token="tk""#)
     }
 
     @Test("jellyfin-live-tv-source/signing-in-remembers-this-device reads the sign-in answer")

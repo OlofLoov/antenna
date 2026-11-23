@@ -106,16 +106,16 @@ import Testing
     @Test("app-intents/a-clear-reply-when-a-channel-or-title-cannot-play the replies read as written")
     func wording() {
         #expect(IntentFailure.offline.description(.english) == "You're offline. Connect to the internet and try again.")
-        #expect(IntentFailure.stillLoading.description(.english) == "Antenna is still loading your library. Try again in a moment.")
-        #expect(IntentFailure.sourceFailed(source: "Cabin").description(.english) == "Antenna couldn't reach Cabin. Try again later.")
+        #expect(IntentFailure.stillLoading.description(.english) == "Antuna is still loading your library. Try again in a moment.")
+        #expect(IntentFailure.sourceFailed(source: "Cabin").description(.english) == "Antuna couldn't reach Cabin. Try again later.")
         #expect(
             IntentFailure.loginMissing(source: "Cabin").description(.english)
                 == "The login for Cabin hasn't synced from iCloud to this device yet.")
-        #expect(IntentFailure.channelSourceGone.description(.english) == "That channel's source is no longer in Antenna.")
+        #expect(IntentFailure.channelSourceGone.description(.english) == "That channel's source is no longer in Antuna.")
         #expect(
             IntentFailure.channelGone(channel: "Sport One", source: "Cabin").description(.english) == "Sport One is no longer in Cabin.")
         #expect(IntentFailure.channelGone(channel: nil, source: "Cabin").description(.english) == "That channel is no longer in Cabin.")
-        #expect(IntentFailure.locked(channel: "Kids").description(.english) == "Kids is in a locked group. Unlock it in Antenna first.")
+        #expect(IntentFailure.locked(channel: "Kids").description(.english) == "Kids is in a locked group. Unlock it in Antuna first.")
         #expect(
             IntentFailure.titleGone(title: "Harbor", source: "Cabin").description(.english) == "Harbor is no longer available from Cabin.")
         #expect(IntentText.whichChannel(.english) == "Which channel?")
@@ -128,14 +128,14 @@ import Testing
         #expect(IntentFailure.alreadyFavorite(channel: "Sport One").description(.english) == "Sport One is already a favorite.")
         #expect(IntentFailure.notFavorite(channel: "Sport One").description(.english) == "Sport One isn't a favorite.")
         #expect(
-            IntentFailure.nothingPlaying.description(.english) == "Antenna isn't playing a channel right now. Say which channel instead.")
+            IntentFailure.nothingPlaying.description(.english) == "Antuna isn't playing a channel right now. Say which channel instead.")
         #expect(IntentFailure.needsUnlock(.iPad).description(.english) == "Unlock your iPad once and try again.")
     }
 
-    @Test("app-intents/nothing-works-until-antenna-is-unlocked-and-set-up the two refusals read as written")
+    @Test("app-intents/nothing-works-until-antuna-is-unlocked-and-set-up the two refusals read as written")
     func gateWording() {
-        #expect(IntentFailure.notUnlocked.description(.english) == "Antenna isn't unlocked on this device yet. Open Antenna to continue.")
-        #expect(IntentFailure.noSources.description(.english) == "Antenna has no sources yet. Open Antenna to add one.")
+        #expect(IntentFailure.notUnlocked.description(.english) == "Antuna isn't unlocked on this device yet. Open Antuna to continue.")
+        #expect(IntentFailure.noSources.description(.english) == "Antuna has no sources yet. Open Antuna to add one.")
     }
 
     @Test("app-intents/shortcuts-never-hold-a-password no reply holds a link, port, status or code")
@@ -153,7 +153,7 @@ import Testing
         let names = ["http://alice:hunter2@iptv.example/get.php", "alice:hunter2@iptv.example", "iptv.example:8080", "  "]
         for name in names {
             #expect(
-                IntentFailure.sourceFailed(source: name).description(.english) == "Antenna couldn't reach your source. Try again later.")
+                IntentFailure.sourceFailed(source: name).description(.english) == "Antuna couldn't reach your source. Try again later.")
             #expect(IntentText.channelSubtitle(number: 7, group: name, source: name, locale: .english) == "7 · your source")
         }
         #expect(IntentText.channel("http://a:b@c/1.ts", locale: .english) == "This channel")

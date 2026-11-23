@@ -35,7 +35,7 @@
             logo = channel.logoURL.flatMap { $0.scheme?.lowercased() == "https" ? $0 : nil }
         }
 
-        /// A saved reference that cannot play now, or that resolves only once Antenna is forward.
+        /// A saved reference that cannot play now, or that resolves only once Antuna is forward.
         init(id: String, failure: IntentFailure?) {
             self.id = id
             name = "Channel"

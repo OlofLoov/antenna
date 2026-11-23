@@ -125,10 +125,10 @@ import Testing
         #expect(sections(content(both)).map(\.kind) == [.favorites, .continueWatching])
     }
 
-    @Test("top-shelf/an-empty-shelf-says-how-to-fill-it nothing to show gives one add-favorites tile that opens Antenna")
+    @Test("top-shelf/an-empty-shelf-says-how-to-fill-it nothing to show gives one add-favorites tile that opens Antuna")
     func emptyShelf() {
         let expected = TopShelfContent.Item(
-            id: "topShelf.emptyItem", title: "Add favorites in Antenna to see them here", tileFile: "empty.png", progress: nil, link: .empty
+            id: "topShelf.emptyItem", title: "Add favorites in Antuna to see them here", tileFile: "empty.png", progress: nil, link: .empty
         )
         #expect(content(TopShelfSnapshot(favorites: [], titles: [], unresolvedFavorites: 0, now: now)) == .empty(expected))
         #expect(content(.cleared(now: now)) == .empty(expected), "a lapsed unlock clears the summary to the add-favorites tile")

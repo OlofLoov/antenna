@@ -1,7 +1,7 @@
 # localization Specification
 
 ## Purpose
-Which languages Antenna speaks and how its own words, plurals, times, dates
+Which languages Antuna speaks and how its own words, plurals, times, dates
 and numbers follow the user's language and region on iPhone, iPad, Mac and
 Apple TV, while text from the user's sources is shown as it arrives.
 
@@ -16,28 +16,28 @@ Portuguese (Portugal) MUST get the Brazilian text.
 
 #### Scenario: A Swedish iPhone
 - **GIVEN** an iPhone set to Swedish
-- **WHEN** the user opens Antenna
+- **WHEN** the user opens Antuna
 - **THEN** tabs, buttons, headings, empty states and errors are in Swedish
 
 #### Scenario: A per-app language
-- **GIVEN** a Mac set to English with Antenna's own language set to German in System Settings
-- **WHEN** the user opens Antenna
-- **THEN** Antenna is in German and the rest of the Mac stays in English
+- **GIVEN** a Mac set to English with Antuna's own language set to German in System Settings
+- **WHEN** the user opens Antuna
+- **THEN** Antuna is in German and the rest of the Mac stays in English
 
 #### Scenario: An unsupported language
 - **GIVEN** an iPad set to Japanese with no other preferred language
-- **WHEN** the user opens Antenna
-- **THEN** Antenna is in English
+- **WHEN** the user opens Antuna
+- **THEN** Antuna is in English
 
 #### Scenario: Portuguese from Portugal
 - **GIVEN** an iPhone set to Portuguese (Portugal)
-- **WHEN** the user opens Antenna
-- **THEN** Antenna is in Portuguese, using the Brazilian translation
+- **WHEN** the user opens Antuna
+- **THEN** Antuna is in Portuguese, using the Brazilian translation
 
 #### Scenario: Apple TV follows its own setting
 - **GIVEN** an Apple TV set to Spanish and an iPhone set to English on the same iCloud account
 - **WHEN** the household uses both
-- **THEN** the Apple TV shows Antenna in Spanish and the iPhone in English, with the same sources, favorites and progress
+- **THEN** the Apple TV shows Antuna in Spanish and the iPhone in English, with the same sources, favorites and progress
 
 ### Requirement: No screen shows a key or a blank label
 Every word the app shows MUST have text in the current language, or the
@@ -176,17 +176,17 @@ the user's language.
 
 #### Scenario: Local network permission
 - **GIVEN** an iPhone in Spanish
-- **WHEN** the system asks to let Antenna reach the local network
+- **WHEN** the system asks to let Antuna reach the local network
 - **THEN** the reason under the prompt is in Spanish
 
 #### Scenario: A Siri phrase in French
-- **GIVEN** an iPhone in French with Antenna set up
-- **WHEN** the user opens Shortcuts and looks at Antenna's shortcuts
+- **GIVEN** an iPhone in French with Antuna set up
+- **WHEN** the user opens Shortcuts and looks at Antuna's shortcuts
 - **THEN** the shortcut names and the example phrases are in French
 
 #### Scenario: Top Shelf in Swedish
-- **GIVEN** an Apple TV in Swedish with Antenna in the top row
-- **WHEN** the viewer focuses Antenna on the Home Screen
+- **GIVEN** an Apple TV in Swedish with Antuna in the top row
+- **WHEN** the viewer focuses Antuna on the Home Screen
 - **THEN** the section titles and captions above the tiles are in Swedish
 
 ### Requirement: Every language is complete before release
@@ -202,4 +202,4 @@ until a native speaker has reviewed it.
 #### Scenario: A language not yet reviewed
 - **GIVEN** the French text has been machine translated but not reviewed
 - **WHEN** a user with a French iPhone installs that release from the App Store
-- **THEN** Antenna is in English
+- **THEN** Antuna is in English

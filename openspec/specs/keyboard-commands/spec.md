@@ -1,7 +1,7 @@
 # keyboard-commands Specification
 
 ## Purpose
-Lets viewers on a Mac or an iPad with a keyboard find Antenna's shortcuts where other apps keep them, in the menu bar, and use them on whichever screen is in front.
+Lets viewers on a Mac or an iPad with a keyboard find Antuna's shortcuts where other apps keep them, in the menu bar, and use them on whichever screen is in front.
 
 ## Requirements
 
@@ -57,7 +57,7 @@ The system SHALL make each menu item act on the screen in front of the frontmost
 - **THEN** the channel pauses or the volume goes down
 
 #### Scenario: Two windows
-- **GIVEN** two Antenna windows on a Mac or iPad, one playing a channel and one on the Guide
+- **GIVEN** two Antuna windows on a Mac or iPad, one playing a channel and one on the Guide
 - **WHEN** the user presses Space with the Guide window in front
 - **THEN** nothing in the other window pauses
 

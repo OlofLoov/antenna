@@ -3,7 +3,7 @@
 These are the answers for App Store Connect, App Privacy, for both the iOS app
 (iPhone, iPad and Mac) and the tvOS app. They match the privacy manifests in
 `Apps/Mobile`, `Apps/TV` and `Apps/TopShelf`, and the Privacy Policy at
-antenna.code-crave.se/privacy.
+antuna.app/privacy.
 
 ## Data collection
 
@@ -17,7 +17,7 @@ data type or purpose questions follow.
 
 Apple counts data as collected when it leaves the device in a way that lets
 the developer or a partner read it for longer than it takes to serve the
-request. Antenna sends data to three places, and Code Crave can read none of
+request. Antuna sends data to three places, and Code Crave can read none of
 them:
 
 - **The user's own sources and guide servers.** Playlists, logins and streams

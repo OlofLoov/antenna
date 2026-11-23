@@ -9,7 +9,7 @@ terraform {
   }
 
   backend "s3" {
-    key          = "antenna.tfstate"
+    key          = "antuna.tfstate"
     region       = "eu-north-1"
     encrypt      = true
     use_lockfile = true
@@ -18,7 +18,7 @@ terraform {
 
 locals {
   tags = {
-    project    = "antenna"
+    project    = "antuna"
     managed-by = "terraform"
   }
 }
@@ -41,7 +41,7 @@ provider "aws" {
 }
 
 variable "domain" {
-  description = "Antenna's own domain, without www, from the ANTENNA_DOMAIN repository variable."
+  description = "Antuna's own domain, without www, from the ANTUNA_DOMAIN repository variable."
   type        = string
 
   validation {

@@ -43,7 +43,7 @@ jobs:
         run: terraform fmt -check -recursive -diff Infra
       - name: Validate and test
         run: |
-          for root in Infra/bootstrap Infra/ci Infra/antenna; do
+          for root in Infra/bootstrap Infra/ci Infra/antuna; do
             echo "::group::$root"
             terraform -chdir="$root" init -backend=false -lockfile=readonly
             terraform -chdir="$root" validate
@@ -67,7 +67,7 @@ jobs:
         id: gate
         env:
           ACCOUNT: ${{ vars.AWS_ACCOUNT_ID }}
-          DOMAIN: ${{ vars.ANTENNA_DOMAIN }}
+          DOMAIN: ${{ vars.ANTUNA_DOMAIN }}
           ALERT_EMAIL: ${{ vars.AWS_ALERT_EMAIL }}
           HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
@@ -81,9 +81,9 @@ jobs:
             echo "ready=true" >> "$GITHUB_OUTPUT"
             roots=Infra/ci
             if [ -n "$DOMAIN" ] && [ -n "$ALERT_EMAIL" ]; then
-              roots="$roots Infra/antenna"
+              roots="$roots Infra/antuna"
             else
-              echo "::notice title=Infra/antenna not planned::ANTENNA_DOMAIN or AWS_ALERT_EMAIL is not set."
+              echo "::notice title=Infra/antuna not planned::ANTUNA_DOMAIN or AWS_ALERT_EMAIL is not set."
             fi
             echo "roots=$roots" >> "$GITHUB_OUTPUT"
           fi
@@ -97,15 +97,15 @@ jobs:
       - if: steps.gate.outputs.ready == 'true'
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antenna-diff
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antuna-diff
           aws-region: ${{ env.AWS_REGION }}
       - name: Plan
         if: steps.gate.outputs.ready == 'true'
         env:
-          STATE_BUCKET: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          STATE_BUCKET: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
           TF_VAR_github_repository: ${{ github.repository }}
-          TF_VAR_state_bucket: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
-          TF_VAR_domain: ${{ vars.ANTENNA_DOMAIN }}
+          TF_VAR_state_bucket: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          TF_VAR_domain: ${{ vars.ANTUNA_DOMAIN }}
           TF_VAR_alert_email: ${{ vars.AWS_ALERT_EMAIL }}
           ROOTS: ${{ steps.gate.outputs.roots }}
         run: |
@@ -166,7 +166,7 @@ jobs:
   apply:
     name: Terraform apply
     needs: changes
-    if: needs.changes.outputs.infra == 'true' && vars.AWS_ACCOUNT_ID != '' && vars.ANTENNA_DOMAIN != '' && vars.AWS_ALERT_EMAIL != ''
+    if: needs.changes.outputs.infra == 'true' && vars.AWS_ACCOUNT_ID != '' && vars.ANTUNA_DOMAIN != '' && vars.AWS_ALERT_EMAIL != ''
     runs-on: ubuntu-latest
     environment: production
     permissions:
@@ -180,17 +180,17 @@ jobs:
           terraform_wrapper: false
       - uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antenna-deploy
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antuna-deploy
           aws-region: ${{ env.AWS_REGION }}
       - name: Apply
         env:
-          STATE_BUCKET: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          STATE_BUCKET: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
           TF_VAR_github_repository: ${{ github.repository }}
-          TF_VAR_state_bucket: antenna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
-          TF_VAR_domain: ${{ vars.ANTENNA_DOMAIN }}
+          TF_VAR_state_bucket: antuna-terraform-state-${{ vars.AWS_ACCOUNT_ID }}
+          TF_VAR_domain: ${{ vars.ANTUNA_DOMAIN }}
           TF_VAR_alert_email: ${{ vars.AWS_ALERT_EMAIL }}
         run: |
-          for root in Infra/ci Infra/antenna; do
+          for root in Infra/ci Infra/antuna; do
             echo "::group::$root"
             terraform -chdir="$root" init -backend-config="bucket=$STATE_BUCKET" -lockfile=readonly
             terraform -chdir="$root" apply -auto-approve -lock-timeout=300s
@@ -242,7 +242,7 @@ jobs:
           fi
       - uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antenna-site
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/antuna-site
           aws-region: ${{ env.AWS_REGION }}
       - name: Upload
         env:

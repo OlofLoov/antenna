@@ -133,6 +133,6 @@ import Testing
             PresentationInfo(
                 video: .init(width: 1920, height: 1080, frameRate: 50, dynamicRange: .sdr, codec: "h264"),
                 audio: .init(codec: "aac", channels: 6, isDecodable: true)))
-        #expect(player.streamLine == "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player")
+        #expect(player.streamLine == "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player")
     }
 }

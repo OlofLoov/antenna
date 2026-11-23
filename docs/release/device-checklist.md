@@ -29,7 +29,7 @@ and add the date and devices next to it.
   Apple Account, with iCloud Drive and iCloud Keychain on.
 - An iPad and a Mac on macOS 26 for the items that name them, on the same
   account. One iPad item needs it signed out of iCloud.
-- A development build of Antenna on each device (Xcode Run with
+- A development build of Antuna on each device (Xcode Run with
   `Config/Local.xcconfig` set), or TestFlight for the purchase items.
 - An M3U playlist and an Xtream login you own. For the timing items, a source
   with about 20 000 channels and a seven-day guide.
@@ -44,7 +44,7 @@ need the device attached to Xcode with the console open.
 
 ### iPhone
 
-- [ ] **#488, the tab bar.** Open Antenna with the Xtream source. Expect
+- [ ] **#488, the tab bar.** Open Antuna with the Xtream source. Expect
   Live, Guide, Movies and Series as tabs, Search as a round button at the
   trailing end, and no Settings tab or Movies | Series switch.
 - [ ] **#488, the profile button.** Tap the profile circle at the top right of
@@ -80,7 +80,7 @@ need the device attached to Xcode with the console open.
 
 ### iPad
 
-- [ ] **#488, narrow window.** In Split View, make Antenna the narrow side.
+- [ ] **#488, narrow window.** In Split View, make Antuna the narrow side.
   Expect the iPhone tab bar with Movies, Series and the search button; widen
   it and the sidebar is back, Series with the stacked-rectangles symbol.
 - [ ] **#486, banner in German.** Set the iPad to German, open Movies in
@@ -140,7 +140,7 @@ need the device attached to Xcode with the console open.
 - [ ] **#474, damaged channels.** Play a raw `.ts` channel on weak Wi-Fi.
   Expect short freezes on the last whole picture, not smeared blocks.
 - [ ] **#474, picture after Home.** Play a raw `.ts` channel, press the TV
-  button, wait a minute, open Antenna again. Expect the picture moving.
+  button, wait a minute, open Antuna again. Expect the picture moving.
 - [ ] **#475, Thread Performance Checker.** From Xcode with the checker on,
   play a raw `.ts` channel and the film. Expect no "waiting on a lower QoS
   thread" warning.
@@ -162,11 +162,11 @@ need the device attached to Xcode with the console open.
 
 ## One iPhone or iPad
 
-- [ ] **add-app-intents 3.6, Siri phrases.** Open Antenna once with a source
-  loaded, lock the iPhone, and say "Tune to <a channel name> in Antenna", then
-  "Search Antenna", then, with a channel playing, "Add this channel to favorites
-  in Antenna" and "Remove this channel from favorites in Antenna". Expect Siri
-  to ask you to unlock for the tune and the search, then Antenna opens on Live
+- [ ] **add-app-intents 3.6, Siri phrases.** Open Antuna once with a source
+  loaded, lock the iPhone, and say "Tune to <a channel name> in Antuna", then
+  "Search Antuna", then, with a channel playing, "Add this channel to favorites
+  in Antuna" and "Remove this channel from favorites in Antuna". Expect Siri
+  to ask you to unlock for the tune and the search, then Antuna opens on Live
   playing that channel, or on Search. The favorite phrases answer without
   opening the app, and the channel shows up in, then leaves, Favorites.
 - [ ] **add-player-controls-and-playback-errors 6.1 and add-playback-engine 8.3,
@@ -174,7 +174,7 @@ need the device attached to Xcode with the console open.
   that keeps playing, with working play and pause. Close it, play a raw MPEG-TS
   channel (one whose link ends in `.ts`) and swipe home again: the same.
   Change channel from the window's controls if they offer it, then tap the
-  restore button. Expect Antenna back on Live, playing the channel the window
+  restore button. Expect Antuna back on Live, playing the channel the window
   showed.
 - [ ] **add-player-controls-and-playback-errors 6.2, background audio.** Play a
   channel, lock the iPhone and wait a minute. Expect the sound to go on and the
@@ -216,9 +216,9 @@ need the device attached to Xcode with the console open.
 ## One Mac
 
 - [ ] **add-app-intents 4.2, Shortcuts on the Mac.** In Shortcuts, run Tune
-  Channel, Play Title, Open Search and Toggle Favorite once with Antenna closed
-  and once with a channel playing. Expect Antenna to open on the channel, the
-  title or Search, and Toggle Favorite to answer without bringing Antenna
+  Channel, Play Title, Open Search and Toggle Favorite once with Antuna closed
+  and once with a channel playing. Expect Antuna to open on the channel, the
+  title or Search, and Toggle Favorite to answer without bringing Antuna
   forward.
 - [ ] **add-player-controls-and-playback-errors 5.1, Mac keys.** Play a channel
   in Live. Press M: sound off, M again: sound on. Command-Up and Command-Down:
@@ -246,9 +246,9 @@ need the device attached to Xcode with the console open.
 ## Apple TV
 
 - [ ] **add-top-shelf 3.3, Top Shelf.** Install a signed build, watch two
-  channels and part of a movie, then put Antenna in the top row of the Home
+  channels and part of a movie, then put Antuna in the top row of the Home
   Screen and highlight it. Expect the shelf to show the channels and the movie
-  Antenna wrote, and selecting a tile to open Antenna playing it.
+  Antuna wrote, and selecting a tile to open Antuna playing it.
 - [ ] **add-playback-engine 8.1, picture format.** Turn on Match Content in
   Settings, Video and Audio. Play an HEVC HDR10 channel. Expect the TV to switch
   to HDR, the info panel to name HEVC and HDR10 within two seconds, and a second
@@ -261,8 +261,8 @@ need the device attached to Xcode with the console open.
   With TV speakers only, the same channels play with sound.
 - [ ] **add-playback-engine 9.3, 1080i50.** On an Apple TV 4K, play a 1080i50
   broadcast channel with fast motion, such as football. Expect smooth motion with
-  no combing on moving edges. In Xcode's Instruments with the Antenna signposts,
-  expect 50 frames a second shown.
+  no combing on moving edges. In Xcode's Instruments with the
+  `se.codecrave.antenna` signposts, expect 50 frames a second shown.
 - [ ] **add-playback-engine 10.1, switching speed.** On an Apple TV 4K (3rd
   generation) on Ethernet, record 50 channel changes on raw `.ts` channels and
   50 on HLS channels in Instruments. Expect half the raw switches within 1.0
@@ -288,12 +288,12 @@ need the device attached to Xcode with the console open.
 - [ ] **add-iphone-as-setup-device 1.1, platform questions.** On the Apple TV,
   start onboarding and reach the QR card. Expect, and write down in the
   archived change's design.md: whether the iPhone shows a Handoff offer for
-  Antenna in the App Switcher; whether, after Connect on the iPhone, the TV says
+  Antuna in the App Switcher; whether, after Connect on the iPhone, the TV says
   the source arrived (SwiftData posted its CloudKit export); whether the link
   works without the associated domain in the TV's entitlements.
 - [ ] **add-apple-tv-login-from-iphone 7.2, the login drop.** Run the "Only on
   devices" list in the archived change's design.md, Testing section: scan the TV's
-  code with the iPhone camera (Antenna opens on "Sign in your Apple TV"), tap
+  code with the iPhone camera (Antuna opens on "Sign in your Apple TV"), tap
   Send, and time it until the TV says the login arrived. Expect the source to
   load on the TV, the iPhone to say the login was picked up, and the QR code to
   scan from the couch. Record the times in that design.md.
@@ -317,7 +317,7 @@ need the device attached to Xcode with the console open.
 
 Any two of iPhone, iPad, Mac and Apple TV, unless the item names them. Each
 item ends on device B with nothing done there but waiting up to a minute with
-Antenna open.
+Antuna open.
 
 - [ ] **complete-source-management 2.1, sources.** On A, add an M3U source and
   an Xtream source. On B, open Sources and Settings. Expect both rows in the same
@@ -357,12 +357,12 @@ TestFlight or a sandbox Apple Account, once the App Store record for every
 platform exists.
 
 - [ ] **add-paywall-and-entitlement 5.1, one purchase everywhere.** Buy the
-  yearly subscription on the iPhone. Open Antenna on an iPad, a Mac and an Apple
+  yearly subscription on the iPhone. Open Antuna on an iPad, a Mac and an Apple
   TV on the same Apple Account. Expect each to skip the paywall without a
   purchase or Restore. This is the requirement
   `paywall-and-entitlement/one-purchase-on-every-device`.
 - [ ] **add-paywall-and-entitlement 5.2, Family Sharing.** On a device signed in
-  to another member of the same family group, open Antenna. Expect it to open
+  to another member of the same family group, open Antuna. Expect it to open
   without buying. Family Sharing does not work in TestFlight, so this one waits
   for the App Store release.
 
@@ -371,7 +371,7 @@ platform exists.
 - [ ] **add-iphone-as-setup-device 1.2, publish the site.** Set the repository
   variable `APPLE_TEAM_ID` to the ten-character team id, finish the AWS setup
   in `add-aws-hosting` task 1.4, and run the Infra workflow by hand. Expect
-  `https://<antenna-domain>/.well-known/apple-app-site-association` to serve
+  `https://antuna.app/.well-known/apple-app-site-association` to serve
   the association file with the team id, and `/setup` to show the plain fallback
   page with no scripts, images or third-party content.
 - [ ] **add-signing-capabilities 5.2, capabilities in the Developer portal.**

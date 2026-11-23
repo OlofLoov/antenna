@@ -10,7 +10,7 @@
       "internalID" : "6740000001",
       "localizations" : [
         {
-          "description" : "Unlocks Antenna on every device, paid once.",
+          "description" : "Unlocks Antuna on every device, paid once.",
           "displayName" : "Lifetime",
           "locale" : "en_US"
         }
@@ -34,7 +34,7 @@
       "localizations" : [
 
       ],
-      "name" : "Antenna",
+      "name" : "Antuna",
       "subscriptions" : [
         {
           "adHocOffers" : [
@@ -54,7 +54,7 @@
           },
           "localizations" : [
             {
-              "description" : "Unlocks Antenna on every device, renewed every year.",
+              "description" : "Unlocks Antuna on every device, renewed every year.",
               "displayName" : "Yearly",
               "locale" : "en_US"
             }

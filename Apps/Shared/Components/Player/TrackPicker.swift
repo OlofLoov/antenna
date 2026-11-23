@@ -95,7 +95,7 @@ extension TrackPicker {
                 TrackRow(id: "off", name: "Off", detail: nil, isSelected: !subtitlesOn),
                 TrackRow(id: "subtitle-0", name: "English", detail: nil, isSelected: subtitlesOn),
             ],
-            footer: [.verbatim("MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player")], subtitlesOn: subtitlesOn,
+            footer: [.verbatim("MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player")], subtitlesOn: subtitlesOn,
             isAvailable: isAvailable, pickAudio: { _ in }, pickSubtitle: { _ in }, shown: { _ in })
     }
 }

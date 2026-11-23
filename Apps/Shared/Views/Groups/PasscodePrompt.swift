@@ -166,7 +166,7 @@ struct PasscodeForgot: View {
 
     var body: some View {
         #if os(tvOS)
-            Text("Forgot it? Reset the passcode in Antenna on your iPhone, iPad or Mac.")
+            Text("Forgot it? Reset the passcode in Antuna on your iPhone, iPad or Mac.")
                 .foregroundStyle(Palette.textMuted)
                 .accessibilityIdentifier("groups.passcode.forgot")
         #else

@@ -45,7 +45,7 @@ import Testing
         #expect(TopShelfItemID.channel(untagged) == nil)
     }
 
-    @Test("top-shelf/a-tile-that-no-longer-matches-opens-antenna-as-it-was links round trip and damaged ones read as nothing")
+    @Test("top-shelf/a-tile-that-no-longer-matches-opens-antuna-as-it-was links round trip and damaged ones read as nothing")
     func links() throws {
         let id = try #require(UUID(uuidString: "a1738d32-6aeb-58a3-baba-5c58e6781cbe"))
         #expect(TopShelfLink.item(id).url.absoluteString == "antenna://topShelf/a1738d32-6aeb-58a3-baba-5c58e6781cbe")

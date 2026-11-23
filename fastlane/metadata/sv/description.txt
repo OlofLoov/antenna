@@ -1,4 +1,4 @@
-Antenna spelar upp de tv-källor du redan har, på iPhone, iPad, Mac och Apple TV. Appen har inga kanaler, spellistor eller leverantörsadresser. Du lägger till din egen källa, och Antenna gör den till en kanallista, en tablå och ett bibliotek med filmer och serier.
+Antuna spelar upp de tv-källor du redan har, på iPhone, iPad, Mac och Apple TV. Appen har inga kanaler, spellistor eller leverantörsadresser. Du lägger till din egen källa, och Antuna gör den till en kanallista, en tablå och ett bibliotek med filmer och serier.
 
 DINA KÄLLOR
 • M3U-spellistor, från en länk eller en fil
@@ -34,9 +34,9 @@ PÅ ALLA ENHETER
 • Kortkommandon på Mac och iPad
 
 KÖP
-Antenna är gratis att ladda ned och kräver ett köp för att användas: ett årsabonnemang eller ett engångsköp som gäller för alltid. Båda fungerar med Familjedelning. Appen visar priset för din region innan du köper.
+Antuna är gratis att ladda ned och kräver ett köp för att användas: ett årsabonnemang eller ett engångsköp som gäller för alltid. Båda fungerar med Familjedelning. Appen visar priset för din region innan du köper.
 
 INTEGRITET
-Antenna har inget konto, ingen reklam och ingen analys. Appen ansluter bara till källorna du lägger till, ditt iCloud-konto och App Store.
+Antuna har inget konto, ingen reklam och ingen analys. Appen ansluter bara till källorna du lägger till, ditt iCloud-konto och App Store.
 
-Du måste ha rätt att titta på det dina källor spelar upp. Antenna varken säljer eller rekommenderar tv-abonnemang.
+Du måste ha rätt att titta på det dina källor spelar upp. Antuna varken säljer eller rekommenderar tv-abonnemang.

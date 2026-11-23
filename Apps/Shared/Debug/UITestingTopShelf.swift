@@ -15,7 +15,7 @@
 
         /// With `-ui-testing-open-url-running`, waits until the launch
         /// channel plays and then hands the link to `inbox`, as a tile
-        /// selected while Antenna runs. Waiting only for the tune is too
+        /// selected while Antuna runs. Waiting only for the tune is too
         /// early: the engine drops a load that a newer one overtakes, so a
         /// link that lands while the launch channel still loads replaces it.
         @MainActor

@@ -57,7 +57,7 @@ final class PlayerPanelTVUITests: XCTestCase {
         XCTAssertTrue(element("player.panel.times").label.hasSuffix("min left"))
         XCTAssertTrue(element("player.panel.progress").exists)
         XCTAssertEqual(element("player.panel.summary").label, "Headlines and weather.")
-        XCTAssertEqual(element("player.panel.stream").label, "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player")
+        XCTAssertEqual(element("player.panel.stream").label, "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player")
         XCTAssertFalse(element("overlay.root").exists, "holding select is not a press")
         expectEngine("playing loads=1 file=a1.ts")
     }

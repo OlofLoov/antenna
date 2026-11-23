@@ -247,7 +247,7 @@ enum InfoPanel {
                 programme: .init(
                     title: "Premier League: Arsenal v Liverpool", times: "20:00 – 22:00 · 26 min left", progress: 0.78,
                     summary: "Second half from the Emirates. Commentary by the studio team, with analysis at full time."),
-                message: "", badges: ZapBarBadge.previewBadges(), stream: "MPEG-TS · H.264 1080p · AAC 5.1 · Antenna player"
+                message: "", badges: ZapBarBadge.previewBadges(), stream: "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player"
             ) {
                 ZapBar.Initials(text: "S1")
             }

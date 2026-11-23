@@ -3,7 +3,7 @@ mock_provider "aws" {
 }
 
 variables {
-  domain          = "antenna.example"
+  domain          = "antuna.example"
   zone_id         = "Z0000000000000"
   certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/site"
 }
@@ -22,7 +22,7 @@ override_resource {
   target          = aws_cloudfront_function.address
   override_during = plan
   values = {
-    arn = "arn:aws:cloudfront::123456789012:function/antenna-site-address"
+    arn = "arn:aws:cloudfront::123456789012:function/antuna-site-address"
   }
 }
 
@@ -46,11 +46,11 @@ override_resource {
   target          = aws_s3_bucket.site
   override_during = plan
   values = {
-    arn = "arn:aws:s3:::antenna-site-123456789012"
+    arn = "arn:aws:s3:::antuna-site-123456789012"
   }
 }
 
-# hosting/the-site-is-served-over-https-on-antenna-s-domain
+# hosting/the-site-is-served-over-https-on-antuna-s-domain
 run "https_only_on_the_domain" {
   command = plan
 
@@ -59,7 +59,7 @@ run "https_only_on_the_domain" {
   }
 
   assert {
-    condition     = aws_cloudfront_distribution.site.aliases == toset(["antenna.example", "www.antenna.example"])
+    condition     = aws_cloudfront_distribution.site.aliases == toset(["antuna.example", "www.antuna.example"])
     error_message = "the distribution must answer the domain and www"
   }
 
@@ -100,12 +100,12 @@ run "https_only_on_the_domain" {
   }
 
   assert {
-    condition     = toset(keys(aws_route53_record.alias)) == toset(["antenna.example A", "antenna.example AAAA", "www.antenna.example A", "www.antenna.example AAAA"])
+    condition     = toset(keys(aws_route53_record.alias)) == toset(["antuna.example A", "antuna.example AAAA", "www.antuna.example A", "www.antuna.example AAAA"])
     error_message = "the domain and www need IPv4 and IPv6 aliases"
   }
 }
 
-# hosting/the-site-is-served-over-https-on-antenna-s-domain
+# hosting/the-site-is-served-over-https-on-antuna-s-domain
 run "an_unknown_address_is_not_found" {
   command = plan
 
@@ -253,14 +253,14 @@ run "the_site_role_can_only_upload_and_invalidate" {
   }
 
   assert {
-    condition     = aws_iam_role_policy.site_upload.role == "antenna-site"
-    error_message = "the upload policy belongs to the antenna-site role"
+    condition     = aws_iam_role_policy.site_upload.role == "antuna-site"
+    error_message = "the upload policy belongs to the antuna-site role"
   }
 
   assert {
     condition = jsondecode(aws_iam_role_policy.site_upload.policy).Statement == [
-      { Effect = "Allow", Action = "s3:ListBucket", Resource = "arn:aws:s3:::antenna-site-123456789012" },
-      { Effect = "Allow", Action = ["s3:PutObject", "s3:DeleteObject"], Resource = "arn:aws:s3:::antenna-site-123456789012/*" },
+      { Effect = "Allow", Action = "s3:ListBucket", Resource = "arn:aws:s3:::antuna-site-123456789012" },
+      { Effect = "Allow", Action = ["s3:PutObject", "s3:DeleteObject"], Resource = "arn:aws:s3:::antuna-site-123456789012/*" },
       { Effect = "Allow", Action = "cloudfront:CreateInvalidation", Resource = "arn:aws:cloudfront::123456789012:distribution/E000000000000" },
     ]
     error_message = "the site role may list, write and delete in the site bucket and invalidate the site distribution, nothing else"

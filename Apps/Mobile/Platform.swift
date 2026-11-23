@@ -5,7 +5,7 @@ import SwiftUI
 /// What shows on iPhone, iPad and Mac once the app is unlocked (`AppRootView`): onboarding while there is no
 /// source (first-run-onboarding capability), then "Who's watching?" when
 /// there are two or more profiles (profiles capability), then the tabs.
-/// A playlist file shared to Antenna or opened with it opens the import
+/// A playlist file shared to Antuna or opened with it opens the import
 /// sheet over whichever shows (local-m3u-file-import/bring-a-file-in).
 struct PlatformRoot: View {
     @Environment(\.importInbox) private var inbox
@@ -23,7 +23,7 @@ struct PlatformRoot: View {
 }
 
 extension View {
-    /// Puts files opened with Antenna into `inbox`, and hands it to the
+    /// Puts files opened with Antuna into `inbox`, and hands it to the
     /// screens below. Attach it above the paywall, so a file shared while
     /// the paywall is up waits for the unlock.
     func receivingFiles(into inbox: ImportInbox) -> some View {

@@ -8,7 +8,7 @@ terraform {
 }
 
 variable "domain" {
-  description = "Antenna's own domain, without www."
+  description = "Antuna's own domain, without www."
   type        = string
 }
 
@@ -83,7 +83,7 @@ resource "aws_route53_record" "dmarc" {
 }
 
 resource "aws_budgets_budget" "monthly" {
-  name         = "antenna-monthly"
+  name         = "antuna-monthly"
   budget_type  = "COST"
   limit_amount = tostring(var.monthly_budget_usd)
   limit_unit   = "USD"
@@ -115,13 +115,13 @@ resource "aws_budgets_budget" "monthly" {
 }
 
 resource "aws_ce_anomaly_monitor" "services" {
-  name              = "antenna-services"
+  name              = "antuna-services"
   monitor_type      = "DIMENSIONAL"
   monitor_dimension = "SERVICE"
 }
 
 resource "aws_ce_anomaly_subscription" "owner" {
-  name             = "antenna-owner"
+  name             = "antuna-owner"
   frequency        = "DAILY"
   monitor_arn_list = [aws_ce_anomaly_monitor.services.arn]
 

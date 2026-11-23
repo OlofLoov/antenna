@@ -55,7 +55,7 @@ extension Paywall {
             // sides and 60 pt top and foot
             // (design-system/apple-tv-content-stays-in-the-safe-area).
             .overlay(alignment: .topLeading) {
-                Label("Antenna", systemImage: Paywall.mark)
+                Label("Antuna", systemImage: Paywall.mark)
                     .font(.boardStyle(26, weight: .bold))
                     .accessibilityHidden(true)
             }

@@ -3,7 +3,7 @@ mock_provider "aws" {
 }
 
 variables {
-  domain      = "antenna.example"
+  domain      = "antuna.example"
   alert_email = "owner@example.com"
 }
 
@@ -14,14 +14,14 @@ override_resource {
     arn = "arn:aws:acm:us-east-1:123456789012:certificate/site"
     domain_validation_options = [
       {
-        domain_name           = "antenna.example"
-        resource_record_name  = "_a.antenna.example."
+        domain_name           = "antuna.example"
+        resource_record_name  = "_a.antuna.example."
         resource_record_type  = "CNAME"
         resource_record_value = "_a.acm-validations.aws."
       },
       {
-        domain_name           = "www.antenna.example"
-        resource_record_name  = "_b.www.antenna.example."
+        domain_name           = "www.antuna.example"
+        resource_record_name  = "_b.www.antuna.example."
         resource_record_type  = "CNAME"
         resource_record_value = "_b.acm-validations.aws."
       },
@@ -29,7 +29,7 @@ override_resource {
   }
 }
 
-# hosting/the-site-is-served-over-https-on-antenna-s-domain
+# hosting/the-site-is-served-over-https-on-antuna-s-domain
 run "one_certificate_for_the_domain_and_www" {
   command = plan
 
@@ -38,12 +38,12 @@ run "one_certificate_for_the_domain_and_www" {
   }
 
   assert {
-    condition     = aws_acm_certificate.site.domain_name == "antenna.example"
+    condition     = aws_acm_certificate.site.domain_name == "antuna.example"
     error_message = "the certificate must be for the bare domain"
   }
 
   assert {
-    condition     = aws_acm_certificate.site.subject_alternative_names == toset(["www.antenna.example"])
+    condition     = aws_acm_certificate.site.subject_alternative_names == toset(["www.antuna.example"])
     error_message = "the certificate must also cover www"
   }
 
@@ -53,7 +53,7 @@ run "one_certificate_for_the_domain_and_www" {
   }
 
   assert {
-    condition     = toset([for r in aws_route53_record.site_validation : r.name]) == toset(["_a.antenna.example.", "_b.www.antenna.example."])
+    condition     = toset([for r in aws_route53_record.site_validation : r.name]) == toset(["_a.antuna.example.", "_b.www.antuna.example."])
     error_message = "each name on the certificate needs its validation record"
   }
 
@@ -72,12 +72,12 @@ run "the_domain_publishes_no_mail_records" {
   }
 
   assert {
-    condition     = aws_route53_record.spf.name == "antenna.example" && aws_route53_record.spf.type == "TXT" && aws_route53_record.spf.records == toset(["v=spf1 -all"])
+    condition     = aws_route53_record.spf.name == "antuna.example" && aws_route53_record.spf.type == "TXT" && aws_route53_record.spf.records == toset(["v=spf1 -all"])
     error_message = "the SPF record must allow no sender"
   }
 
   assert {
-    condition     = aws_route53_record.dmarc.name == "_dmarc.antenna.example" && aws_route53_record.dmarc.records == toset(["v=DMARC1; p=reject"])
+    condition     = aws_route53_record.dmarc.name == "_dmarc.antuna.example" && aws_route53_record.dmarc.records == toset(["v=DMARC1; p=reject"])
     error_message = "DMARC must reject mail that claims the domain"
   }
 
