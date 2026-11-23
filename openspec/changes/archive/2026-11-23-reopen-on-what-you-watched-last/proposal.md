@@ -5,13 +5,13 @@
 The owner's decision of 2026-11-23: at launch, reopen on what the user
 watched last, without playing a movie or an episode on its own.
 
-The movie and series watcher stops an episode at night and opens Antenna
+The movie and series watcher stops an episode at night and opens Antuna
 the next evening. Today the Apple TV starts the last live channel full
 screen, and an iPhone, iPad or Mac opens on the last tab with no page open.
 Either way they find the series again before they can press Resume.
 
 Afterwards, when the last thing a profile watched on a device was a movie or
-an episode, Antenna opens on that title's page with Resume ready at the saved
+an episode, Antuna opens on that title's page with Resume ready at the saved
 position, and nothing plays until they press it. A viewer whose last watch
 was a live channel sees no change.
 
