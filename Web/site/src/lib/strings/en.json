@@ -482,9 +482,12 @@
 	},
 	"support": {
 		"title": "Support",
-		"description": "Answers to common questions about Antuna, and how to report a problem from the app.",
-		"reportTitle": "Report a problem from the app",
-		"reportSoon": "Report a problem is coming to Antuna's Settings. It will show you everything it sends before you send it, and give you a reference code. Until then, the answers below cover the common questions.",
+		"description": "Answers to common questions about Antuna, and how to email Code Crave.",
+		"contactTitle": "Contact",
+		"contactBefore": "Write to ",
+		"contactEmail": "antuna@code-crave.se",
+		"contactAfter": ". Say which device you use, which version of Antuna, and what happened.",
+		"contactWarning": "Never send a password, MAC address or playlist link. Code Crave does not need them to help, and an email is not a safe place for them.",
 		"questionsTitle": "Questions",
 		"faq": [
 			{

@@ -120,7 +120,8 @@
 
 	<h2>Contact</h2>
 	<p>
-		For questions about this policy, see the <a href="/support/">Support</a> page.
+		For questions about this policy, see the <a href="/support/">Support</a> page. Emails you send to
+		Code Crave are kept in the mailbox to answer you.
 	</p>
 
 	<p class="across">Read the <a href="/terms/">Terms of Use</a>.</p>

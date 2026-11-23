@@ -161,8 +161,8 @@ describe('the pages', () => {
 		expect(text).not.toMatch(/[$€£¥]\s?\d|\d\s?(kr|sek|usd|eur)\b|\d+[.,]\d{2}/i);
 	});
 
-	// feature-website/support-answers-questions-and-points-to-the-app
-	test('support answers the common questions and names Report a problem', () => {
+	// feature-website/support-answers-questions-and-gives-an-email-address
+	test('support answers the common questions and gives the email address', () => {
 		const page = html('support/index.html');
 		for (const id of [
 			'does-antuna-include-channels',
@@ -174,14 +174,16 @@ describe('the pages', () => {
 			'deleting-your-data'
 		])
 			expect(page).toMatch(new RegExp(`<h2 id="${id}"`));
+		expect(page).toContain('href="mailto:antuna@code-crave.se"');
 		const text = textOf(page);
-		expect(text).toContain('Report a problem');
+		expect(text).toContain('which device you use, which version of Antuna, and what happened');
+		expect(text).toContain('Never send a password, MAC address or playlist link');
 		expect(text).toContain('Restore purchase');
 		expect(text).toContain('Format not supported');
 	});
 
-	// feature-website/support-answers-questions-and-points-to-the-app
-	test('no page shows an email address, and the legal pages point to support', () => {
+	// feature-website/support-answers-questions-and-gives-an-email-address
+	test('only the support page shows an email address, and the legal pages point to it', () => {
 		expect(checkEmails()).toEqual([]);
 		for (const page of ['terms/index.html', 'privacy/index.html'])
 			expect(html(page)).toMatch(/see the <a href="\/support\/"/);
@@ -272,6 +274,19 @@ describe('the checks catch what they look for', () => {
 		expect(problems).toContain('href /nowhere/ resolves to no file');
 		expect(problems).toContain('no element with id #gone');
 		expect(problems).toContain('the link to /setup/ needs data-sveltekit-reload');
+	});
+
+	test('an email address off the support page, or another address on it', () => {
+		const contact = '<a href="mailto:antuna@code-crave.se">antuna@code-crave.se</a>';
+		const dir = build({
+			'support/index.html': page(`${contact}<p>or help@example.com</p>`),
+			'terms/index.html': page(contact)
+		});
+		const problems = checkEmails(dir).join('\n');
+		expect(problems).toContain('/support/: shows the email address help@example.com');
+		expect(problems).not.toContain('/support/: a mailto:');
+		expect(problems).toContain('/terms/: a mailto: link to antuna@code-crave.se');
+		expect(problems).toContain('/terms/: shows the email address antuna@code-crave.se');
 	});
 
 	test('a provider name in the text or in alt text', () => {

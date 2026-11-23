@@ -363,14 +363,20 @@ export function checkProviders(build = BUILD) {
 	return problems;
 }
 
-/** No page shows an email address or links to one. */
+/** The one email address on the site, shown only on the support page. */
+export const CONTACT_EMAIL = 'antuna@code-crave.se';
+
+/** Only the support page shows an email address, and only CONTACT_EMAIL. */
 export function checkEmails(build = BUILD) {
 	const problems = [];
 	for (const page of pages(build)) {
 		const address = addressOf(page.name);
-		if (/mailto:/i.test(page.html)) problems.push(`${address}: a mailto: link`);
+		const allowed = address === '/support/' ? [CONTACT_EMAIL] : [];
+		for (const match of page.html.matchAll(/mailto:([^"'?\s>]*)/gi))
+			if (!allowed.includes(match[1])) problems.push(`${address}: a mailto: link to ${match[1]}`);
 		for (const match of textOf(page.html).matchAll(/[\w.+-]+@[\w-]+\.[\w.-]+/g))
-			problems.push(`${address}: shows the email address ${match[0]}`);
+			if (!allowed.includes(match[0]))
+				problems.push(`${address}: shows the email address ${match[0]}`);
 	}
 	return problems;
 }
