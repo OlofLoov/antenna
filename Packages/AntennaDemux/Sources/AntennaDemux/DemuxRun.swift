@@ -253,92 +253,71 @@ final class DemuxRun: @unchecked Sendable {
                 subtitle: tracks.subtitles.first { $0.track.id == chosen.subtitle }))
     }
 
-    /// What `pump` has seen so far.
-    struct PumpState {
-        var startTime: CMTime?
-        var heldSound: [CMSampleBuffer] = []
-        var announced = false
-        var frameTimes: [Double] = []
-        var rateKnown: Bool
-        /// Set for a stream whose pictures may be interlaced.
-        var fields: FieldPictures?
-        /// True once any packet of the picture stream arrived.
-        var sawVideoPacket = false
-        var fieldsDecided = false
-        /// Video before the first keyframe is dropped; after it, everything
-        /// goes to the builder, even while a decoder holds pictures back.
-        var sawKeyframe = false
-        /// The time of the keyframe the picture started at, until the next
-        /// keyframe. Pictures before it in time lead it and may refer to
-        /// pictures that were never read.
-        var startKeyframe: CMTime?
-        /// The container stream of the sound that plays.
-        var sound: Int?
-        /// The newest packets of each sound stream with a builder.
-        var rings: [Int: SoundRing] = [:]
-        /// The channel count of the sound last reported.
-        var soundChannels: Int?
-        /// The picture size and dynamic range last reported.
-        var picture: (size: CMVideoDimensions, range: PresentationInfo.DynamicRange)?
-        /// Keeps a live stream's times running on across jumps; nil for films.
-        var timeline: LiveTimeline?
-        /// The container streams the run knows of.
-        var streamCount = 0
-        /// The codec of each text or DVB subtitle stream, by container stream index.
-        var subtitleCodecs: [Int: String] = [:]
-        /// Where the newest timed packet of each sound stream with a builder ends.
-        var soundEnds: [Int: CMTime] = [:]
-        /// Where the newest sound buffer queued ends.
-        var soundQueuedTo: CMTime?
-    }
-
     /// Reads packets into the feeds until the end or `cancel`, calling
     /// `ready` once the first picture (and, within half a second of stream,
     /// the first sound) is queued. Returns whether it did.
+    ///
+    /// Each packet is read and handled in an autorelease pool of its own.
+    /// The thread's own pool drains only when the run ends, and what
+    /// Foundation and Metal autorelease for a packet (the bytes read back
+    /// from the timeshift buffer, the deinterlacer's textures) would stay
+    /// for the whole of a live stream
+    /// (playback-engine/live-playback-keeps-memory-steady).
     private func pump(
         _ prepared: inout Prepared, _ state: inout PumpState, ready: @Sendable (Result<DemuxStart, any Error>) -> Void
     ) -> Bool {
         state.sound = prepared.audio?.stream.index
         state.streamCount = prepared.demuxer.streams.count
         state.subtitleCodecs = Dictionary(uniqueKeysWithValues: prepared.subtitleTracks.map { ($0.stream.index, $0.stream.codec) })
-        reading: while !isCancelled, let read = prepared.demuxer.nextPacket() {
-            if prepared.demuxer.streams.count != state.streamCount { addStreams(&prepared, &state) }
-            let packet = place(read, prepared, &state)
-            if let request = takeSoundRequest() {
-                guard switchSound(to: request, prepared, &state) else { break reading }
-            }
-            if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
-                state.sawVideoPacket = true
-                guard takeVideo(packet, builder: builder, &state) else { break reading }
-            } else if let builder = prepared.sounds[packet.streamIndex] {
-                keep(packet, in: &state)
-                guard followSound(packet, prepared, &state) else { break reading }
-                guard packet.streamIndex == state.sound else { continue }
-                for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
-                    guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { break reading }
-                }
-                noteSoundFormat(builder, &state)
-                guard startWithoutPicture(&prepared, &state) else { break reading }
-            } else if let decoder = prepared.pictureSubtitles[packet.streamIndex] {
-                pictureCues(from: packet, decoder: decoder)
-            } else if let codec = state.subtitleCodecs[packet.streamIndex] {
-                cue(from: packet, codec: codec)
-            }
-            // In MPEG-TS the first sound can follow the first keyframe.
-            let waited = state.startTime.map { CMTimeSubtract(packet.decodeTime, $0).seconds > 0.5 } ?? false
-            let playing = state.sound.flatMap { prepared.sounds[$0] }
-            let soundKnown = !waitsForSound || playing == nil || playing?.formatDescription != nil || waited
-            if !state.announced, let startTime = state.startTime, soundKnown {
-                state.announced = true
-                let interlaced = state.fields.map { $0.sawFields || $0.isInterlacedBySPS } ?? false
-                let start = describe(prepared, startTime: startTime, frameTimes: state.frameTimes, interlaced: interlaced)
-                state.rateKnown = state.rateKnown || start.frameRate != nil || prepared.video == nil
-                if let size = start.pictureSize { state.picture = (size, start.dynamicRange) }
-                state.soundChannels = start.soundChannels
-                ready(.success(start))
-            }
+        while !isCancelled {
+            let goesOn = autoreleasepool { pumpPacket(&prepared, &state, ready: ready) }
+            guard goesOn else { break }
         }
         return state.announced
+    }
+
+    /// Reads and handles one packet. Returns false at the end of the bytes
+    /// or once a feed is closed.
+    private func pumpPacket(
+        _ prepared: inout Prepared, _ state: inout PumpState, ready: @Sendable (Result<DemuxStart, any Error>) -> Void
+    ) -> Bool {
+        guard let read = prepared.demuxer.nextPacket() else { return false }
+        if prepared.demuxer.streams.count != state.streamCount { addStreams(&prepared, &state) }
+        let packet = place(read, prepared, &state)
+        if let request = takeSoundRequest() {
+            guard switchSound(to: request, prepared, &state) else { return false }
+        }
+        if packet.streamIndex == prepared.video?.stream.index, let builder = prepared.video {
+            state.sawVideoPacket = true
+            guard takeVideo(packet, builder: builder, &state) else { return false }
+        } else if let builder = prepared.sounds[packet.streamIndex] {
+            keep(packet, in: &state)
+            guard followSound(packet, prepared, &state) else { return false }
+            guard packet.streamIndex == state.sound else { return true }
+            for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
+                guard takeSound(buffer, &state, hasVideo: prepared.video != nil) else { return false }
+            }
+            noteSoundFormat(builder, &state)
+            guard startWithoutPicture(&prepared, &state) else { return false }
+        } else if let decoder = prepared.pictureSubtitles[packet.streamIndex] {
+            pictureCues(from: packet, decoder: decoder)
+        } else if let codec = state.subtitleCodecs[packet.streamIndex] {
+            cue(from: packet, codec: codec)
+        }
+        // In MPEG-TS the first sound can follow the first keyframe.
+        let waited = state.startTime.map { CMTimeSubtract(packet.decodeTime, $0).seconds > 0.5 } ?? false
+        let playing = state.sound.flatMap { prepared.sounds[$0] }
+        let soundKnown = !waitsForSound || playing == nil || playing?.formatDescription != nil || waited
+        if !state.announced, let startTime = state.startTime, soundKnown {
+            state.announced = true
+            let interlaced = state.fields.map { $0.sawFields || $0.isInterlacedBySPS } ?? false
+            let start = describe(prepared, startTime: startTime, frameTimes: state.frameTimes, interlaced: interlaced)
+            state.rateKnown = state.rateKnown || start.frameRate != nil || prepared.video == nil
+            if let size = start.pictureSize { state.picture = (size, start.dynamicRange) }
+            state.soundChannels = start.soundChannels
+            ready(.success(start))
+        }
+        return true
     }
 
     /// Sends the line in a subtitle packet. A line with no length in the
