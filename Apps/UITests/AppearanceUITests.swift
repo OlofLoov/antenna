@@ -29,10 +29,21 @@ final class AppearanceUITests: XCTestCase {
         XCTAssertTrue(app.element("settings.profile").waitForExistence(timeout: 10), "Settings never opened")
     }
 
+    /// Swipes until `element` is on screen, at most `limit` times. A `for … where`
+    /// loop would query the element on every pass even once it shows, and each
+    /// query of Settings takes seconds on a CI runner.
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication, limit: Int, swipe: (XCUIApplication) -> Void) {
+        var swipes = 0
+        while swipes < limit, !(element.exists && element.isHittable) {
+            swipe(app)
+            swipes += 1
+        }
+    }
+
     /// The Accent row, scrolled into view.
     private func accentRow(_ app: XCUIApplication) -> XCUIElement {
         let row = app.element("settings.appearance.accent")
-        for _ in 0..<8 where !(row.exists && row.isHittable) { app.swipeUp() }
+        reveal(row, in: app, limit: 8) { $0.swipeUp() }
         XCTAssertTrue(row.isHittable, "no Accent row")
         return row
     }
@@ -56,11 +67,12 @@ final class AppearanceUITests: XCTestCase {
         teal.tap()
         let picked = NSPredicate(format: "value == 'Teal'")
         expectation(for: picked, evaluatedWith: accentRow(app))
-        waitForExpectations(timeout: 5)
+        // One query of the row has taken over 5 s on a CI runner.
+        waitForExpectations(timeout: 30)
 
         // Kids keeps Blue.
         let profiles = app.element("settings.profile")
-        for _ in 0..<8 where !(profiles.exists && profiles.isHittable) { app.swipeDown() }
+        reveal(profiles, in: app, limit: 8) { $0.swipeDown() }
         profiles.tap()
         pick("profiles.tile.1", in: app)
         openSettings(app)
@@ -96,7 +108,7 @@ final class AppearanceUITests: XCTestCase {
         openSettings(app)
         _ = accentRow(app)
         let row = app.element("settings.appearance.icon")
-        for _ in 0..<4 where !(row.exists && row.isHittable) { app.swipeUp() }
+        reveal(row, in: app, limit: 4) { $0.swipeUp() }
         // The simulator keeps the icon a run before picked, so pick another one.
         let (target, name) = row.value as? String == "Mono" ? ("teal", "Teal") : ("mono", "Mono")
         row.tap()
