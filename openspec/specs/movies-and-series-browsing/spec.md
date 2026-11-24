@@ -503,6 +503,12 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 - **WHEN** the viewer rests on hundreds of series in turn
 - **THEN** episode lists are kept for the latest 100 series asked about and for series with saved progress, and the older ones are let go
 
+#### Scenario: Moving through the rows on Apple TV
+- **GIVEN** Movies or Series is open on Apple TV on a library of thousands of titles in dozens of rows, with the preview showing
+- **WHEN** the viewer moves across posters and up and down the rows
+- **THEN** the banner and the rows are not drawn again for those moves, only when the titles, the saved positions or My list change
+- **AND** the rows that pass under the preview fade into the background without the rows being drawn off screen first
+
 ### Requirement: Pick a genre from a list on iPhone
 The system SHALL show on iPhone, and in a narrow iPad window, one genre button over the Movies and Series banners in place of a row of genre chips, reading the open list's name and count. The button SHALL open a half-height Genres sheet with a search field, listing All, My list and every genre with its count and a checkmark on the open one. Picking one SHALL close the sheet and show that list as the chips did.
 
