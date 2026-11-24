@@ -14,7 +14,9 @@ final class ShelfLibrary {
     private(set) var stack: [LibraryPage] = []
     /// The page closed last, until the poster or button that opened it
     /// takes focus back (title-detail-and-episode-picker/back-to-where-you-were).
-    private(set) var returning: TitleRoute?
+    private(set) var returning: ShelfSpot?
+    /// The poster a title started playing from, until playback ends.
+    @ObservationIgnored private var playedFrom: ShelfSpot?
     /// The page just closed over another page, until the chip or poster
     /// on the page below takes focus back (browse-by-person/a-person-s-page).
     private(set) var popped: LibraryPage?
@@ -106,6 +108,7 @@ final class ShelfLibrary {
     /// any open pages.
     func openPage(_ title: ShelfTitle, from origin: TitleRoute.Origin, in section: ShelfTitle.Kind) {
         stack = [.title(route(title, section: section, origin: origin))]
+        playedFrom = nil
         popped = nil
     }
 
@@ -134,14 +137,27 @@ final class ShelfLibrary {
     func closePage() {
         guard let closed = stack.popLast() else { return }
         popped = stack.isEmpty ? nil : closed
-        if stack.isEmpty, case .title(let route) = closed { returning = route }
+        if stack.isEmpty, case .title(let route) = closed { returning = route.spot }
     }
 
     /// Closes every open page.
     func closeAll() {
-        if case .title(let route)? = stack.first { returning = route }
+        if case .title(let route)? = stack.first { returning = route.spot }
         stack = []
         popped = nil
+    }
+
+    /// A poster started playing its title.
+    func playing(_ title: ShelfTitle, from origin: TitleRoute.Origin) {
+        playedFrom = ShelfSpot(title: title, origin: origin)
+    }
+
+    /// Playback ended: the poster it started from takes focus back, as
+    /// after a page (title-detail-and-episode-picker/back-to-where-you-were).
+    func playbackEnded() {
+        guard let playedFrom else { return }
+        returning = playedFrom
+        self.playedFrom = nil
     }
 
     /// The starting poster or button has focus again.

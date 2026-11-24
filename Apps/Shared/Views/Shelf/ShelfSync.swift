@@ -87,6 +87,11 @@ struct ShelfSync: ViewModifier {
                     Task { await playback.close() }
                 }
             }
+            // The poster a title played from takes focus back
+            // (title-detail-and-episode-picker/back-to-where-you-were).
+            .onChange(of: playback.playing == nil) { _, ended in
+                if ended { library.playbackEnded() }
+            }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { library.becameActive() }
                 if phase == .background { playback.background() }

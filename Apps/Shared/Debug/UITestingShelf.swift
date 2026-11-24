@@ -49,6 +49,8 @@
             case watching
             /// Cabin loads; Office's login arrives 6 seconds after launch.
             case waiting
+            /// Thousands of titles from Cabin and Office (`UITestingShelfLarge`).
+            case large
         }
 
         static let homeID = UUID(uuidString: "00000000-0000-0000-0000-0000000000E1") ?? UUID()
@@ -60,7 +62,9 @@
             let next = arguments.index(after: index)
             guard next < arguments.endIndex, let scenario = Scenario(rawValue: arguments[next]) else {
                 fatalError(
-                    "\(argument) takes titles, watching, waiting, noXtream, playlistSeries, loading, failing, offline, error or empty")
+                    "\(argument) takes titles, watching, waiting, large, noXtream, playlistSeries, loading, failing, offline, "
+                        + "error or empty"
+                )
             }
             return scenario
         }
@@ -70,7 +74,7 @@
         }
 
         /// True when any UI testing launch argument is present.
-        fileprivate static var testing: Bool {
+        static var testing: Bool {
             let arguments = ProcessInfo.processInfo.arguments
             return arguments.contains { $0.hasPrefix("-ui-testing-") }
         }
@@ -185,7 +189,7 @@
                 switch scenario {
                 case .error, .empty: return false
                 case .waiting: return Date.now.timeIntervalSince(launched) > 6
-                case .titles, .watching, .noXtream, .playlistSeries, .loading, .failing, .offline: return true
+                case .titles, .watching, .large, .noXtream, .playlistSeries, .loading, .failing, .offline: return true
                 }
             }
 
@@ -200,6 +204,9 @@
                 let isCabin = source.id == cabinID
                 if !isCabin { officeLoads += 1 }
                 switch scenario {
+                case .large:
+                    return try await UITestingShelfLarge.build(
+                        source.id, host: isCabin ? "cabin" : "office", kind: kind, launched: launched)
                 case .titles, .watching, .waiting, .noXtream, .playlistSeries:
                     return catalogue(source.id, kind: kind)
                 case .loading:
@@ -322,7 +329,7 @@
                     ? ShelfDetails(
                         year: 2000 + number, duration: Double(90 + number) * 60, plot: "The story of \(title.name).", ageRating: "15")
                     : ShelfDetails(year: 2010 + number, seasons: number % 3 + 1, plot: "A series about \(title.name).")
-                details.backdropURL = UITestingStoreShots.art(for: title.id, .backdrop)
+                details.backdropURL = UITestingShelfLarge.backdrop(title.id, large: scenario == .large)
                 switch title.id {
                 case "xtream#cabin#vod#1":
                     details.rating = 7.4

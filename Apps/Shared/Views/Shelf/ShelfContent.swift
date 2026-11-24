@@ -1,53 +1,6 @@
 import AntennaCore
 import SwiftUI
 
-/// What a poster or the banner does, given by the screen that hosts the section.
-struct ShelfActions {
-    var play: @MainActor (ShelfTitle) -> Void
-    /// Opens the title's page (title-detail-and-episode-picker).
-    var open: @MainActor (ShelfTitle, TitleRoute.Origin) -> Void
-    var toggleMyList: @MainActor (ShelfTitle) -> Void
-    var isOnMyList: @MainActor (ShelfTitle) -> Bool
-
-    /// The section `kind`'s actions: playing through `playback`, pages
-    /// through `library` and My list through `activity`.
-    @MainActor static func section(
-        _ kind: ShelfTitle.Kind, library: ShelfLibrary, activity: ShelfActivity, playback: ShelfPlayback
-    ) -> ShelfActions {
-        ShelfActions(
-            play: { playback.play($0, library: library, activity: activity) },
-            open: { library.openPage($0, from: $1, in: kind) },
-            toggleMyList: { activity.toggleMyList($0) }, isOnMyList: { activity.isOnMyList($0) })
-    }
-
-    /// What selecting a poster in `row` does: a movie plays, a series
-    /// opens its page (title-detail-and-episode-picker/open-a-series-page).
-    @MainActor func select(_ title: ShelfTitle, in row: String) {
-        switch title.kind {
-        case .movie: play(title)
-        case .series: open(title, .poster(row: row))
-        }
-    }
-
-    /// What Trailer does on the title page and the banner, nil for no
-    /// button. iPhone, iPad and Mac open the link outside the app. Apple TV
-    /// has no browser, so there only a link to a video file or stream gets
-    /// the button, and it plays in the app
-    /// (title-detail-and-episode-picker/trailer,
-    /// movies-and-series-browsing/rating-and-trailer-on-the-banner).
-    @MainActor static func trailer(
-        _ url: URL?, of title: ShelfTitle, playback: ShelfPlayback, openURL: OpenURLAction
-    ) -> (() -> Void)? {
-        guard let url else { return nil }
-        #if os(tvOS)
-            guard TrailerLink.playsInApp(url) else { return nil }
-            return { playback.playTrailer(url, of: title) }
-        #else
-            return { openURL(url) }
-        #endif
-    }
-}
-
 /// Shows the banner's title, moves on every eight seconds while nobody
 /// interacts with it, or on Apple TV eight seconds after the last move, with
 /// Reduce Motion off. It loads the shown title's
@@ -84,6 +37,9 @@ struct ShelfBannerHost<Content: View>: View {
             .onChange(of: shown, initial: true) { _, title in
                 if let title { showing(title) }
             }
+            #if DEBUG
+                .background(UITestingShelf.Redraws.mark(.banner))
+            #endif
             .task(id: Rotation(index: index, rotates: rotates, inputs: touch.inputs)) {
                 guard rotates else { return }
                 try? await Task.sleep(for: BannerPager.interval)
@@ -162,7 +118,7 @@ struct ShelfBannerHost<Content: View>: View {
                 text: BannerText(title, details: details), art: art(title),
                 isOnMyList: actions.isOnMyList(title), index: min(index, count - 1), count: count),
             actions: .init(
-                play: { actions.play(title) }, moreInfo: { actions.open(title, .banner) },
+                play: { actions.play(title, .banner) }, moreInfo: { actions.open(title, .banner) },
                 trailer: ShelfActions.trailer(details?.trailerURL, of: title, playback: playback, openURL: openURL),
                 toggleMyList: { actions.toggleMyList(title) },
                 page: { page($0, count: count) },
@@ -192,6 +148,9 @@ struct ShelfRowsContent: View {
     @Environment(\.shelfPrefix) private var prefix
 
     var body: some View {
+        #if DEBUG
+            UITestingShelf.Redraws.mark(.rows)
+        #endif
         let watching = activity.continueWatching(library)
         if !watching.isEmpty {
             ShelfView.Row {
@@ -337,7 +296,7 @@ struct ShelfContinueCard: View {
             title: item.title, caption: ShelfText.continueCaption(item, episode: episode),
             fraction: item.isNextEpisode ? 1 : item.progress.position / length
         ) {
-            actions.play(item.title)
+            actions.play(item.title, .poster(row: row))
         }
         .contextMenu {
             if item.title.kind == .movie {
@@ -376,6 +335,16 @@ struct ReturnFocus: ViewModifier {
         #else
             content
         #endif
+    }
+}
+
+/// The rows redraw for the titles and the activity they read, and not when
+/// the screen around them redraws: every screen passes a `seeAll` that sets
+/// the same state each time, so it is left out
+/// (movies-and-series-browsing/browsing-stays-responsive).
+extension ShelfRowsContent: @MainActor Equatable {
+    static func == (lhs: ShelfRowsContent, rhs: ShelfRowsContent) -> Bool {
+        lhs.model === rhs.model && lhs.actions == rhs.actions
     }
 }
 

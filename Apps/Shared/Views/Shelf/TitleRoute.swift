@@ -25,4 +25,15 @@ struct TitleRoute: Equatable {
     static func == (lhs: TitleRoute, rhs: TitleRoute) -> Bool {
         lhs.title == rhs.title && lhs.section == rhs.section && lhs.origin == rhs.origin && lhs.model === rhs.model
     }
+
+    /// The poster or button the page was opened from.
+    var spot: ShelfSpot { ShelfSpot(title: title, origin: origin) }
+}
+
+/// A title's poster or banner button, which takes focus back when the
+/// page it opened or the title it played closes
+/// (title-detail-and-episode-picker/back-to-where-you-were).
+struct ShelfSpot: Equatable {
+    var title: ShelfTitle
+    var origin: TitleRoute.Origin
 }
