@@ -165,12 +165,15 @@
         var hitchMilliseconds: Int { Int(hitch * 1000) }
 
         func start() {
-            guard link == nil, UITestingShelf.testing else { return }
-            let link = CADisplayLink(target: self, selector: #selector(tick))
-            // A steady 60 Hz, so a quiet screen does not read as missed frames.
-            link.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, preferred: 60)
-            link.add(to: .main, forMode: .common)
-            self.link = link
+            // The Mac has no target-selector display link; the benchmarks run on Apple TV.
+            #if !os(macOS)
+                guard link == nil, UITestingShelf.testing else { return }
+                let link = CADisplayLink(target: self, selector: #selector(tick))
+                // A steady 60 Hz, so a quiet screen does not read as missed frames.
+                link.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 60, preferred: 60)
+                link.add(to: .main, forMode: .common)
+                self.link = link
+            #endif
         }
 
         @objc private func tick(_ link: CADisplayLink) {
