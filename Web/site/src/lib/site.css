@@ -6,6 +6,7 @@
 	--muted: #b4becc;
 	--rule: #1e2530;
 	--link: #5bb8ff;
+	--tip: #4fd1c5;
 	--link-hover: #8ecdff;
 	--frame: #4a5566;
 	--gutter: 64px;
@@ -25,6 +26,7 @@
 		--muted: #5a6472;
 		--rule: #e3e7ec;
 		--link: #0066cc;
+		--tip: #119c8f;
 		--link-hover: #004c99;
 		--frame: #c5ccd6;
 	}

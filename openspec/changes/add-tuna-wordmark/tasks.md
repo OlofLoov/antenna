@@ -19,8 +19,8 @@
 
 ## 4. Website
 
-- [ ] 4.1 Put the wordmark in the site header with the `--tip` color for both modes, and replace the favicon
-- [ ] 4.2 Add a site test citing `antuna-website/the-header-shows-the-wordmark`
+- [x] 4.1 Put the wordmark in the site header with the `--tip` color for both modes, and replace the favicon
+- [x] 4.2 Add a site test citing `antuna-website/the-header-shows-the-wordmark`
 
 ## 5. Verify
 
