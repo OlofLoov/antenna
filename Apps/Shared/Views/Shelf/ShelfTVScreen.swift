@@ -16,21 +16,17 @@
         @State private var list: ShelfList?
         @State private var scrolled = false
         @State private var position = ScrollPosition(edge: .top)
-        @FocusedValue(\.shelfFocusedRow) private var focusedRow
-        @FocusedValue(\.shelfFocusedTitle) private var focusedTitle
-        @State private var schedule = PreviewSchedule()
+        /// True while the highlight is in a row, set by `ShelfTVFocusFollower`.
+        @State private var inRows = false
         /// The title the preview shows, the banner's until a poster rests.
         @State private var previewTitle: ShelfTitle?
+        @State private var follow = ShelfPreviewFollow()
         /// The banner's title, written as it pages. Not observed, so paging
         /// never redraws the screen.
         @State private var bannerShown = ShelfBannerShown()
         /// Preview titles shown for longer than `BannerArt.patience`.
         @State private var previewWaited: Set<String> = []
-        /// True from a page's close until its poster has focus again.
-        @State private var restoring = false
         @State private var rowHeights = ShelfRowHeights()
-        /// The row last brought up under the preview, nil once back at the top.
-        @State private var placedRow: String?
         @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
 
         @Environment(ShelfPlayback.self) private var playback
@@ -63,6 +59,9 @@
                     .environment(\.shelfPrefix, kind.prefix)
                 }
             }
+            #if DEBUG
+                .background(UITestingShelf.Redraws.mark(.screen))
+            #endif
         }
 
         private var section: some View {
@@ -80,7 +79,7 @@
             .controlHints(.titleRows(kind))
             .task(id: kind) {
                 list = nil
-                schedule = PreviewSchedule()
+                follow.schedule = PreviewSchedule()
                 library.open()
             }
             // The loading holder had focus; once titles replace it, Play takes it.
@@ -95,15 +94,10 @@
             let previewing = previewing
             return ScrollViewReader { proxy in
                 rowsScroll(model, previewing: previewing)
-                    // Nothing moves until the highlight has been in a row, so
-                    // the banner's buttons take presses as soon as they show.
-                    .task(id: focusedRow) {
-                        guard focusedRow != nil || placedRow != nil else { return }
-                        let wait = ShelfRowPlacement.wait(top: focusedRow.flatMap { rowHeights.tops[$0] })
-                        if wait > .zero { try? await Task.sleep(for: wait) }
-                        guard !Task.isCancelled else { return }
-                        placedRow = focusedRow
-                        if let row = focusedRow { bringUp(row, proxy) } else { backToTop() }
+                    .background {
+                        ShelfTVFocusFollower(
+                            model: model, proxy: proxy, position: $position, inRows: $inRows, previewTitle: $previewTitle,
+                            follow: follow, bannerShown: bannerShown, rowHeights: rowHeights, reduceMotion: reduceMotion)
                     }
             }
         }
@@ -113,15 +107,10 @@
                 LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.tv.rowSpacing) {
                     switch model.status {
                     case .titles(let banner, let waiting):
-                        ShelfBannerHost(
-                            model: model, actions: actions, paused: previewing, showing: { [bannerShown] in bannerShown.title = $0 }
-                        ) {
-                            ShelfBanner.Television {
-                                ShelfTVBannerButtons(focus: focus)
-                            }
-                        }
-                        // Full bleed behind the tab bar.
-                        .padding(.top, -Self.barHeight)
+                        ShelfTVBanner(model: model, actions: actions, paused: previewing, bannerShown: bannerShown, focus: focus)
+                            .equatable()
+                            // Full bleed behind the tab bar.
+                            .padding(.top, -Self.barHeight)
                         ShelfNotices(model: model, banner: banner, waiting: waiting)
                         ShelfRowsContent(model: model, actions: actions) { list = $0 }
                         genres(model)
@@ -147,14 +136,21 @@
             } action: { _, past in
                 scrolled = past
             }
-            // Rows above the focused one pass under the preview and fade out
-            // over 40 pt above its foot.
-            .mask(alignment: .top) {
-                VStack(spacing: 0) {
-                    Color.black.opacity(previewing ? 0 : 1).frame(height: Self.rowTop - 40)
-                    LinearGradient(colors: [.black.opacity(previewing ? 0 : 1), .black], startPoint: .top, endPoint: .bottom)
-                        .frame(height: 40)
-                    Color.black
+            // Rows above the focused one pass under the preview and fade into
+            // the ground over 40 pt above its foot. A layer of the ground
+            // color, not a mask, so the rows never render off screen.
+            .overlay(alignment: .top) {
+                ZStack {
+                    if previewing {
+                        VStack(spacing: 0) {
+                            Palette.ground.frame(height: Self.rowTop - 40)
+                            LinearGradient(colors: [Palette.ground, Palette.ground.opacity(0)], startPoint: .top, endPoint: .bottom)
+                                .frame(height: 40)
+                        }
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                        .transition(.opacity)
+                    }
                 }
                 .animation(ShelfBanner.crossfade, value: previewing)
             }
@@ -174,9 +170,6 @@
                 }
                 .animation(ShelfBanner.crossfade, value: previewing)
             }
-            .task(id: RestKey(title: focusedTitle?.activityKey, previewing: previewing)) {
-                await rest(model)
-            }
             .task(id: previewTitle?.id) {
                 guard let id = previewTitle?.id, !previewWaited.contains(id) else { return }
                 try? await Task.sleep(for: BannerArt.patience)
@@ -186,10 +179,11 @@
                 // Back from a page opened from a poster, its preview shows at
                 // once (title-detail-and-episode-picker/back-to-where-you-were).
                 guard closed, list == nil, case .poster? = library.returning?.origin else { return }
-                restoring = true
+                follow.restoring = true
             }
             #if DEBUG
                 .overlay { UITestingShelf.InfoLoadsProbe() }
+                .overlay { UITestingShelf.RedrawsProbe() }
             #endif
             .ignoresSafeArea()
         }
@@ -197,67 +191,7 @@
         /// True while the highlight is in a row of the section, so the
         /// preview shows (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
         private var previewing: Bool {
-            focusedRow != nil && list == nil && library.top == nil
-        }
-
-        private struct RestKey: Hashable {
-            var title: ActivityKey?
-            var previewing: Bool
-        }
-
-        /// Shows the focused title once it has rested, and asks the provider
-        /// about it then. A focus change cancels the wait.
-        private func rest(_ model: ShelfModel) async {
-            guard previewing, let title = focusedTitle else {
-                if schedule.pending != nil { schedule.left() }
-                return
-            }
-            if restoring {
-                restoring = false
-                schedule.restored(title.id)
-                show(title, model)
-                return
-            }
-            // Coming down from the banner, the preview starts on its title.
-            if schedule.shown == nil, let bannerTitle = bannerShown.title {
-                schedule.start(on: bannerTitle.id)
-                previewTitle = bannerTitle
-            }
-            schedule.focused(title.id, at: .now)
-            while let due = schedule.due, due > .now {
-                try? await Task.sleep(for: .seconds(due.timeIntervalSinceNow))
-                if Task.isCancelled { return }
-            }
-            guard schedule.check(at: .now) != nil else { return }
-            show(title, model)
-        }
-
-        private func show(_ title: ShelfTitle, _ model: ShelfModel) {
-            withAnimation(ShelfBanner.crossfade) { previewTitle = title }
-            model.preview(title)
-        }
-
-        /// Scrolls the focused row so its header sits just under the
-        /// preview (`ShelfRowPlacement.anchor`).
-        private func bringUp(_ row: String, _ proxy: ScrollViewProxy) {
-            guard library.top == nil, list == nil else { return }
-            let height = rowHeights.heights[row] ?? 392
-            let anchor = UnitPoint(x: 0, y: ShelfRowPlacement.anchor(rowHeight: height))
-            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
-                proxy.scrollTo(ShelfRowAnchor.id(row), anchor: anchor)
-            }
-        }
-
-        /// Leaving the rows for the banner scrolls back to the top, and the
-        /// preview starts over on the banner's title next time. Not while a
-        /// page covers the rows, so the poster it opened from stays loaded.
-        private func backToTop() {
-            guard library.top == nil, list == nil else { return }
-            withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
-                position.scrollTo(edge: .top)
-            }
-            schedule = PreviewSchedule()
-            previewTitle = nil
+            inRows && list == nil && library.top == nil
         }
 
         private func previewContext(_ model: ShelfModel) -> PreviewContext? {
@@ -348,7 +282,10 @@
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfPlayback.self) private var playback
         @Environment(\.layoutDirection) private var direction
+        @Environment(\.shellBarFocused) private var barFocused
         @FocusState private var focused: Part?
+        /// True while the banner is on screen, in the tab that is open.
+        @State private var shown = false
 
         enum Part: Hashable { case play, info, trailer, myList }
 
@@ -382,6 +319,14 @@
                 focused = .info
                 library.returned()
             }
+            // Down from the tab bar lands on Play, not on the button or the
+            // poster nearest the tab (tvos-shell/back-from-a-tab-goes-to-the-tab-bar).
+            .onChange(of: barFocused) { was, now in
+                guard was, !now, shown, library.top == nil, focused != .play else { return }
+                focused = .play
+            }
+            .onAppear { shown = true }
+            .onDisappear { shown = false }
             // Back from the trailer, by Menu or its end, focus is on Trailer again.
             .onChange(of: playback.playing) { before, now in
                 guard now == nil, library.top == nil, case .trailer = before else { return }
@@ -455,5 +400,32 @@
     @MainActor
     final class ShelfBannerShown {
         var title: ShelfTitle?
+    }
+
+    /// The banner with its buttons. It redraws for its titles and details
+    /// and when the preview starts or stops, not when the preview changes
+    /// title (movies-and-series-browsing/browsing-stays-responsive).
+    private struct ShelfTVBanner: View {
+        let model: ShelfModel
+        let actions: ShelfActions
+        /// True while the preview shows over it.
+        let paused: Bool
+        let bannerShown: ShelfBannerShown
+        let focus: FocusState<ShellFocus?>.Binding
+
+        var body: some View {
+            ShelfBannerHost(model: model, actions: actions, paused: paused, showing: { [bannerShown] in bannerShown.title = $0 }) {
+                ShelfBanner.Television {
+                    ShelfTVBannerButtons(focus: focus)
+                }
+            }
+        }
+    }
+
+    /// `focus` is the shell's one focus state, so it is left out.
+    extension ShelfTVBanner: @MainActor Equatable {
+        static func == (lhs: ShelfTVBanner, rhs: ShelfTVBanner) -> Bool {
+            lhs.model === rhs.model && lhs.actions == rhs.actions && lhs.paused == rhs.paused && lhs.bannerShown === rhs.bannerShown
+        }
     }
 #endif
