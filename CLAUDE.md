@@ -60,8 +60,7 @@ associated domains, and the app runs without sync.
 - `Apps/Mobile/`, `Apps/TV/` per-target extras only (`Platform.swift`, Info.plist).
 - `Web/` the site, served from CloudFront at antuna.app and
   uploaded from main by the site job in `.github/workflows/infra.yml` through
-  `scripts/publish-web.sh <out> <site build>`. The app names antuna.app, which
-  serves nothing until the owner registers it (`add-aws-hosting` task 1.1).
+  `scripts/publish-web.sh <out> <site build>`. It is live.
   `Web/site/` is a SvelteKit app with every page prerendered
   (home, nine feature pages, pricing, support, the Terms of Use and Privacy
   Policy the paywall links to, 404), built
@@ -80,9 +79,10 @@ associated domains, and the app runs without sync.
   checks the built pages.
 - `Infra/` the Terraform for AWS: `bootstrap/` (state bucket), the `ci` and
   `antuna` roots, and `modules/`. `.github/workflows/infra.yml` plans on PRs,
-  applies on main and uploads the site. Nothing runs until the owner sets the
-  AWS repository variables (add-aws-hosting design.md decision 9).
-- `docs/release/` the App Review notes and the App Store Connect privacy answers.
+  applies on main and uploads the site. There is no API and no server of our
+  own; the site is static files.
+- `docs/release/` the App Review notes and the App Store Connect privacy and
+  trader contact answers.
 - `design/icon/` the SVG sources of the app icons. `scripts/render-icons.sh`
   copies them into `Apps/Mobile/AppIcon.icon` (Icon Composer, iPhone, iPad
   and Mac) and renders `Apps/TV/Assets.xcassets` (Apple TV layers and Top Shelf).

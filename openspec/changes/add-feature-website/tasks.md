@@ -3,7 +3,7 @@
 - [x] 1.1 Write the proposal, delta specs, design and tasks, and validate with `openspec validate add-feature-website --strict`
 - [x] 1.2 Draw draft boards `Web-Home`, `Web-Home-Phone`, `Web-Feature`, `Web-Pricing` and `Web-Support`
 - [x] 1.3 Fold in the owner's 2026-11-22 decisions on the open questions, and rework the page builder into a prerendered SvelteKit app
-- [ ] 1.4 Draw the boards listed under "Not drawn yet" in design.md: light appearance, phone widths of the other pages, the legal pages with the header and footer, `404.html` and "Coming soon to the App Store"
+- [ ] 1.4 Draw the boards listed under "Not drawn yet" in design.md: light appearance, phone widths of the other pages, the legal pages with the header and footer, `404.html` and "Coming soon to the App Store". Waits until after launch
 
 ## 2. The app, CI and the CSP
 
@@ -33,7 +33,7 @@
 
 ## 6. Languages
 
-One PR per language, when its store listing is ready. Swedish first.
+One PR per language, when its store listing is ready. Swedish first. The group waits until after launch.
 
 - [ ] 6.1 Add the optional `[[lang=lang]]` route parameter with a matcher of published languages, `entries` per language, `lang` and `dir` from `hooks.server.ts`, `hreflang` links and the footer language list with full-reload links, with a site check that an unpublished language answers 404 and a missing string fails the build, citing `feature-website/languages-are-added-when-their-listing-is-ready`
 - [ ] 6.2 Add Swedish: `src/lib/strings/sv.json` and the Swedish screenshots, reviewed by the owner
@@ -42,5 +42,5 @@ One PR per language, when its store listing is ready. Swedish first.
 ## 7. Verify
 
 - [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 7.2 After the first deploy, open a page with JavaScript off, follow links with it on, open a made-up address and check its 404 status, and read the CSP header in the browser's network panel
+- [ ] 7.2 After the first deploy, open a page with JavaScript off, follow links with it on, open a made-up address and check its 404 status, and read the CSP header in the browser's network panel. Checked with curl on 2026-11-24: the prerendered HTML of each page holds its full text, every header and footer link answers 200, a made-up address answers 404 with "Page not found", and every page sends the site CSP. Following links with JavaScript on still needs a browser
 - [ ] 7.3 `/opsx:verify` passes
