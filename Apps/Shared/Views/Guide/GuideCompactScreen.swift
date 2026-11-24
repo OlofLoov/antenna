@@ -14,6 +14,7 @@
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
         @Environment(\.guideBoardOpenLive) private var openLive
+        @State private var groupsShown = false
 
         private var reading: GuideBoardReading { GuideBoardReading(live: live, model: model) }
 
@@ -57,7 +58,7 @@
             case .channels:
                 let data = reading.data(at: .now, filtered: true)
                 VStack(spacing: 0) {
-                    LiveGroupButton(place: .guide).withProfileButton()
+                    LiveGroupButton(place: .guide, isPresented: $groupsShown).withProfileButton()
                     TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                         days(reading.data(at: context.date, filtered: false).timeline, now: context.date)
                     }

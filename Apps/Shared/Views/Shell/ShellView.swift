@@ -22,8 +22,8 @@
         @State var numbers = NumberEntryModel()
         /// When focus last came down from the tab bar; the press that brought it does not also change channel.
         @State private var barLowered = ContinuousClock.now - .seconds(10)
-        @State private var overlay = ChannelOverlayModel()
-        @State private var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
+        @State var overlay = ChannelOverlayModel()
+        @State var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: [])
         /// The recents the catalogue lists; Recents open in the overlay keeps its order
         /// (session-restore-and-recently-watched/the-list-holds-still-while-you-use-it).
         @State private var shownRecents: [LastChannelKey] = []
@@ -244,7 +244,9 @@
                 ShellLiveLayer(model: model, focus: $focus)
                 if model.dimmed { ShellScrim() }
                 if model.tuned != nil, let message = model.player.message {
-                    PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn)
+                    PlayerTVFailure(player: model.player, message: message, focus: $focus, signIn: signIn, channels: openChannels)
+                        // Under the overlay the focus engine must not reach the error's buttons.
+                        .disabled(model.pickerOpen)
                 }
                 pictureHolder
                 if zapBarShows, let channel = zapBar.channel {
@@ -402,7 +404,7 @@
             case (.overlay(.channel), .overlay(.favorite)), (.overlay(.channel), .overlay(.next)):
                 // Right from a channel reaches Watch first; up from Watch reaches the programmes that follow.
                 focus = .overlay(.watch)
-            case (nil, .picture), (nil, .retry), (nil, .signIn):
+            case (nil, .picture), (nil, .retry), (nil, .signIn), (nil, .channels):
                 // Swiping down from the tab bar onto the picture does not also change channel.
                 if model.tab == .live { barLowered = .now }
             default:
@@ -411,7 +413,7 @@
         }
 
         private func move(_ direction: MoveCommandDirection) {
-            guard focus == .picture || focus == .retry || focus == .signIn, model.liveInFront, !model.pickerOpen else { return }
+            guard [.picture, .retry, .signIn, .channels].contains(focus), model.liveInFront, !model.pickerOpen else { return }
             guard ContinuousClock.now - barLowered > .milliseconds(500) else { return }
             // The swipe preference (sources-and-settings/choose-how-the-app-behaves).
             guard PreferencesStore.current(preferences).swipe == .changesChannel else { return zapBar.playPause() }

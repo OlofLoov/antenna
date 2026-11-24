@@ -23,6 +23,8 @@
         case retry
         /// Sign in on the error, for a source whose login is missing or refused.
         case signIn
+        /// Channels on the error, which opens the overlay on the current group.
+        case channels
         /// A tab or track in the info panel over the picture.
         case panel(PanelFocus)
         /// The loading screen's holder or the empty screen's Open Settings.

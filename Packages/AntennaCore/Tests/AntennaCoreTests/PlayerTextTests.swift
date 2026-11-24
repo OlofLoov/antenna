@@ -222,6 +222,16 @@ import Testing
         }
     }
 
+    @Test("player-controls-and-playback-errors/go-to-another-group-from-the-error the Channels button in each language")
+    func channelsButton() {
+        let expected = [
+            "en_US": "Channels", "sv": "Kanaler", "de": "Sender", "es": "Canales", "fr": "Chaînes", "pt_BR": "Canais", "ar": "القنوات",
+        ]
+        for (identifier, text) in expected {
+            #expect(PlayerStatusText.channels(Locale(identifier: identifier)) == text, "\(identifier)")
+        }
+    }
+
     @Test("player-controls-and-playback-errors/error-messages-for-each-reason no secrets anywhere")
     func noSecrets() {
         let url = URL(string: "https://olof77:hunter2pw@panel.acme-iptv.example:8443/live/olof77/hunter2pw/12345.ts?token=abc987")!

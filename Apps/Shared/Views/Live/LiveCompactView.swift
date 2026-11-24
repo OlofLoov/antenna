@@ -8,6 +8,8 @@
     /// button and the channel list. The tab bar is the shell's.
     struct LiveCompactView: View {
         @Environment(LiveModel.self) private var live
+        /// The Groups sheet, opened by the group button or the player's error.
+        @State private var groupsShown = false
 
         var body: some View {
             Group {
@@ -21,6 +23,7 @@
                     VStack(spacing: 0) {
                         LivePicture()
                             .frame(maxHeight: live.fullScreen ? .infinity : nil)
+                            .environment(\.openChannelGroups, OpenChannelGroupsAction(perform: openGroups))
                         if !live.fullScreen {
                             if let channel = live.playing {
                                 LiveNowPlayingLine(channel: channel)
@@ -49,12 +52,21 @@
             case .channels(let banner, let waiting):
                 VStack(spacing: 0) {
                     LiveBanners(banner: banner, waiting: waiting)
-                    LiveGroupButton(place: .live).withProfileButton()
+                    LiveGroupButton(place: .live, isPresented: $groupsShown).withProfileButton()
                     LiveChannelList()
                 }
             case let status:
                 LiveStatusMessage(status: status).profileButtonInCorner()
             }
+        }
+
+        /// Channels on the player's error: full screen ends, then the Groups
+        /// sheet opens once the group button is back on screen
+        /// (player-controls-and-playback-errors/go-to-another-group-from-the-error).
+        private func openGroups() {
+            guard live.fullScreen else { return groupsShown = true }
+            live.setFullScreen(false)
+            Task { groupsShown = true }
         }
     }
 

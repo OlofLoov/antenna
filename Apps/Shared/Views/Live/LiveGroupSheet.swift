@@ -25,12 +25,14 @@
     /// The open group under the now-playing line on iPhone, and above the
     /// day chips in the Guide (`iPhone-Live-Groups`). Tapping it opens the
     /// Groups sheet; a locked group picked there asks for the passcode once
-    /// the sheet has closed, since the prompt is a sheet of its own.
+    /// the sheet has closed, since the prompt is a sheet of its own. The
+    /// screen holds whether the sheet is open, so the player's error can open
+    /// it too (player-controls-and-playback-errors/go-to-another-group-from-the-error).
     struct LiveGroupButton: View {
         let place: GroupListPlace
+        @Binding var isPresented: Bool
         @Environment(LiveModel.self) private var live
         @Environment(\.unlockGroup) private var unlock
-        @State private var isPresented = false
         @State private var lockedPick: CatalogueGroup?
 
         var body: some View {

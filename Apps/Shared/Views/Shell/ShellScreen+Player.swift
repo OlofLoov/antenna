@@ -59,9 +59,21 @@
         func failureChanged(_ failed: Bool) {
             switch focus {
             case .picture where failed: focus = .retry
-            case .retry where !failed, .signIn where !failed: focus = model.liveFocus
+            case .retry where !failed, .signIn where !failed, .channels where !failed: focus = model.liveFocus
             default: break
             }
+        }
+
+        /// Channels on the error opens the overlay the way select on the
+        /// picture does, with the highlight on the group in the group column
+        /// (player-controls-and-playback-errors/go-to-another-group-from-the-error).
+        func openChannels() {
+            guard model.liveInFront, !model.pickerOpen else { return }
+            numbers.cancel()
+            zapBar.dismiss()
+            _ = overlay.open(catalogue, playing: model.tuned)
+            model.openPicker()
+            focus = .overlay(.group(overlay.group))
         }
     }
 #endif

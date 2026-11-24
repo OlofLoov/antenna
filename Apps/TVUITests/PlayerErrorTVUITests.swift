@@ -14,10 +14,11 @@ final class PlayerErrorTVUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launchFailing(_ reason: String) {
+    func launchFailing(_ reason: String, only files: String? = nil) {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
         app.launchEnvironment["UITESTING_PLAYBACK"] = "fail-\(reason)"
+        app.launchEnvironment["UITESTING_FAIL_ONLY"] = files
         app.launchInEnglish()
         XCTAssertTrue(element("player.error").waitForExistence(timeout: 15), "no error")
     }
@@ -98,7 +99,54 @@ final class PlayerErrorTVUITests: XCTestCase {
         expect(element("player.retry"), "hasFocus == true")
     }
 
+    // player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong, Channels beside Try again
+    // player-controls-and-playback-errors/go-to-another-group-from-the-error
+    func testChannelsOpensTheOverlayOnTheGroupAndPlaysAChannelFromAnother() {
+        launchFailing("notFound", only: "a1.ts")
+        expectEngine("failed loads=1 file=a1.ts")
+        let channels = element("player.channels")
+        XCTAssertTrue(channels.waitForExistence(timeout: 5))
+        expect(element("player.retry"), "hasFocus == true")
+
+        remote.press(.right)
+        expect(channels, "hasFocus == true")
+        remote.press(.select)
+        XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 5), "no overlay")
+        // Home's Ungrouped, the playing channel's own group, has the highlight in the group column.
+        expect(element("overlay.group.2"), "hasFocus == true")
+
+        remote.press(.up)
+        expect(element("overlay.group.1"), "hasFocus == true")
+        remote.press(.right)
+        let rows = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "overlay.channel."))
+        expect(rows.matching(NSPredicate(format: "label CONTAINS %@", "Channel a1")).firstMatch, "hasFocus == true")
+        remote.press(.down)
+        expect(rows.matching(NSPredicate(format: "label CONTAINS %@", "Channel a2")).firstMatch, "hasFocus == true")
+        remote.press(.select)
+
+        expectEngine("playing loads=2 file=a2.ts")
+        expect(element("overlay.root"), "exists == false")
+        expect(element("player.error"), "exists == false")
+    }
+
+    // player-controls-and-playback-errors/go-to-another-group-from-the-error, Menu after Channels
+    func testMenuClosesTheOverlayFromChannelsAndFocusIsBackOnTryAgain() {
+        launchFailing("notFound")
+        expect(element("player.retry"), "hasFocus == true")
+        remote.press(.right)
+        expect(element("player.channels"), "hasFocus == true")
+        remote.press(.select)
+        XCTAssertTrue(element("overlay.root").waitForExistence(timeout: 5), "no overlay")
+
+        remote.press(.menu)
+
+        expect(element("overlay.root"), "exists == false")
+        expect(element("player.retry"), "hasFocus == true")
+        expectEngine("failed loads=1 file=a1.ts")
+    }
+
     // player-controls-and-playback-errors/try-again-or-recover-on-its-own, sign in on Apple TV
+    // player-controls-and-playback-errors/go-to-another-group-from-the-error, a login error on Apple TV
     func testSignInFromTheErrorComesBackToTheChannel() {
         app = XCUIApplication()
         app.launchArguments = ["-ui-testing-shell", "channels"]
@@ -109,6 +157,7 @@ final class PlayerErrorTVUITests: XCTestCase {
         XCTAssertEqual(element("player.error.title").label, "Sign in needed")
         let signIn = element("player.signIn")
         XCTAssertTrue(signIn.waitForExistence(timeout: 5))
+        XCTAssertFalse(element("player.channels").exists, "Sign in takes the second place")
         remote.press(.right)
         expect(signIn, "hasFocus == true")
 

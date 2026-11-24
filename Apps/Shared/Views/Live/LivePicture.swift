@@ -2,6 +2,21 @@
     import AntennaCore
     import SwiftUI
 
+    extension EnvironmentValues {
+        /// Opens the groups from the player's error, on the open group
+        /// (player-controls-and-playback-errors/go-to-another-group-from-the-error).
+        /// Nil where the groups are already on screen beside the error.
+        @Entry var openChannelGroups: OpenChannelGroupsAction?
+    }
+
+    /// What `openChannelGroups` calls. A struct rather than a bare closure,
+    /// which SwiftUI flags in an `@Entry`.
+    struct OpenChannelGroupsAction {
+        let perform: @MainActor () -> Void
+
+        @MainActor func callAsFunction() { perform() }
+    }
+
     /// The picture area, 16:9: the playing channel with its controls, or
     /// "Select a channel" before one is picked. The same engine feeds it in
     /// every layout, so moving it never restarts the channel.
@@ -9,6 +24,7 @@
         @Environment(\.locale) private var locale
         @Environment(\.layoutDirection) private var direction
         @Environment(LiveModel.self) private var live
+        @Environment(\.openChannelGroups) private var openChannelGroups
         /// Which half of the picture a double-tap lands on.
         @State private var surfaceWidth: CGFloat = 0
         #if os(iOS)
@@ -117,8 +133,10 @@
             }
         }
 
-        /// The error in place of the picture with Try again. In full screen
-        /// only the exit button stays, and the error names the channel.
+        /// The error in place of the picture with Try again, and Channels
+        /// where the screen offers it
+        /// (player-controls-and-playback-errors/go-to-another-group-from-the-error).
+        /// In full screen only the exit button stays, and the error names the channel.
         private func failure(_ message: FailureMessage) -> some View {
             PlayerStatus.Failure(
                 channel: live.fullScreen ? live.playing.map { live.subject(for: $0).line } : nil, title: message.title,
@@ -126,6 +144,10 @@
             ) {
                 Button(PlayerStatusText.tryAgain(locale)) { live.player.retry() }
                     .accessibilityIdentifier("player.retry")
+                if let openChannelGroups {
+                    Button(PlayerStatusText.channels(locale)) { openChannelGroups() }
+                        .accessibilityIdentifier("player.channels")
+                }
             }
             .overlay(alignment: .topTrailing) {
                 if live.fullScreen {
