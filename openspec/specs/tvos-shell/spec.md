@@ -352,7 +352,7 @@ The system SHALL open the Apple TV shell, and tune any channel at launch, only o
 - **THEN** the paywall shows, the shell does not open and no channel is tuned
 
 ### Requirement: Back from a tab goes to the tab bar
-The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Back anywhere on the top level of Guide, Movies, Series, Search or Settings. Movies, Series and Search SHALL scroll back to their top as the highlight reaches the bar. A screen opened from a tab SHALL close on Back first. Swiping up from a page's top does not reach the system bar; Back does.
+The system SHALL move the highlight to the open tab in the bar, keeping the tab open, when the user presses Back anywhere on the top level of Guide, Movies, Series, Search or Settings. Movies, Series and Search SHALL scroll back to their top as the highlight reaches the bar. A screen opened from a tab SHALL close on Back first. Swiping up from a page's top does not reach the system bar; Back does. Swiping down from Movies or Series in the bar SHALL land on the banner's Play button.
 
 #### Scenario: Back from a lower row
 - **GIVEN** Movies is open with the highlight on a poster four rows down
@@ -379,6 +379,11 @@ The system SHALL move the highlight to the open tab in the bar, keeping the tab 
 - **GIVEN** a genre grid opened from the Movies rows
 - **WHEN** the user presses Back
 - **THEN** the grid closes and the rows show with the highlight back on the banner, and the bar does not take the highlight
+
+#### Scenario: Swipe down after moving along the bar
+- **GIVEN** the viewer moved along the bar from Movies to Series and back, or pressed Back on the banner
+- **WHEN** they swipe down onto Movies
+- **THEN** the highlight lands on the banner's Play button, not on the banner button or the poster nearest the tab
 
 ### Requirement: Back from the tab bar goes to the Home Screen
 The system SHALL leave Back to Apple TV when the highlight is in the tab bar, on any tab including Settings, so it opens the Apple TV Home Screen whichever tab is open. The app SHALL come back to the same tab when the user opens it again.

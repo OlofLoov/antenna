@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Browsing stays responsive
-The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. What a long session keeps in memory SHALL stay within fixed limits. On Apple TV a move of the highlight SHALL redraw the posters it moves between, the rows' place and the preview, and not the banner or the other rows.
+The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. What a long session keeps in memory SHALL stay within fixed limits.
 
 #### Scenario: A large library loads
 - **GIVEN** a source with 100 000 movies
