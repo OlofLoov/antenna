@@ -18,9 +18,11 @@ final class LiveStatesUITests: XCTestCase {
     }
 
     // live-tv-on-iphone-ipad-mac/sources-that-fail-are-empty-or-wait-for-a-login, loading
+    // live-tv-on-iphone-ipad-mac/the-loading-list-tunes-in
     func testEachSourceShowsWhileTheyLoad() {
         let app = launch("loading")
         XCTAssertTrue(app.element("browse.loading").waitForExistence(timeout: 10))
+        XCTAssertEqual(app.element("browse.loadingMark").value as? String, "tuning")
         XCTAssertTrue(app.element("browse.loading.\(LiveUITests.home)").label.contains("4 channels"))
         XCTAssertTrue(app.element("browse.loading.\(Self.cabin)").exists)
         XCTAssertFalse(app.element("browse.list").exists)

@@ -14,7 +14,9 @@ extension Paywall {
             VStack(spacing: 2) {
                 ScrollView {
                     VStack(spacing: 24) {
-                        TouchMark()
+                        BrandMark.Letter(moment: state.phase.markPlacement.moment)
+                            .frame(width: 96)
+                            .accessibilityIdentifier("paywall.mark")
                         content
                     }
                     .padding(.top, 54)
@@ -78,16 +80,6 @@ extension Paywall {
             case .restored:
                 PrimaryButton(title: "Continue", identifier: "paywall.continue", action: actions.finish)
             }
-        }
-    }
-
-    private struct TouchMark: View {
-        var body: some View {
-            Image(systemName: Paywall.mark)
-                .font(.boardStyle(40))
-                .frame(width: 88, height: 88)
-                .background(Paywall.markTile, in: cornerShape(.large))
-                .accessibilityHidden(true)
         }
     }
 

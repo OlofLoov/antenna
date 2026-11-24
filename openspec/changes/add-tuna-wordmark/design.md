@@ -164,9 +164,9 @@ Options considered:
 |--------|-------|------|------------|
 | Hello | Welcome screen, iPhone, iPad and Mac (`OnboardingWelcome.Phone`), 220 pt wide | Word | `onboarding.mark` |
 | Hello | Welcome screen, Apple TV (`OnboardingWelcome.Television`), 520 pt wide | Word | `onboarding.mark` |
-| Tuning | Launch splash, every platform (`LaunchSplash`), 120 pt tall | Letter | `paywall.splash.mark` |
-| Tuning | Loading screen at launch, Apple TV (`ShellLoading.Screen`), 360 pt wide above the panel | Word | `shell.loading.mark` |
-| Tuning | Loading list, iPhone, iPad and Mac (`Browse.LoadingList`), 72 pt tall above the rows | Letter | `browse.loading.mark` |
+| Tuning | Launch splash, every platform (`LaunchSplash`), 120 pt tall | Letter | `paywall.splashMark` |
+| Tuning | Loading screen at launch, Apple TV (`ShellLoading.Screen`), 360 pt wide above the panel | Word | `shell.loadingMark` |
+| Tuning | Loading list, iPhone, iPad and Mac (`Browse.LoadingList`), 72 pt tall above the rows | Letter | `browse.loadingMark` |
 | Got it | Paywall after a restore, iPhone, iPad and Mac (`Paywall.Touch`), 96 pt tall in place of the symbol tile; still in the other phases | Letter | `paywall.mark` |
 | Got it | Paywall after a restore, Apple TV (`Paywall.Television`), the wordmark 44 pt tall in the top left corner in place of the symbol and word; still in the other phases | Word | `paywall.mark` |
 | Still | iPad and Mac sidebar head (`Browse.Sidebar`), 28 pt tall in place of the symbol and word | Word | none, the sidebar is hidden from accessibility |
@@ -181,6 +181,9 @@ once, `paywall-and-entitlement/a-buyer-goes-straight-in`); after a manual
 refresh in Settings (the row's own check already says so, and a mark in a
 settings list is decoration). The restored paywall is the one screen that
 both confirms and waits for the user, so Got it plays there.
+There Got it starts from the still mark, not from Tuning, since restoring
+shows no mark of its own: its first frame shows the eye at once, and the
+rest plays as drawn.
 
 ### 5. The tips stay teal on every profile
 

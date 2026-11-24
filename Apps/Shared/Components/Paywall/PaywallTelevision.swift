@@ -55,9 +55,9 @@ extension Paywall {
             // sides and 60 pt top and foot
             // (design-system/apple-tv-content-stays-in-the-safe-area).
             .overlay(alignment: .topLeading) {
-                Label("Antuna", systemImage: Paywall.mark)
-                    .font(.boardStyle(26, weight: .bold))
-                    .accessibilityHidden(true)
+                BrandMark.Word(moment: state.phase.markPlacement.moment)
+                    .frame(height: 44)
+                    .accessibilityIdentifier("paywall.mark")
             }
             .overlay(alignment: .bottom) {
                 if !state.phase.isRestored {
@@ -225,8 +225,5 @@ extension Paywall {
 
 extension Paywall.Phase {
     /// Whether this is "Welcome back", which has no legal line.
-    fileprivate var isRestored: Bool {
-        if case .restored = self { return true }
-        return false
-    }
+    fileprivate var isRestored: Bool { markPlacement == .paywallRestored }
 }

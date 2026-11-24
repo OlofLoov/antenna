@@ -59,6 +59,7 @@ final class PaywallTVUITests: XCTestCase {
     }
 
     // paywall-and-entitlement/restore-your-purchase
+    // paywall-and-entitlement/a-restored-purchase-ends-with-got-it
     func testRestoreSaysWelcomeBackUntilContinue() {
         launch(entitlement: "revoked", store: "restoreShared")
         XCTAssertTrue(element("paywall.restore").waitForExistence(timeout: 10))
@@ -66,6 +67,7 @@ final class PaywallTVUITests: XCTestCase {
         XCUIRemote.shared.press(.down)
         XCUIRemote.shared.press(.select)
         XCTAssertTrue(element("paywall.continue").waitForExistence(timeout: 10))
+        XCTAssertEqual(element("paywall.mark").value as? String, "gotIt")
         XCTAssertFalse(element("shell.debug.engine").exists, "the shell waits for Continue")
         XCUIRemote.shared.press(.select)
         XCTAssertTrue(element("shell.debug.engine").waitForExistence(timeout: 10))

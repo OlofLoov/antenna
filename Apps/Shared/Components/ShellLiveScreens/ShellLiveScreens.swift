@@ -24,24 +24,30 @@ enum ShellLoading {
         var value: String
     }
 
-    /// One row per source, name 26 pt and detail 22 pt muted, on a
-    /// 1000 wide 0.06 panel.
+    /// The wordmark tuning over one row per source, name 26 pt and
+    /// detail 22 pt muted, on a 1000 wide 0.06 panel
+    /// (tvos-shell/the-loading-screen-tunes-in).
     struct Screen: View {
         let rows: [Row]
 
         var body: some View {
-            VStack(spacing: 0) {
-                ForEach(rows) { row in
-                    RowView(row: row)
-                    if row.id != rows.last?.id {
-                        Rectangle().fill(Palette.surface(0.08)).frame(height: 1)
+            VStack(spacing: 48) {
+                BrandMark.Word(moment: MarkPlacement.loadingScreen.moment)
+                    .frame(width: 360)
+                    .accessibilityIdentifier("shell.loadingMark")
+                VStack(spacing: 0) {
+                    ForEach(rows) { row in
+                        RowView(row: row)
+                        if row.id != rows.last?.id {
+                            Rectangle().fill(Palette.surface(0.08)).frame(height: 1)
+                        }
                     }
                 }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 32)
+                .frame(width: 1000)
+                .background(Palette.surface(0.06), in: cornerShape(.large))
             }
-            .padding(.vertical, 16)
-            .padding(.horizontal, 32)
-            .frame(width: 1000)
-            .background(Palette.surface(0.06), in: cornerShape(.large))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
