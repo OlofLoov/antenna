@@ -73,6 +73,26 @@ describe('the built site', () => {
 		}
 	});
 
+	// antuna-website/the-header-shows-the-wordmark
+	test('every header links home with the wordmark named Antuna, and the tab shows the icon', () => {
+		const playTriangle = 'M659 -81L695 -59L659 -37Z';
+		for (const page of pages()) {
+			const header = page.html.slice(
+				page.html.indexOf('<header id="site-header"'),
+				page.html.indexOf('</header>')
+			);
+			expect(header, page.name).toMatch(/<a class="name[^"]*" href="\/" aria-label="Antuna"/);
+			expect(header, page.name).toContain('<svg class="wordmark');
+			expect(header, page.name).toContain(playTriangle);
+			expect(header, page.name).toContain('mask="url(#wordmark-cut)"');
+			expect(page.html, page.name).toContain('<link rel="icon" href="/favicon.svg"');
+		}
+		const css = readFileSync(join(dirname(BUILD), 'src/lib/site.css'), 'utf8');
+		expect(css).toContain('--tip: #4fd1c5;');
+		expect(css).toContain('--tip: #119c8f;');
+		expect(readFileSync(join(BUILD, 'favicon.svg'), 'utf8')).toContain(playTriangle);
+	});
+
 	// antuna-website/the-legal-pages-are-dated-and-link-to-each-other
 	test('the legal pages keep their text in the first answer', () => {
 		const privacy = textOf(readFileSync(join(BUILD, 'privacy/index.html'), 'utf8'));
