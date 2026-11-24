@@ -15,11 +15,11 @@
       "layers" : [
         {
           "glass" : true,
-          "image-name" : "mast.svg",
-          "name" : "mast"
+          "image-name" : "tips.svg",
+          "name" : "tips"
         }
       ],
-      "name" : "Mast",
+      "name" : "Tips",
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
@@ -33,11 +33,11 @@
       "layers" : [
         {
           "glass" : true,
-          "image-name" : "waves.svg",
-          "name" : "waves"
+          "image-name" : "letter.svg",
+          "name" : "letter"
         }
       ],
-      "name" : "Waves",
+      "name" : "Letter",
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5

@@ -13,9 +13,9 @@
 
 ## 3. Icons
 
-- [ ] 3.1 Replace the sources in `design/icon/` and update `scripts/render-icons.sh` for the glow, letter and tips layers, the Apple TV layers, Top Shelf and the alternates; run it
-- [ ] 3.2 Change `AppIconChoice` to ink, tip and ground, replace Teal with Blue in it, `project.yml` and the titles, and draw `AppIconTile` with `BrandMark.Letter`
-- [ ] 3.3 Update `AppIconTests` and the appearance UI tests, citing the modified `app-release` and `sources-and-settings` requirements
+- [x] 3.1 Replace the sources in `design/icon/` and update `scripts/render-icons.sh` for the glow, letter and tips layers, the Apple TV layers, Top Shelf and the alternates; run it
+- [x] 3.2 Change `AppIconChoice` to ink, tip and ground, replace Teal with Blue in it, `project.yml` and the titles, and draw `AppIconTile` with `BrandMark.Letter`
+- [x] 3.3 Update `AppIconTests` and the appearance UI tests, citing the modified `app-release` and `sources-and-settings` requirements
 
 ## 4. Website
 
