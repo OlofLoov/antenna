@@ -57,32 +57,12 @@ The system SHALL keep the site's stored files private, readable only through the
 - **WHEN** someone requests a page from the storage behind the site instead of the domain
 - **THEN** the request is refused
 
-### Requirement: The API answers on its own address
-The system SHALL serve the API at `api.` on Antuna's domain over HTTPS only, SHALL answer an address it has no route for with a not-found status and no detail, and SHALL refuse requests that reach the API without passing through that address.
-
-#### Scenario: A route that does not exist
-- **WHEN** someone requests a path the API has no route for
-- **THEN** it answers not found, with no stack trace, version or server name in the answer
-
-#### Scenario: Going around the address
-- **WHEN** someone calls the API's internal AWS address directly
-- **THEN** the request is refused
-
-#### Scenario: Too many requests from one address
-- **WHEN** one network address sends requests faster than the API's rate limit
-- **THEN** further requests are refused with a too-many-requests status until the rate drops
-
 ### Requirement: Nothing keeps a record of requests
-The system SHALL keep no log of the addresses, query strings, bodies or network addresses of requests to the site or the API, and SHALL keep only counts, errors and the deploys themselves.
+The system SHALL keep no log of the addresses, query strings, bodies or network addresses of requests to the site, and SHALL keep only counts and the deploys themselves.
 
 #### Scenario: Looking for who opened a page
 - **WHEN** the owner looks in the AWS account for which network addresses opened the Privacy Policy
 - **THEN** there is no log that holds it, only a count of requests
-
-#### Scenario: A service fails
-- **WHEN** an API route fails
-- **THEN** its log line names the route and the error, and not the query, the body or the caller's address
-- **AND** the line is deleted after 14 days
 
 ### Requirement: Deploys come only from main
 The system SHALL change the site and the infrastructure only from a workflow run on main, authenticated to AWS with a short-lived token for that run, with no AWS key stored in the repository or its settings.

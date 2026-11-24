@@ -8,7 +8,7 @@ See proposal.md for why. What exists on 2026-11-22:
 - `Web/CNAME` holds antenna.code-crave.se. The code-crave.se DNS has no `antenna` record; that zone is not in this repo.
 - No AWS account, no server, no CDK or Terraform. `add-title-metadata` decision 1 planned `Services/lookup/` with "a TypeScript Lambda and a CDK stack", an OIDC deploy workflow, Secrets Manager, CloudFront with a one-day cache, a WAF rate rule and every request log off. It is proposed and has built none of it.
 - The app is not published. Nothing has been uploaded to App Store Connect or TestFlight (`app-release/merging-the-release-pull-request-publishes-the-release`), so no installed build, listing or user's link holds the old domain. The move is a rename.
-- The owner dropped `add-support-requests` (the in-app report form and its `/v1/support` route) on 2026-11-23. Support is email to antuna@code-crave.se, on the company's domain, not `antuna.app`.
+- The owner dropped `add-support-requests` (the in-app report form and its `/v1/support` route) on 2026-11-23. Support is email to antuna@code-crave.se, on the company's domain, not `antuna.app`. The same day the owner put the title-info service (`add-title-metadata`) on hold, so nothing needs an API, and the API this design planned is dropped (decisions 6 and 10).
 - The owner took every recommendation below on 2026-11-22, and asked for the website to be a single-page app. `add-feature-website` decision 2 picks SvelteKit, prerendered to one HTML file per address, so the bucket still holds plain files; decision 3 here covers what that changes for hosting.
 - Later that day the owner asked for Terraform instead of the CDK app this design first chose (decision 1).
 
@@ -49,13 +49,13 @@ The specs name no domain; they say "the app's domain". The `antuna-website` Purp
 ## Goals / Non-Goals
 
 **Goals:**
-- One Terraform configuration in `Infra/` owns everything Code Crave runs in AWS for Antuna, so the services in later changes add a route and a Lambda, not an account, a distribution or a role.
+- One Terraform configuration in `Infra/` owns everything Code Crave runs in AWS for Antuna, so a later change that needs a server adds it to this account, domain and set of roles.
 - Nothing logs a request's path, query, body or caller.
 - A deploy needs no stored secret and comes only from main.
-- The cost stays a few dollars a month until the API carries traffic, and an alarm fires before it does more.
+- The cost stays a few dollars a month, and an alarm fires before it does more.
 
 **Non-Goals:**
-- High availability across regions. One region for the API; CloudFront is already global.
+- High availability across regions. CloudFront is already global.
 - A second environment.
 - Moving the company's own DNS or mail.
 
@@ -66,7 +66,7 @@ The specs name no domain; they say "the app's domain". The `antuna-website` Purp
 The owner chose one place for all of it on 2026-11-22, first as a CDK app (option B). Later the same day the owner switched it to Terraform (option A): "create the needed terraform for it", not CDK.
 
 Options considered:
-- **A. Terraform in `Infra/`, Lambda code in `Services/<name>/` (chosen).** HCL with the `hashicorp/aws` provider, laid out as roots and modules (decision 2). Each service's handler code lives in its own package under `Services/`; the workflow bundles it with esbuild before `terraform plan`, and the `api` module uploads the zip. The domain, the certificates, the WAF web ACL and the roles exist once.
+- **A. Terraform in `Infra/` (chosen).** HCL with the `hashicorp/aws` provider, laid out as roots and modules (decision 2). The domain, the certificate and the roles exist once. When this was chosen, Lambda code for later services was to live in `Services/<name>/`; with the API dropped (decision 6) there is none.
 - **B. One CDK app in TypeScript in `Infra/` (chosen first, then replaced).** `bin/antuna.ts`, `lib/*-stack.ts`, Jest assertion tests, `NodejsFunction` for the Lambdas. CloudFormation keeps the state, so no state bucket, and the lookup service was already planned in TypeScript. Cross-region values need `crossRegionReferences`, which creates SSM parameters and custom resources that make deleting stacks out of order fail.
 - **C. A CDK stack per service, as `add-title-metadata` planned (`Services/lookup/` with its own stack).** Fine for one service. With the site it becomes two stacks each wanting the hosted zone, a certificate, a distribution and a deploy role, or cross-stack lookups between apps.
 - **D. OpenTofu.** The same language and state format as Terraform under an open-source license. The owner asked for Terraform by name, and moving to OpenTofu later is a binary swap.
@@ -82,25 +82,23 @@ Tests: each `*.tftest.hcl` runs with `mock_provider "aws"` and `command = plan`,
 
 ### 2. Layout and regions (decided)
 
-The API runs in eu-north-1 (Stockholm): the owner is in Sweden, every service the API needs exists there, and it is among the cheaper EU regions. us-east-1 only where AWS requires it: ACM certificates used by CloudFront, WAF web ACLs with CloudFront scope, and Cost Explorer, which answers only there.
+The site bucket and the state live in eu-north-1 (Stockholm): the owner is in Sweden and it is among the cheaper EU regions. us-east-1 only where AWS requires it: ACM certificates used by CloudFront and Cost Explorer, which answers only there.
 
 ```
 Infra/
   bootstrap/      the state bucket, with local state; applied once by the owner
   ci/             root: the GitHub OIDC provider and the three roles (ci.tfstate)
-  antuna/        root: the edge and site modules, later api (antuna.tfstate)
+  antuna/        root: the edge and site modules (antuna.tfstate)
     tests/        terraform test files for the root and for each module
   modules/
     edge/         hosted zone, certificate, mail records, budget, anomaly monitor
     site/         bucket, distribution, address function, header policies, aliases
-    api/          task group 6
 ```
 
 | Module or root | Region | Holds |
 |-------|--------|-------|
 | `modules/edge` | us-east-1 | Route 53 hosted zone for `antuna.app` (Route 53 is global), the ACM certificate for `antuna.app` and `www.antuna.app` with DNS validation in that zone, the CAA, SPF and DMARC records, the Budgets alarm and the Cost Anomaly Detection monitor |
 | `modules/site` | eu-north-1 | the site bucket, its CloudFront distribution with Origin Access Control, the CloudFront Function for addresses, the two response headers policies, the alias records, and the inline policy of the `antuna-site` role |
-| `modules/api` | eu-north-1, and us-east-1 for its certificate and web ACL | the HTTP API, its CloudFront distribution at `api.antuna.app` with the WAF web ACL, its certificate, the origin secret, the alias record; routes and Lambdas are added by later changes |
 | `ci` | eu-north-1 (IAM is global) | the GitHub OIDC provider and the three roles in decision 4 |
 
 `ci` is a root of its own because the owner applies it from his machine before any workflow can reach AWS (decision 9), and a mistake in the main root cannot take away the roles the workflow runs as. The `antuna-site` role's permissions name the bucket and the distribution, which `ci` does not know, so `modules/site` attaches that inline policy to the role by name. The workflow applies `ci` first, then `antuna`.
@@ -111,7 +109,7 @@ Inputs, from repository variables in the workflow and from `-var` on the owner's
 - `github_subject`, the repository part of GitHub's OIDC subject, for the trust subjects. The repository uses GitHub's immutable subjects, which name the owner and repository with their numeric ids (`repo:<owner>@<owner id>/<name>@<repository id>`), so a later rename or a new repository under an old name cannot assume the roles. The workflow builds it from `github.repository_owner_id` and `github.repository_id`; the owner reads it with `gh api repos/<owner>/<name>/actions/oidc/customization/sub`.
 - `state_bucket`, built from `AWS_ACCOUNT_ID`, for the diff role's lock file permission.
 
-Earlier changes name the stacks of the CDK plan. They map onto this layout: `AntennaEdge` is `modules/edge`, `AntennaSite` is `modules/site`, `AntennaApi` is `modules/api` and `AntennaCi` is the `ci` root.
+Earlier changes name the stacks of the CDK plan. They map onto this layout: `AntennaEdge` is `modules/edge`, `AntennaSite` is `modules/site` and `AntennaCi` is the `ci` root. `AntennaApi` was dropped with the API (decision 6).
 
 ### 3. The site: private S3 and CloudFront with Origin Access Control (decided)
 
@@ -119,7 +117,7 @@ Options considered:
 - **S3 static website hosting alone.** The website endpoint is HTTP only; a custom domain gets no HTTPS. Ruled out.
 - **S3 website endpoint behind CloudFront.** HTTPS at the edge, but the bucket has to be public, and anyone can read it around CloudFront.
 - **Private bucket, CloudFront with Origin Access Control (chosen).** The bucket blocks all public access and its policy lets only this distribution read. The site's files cannot be read around it (`hosting/the-site-s-files-cannot-be-read-around-it`).
-- **Keep GitHub Pages and use AWS only for the API.** No work for the site, but two hosts, two DNS paths and no response headers policy; Pages also cannot send a Content-Security-Policy.
+- **Keep GitHub Pages.** No work for the site, but no response headers policy; Pages cannot send a Content-Security-Policy.
 
 Details:
 - A viewer-request CloudFront Function (`Infra/modules/site/address.js`, runtime `cloudfront-js-2.0`) maps `/terms` and `/terms/` to `/terms/index.html`, `/` to `/index.html`, and `www.antuna.app` to a 301 on the apex. The S3 REST origin has no index documents of its own. Paths with a file extension, such as `/_app/immutable/...js` or `/review/antuna-review.m3u`, and `/.well-known/apple-app-site-association` pass unchanged.
@@ -142,7 +140,7 @@ A new workflow, `.github/workflows/infra.yml`:
 - `workflow_dispatch` runs the site job alone, which `release.yml` calls after a release instead of `gh workflow run pages.yml` (task 4.1).
 - Until the owner sets the variables every AWS job is skipped, so main stays green and no site is served. The owner decided on 2026-11-23 not to use GitHub Pages in the meantime, and `pages.yml` is removed (task 4.1).
 
-Where the site job's values come from: repository variables. The role ARNs are built from `AWS_ACCOUNT_ID` and the fixed role names. `SITE_BUCKET` and `SITE_DISTRIBUTION_ID` are copied once by the owner from `terraform output` after the first apply. The other option, reading the outputs from state in the site job, needs the site role to read the whole state file, and the API's origin secret will be in it.
+Where the site job's values come from: repository variables. The role ARNs are built from `AWS_ACCOUNT_ID` and the fixed role names. `SITE_BUCKET` and `SITE_DISTRIBUTION_ID` are copied once by the owner from `terraform output` after the first apply. The other option, reading the outputs from state in the site job, needs the site role to read the whole state file.
 
 Roles in the `ci` root, each trusting `token.actions.githubusercontent.com` with audience `sts.amazonaws.com`:
 
@@ -153,33 +151,23 @@ Roles in the `ci` root, each trusting `token.actions.githubusercontent.com` with
 | `antuna-site` | `<subject>:ref:refs/heads/main` | `s3:PutObject`, `s3:DeleteObject`, `s3:ListBucket` on the site bucket and `cloudfront:CreateInvalidation` on the site distribution, attached by `modules/site` |
 
 The `production` environment allows only the main branch. Who approves:
-- Options considered: no reviewer (the merge is the approval, as for the site), the owner as required reviewer on every infrastructure deploy, or the owner only for changes to IAM, DNS or WAF.
+- Options considered: no reviewer (the merge is the approval, as for the site), the owner as required reviewer on every infrastructure deploy, or the owner only for changes to IAM or DNS.
 - Chosen by the owner on 2026-11-22: the owner as required reviewer on `production`, which gates `terraform apply`. Site uploads use `antuna-site` without the environment, so a page edit is live within minutes of the merge. Infrastructure changes are rare, and the PR's plan comment tells the owner what he is approving. The third option needs a script that reads the plan, which is more to get wrong than one click.
 
 Environments: one, `production`, in one AWS account, decided by the owner on 2026-11-22. The other option was a staging account next to it, at twice the fixed cost and a second set of roles. A staging account is added when a service has users who would notice a bad deploy; the roots take the domain as a variable and the bucket at init, so a second account is a second state bucket and other values.
 
 ### 5. No request logs (decided)
 
-The Privacy Policy says Code Crave keeps nothing about the user, and both later services promise to keep no record of requests. So, by configuration in `Infra/`, checked by the `terraform test` files and by a grep in `scripts/check-rules.sh` that fails on `logging_config`, `aws_s3_bucket_logging`, `aws_cloudfront_realtime_log_config`, `aws_wafv2_web_acl_logging_configuration`, `access_log_settings` or `sampled_requests_enabled = true` in any `Infra/**/*.tf`:
+The Privacy Policy says Code Crave keeps nothing about the user. So, by configuration in `Infra/`, checked by the `terraform test` files and by a grep in `scripts/check-rules.sh` that fails on `logging_config`, `aws_s3_bucket_logging`, `aws_cloudfront_realtime_log_config`, `aws_wafv2_web_acl_logging_configuration`, `access_log_settings` or `sampled_requests_enabled = true` in any `Infra/**/*.tf`:
 - CloudFront standard logs off and no real-time log config, on every distribution.
-- API Gateway access logs off on the default stage; detailed metrics off.
 - S3 server access logs off on the site bucket. No CloudTrail data events.
-- WAF: no logging configuration, `SampledRequestsEnabled: false` on the web ACL and every rule (sampled requests otherwise keep IP addresses and headers for three hours). CloudWatch metrics stay on; they are counts.
-- Lambda: a log group per function created by the module with 14 days' retention. The handlers log the route, the status and the error class, never the query, body, headers or source IP. Each later service adds a test for its handler.
 - CloudTrail's default event history (90 days of management events, the AWS API calls the deploy role makes) stays. It records deploys, not visitors.
 
-### 6. The API: HTTP API behind CloudFront and WAF (decided)
+### 6. The API (dropped on 2026-11-23)
 
-AWS WAF cannot attach to an API Gateway HTTP API, only to REST APIs, CloudFront, ALB and a few others. `add-title-metadata` also wants CloudFront's cache in front. So:
-- The HTTP API in eu-north-1 with its default `execute-api` endpoint as the origin of a CloudFront distribution at `api.antuna.app`. No regional custom domain, so no eu-north-1 certificate.
-- CloudFront adds an `x-antuna-origin` header with a random value from Secrets Manager (`antuna/api/origin-secret`). A Lambda authorizer would cost a call per request; instead each handler checks the header with a shared helper in `Services/shared/` and answers 403 without it. That is how `hosting/the-api-answers-on-its-own-address` refuses calls to the `execute-api` address.
-- Cache policy: by default none (`CachingDisabled`) and all query strings forwarded; a route that wants caching, such as `/v1/match`, sets its own behavior in the change that adds it.
-- The WAF web ACL is created with `modules/api` when the first route ships, not with the site, as the owner decided on 2026-11-22; that saves about $6 a month until then. The other option, creating it with the site in task group 3, protects nothing while the API has no routes.
-- WAF web ACL with the AWS managed IP reputation list and a rate rule of 300 requests per IP per five minutes on `/v1/*`.
-- Unknown routes answer API Gateway's 404 with the body `{"message":"Not Found"}`, which names no version or server. A response headers policy removes `x-amzn-*` and `apigw-requestid` headers.
+This design planned an API at `api.antuna.app`: an API Gateway HTTP API in eu-north-1 behind its own CloudFront distribution, an AWS WAF web ACL with the IP reputation list and a rate rule, an origin secret so calls around CloudFront were refused, and a Lambda per service in `Services/<name>/`. Two changes were to use it: `add-support-requests` (an in-app report form that filed GitHub issues) and `add-title-metadata` (movie and series info from TMDB).
 
-What this means for the lookup service, written into its design in this PR:
-- `add-title-metadata`: the lookup Lambda and its routes are added to `modules/api`; its code stays in `Services/lookup/`. Its planned CDK stack is this change's `api` module, and its deploy workflow and OIDC role are this change's. It adds a cache behavior for `/v1/match*` and `/v1/trending*` with a one-day TTL.
+On 2026-11-23 the owner dropped the in-app support form as too much machinery for what it gives; support is email to antuna@code-crave.se on the site's support page. The owner also put the title-info service on hold. With no caller left, the API, `Infra/modules/api`, the `api` DNS record, the WAF web ACL, the origin secret and `hosting/the-api-answers-on-its-own-address` are dropped, and nothing of them was built. If a later change needs a server, it decides how in its own design.md and builds on this account, domain and set of roles.
 
 ### 7. The domain (decided)
 
@@ -193,7 +181,7 @@ Options considered:
 
 `www` and the bare domain, decided by the owner on 2026-11-22. Options considered: serve the bare domain and redirect `www` to it (chosen), serve `www` and redirect the bare domain, or serve both. One address keeps links and search results on one name; the certificate covers both names.
 
-Records in the zone: apex and `www` A/AAAA aliases to the site distribution, `api` aliases to the API distribution, the ACM validation CNAMEs, and a CAA record allowing only `amazon.com`. No MX record, an SPF record `v=spf1 -all` and a DMARC record `v=DMARC1; p=reject` so nobody can send mail as the domain.
+Records in the zone: apex and `www` A/AAAA aliases to the site distribution, the ACM validation CNAMEs, and a CAA record allowing only `amazon.com`. No MX record, an SPF record `v=spf1 -all` and a DMARC record `v=DMARC1; p=reject` so nobody can send mail as the domain.
 
 Old domain: nothing to retire. Pages was never enabled on the repository and the code-crave.se zone has no `antenna` record, so there is no redirect and no owner step (task 4.2).
 
@@ -201,9 +189,11 @@ Old domain: nothing to retire. Pages was never enabled on the repository and the
 
 `antuna.app` gets no MX record (decision 7), so mail to it bounces. Support mail goes to antuna@code-crave.se, which the site's support page (`add-feature-website`) shows. That mailbox is on the company's domain, outside this repo and outside AWS.
 
-App Store Connect requires a support URL; the site's `/support/` page is it. App Review's guideline 1.5 asks that the support URL "include an easy way to contact you"; the support page gives the email address. Separately, the EU Digital Services Act makes Apple show a trader's address, phone number and email on the product page for a paid app in the EU. That is an address the owner gives Apple in App Store Connect, it can be on any domain, and it needs nothing on `antuna.app`. It is recorded in `docs/release/` with the other App Store answers (task 6.4).
+App Store Connect requires a support URL; the site's `/support/` page is it. App Review's guideline 1.5 asks that the support URL "include an easy way to contact you"; the support page gives the email address. Separately, the EU Digital Services Act makes Apple show a trader's address, phone number and email on the product page for a paid app in the EU. That is an address the owner gives Apple in App Store Connect, it can be on any domain, and it needs nothing on `antuna.app`. `docs/release/trader-contact.md` records what is decided: Code Crave is a trader, and the email cannot be on `antuna.app`. The address and phone number are the owner's to give, so task 6.4 stays open until the owner enters them in App Store Connect.
 
 ### 9. One-time setup by the owner
+
+Done by 2026-11-24: the domain is registered, the three roots are applied, the state bucket is `antuna-terraform-state-<account id>`, the repository variables are set and the `production` environment exists (tasks 1.1 and 1.4).
 
 Outside the repo, in this order. No agent or workflow runs these. The state bucket comes from `Infra/bootstrap/`, a small config with local state, rather than by hand: it gets versioning, encryption, the public access block and a TLS-only policy the same way every time, and its state file holds that one bucket. The file stays on the owner's machine (`*.tfstate` is ignored by version control); if it is lost, the bucket keeps working and `terraform import` brings it back.
 
@@ -218,9 +208,9 @@ Outside the repo, in this order. No agent or workflow runs these. The state buck
 
 From then on `infra.yml` plans on pull requests, applies on main after the owner approves, and uploads the site.
 
-### 10. The config.yaml amendment
+### 10. The config.yaml amendment (dropped on 2026-11-23)
 
-`openspec/config.yaml` says sync is CloudKit "with no server of our own", and `add-title-metadata` planned to amend it. It is amended once here, when `modules/api` first deploys: "Sync is SwiftData over the user's private CloudKit database, with no server of our own. Code Crave runs one API at `api.antuna.app` for services the app calls by name; it holds no user's sources, logins or watch data and keeps no record of requests." `add-title-metadata` adds its routes without touching the line. CLAUDE.md's hard constraints say the same.
+`openspec/config.yaml` says sync is CloudKit "with no server of our own". This design planned to amend that line once `modules/api` deployed. With the API dropped (decision 6) there is still no server of our own: the site is static files on S3 behind CloudFront, and the only code of ours that runs in AWS is the CloudFront Function that maps addresses. The line and CLAUDE.md's hard constraints stay as they are.
 
 ## Cost
 
@@ -234,14 +224,11 @@ AWS list prices as read on 2026-11-22 for us-east-1 and eu-north-1; not measured
 | S3, a few MB | under $0.05 |
 | CloudFront | inside the always-free tier (1 TB out, 10 million requests) at this size |
 | CloudFront Function | inside the free 2 million invocations |
-| WAF web ACL | $5, plus $1 per rule (two rules) and $0.60 per million requests |
-| Secrets Manager (origin secret) | $0.40 |
-| HTTP API, Lambda | inside the free tier until a service has traffic |
 | Budgets | the first two budgets are free |
 
-About $8 a month with the API's WAF, about $2 before it. The web ACL is created with the API stack, so it can wait until the first route ships. CloudFront also sells flat-rate plans that bundle WAF and Route 53 (a free plan was announced in late 2025); not checked, and worth a look when the API ships.
+About $2 a month. The dropped API (decision 6) would have added about $6 for its WAF web ACL and the origin secret.
 
-Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the options were $10, which the WAF alone nearly reaches once the API ships, $20, and $50), alerting the owner's AWS account address at 50% actual, 100% actual and 100% forecast, plus a Cost Anomaly Detection monitor on all services that emails a daily summary once an anomaly's total impact reaches $5. Alerts use the AWS account's email, which is not on the new domain.
+Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the options were $10, $20 and $50), alerting the owner's AWS account address at 50% actual, 100% actual and 100% forecast, plus a Cost Anomaly Detection monitor on all services that emails a daily summary once an anomaly's total impact reaches $5. Alerts use the AWS account's email, which is not on the new domain.
 
 ## Risks / Trade-offs
 
@@ -250,8 +237,7 @@ Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the opti
 - Tearing down runs in reverse: `antuna`, then `ci`, then `bootstrap`. The `site` module's policy on the `antuna-site` role goes with `antuna`.
 - If the domain is not registered before the rename PR, the app builds with a name that does not resolve and the paywall's links fail on device. The rename (task group 5) waits for the site to answer on the new domain.
 - Universal links: Apple fetches the association file through its CDN, which caches it. A wrong file on the first deploy can keep setup links opening in Safari for up to a day on test devices. The device checklist's association check runs after the first deploy.
-- A WAF rate limit shared by everyone behind one carrier NAT can refuse real users. 300 per five minutes per IP is far above what one person makes.
-- Lock-in is small: the site is a folder, the services are Lambdas behind plain HTTP, and the domain is the owner's.
+- Lock-in is small: the site is a folder and the domain is the owner's.
 
 ## Migration Plan
 
@@ -259,12 +245,12 @@ Budget: $20 a month in AWS Budgets, as the owner decided on 2026-11-22 (the opti
 2. PR: `Infra/` with `bootstrap`, `ci`, `modules/edge` and `modules/site`, and `infra.yml`. It deploys nothing until the owner has done decision 9; after that, the next merge deploys the site to `antuna.app`, or a manual run of `infra.yml` does.
 3. PR: `pages.yml`, `Web/CNAME` and `Web/.nojekyll` removed, `release.yml` dispatches `infra.yml` (task 4.1).
 4. PR: the rename in every place listed above.
-5. PR: `modules/api` with no routes, the `config.yaml` amendment and the diagrams, when `add-title-metadata` is ready to add its first route.
+5. PR: the diagrams and the trader contact notes. The `modules/api` PR planned here was dropped with the API (decision 6).
 
 No data moves. No site is live before step 2 deploys, so rollback for steps 2 to 4 is reverting the PRs.
 
 ## Open Questions
 
-The owner decided the rest on 2026-11-22, each as recommended: who approves deploys (decision 4), one environment (decision 4), `Infra/` and `Services/` (decision 1; Terraform, not CDK, later the same day), the $20 budget (Cost), when the WAF web ACL is created (decision 6), `www` (decision 7) and the kind of domain (decision 7).
+The owner decided the rest on 2026-11-22, each as recommended: who approves deploys (decision 4), one environment (decision 4), `Infra/` and `Services/` (decision 1; Terraform, not CDK, later the same day), the $20 budget (Cost), when the WAF web ACL is created (decision 6, moot since the API was dropped on 2026-11-23), `www` (decision 7) and the kind of domain (decision 7).
 
 1. **Which exact name.** Decided on 2026-11-23: `antuna.app`, with the app renamed Antuna. Registering it is the owner's part of task 1.1.

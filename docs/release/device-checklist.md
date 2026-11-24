@@ -368,7 +368,7 @@ platform exists.
 
 ## Owner setup, no device
 
-- [ ] **add-iphone-as-setup-device 1.2, publish the site.** Set the repository
+- [x] **add-iphone-as-setup-device 1.2, publish the site.** Checked with curl on 2026-11-24. Set the repository
   variable `APPLE_TEAM_ID` to the ten-character team id, finish the AWS setup
   in `add-aws-hosting` task 1.4, and run the Infra workflow by hand. Expect
   `https://antuna.app/.well-known/apple-app-site-association` to serve
