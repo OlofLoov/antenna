@@ -18,8 +18,8 @@ final class ShelfRowsUpTVUITests: XCTestCase {
     }
 
     /// The section's tab opened from the bar, with focus on the banner's Play button.
-    func open(_ tab: String) {
-        app.launchArguments = ["-ui-testing-shelf", "watching"]
+    func open(_ tab: String, arguments: [String]) {
+        app.launchArguments = ["-ui-testing-shelf", "watching"] + arguments
         app.launchInEnglish()
         // The system bar takes Menu only once something on the page has focus.
         _ = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.waitForExistence(timeout: 10)
@@ -51,8 +51,8 @@ final class ShelfRowsUpTVUITests: XCTestCase {
             placed, "\(identifier) at \(row.frame) is not wholly below the preview at \(preview.frame)", file: file, line: line)
     }
 
-    func walk(_ tab: String, rows: [String]) {
-        open(tab)
+    func walk(_ tab: String, rows: [String], arguments: [String] = []) {
+        open(tab, arguments: arguments)
         for row in rows {
             remote.press(.down)
             expectPlaced(tab, row)
@@ -75,6 +75,15 @@ final class ShelfRowsUpTVUITests: XCTestCase {
     // Owner-found on 2026-11-23: moving up left the row under the preview, then slid it down late.
     func testMovingUpInSeriesPutsTheRowBelowThePreview() {
         walk("series", rows: ["continueWatching", "recentlyWatched", "recentlyAdded", "drama"])
+    }
+
+    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving up to the row above
+    // CI on 2026-11-24: the focus engine's own scroll landed after the screen's and left the row
+    // at the tab bar's foot, under the preview. The launch argument makes that happen on every move up.
+    func testMovingUpPutsTheRowBelowThePreviewWhenTheFocusEngineScrollsLast() {
+        walk(
+            "series", rows: ["continueWatching", "recentlyWatched", "recentlyAdded", "drama"],
+            arguments: ["-ui-testing-focus-scroll-wins"])
     }
 
     // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving up to the row above

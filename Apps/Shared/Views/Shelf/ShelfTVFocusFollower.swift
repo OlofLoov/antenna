@@ -43,7 +43,15 @@
                     if wait > .zero { try? await Task.sleep(for: wait) }
                     guard !Task.isCancelled else { return }
                     follow.placedRow = focusedRow
-                    if let row = focusedRow { bringUp(row) } else { backToTop() }
+                    guard let row = focusedRow else {
+                        backToTop()
+                        return
+                    }
+                    bringUp(row)
+                    #if DEBUG
+                        if wait == .zero, UITestingShelf.focusScrollWins { await focusEngineScroll(row) }
+                    #endif
+                    await keepPlaced(row)
                 }
                 .task(id: RestKey(title: focusedTitle?.activityKey, previewing: previewing)) {
                     await rest()
@@ -104,6 +112,30 @@
                 proxy.scrollTo(ShelfRowAnchor.id(row), anchor: anchor)
             }
         }
+
+        /// Places `row` again while it rests under the preview. The focus
+        /// engine scrolls a newly focused row only until it clears the tab
+        /// bar, and when that scroll lands after `bringUp`'s it wins and
+        /// leaves the row under the preview. Nothing else moves the rows
+        /// until the next focus change, so the row would stay hidden.
+        private func keepPlaced(_ row: String) async {
+            for _ in 0..<ShelfRowPlacement.attempts {
+                try? await Task.sleep(for: ShelfRowPlacement.settle)
+                guard !Task.isCancelled, ShelfRowPlacement.misplaced(top: rowHeights.tops[row]) else { return }
+                bringUp(row)
+            }
+        }
+
+        #if DEBUG
+            /// What the focus engine does when its own scroll lands a few
+            /// frames after `bringUp`'s. It leaves the row's top at the tab
+            /// bar's foot, under the preview.
+            private func focusEngineScroll(_ row: String) async {
+                try? await Task.sleep(for: .milliseconds(50))
+                guard !Task.isCancelled else { return }
+                proxy.scrollTo(ShelfRowAnchor.id(row), anchor: .top)
+            }
+        #endif
 
         /// Leaving the rows for the banner scrolls back to the top, and the
         /// preview starts over on the banner's title next time. Not while a

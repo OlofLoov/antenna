@@ -408,4 +408,15 @@
             }
         }
     }
+
+    extension UITestingShelf {
+        /// `-ui-testing-focus-scroll-wins` scrolls a row placed after a move
+        /// up back under the preview a few frames later, as the focus
+        /// engine's own scroll does when it lands after the screen's.
+        static let focusScrollWinsArgument = "-ui-testing-focus-scroll-wins"
+
+        static var focusScrollWins: Bool {
+            ProcessInfo.processInfo.arguments.contains(focusScrollWinsArgument)
+        }
+    }
 #endif
