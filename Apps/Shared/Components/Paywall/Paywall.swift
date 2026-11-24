@@ -65,11 +65,9 @@ enum Paywall {
     }
 
     static let body = Color(red: 0xD7 / 255, green: 0xDE / 255, blue: 0xE8 / 255)
-    static let markTile = Color(red: 0x1E / 255, green: 0x3A / 255, blue: 0x5F / 255)
     /// An error line uses the live-dot color, as the design-system reference says.
     static let errorText = Color(red: 0xFF / 255, green: 0x5F / 255, blue: 0x57 / 255)
     static let mutedOnFocus = Color(red: 0x4B / 255, green: 0x55 / 255, blue: 0x63 / 255)
-    static let mark = "antenna.radiowaves.left.and.right"
 
     /// The status line, muted or in the error color. Debug builds expose
     /// its copy key as the accessibility value for UI tests.
@@ -166,5 +164,14 @@ struct PaywallLinks: Equatable {
 
     private static func short(_ url: URL) -> String {
         (url.host() ?? "") + url.path()
+    }
+}
+
+extension Paywall.Phase {
+    /// Where the paywall's mark stands. Got it plays on "Welcome back";
+    /// the other phases show the mark still.
+    var markPlacement: MarkPlacement {
+        if case .restored = self { return .paywallRestored }
+        return .paywall
     }
 }

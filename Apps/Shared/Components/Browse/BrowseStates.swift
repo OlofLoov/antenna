@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 extension Browse {
@@ -15,13 +16,19 @@ extension Browse {
         var status: Status
     }
 
-    /// Each source with its channel count or a spinner, in place of the
-    /// list while sources load.
+    /// The a tuning above each source with its channel count or a
+    /// spinner, in place of the list while sources load
+    /// (live-tv-on-iphone-ipad-mac/the-loading-list-tunes-in).
     struct LoadingList: View {
         let rows: [LoadingRow]
 
         var body: some View {
             VStack(spacing: 0) {
+                BrandMark.Letter(moment: MarkPlacement.loadingList.moment)
+                    .frame(width: 72)
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 4)
+                    .accessibilityIdentifier("browse.loadingMark")
                 ForEach(rows) { row in
                     HStack {
                         Text(row.name)

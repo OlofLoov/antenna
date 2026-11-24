@@ -118,15 +118,18 @@ final class PaywallUITests: XCTestCase {
 
     // paywall-and-entitlement/restore-your-purchase
     // paywall-and-entitlement/when-access-ends-the-app-locks-and-keeps-your-data
+    // paywall-and-entitlement/a-restored-purchase-ends-with-got-it
     func testRestoreAfterALapseBringsBackFavorites() {
         let app = launch(["-ui-testing-live", "favorites"], entitlement: "expired", store: "restoreShared")
         waitForPaywall(app)
+        expect(app.element("paywall.mark"), value: "still")
         expect(app.element("paywall.title"), value: "title.lapsed")
         expect(app.element("paywall.lapsedNote"), value: "lapsed.expired")
         app.element("paywall.restore").tap()
         XCTAssertTrue(app.element("paywall.restored").waitForExistence(timeout: 5))
         expect(app.element("paywall.title"), value: "restored.title")
         XCTAssertTrue(app.element("paywall.restored.kind").exists)
+        expect(app.element("paywall.mark"), value: "gotIt")
         app.element("paywall.continue").tap()
         XCTAssertTrue(app.element("browse.list").waitForExistence(timeout: 10), "the sources and favorites are back")
         XCTAssertFalse(app.element("paywall.root").exists)

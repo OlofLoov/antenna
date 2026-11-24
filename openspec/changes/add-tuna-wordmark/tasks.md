@@ -5,11 +5,11 @@
 
 ## 2. Mark and motions
 
-- [ ] 2.1 Add `MarkGeometry`, `MarkPath` and the arc conversion in AntennaCore, with tests citing `design-system/the-antuna-mark` and `design-system/the-mark-s-colors`
-- [ ] 2.2 Add `CubicBezier`, `MarkPose` and `MarkMotion` with the tracks from design.md decision 2, with tests citing `design-system/the-mark-moves-at-three-moments` and `design-system/reduce-motion-stills-the-mark`
-- [ ] 2.3 Add `BrandMark` (`Word`, `Letter`, `Drawing`, `Ink`, `Clock`) with previews of each motion at fixed times, on dark and light, and with Reduce Motion
-- [ ] 2.4 Play Hello on both welcome screens, Tuning on the splash and both loading screens, Got it on the restored paywall, and the still wordmark in the iPad and Mac sidebar; delete `AntennaMark` and `Paywall.mark`
-- [ ] 2.5 Assert each placement's identifier and moment in the onboarding, paywall and loading UI tests, citing their requirements, and run those classes on a local simulator
+- [x] 2.1 Add `MarkGeometry`, `MarkPath` and the arc conversion in AntennaCore, with tests citing `design-system/the-antuna-mark` and `design-system/the-mark-s-colors`
+- [x] 2.2 Add `CubicBezier`, `MarkPose` and `MarkMotion` with the tracks from design.md decision 2, with tests citing `design-system/the-mark-moves-at-three-moments` and `design-system/reduce-motion-stills-the-mark`
+- [x] 2.3 Add `BrandMark` (`Word`, `Letter`, `Drawing`, `Ink`, `Clock`) with previews of each motion at fixed times, on dark and light, and with Reduce Motion
+- [x] 2.4 Play Hello on both welcome screens, Tuning on the splash and both loading screens, Got it on the restored paywall, and the still wordmark in the iPad and Mac sidebar; delete `AntennaMark` and `Paywall.mark`, and move `AppIconTile` to `Components/Brand/`
+- [x] 2.5 Assert each placement's identifier and moment in the onboarding, paywall and loading UI tests, citing their requirements, and run those classes on a local simulator
 
 ## 3. Icons
 

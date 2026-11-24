@@ -437,9 +437,11 @@ extension ShellUITests {
 
 extension ShellUITests {
     // tvos-shell/a-loading-screen-at-launch
+    // tvos-shell/the-loading-screen-tunes-in
     func testLoadingScreen() {
         launch("loading")
         XCTAssertTrue(element("shell.loading").waitForExistence(timeout: 10))
+        XCTAssertEqual(element("shell.loadingMark").value as? String, "tuning")
         let rows = elements(prefix: "shell.loading.")
         XCTAssertEqual(rows.count, 2)
         for index in 0..<rows.count {

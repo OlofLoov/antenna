@@ -1,23 +1,19 @@
 import AntennaCore
 import SwiftUI
 
-/// The mark from the app icon artwork (`Apps/Mobile/AppIcon.icon`): the
-/// mast with its tip and two waves each side, in the profile's accent on
-/// the icon's dark ground (design-system/one-accent-color-per-profile).
-/// `size` is the side of the tile.
-struct AntennaMark: View {
-    @Environment(\.accent) private var accent
-    let size: CGFloat
+/// An app icon as Settings shows it (`iPhone-Settings-AppIcon`): the mark
+/// in the icon's color on its ground, drawn here rather than loaded, so
+/// no extra images ship. `side` is the side of the tile.
+struct AppIconTile: View {
+    let icon: AppIconChoice
+    let side: CGFloat
 
     var body: some View {
         Glyph()
-            .fill(accent.color)
-            .padding(size * 0.12)
-            .frame(width: size, height: size)
-            .background(Palette.ground, in: Metrics.Corner.large.shape())
-            .overlay {
-                Metrics.Corner.large.shape().stroke(Palette.surface(0.12), lineWidth: 1)
-            }
+            .fill(Color(hex: icon.mark))
+            .padding(side * 0.12)
+            .frame(width: side, height: side)
+            .background(Color(hex: icon.ground), in: RoundedRectangle(cornerRadius: side * 0.225, style: .continuous))
             .accessibilityHidden(true)
     }
 
@@ -54,23 +50,6 @@ struct AntennaMark: View {
     }
 }
 
-/// An app icon as Settings shows it (`iPhone-Settings-AppIcon`): the mark
-/// in the icon's color on its ground, drawn here rather than loaded, so
-/// no extra images ship. `side` is the side of the tile.
-struct AppIconTile: View {
-    let icon: AppIconChoice
-    let side: CGFloat
-
-    var body: some View {
-        AntennaMark.Glyph()
-            .fill(Color(hex: icon.mark))
-            .padding(side * 0.12)
-            .frame(width: side, height: side)
-            .background(Color(hex: icon.ground), in: RoundedRectangle(cornerRadius: side * 0.225, style: .continuous))
-            .accessibilityHidden(true)
-    }
-}
-
 extension AppIconChoice {
     /// The icon's name in Settings.
     var title: LocalizedStringResource {
@@ -84,15 +63,6 @@ extension AppIconChoice {
         case .violet: return ProfileAccent.violet.title
         }
     }
-}
-
-#Preview("Antuna mark") {
-    HStack(spacing: Metrics.Spacing.xLarge) {
-        AntennaMark(size: 112)
-        AntennaMark(size: 160)
-    }
-    .padding(Metrics.Spacing.xLarge)
-    .background(Palette.surface(0.1))
 }
 
 #Preview("App icons") {

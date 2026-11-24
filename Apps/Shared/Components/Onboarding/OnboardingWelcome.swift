@@ -1,3 +1,4 @@
+import AntennaCore
 import SwiftUI
 
 /// The first screen for a user with no source (first-run-onboarding/a-new-user-is-asked-for-a-provider;
@@ -13,7 +14,8 @@ enum OnboardingWelcome {
         var help: () -> Void
     }
 
-    /// iPhone, and the sheet centered on iPad and Mac: the mark, the title,
+    /// iPhone, and the sheet centered on iPad and Mac: the wordmark saying
+    /// hello, the title,
     /// three feature rows and the two buttons at the bottom.
     struct Phone: View {
         let signedInToICloud: Bool
@@ -23,7 +25,9 @@ enum OnboardingWelcome {
             VStack(spacing: Metrics.Spacing.small) {
                 ScrollView {
                     VStack(spacing: Metrics.Spacing.xLarge) {
-                        AntennaMark(size: 112)
+                        BrandMark.Word(moment: MarkPlacement.welcome.moment)
+                            .frame(width: 220)
+                            .accessibilityIdentifier("onboarding.mark")
                         VStack(spacing: Metrics.Spacing.small) {
                             Text(OnboardingWelcome.title)
                                 .font(.largeTitle.bold())
@@ -76,7 +80,7 @@ enum OnboardingWelcome {
         }
     }
 
-    /// Apple TV: the mark, the title, Add a source with focus, What is a
+    /// Apple TV: the wordmark saying hello, the title, Add a source with focus, What is a
     /// source? under it and the iCloud line at the bottom. It paints no
     /// background, so the kinds and the form it pushes share the system's.
     struct Television: View {
@@ -85,7 +89,9 @@ enum OnboardingWelcome {
 
         var body: some View {
             VStack(spacing: Metrics.Spacing.xLarge) {
-                AntennaMark(size: 160)
+                BrandMark.Word(moment: MarkPlacement.welcome.moment)
+                    .frame(width: 520)
+                    .accessibilityIdentifier("onboarding.mark")
                 VStack(spacing: Metrics.Spacing.medium) {
                     Text(OnboardingWelcome.title)
                         .font(.title2.weight(.semibold))

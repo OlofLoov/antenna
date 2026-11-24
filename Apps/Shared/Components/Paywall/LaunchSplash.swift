@@ -1,18 +1,17 @@
+import AntennaCore
 import SwiftUI
 
-/// The mark on the ground while the first App Store answer is awaited on a
-/// device that remembers nothing, at most 750 ms. Not drawn on a board yet.
+/// The a tuning on the ground while the first App Store answer is awaited
+/// on a device that remembers nothing, at most 750 ms
+/// (paywall-and-entitlement/the-splash-tunes-in, `Brand-Mark` board).
 struct LaunchSplash: View {
     var body: some View {
-        Image(systemName: Paywall.mark)
-            .font(.boardStyle(40))
-            .foregroundStyle(Palette.text)
-            .frame(width: 88, height: 88)
-            .background(Paywall.markTile, in: cornerShape(.large))
+        BrandMark.Letter(moment: MarkPlacement.splash.moment)
+            .frame(width: 120)
+            .accessibilityIdentifier("paywall.splashMark")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Palette.ground)
-            .accessibilityElement()
-            .accessibilityLabel("Antuna")
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("paywall.splash")
     }
 }

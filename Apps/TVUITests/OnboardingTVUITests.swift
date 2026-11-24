@@ -37,9 +37,11 @@ final class OnboardingTVUITests: XCTestCase {
     }
 
     // first-run-onboarding/a-new-user-is-asked-for-a-provider
+    // first-run-onboarding/the-welcome-says-hello
     func testNoSourceOpensOnTheWelcomeScreenWithAddASourceFocused() {
         let app = launch("signedIn")
         XCTAssertTrue(element(app, "onboarding.welcome").waitForExistence(timeout: 10))
+        XCTAssertEqual(element(app, "onboarding.mark").value as? String, "hello")
         XCTAssertTrue(element(app, "onboarding.iCloudNote").exists)
         XCTAssertTrue(element(app, "onboarding.addSource").hasFocus)
         XCTAssertFalse(element(app, "shell.player").exists, "the shell shows behind onboarding")
