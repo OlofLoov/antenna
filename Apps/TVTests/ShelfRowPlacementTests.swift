@@ -26,4 +26,17 @@ struct ShelfRowPlacementTests {
         #expect(ShelfRowPlacement.wait(top: ShelfPreview.height) == ShelfRowPlacement.settle)
         #expect(ShelfRowPlacement.wait(top: nil) == ShelfRowPlacement.settle)
     }
+
+    @Test(
+        "movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv a placed row left under the preview is placed again"
+    )
+    func rowLeftUnderThePreviewIsPlacedAgain() {
+        // CI on 2026-11-24: the focus engine's scroll landed after the screen's and left
+        // the row at 117 pt, under the preview, for good.
+        #expect(ShelfRowPlacement.misplaced(top: 117))
+        #expect(ShelfRowPlacement.misplaced(top: ShelfPreview.height - 1))
+        #expect(!ShelfRowPlacement.misplaced(top: ShelfRowPlacement.rowTop))
+        #expect(!ShelfRowPlacement.misplaced(top: ShelfPreview.height))
+        #expect(!ShelfRowPlacement.misplaced(top: nil))
+    }
 }

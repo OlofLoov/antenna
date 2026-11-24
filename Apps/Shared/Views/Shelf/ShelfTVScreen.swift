@@ -389,6 +389,16 @@
             return .zero
         }
 
+        /// How many times a row that rests under the preview is placed again.
+        static let attempts = 3
+
+        /// True when a placed row whose top is at `top` on screen rests
+        /// under the preview, as when the focus engine's scroll lands last.
+        static func misplaced(top: CGFloat?) -> Bool {
+            guard let top else { return false }
+            return top < ShelfPreview.height
+        }
+
         /// The anchor that puts a row of `rowHeight` at `rowTop`. The scroll
         /// view lines anchors up within its frame less the tab bar's inset.
         static func anchor(rowHeight: CGFloat) -> CGFloat {
