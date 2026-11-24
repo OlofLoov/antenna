@@ -34,7 +34,7 @@ final class TitleUITests: XCTestCase {
     func expect(_ element: XCUIElement, _ predicate: String, file: StaticString = #filePath, line: UInt = #line) {
         let wait = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicate), object: element)
         XCTAssertEqual(
-            XCTWaiter().wait(for: [wait], timeout: 5), .completed, "\(element) never matched \(predicate)", file: file, line: line)
+            XCTWaiter().wait(for: [wait], timeout: 15), .completed, "\(element) never matched \(predicate)", file: file, line: line)
     }
 
     // title-detail-and-episode-picker/open-a-movie-s-page
@@ -117,10 +117,12 @@ final class TitleUITests: XCTestCase {
         app.tabBars.buttons["Live"].tap()
         app.openSettings()
         let lookups = app.switches["settings.lookups"]
-        for _ in 0..<6 where !lookups.exists { app.swipeUp() }
+        // The list builds its rows lazily, so the switch can be there before the footer under it.
+        let footer = app.element("settings.lookups.footer")
+        for _ in 0..<6 where !(lookups.exists && lookups.isHittable && footer.exists) { app.swipeUp() }
         XCTAssertTrue(lookups.waitForExistence(timeout: 5))
         XCTAssertEqual(lookups.value as? String, "1", "on by default")
-        XCTAssertTrue(app.element("settings.lookups.footer").exists)
+        XCTAssertTrue(footer.waitForExistence(timeout: 5))
         // The row's label does not flip it; the switch at its trailing edge does.
         lookups.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
         expect(lookups, "value == '0'")

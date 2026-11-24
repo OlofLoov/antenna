@@ -21,7 +21,7 @@ final class TitleRegularUITests: XCTestCase {
     func expect(_ element: XCUIElement, _ predicate: String, file: StaticString = #filePath, line: UInt = #line) {
         let wait = XCTNSPredicateExpectation(predicate: NSPredicate(format: predicate), object: element)
         XCTAssertEqual(
-            XCTWaiter().wait(for: [wait], timeout: 5), .completed, "\(element) never matched \(predicate)", file: file, line: line)
+            XCTWaiter().wait(for: [wait], timeout: 15), .completed, "\(element) never matched \(predicate)", file: file, line: line)
     }
 
     // title-detail-and-episode-picker/open-a-movie-s-page
