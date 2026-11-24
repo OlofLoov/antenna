@@ -110,9 +110,9 @@ final class AppearanceUITests: XCTestCase {
         let row = app.element("settings.appearance.icon")
         reveal(row, in: app, limit: 4) { $0.swipeUp() }
         // The simulator keeps the icon a run before picked, so pick another one.
-        let (target, name) = row.value as? String == "Mono" ? ("teal", "Teal") : ("mono", "Mono")
+        let (target, name) = row.value as? String == "Mono" ? ("blue", "Blue") : ("mono", "Mono")
         row.tap()
-        for id in ["standard", "mono", "light", "teal", "amber", "pink", "violet"] {
+        for id in ["standard", "mono", "light", "blue", "amber", "pink", "violet"] {
             XCTAssertTrue(app.element("settings.choice.\(id)").waitForExistence(timeout: 5), "no \(id) icon")
         }
         app.element("settings.choice.\(target)").tap()

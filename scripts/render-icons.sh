@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the app icons from the SVG sources in design/icon: the Icon Composer layers, the Apple TV asset catalog, the six alternates and the board previews.
+# Builds the app icons from the SVG sources in design/icon: the Icon Composer layers (tips, letter, glow), the Apple TV asset catalog, the six alternates and the board previews.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -14,7 +14,8 @@ render() {
 }
 
 mkdir -p "$icon/Assets"
-cp "$src/waves.svg" "$src/mast.svg" "$icon/Assets/"
+rm -f "$icon/Assets/"*.svg
+cp "$src/tips.svg" "$src/letter.svg" "$src/glow.svg" "$icon/Assets/"
 
 rm -rf Apps/TV/Assets.xcassets
 mkdir -p "$brand"
@@ -81,13 +82,14 @@ stack "App Icon - App Store" 1280 768 "1"
 shelf "Top Shelf Image" topshelf 1920 720
 shelf "Top Shelf Image Wide" topshelf-wide 2320 720
 
+# name, letters, tips, ground
 alternates=(
-  "Mono F2F4F8 0B0E13"
-  "Light 0B0E13 F2F4F8"
-  "Teal 4FD1C5 0B0E13"
-  "Amber FFB454 0B0E13"
-  "Pink F472B6 0B0E13"
-  "Violet C084FC 0B0E13"
+  "Mono F2F4F8 F2F4F8 0B0E13"
+  "Light 0B0E13 119C8F F2F4F8"
+  "Blue F2F4F8 5BB8FF 0B0E13"
+  "Amber F2F4F8 FFB454 0B0E13"
+  "Pink F2F4F8 F472B6 0B0E13"
+  "Violet F2F4F8 C084FC 0B0E13"
 )
 
 srgb() {
@@ -98,31 +100,64 @@ srgb() {
   printf 'srgb:%s,%s,%s,1.00000' "${parts[@]}"
 }
 
+recolor() {
+  sed -e "s/#F2F4F8/#$2/g" -e "s/#4FD1C5/#$3/g" "$1"
+}
+
+# One glass layer group of an alternate's Icon Composer file.
+group() {
+  cat <<EOF
+    {
+      "layers" : [
+        {
+          "glass" : true,
+          "image-name" : "$1.svg",
+          "name" : "$1"
+        }
+      ],
+      "name" : "$2",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    }
+EOF
+}
+
+# An alternate's Icon Composer file: the tips and the letter on a plain
+# ground, which turns black in dark mode when it is dark.
+alternate_json() {
+  local fill=$1 dark=$2
+  printf '{\n  "fill" : {\n    "solid" : "%s"\n  },\n' "$fill"
+  if [[ $dark == yes ]]; then
+    printf '  "fill-specializations" : [\n    {\n      "appearance" : "dark",\n'
+    printf '      "value" : {\n        "solid" : "srgb:0.00000,0.00000,0.00000,1.00000"\n      }\n    }\n  ],\n'
+  fi
+  printf '  "groups" : [\n%s,\n%s\n  ],\n' "$(group tips Tips)" "$(group letter Letter)"
+  printf '  "supported-platforms" : {\n    "squares" : "shared"\n  }\n}\n'
+}
+
 rm -rf Apps/Mobile/AppIcon-*.icon
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
 for entry in "${alternates[@]}"; do
-  read -r name mark ground <<<"$entry"
+  read -r name ink tip ground <<<"$entry"
   alt="Apps/Mobile/AppIcon-$name.icon"
   mkdir -p "$alt/Assets" "$scratch/$name"
-  for layer in waves mast; do
-    sed "s/#5BB8FF/#$mark/" "$src/$layer.svg" >"$alt/Assets/$layer.svg"
+  for layer in tips letter; do
+    recolor "$src/$layer.svg" "$ink" "$tip" >"$alt/Assets/$layer.svg"
   done
-  fill=$(srgb "$ground")
-  if [[ $ground == 0B0E13 ]]; then
-    sed "s/\"solid\" : \"srgb:0.04314,0.05490,0.07451,1.00000\"/\"solid\" : \"$fill\"/" "$icon/icon.json" >"$alt/icon.json"
-    sed "s/#5BB8FF/#$mark/" "$src/tv-back.svg" >"$scratch/$name/tv-back.svg"
-  else
-    awk -v fill="$fill" '
-      /"fill-specializations"/ { skip = 1 }
-      skip && /^  \],/ { skip = 0; next }
-      skip { next }
-      { sub(/"solid" : "srgb:0.04314,0.05490,0.07451,1.00000"/, "\"solid\" : \"" fill "\""); print }
-    ' "$icon/icon.json" >"$alt/icon.json"
-    sed -e "s/#5BB8FF/#$mark/" -e "s/#1A2A44/#FFFFFF/" -e "s/#0B0E13/#$ground/" "$src/tv-back.svg" >"$scratch/$name/tv-back.svg"
-  fi
+  dark=no
+  [[ $ground == 0B0E13 ]] && dark=yes
+  alternate_json "$(srgb "$ground")" "$dark" >"$alt/icon.json"
+  printf '<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="768" viewBox="0 0 1280 768"><rect width="1280" height="768" fill="#%s"/></svg>\n' \
+    "$ground" >"$scratch/$name/tv-back.svg"
   for layer in middle front; do
-    sed "s/#5BB8FF/#$mark/" "$src/tv-$layer.svg" >"$scratch/$name/tv-$layer.svg"
+    recolor "$src/tv-$layer.svg" "$ink" "$tip" >"$scratch/$name/tv-$layer.svg"
   done
   stack "AppIcon-$name" 400 240 "1 2" Apps/TV/Assets.xcassets "$scratch/$name"
 done

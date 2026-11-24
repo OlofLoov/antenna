@@ -37,7 +37,7 @@ extension ShellUITests {
         expect(row, "value == 'Antuna'")
         press(.select)
         XCTAssertTrue(labelled("hasFocus == true AND label == 'Antuna'").waitForExistence(timeout: 5), "no choices: \(focusedElements())")
-        for id in ["standard", "mono", "light", "teal", "amber", "pink", "violet"] {
+        for id in ["standard", "mono", "light", "blue", "amber", "pink", "violet"] {
             XCTAssertTrue(element("settings.choice.\(id)").exists, "no \(id) icon")
         }
     }
