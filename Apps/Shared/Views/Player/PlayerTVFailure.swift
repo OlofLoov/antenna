@@ -5,13 +5,17 @@
     /// The error in place of the full-screen picture on Apple TV
     /// (player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong):
     /// Try again takes focus, Sign in sits next to it for a login that is
-    /// missing or refused, and the hint says how to change channel.
+    /// missing or refused, Channels otherwise
+    /// (player-controls-and-playback-errors/go-to-another-group-from-the-error),
+    /// and the hint says how to change channel.
     struct PlayerTVFailure: View {
         let player: PlayerModel
         let message: FailureMessage
         let focus: FocusState<ShellFocus?>.Binding
         /// Nil when the failure has nothing to do with the login.
         let signIn: (() -> Void)?
+        /// Opens the channel overlay on the current group.
+        let channels: () -> Void
         @Environment(\.locale) private var locale
 
         var body: some View {
@@ -25,10 +29,15 @@
                 }
                 .focused(focus, equals: .retry)
                 .accessibilityIdentifier("player.retry")
+                // The shared layout has two buttons at most, so Sign in takes Channels' place.
                 if let signIn {
                     Button(PlayerStatusText.signIn(locale), action: signIn)
                         .focused(focus, equals: .signIn)
                         .accessibilityIdentifier("player.signIn")
+                } else {
+                    Button(PlayerStatusText.channels(locale), action: channels)
+                        .focused(focus, equals: .channels)
+                        .accessibilityIdentifier("player.channels")
                 }
             }
         }

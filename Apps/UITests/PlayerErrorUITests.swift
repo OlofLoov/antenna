@@ -47,6 +47,41 @@ final class PlayerErrorUITests: XCTestCase {
         XCTAssertFalse(app.element("browse.player.controls").exists, "no controls over the error")
     }
 
+    // player-controls-and-playback-errors/a-failed-stream-says-what-went-wrong, Channels after Try again
+    // player-controls-and-playback-errors/go-to-another-group-from-the-error
+    func testChannelsOpensTheGroupsOnTheOpenGroupAndPlaysAChannelFromAnother() throws {
+        let app = try launchFailing("notFound", environment: ["UITESTING_FAIL_ONLY": "news-one.ts"])
+        let channels = app.element("player.channels")
+        XCTAssertTrue(channels.exists)
+        XCTAssertEqual(channels.label, "Channels")
+
+        channels.tap()
+
+        XCTAssertTrue(app.element("browse.groups.sheet").waitForExistence(timeout: 5), "no Groups sheet")
+        XCTAssertTrue(app.element("browse.group.1").isSelected, "All channels, the open group, has the checkmark")
+        app.element("browse.group.3").tap()
+        XCTAssertTrue(app.element("browse.groups.sheet").waitForNonExistence(timeout: 5), "picking closes the sheet")
+        app.expectOpenGroup("Sport", row: "browse.group.3")
+        XCTAssertTrue(app.row(2).waitForExistence(timeout: 5), "Sport lists Sport One")
+        app.row(2).tap()
+
+        app.waitForEngine("playing loads=2")
+        XCTAssertTrue(waitUntilGone(app.element("player.error")), "the error stayed")
+    }
+
+    // player-controls-and-playback-errors/go-to-another-group-from-the-error, from full screen
+    func testChannelsInFullScreenLeavesItForTheGroups() throws {
+        let app = try launchFailing("notFound")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(waitUntilGone(app.element("browse.list")), "the list stayed on screen")
+
+        app.element("player.channels").tap()
+
+        XCTAssertTrue(app.element("browse.groups.sheet").waitForExistence(timeout: 5), "no Groups sheet")
+        XCTAssertTrue(app.element("browse.group.1").isSelected, "All channels, the open group, has the checkmark")
+        XCTAssertFalse(app.element("browse.player.fullscreen").exists, "full screen ended")
+    }
+
     // player-controls-and-playback-errors/try-again-or-recover-on-its-own
     func testTryAgainLoadsTheSameChannel() throws {
         let app = try launchFailing("notFound")

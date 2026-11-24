@@ -14,7 +14,8 @@
     ///   `<reason>` (`offline`, `notFound`, `loginNotOnDevice`, `notAllowed`,
     ///   `unreadable`), later loads of it play. With `fail-offline` the
     ///   connection is gone at launch and returns `UITESTING_NETWORK_SECONDS`
-    ///   seconds later, 3 unless set.
+    ///   seconds later, 3 unless set. `UITESTING_FAIL_ONLY` takes file
+    ///   names, such as `news-one.ts,a1.ts`, and limits the failures to them.
     ///
     /// `UITESTING_SLOW_SECONDS` sets how long the spinner shows before it
     /// names the source as slow, 10 unless set.
@@ -75,8 +76,15 @@
         /// The state a load of `file` leaves the engine in, or the failure
         /// it throws. With `fail-<reason>`, the first load of each file fails.
         @MainActor static func afterLoad(_ file: String) -> Result<PlaybackState, PlaybackFailure> {
-            guard case .fail(let reason) = script, failed.insert(file).inserted else { return .success(.loading) }
+            guard case .fail(let reason) = script, failingFiles?.contains(file) ?? true, failed.insert(file).inserted else {
+                return .success(.loading)
+            }
             return .failure(reason)
+        }
+
+        /// The files `UITESTING_FAIL_ONLY` names, nil for every file.
+        private static var failingFiles: Set<String>? {
+            ProcessInfo.processInfo.environment["UITESTING_FAIL_ONLY"].map { Set($0.split(separator: ",").map(String.init)) }
         }
 
         @MainActor private static var failed: Set<String> = []

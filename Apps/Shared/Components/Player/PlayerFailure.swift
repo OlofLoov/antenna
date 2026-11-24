@@ -95,6 +95,7 @@ extension PlayerStatus {
         explanation: "Connect to the internet and try again. Playback resumes on its own when the connection returns."
     ) {
         Button("Try again") {}
+        Button("Channels") {}
     }
 }
 
@@ -105,6 +106,7 @@ extension PlayerStatus {
             "Acme TV rejected the login. Check the username and password in Settings, or ask the provider whether the account has expired."
     ) {
         Button("Try again") {}
+        Button("Channels") {}
     }
 }
 
@@ -114,6 +116,7 @@ extension PlayerStatus {
         explanation: "Acme TV returned 404 for this channel. The channel may have moved or been removed by the provider."
     ) {
         Button("Try again") {}
+        Button("Channels") {}
     }
 }
 
@@ -124,6 +127,7 @@ extension PlayerStatus {
         detail: "Source: Acme TV · Attempted at 21:34", hint: "Swipe up or down for another channel. Menu opens the tab bar."
     ) {
         Button("Try again") {}
+        Button("Channels") {}
     }
 }
 

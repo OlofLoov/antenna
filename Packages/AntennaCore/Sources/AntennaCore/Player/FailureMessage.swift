@@ -119,6 +119,10 @@ public enum PlayerStatusText {
     public static func signIn(_ locale: Locale = .autoupdatingCurrent) -> String {
         Words(locale)("Sign in")
     }
+    /// The error's button that opens the channel list on the current group.
+    public static func channels(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Channels")
+    }
 
     /// Shown under the spinner after it has spun for ten seconds.
     public static func slowSource(_ source: String, locale: Locale = .autoupdatingCurrent) -> String {
