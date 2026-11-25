@@ -3,19 +3,18 @@ import SwiftUI
 
 #if os(iOS) || os(macOS)
     extension ShelfBanner {
-        /// `iPhone-Movies`: the art fills the top 520 pt with `top` over it
-        /// on the hero top scrim (the section name, the profile button and
-        /// the genre button), and the copy and buttons sit on the hero foot
-        /// scrim. A swipe pages it.
-        struct Phone<Top: View>: View {
-            @ViewBuilder var top: Top
+        /// `iPhone-Movies`: a 480 pt card with the large corner, below the
+        /// top bar. The art fills it, and the copy and buttons sit on the
+        /// hero foot scrim at its foot; nothing darkens the top of the art.
+        /// The screen insets it from the screen's edges. A swipe pages it.
+        struct Phone: View {
             @Environment(\.shelfBanner) private var banner
             @Environment(\.shelfPrefix) private var prefix
 
             var body: some View {
                 ZStack(alignment: .bottom) {
                     Art()
-                        .frame(height: 520)
+                        .frame(height: 480)
                         .frame(maxWidth: .infinity)
                         .clipped()
                     VStack(alignment: .leading, spacing: Sizes.phone.spacing) {
@@ -47,8 +46,8 @@ import SwiftUI
                     .animation(ShelfBanner.crossfade, value: banner?.state.text)
                     .background(HeroFootScrim(fade: 56))
                 }
-                .frame(height: 520)
-                .overlay(alignment: .top) { top.background(HeroTopScrim(fade: 56)) }
+                .frame(height: 480)
+                .clipShape(cornerShape(.large))
                 .contentShape(Rectangle())
                 .modifier(Swipe(banner: banner))
                 .accessibilityElement(children: .contain)
@@ -202,52 +201,51 @@ extension BannerContext {
 }
 
 #if os(iOS) || os(macOS)
-    #Preview("Banner, iPhone", traits: .fixedLayout(width: 390, height: 520)) {
-        ShelfBanner.Phone { EmptyView() }
+    #Preview("Banner, iPhone", traits: .fixedLayout(width: 358, height: 480)) {
+        ShelfBanner.Phone()
             .environment(\.shelfBanner, .preview())
             .background(Palette.ground)
     }
 
-    /// The section's name and the genre button over the art, as the
-    /// iPhone Movies and Series tabs put them.
-    private struct PhoneHeaderPreview: View {
-        let title: String
+    /// The top bar over the banner card, as the iPhone Movies and Series
+    /// tabs put them, with `art` as the picture.
+    private struct PhoneTopPreview: View {
+        let title: LocalizedStringResource
         let list: String
+        let art: CGImage?
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: title)
-                    .font(.boardStyle(28, weight: .bold))
-                    .foregroundStyle(Palette.text)
+            VStack(spacing: 8) {
+                ShelfTopBar(title: title) {
+                    ShelfCategoryButton(name: list, count: 86) {}
+                } profile: {
+                    ProfileCornerLabel(tile: nil)
+                }
+                ShelfBanner.Phone()
                     .padding(.horizontal, 16)
-                    .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                Browse.GroupButton(name: list, count: 86) {}
+                Spacer(minLength: 0)
             }
             .padding(.top, 54)
+            .environment(\.posterLoader, PreviewArt.loader(art))
+            .background(Palette.ground)
         }
     }
 
-    #Preview("Banner, iPhone, Series over a white picture", traits: .fixedLayout(width: 390, height: 520)) {
-        ShelfBanner.Phone { PhoneHeaderPreview(title: "Series", list: "All series") }
+    #Preview("Top bar and banner, iPhone, Series over a white picture", traits: .fixedLayout(width: 390, height: 640)) {
+        PhoneTopPreview(title: "Series", list: "All series", art: PreviewArt.white)
             .environment(\.shelfBanner, .preview(kind: .series, art: .backdrop(PreviewArt.address)))
             .environment(\.shelfPrefix, "series")
-            .environment(\.posterLoader, PreviewArt.loader(PreviewArt.white))
-            .background(Palette.ground)
     }
 
-    #Preview("Banner, iPhone, Movies over a white picture", traits: .fixedLayout(width: 390, height: 520)) {
-        ShelfBanner.Phone { PhoneHeaderPreview(title: "Movies", list: "All movies") }
+    #Preview("Top bar and banner, iPhone, Movies over a white picture", traits: .fixedLayout(width: 390, height: 640)) {
+        PhoneTopPreview(title: "Movies", list: "All movies", art: PreviewArt.white)
             .environment(\.shelfBanner, .preview(art: .backdrop(PreviewArt.address)))
-            .environment(\.posterLoader, PreviewArt.loader(PreviewArt.white))
-            .background(Palette.ground)
     }
 
-    #Preview("Banner, iPhone, Series over a dark picture", traits: .fixedLayout(width: 390, height: 520)) {
-        ShelfBanner.Phone { PhoneHeaderPreview(title: "Series", list: "All series") }
+    #Preview("Top bar and banner, iPhone, Series over a dark picture", traits: .fixedLayout(width: 390, height: 640)) {
+        PhoneTopPreview(title: "Series", list: "Drama", art: PreviewArt.dark)
             .environment(\.shelfBanner, .preview(kind: .series, art: .backdrop(PreviewArt.address)))
             .environment(\.shelfPrefix, "series")
-            .environment(\.posterLoader, PreviewArt.loader(PreviewArt.dark))
-            .background(Palette.ground)
     }
 
     #Preview("Banner, iPad, on My list", traits: .fixedLayout(width: 914, height: 330)) {
@@ -259,9 +257,9 @@ extension BannerContext {
 
     // A poster far taller than the banner stays inside the banner's frame,
     // with rows of ground color above and below to show any overflow.
-    #Preview("Banner, iPhone, tall poster", traits: .fixedLayout(width: 390, height: 720)) {
+    #Preview("Banner, iPhone, tall poster", traits: .fixedLayout(width: 358, height: 680)) {
         VStack(spacing: 0) {
-            ShelfBanner.Phone { EmptyView() }
+            ShelfBanner.Phone()
             Palette.ground.frame(height: 200)
         }
         .environment(\.shelfBanner, .preview(art: .poster(PreviewArt.address)))
@@ -281,8 +279,8 @@ extension BannerContext {
         .background(Palette.ground)
     }
 
-    #Preview("Banner, iPhone, rating and trailer", traits: .fixedLayout(width: 390, height: 520)) {
-        ShelfBanner.Phone { EmptyView() }
+    #Preview("Banner, iPhone, rating and trailer", traits: .fixedLayout(width: 358, height: 480)) {
+        ShelfBanner.Phone()
             .environment(\.shelfBanner, .preview(rated: true))
             .background(Palette.ground)
     }

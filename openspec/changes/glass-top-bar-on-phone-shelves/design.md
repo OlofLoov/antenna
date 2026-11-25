@@ -17,7 +17,7 @@ Options considered:
 - A solid bar on the ground color, as the pinned copy today (rejected). It reads on any art but is not glass, and it is the flat bar the owner asked to replace.
 - Glass capsules on a transparent bar with the scroll edge effect (chosen). It matches the Live capsules, keeps one glass shape per control, and is what Netflix's iPhone app does: its header and category pills sit on a transparent bar, the hero card starts below them, and rows blur under the header as they scroll.
 
-The scroll edge effect is the system's soft style. `safeAreaBar` is what gives a custom bar the effect; a plain `overlay` or `safeAreaInset` does not.
+The scroll edge effect is the system's default for the bar; no style is set. `safeAreaBar` is what gives a custom bar the effect; a plain `overlay` or `safeAreaInset` does not. On the iOS 27.2 simulator the posters passing under the bar blur and dim behind the name and the capsule, and the name reads over the light Snow Day poster.
 
 The profile button stays plain: a colored disc with the profile's initial, or the person glyph with one profile. A glass circle around the colored disc would be glass with a fill inside it, which the owner's rule forbids. At rest the bar sits on the ground color, since the banner starts below it, and when content scrolls under it the edge effect darkens what is there.
 
@@ -25,7 +25,7 @@ The profile button stays plain: a colored disc with the profile's initial, or th
 
 `[Movies] [All movies · 214 ⌄] ··· (K)`, 44 pt tall, 16 pt from the leading edge and 12 pt from the trailing edge, the same insets as today's top bar. The name never shrinks. The genre name truncates at the tail before the count and chevron do, so a long genre such as "EN | Action & Adventure" keeps its count. Two rows, the name above the genre button, would put about 100 pt of bar over the rows at all times on the smallest iPhone.
 
-The genre button is `ShelfGenreButton` in a glass style. Live's group button (`Browse.GroupButton`) stays plain where Live uses it. A new component, `ShelfTopBar`, takes the title and two view builders for the genre button and the profile button, so it stays free of the model and of SwiftData. The genre button's glass label is `ShelfCategoryLabel`: the name, the count and the chevron, with no background of its own.
+The genre button is `ShelfGenreButton` in a glass style. Live's group button (`Browse.GroupButton`) stays plain where Live uses it. A new component, `ShelfTopBar`, takes the title and two view builders for the genre button and the profile button, so it stays free of the model and of SwiftData. The glass button is `ShelfCategoryButton`, a component that takes the name, the count and the action: the name, the count and the chevron in `.buttonStyle(.glass)` at `.controlSize(.large)`, which draws the capsule 44 pt tall, the hit target the design system asks for.
 
 When the section has no titles (loading, empty, failed) the bar shows the name and the profile button only, as today.
 
