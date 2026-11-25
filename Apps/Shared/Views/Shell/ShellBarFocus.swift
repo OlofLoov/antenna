@@ -49,8 +49,8 @@
 
     /// Keeps the highlight where the shell wants it around the system tab
     /// bar: select on the open tab sends it onto the page, a highlight that
-    /// went nowhere comes back to the page, and Live opened from code starts
-    /// on the picture even when the focus engine first tries the bar.
+    /// went nowhere comes back to the page, and Live or the Guide opened from
+    /// code starts on its page even when the focus engine first tries the bar.
     struct ShellFocusKeeper: ViewModifier {
         let model: ShellModel
         let focus: FocusState<ShellFocus?>.Binding
@@ -59,8 +59,8 @@
         @Environment(\.resetFocus) private var resetFocus
         /// True while nothing has the highlight, as after the focused view went away.
         @State private var lost = false
-        /// When Live last opened from code rather than from the tab bar.
-        @State private var liveOpenedByCode = ContinuousClock.now - .seconds(10)
+        /// When Live or the Guide last opened from code rather than from the tab bar.
+        @State private var openedByCode = ContinuousClock.now - .seconds(10)
 
         func body(content: Content) -> some View {
             content
@@ -68,8 +68,8 @@
                 .onChange(of: model.reselects) { _, _ in enterPage() }
                 .onChange(of: model.tab) { _, tab in
                     guard !model.barFocused else { return }
-                    // Live opened from code, as by a pick in the Guide or Search, starts on the picture.
-                    if tab == .live { liveOpenedByCode = .now }
+                    // Live or the Guide opened from code, as by a pick in the Guide or Search, starts on its page.
+                    if tab == .live || tab == .guide { openedByCode = .now }
                     checkSoon()
                 }
                 .onChange(of: focus.wrappedValue == nil) { _, none in
@@ -83,9 +83,10 @@
         }
 
         private func moved(_ highlight: ShellHighlight) {
-            if highlight == .bar, model.tab == .live, ContinuousClock.now - liveOpenedByCode < .milliseconds(800) {
-                // The focus engine put the highlight in the bar on its way to the picture.
-                focus.wrappedValue = model.liveFocus
+            if highlight == .bar, let target = pageFocus, ContinuousClock.now - openedByCode < .milliseconds(800) {
+                // The focus engine put the highlight in the bar on its way to the page
+                // (tv-guide-grid/open-at-a-programme-found-in-search).
+                focus.wrappedValue = target
                 return
             }
             // Down from the bar onto a failed stream loads it again, as select on Live does
@@ -101,14 +102,20 @@
         /// Select on the open tab moves the highlight onto its page, as
         /// swiping down does. The search keyboard cannot take focus from code.
         private func enterPage() {
-            switch model.tab {
-            case .live: focus.wrappedValue = model.liveFocus
-            case .guide, .movies, .series: focus.wrappedValue = .content
-            case .search, .settings: break
-            }
+            if let target = pageFocus { focus.wrappedValue = target }
             Task {
                 try? await Task.sleep(for: .milliseconds(150))
                 if model.barFocused || lost { resetFocus(in: pages) }
+            }
+        }
+
+        /// Where the highlight goes on the open page. The search keyboard
+        /// cannot take focus from code, and Settings has no place of its own.
+        private var pageFocus: ShellFocus? {
+            switch model.tab {
+            case .live: model.liveFocus
+            case .guide, .movies, .series: .content
+            case .search, .settings: nil
             }
         }
 
