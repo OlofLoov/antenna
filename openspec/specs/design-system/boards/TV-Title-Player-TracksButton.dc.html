@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV movie player, Audio and Subtitles button</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #1A2535; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box">
+
+  <!-- movies.player: the movie full screen, playing (design-system/live-video-keeps-playing-under-overlays). Bars around a 4:3 or 2.39:1 picture are pure black (#000000). The picture has focus and draws no focus look. Play/pause, a click or a touch on the touch surface shows the bar; it hides 5 seconds after the last input while playing and stays while paused. -->
+  <div style="position: absolute; inset: 0; background: #1A2535"></div>
+
+  <!-- title.transport: never focusable. A gradient from clear to the 0.85 scrim behind it, 90 pt side margins, 60 pt from the bottom. -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 120px 90px 60px; background: linear-gradient(to bottom, rgba(8,10,14,0), rgba(8,10,14,0.85)); display: flex; flex-direction: column; gap: 18px">
+
+    <!-- title.transport.stateGlyph, then the title in headline (38). An episode reads "Series name, S1 E4". -->
+    <div style="display: flex; align-items: center; gap: 16px">
+      <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="#A7B0BF"><path d="M7 5l12 7-12 7z"/></svg>
+      <span style="font-size: 38px; font-weight: 600">The Long Way Home</span>
+      <!-- title.transport.tracks: the Audio and Subtitles button at the trailing end of the title row, as the subtitle and audio buttons sit on the right of Apple's transport bar (player-controls-and-playback-errors/audio-and-subtitles-from-the-bar-on-apple-tv). A 66 pt circle on the 0.14 surface with the captions bubble (SF Symbol captions.bubble, captions.bubble.fill while full subtitles are on) at 30 pt in the primary color. Focused here (drawn): the system focused look, white and grown, the bubble in the dark text color. Grayed out at 0.4 and never focusable when the title has one sound and no subtitles. VoiceOver: "Audio and Subtitles", value "Subtitles On" or "Subtitles Off". -->
+      <span style="margin-left: auto; width: 66px; height: 66px; border-radius: 33px; background: #F2F4F8; transform: scale(1.1); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: inline-flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0B0E13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M7 10h4M13 10h4M7 13h6"/></svg>
+      </span>
+    </div>
+
+    <!-- title.transport.track: 10 pt line on the 0.25 surface, played part in the accent, 24 pt white knob at the time on screen -->
+    <div style="position: relative; height: 40px">
+      <div style="position: absolute; left: 0; right: 0; top: 15px; height: 10px; border-radius: 5px; background: rgba(255,255,255,0.25)"></div>
+      <div style="position: absolute; left: 0; width: 13.4%; top: 15px; height: 10px; border-radius: 5px; background: {{accent}}"></div>
+      <div style="position: absolute; left: calc(13.4% - 12px); top: 8px; width: 24px; height: 24px; border-radius: 12px; background: #F2F4F8"></div>
+    </div>
+
+    <!-- title.transport.elapsed left, title.transport.remaining right, callout (31) with monospaced digits in the muted color. No length from the stream: no line and no remaining time. -->
+    <div style="display: flex; justify-content: space-between; font-size: 31px; color: #A7B0BF; font-variant-numeric: tabular-nums">
+      <span>12:04</span>
+      <span>-1:17:56</span>
+    </div>
+  </div>
+
+  <!-- Remote with focus on title.transport.tracks: the bar stays while the button has focus. Select opens the tracks panel on Subtitles with focus on player.panel.segment.subtitles (TV-Title-Player-Tracks). Up or Menu puts focus back on the picture (up goes to the Next episode button while it shows) and the bar hides 5 seconds later. Clicks left and right keep skipping 10 seconds, play/pause keeps pausing. -->
+  <!-- hints.legend, top right over the player (control-hints/each-screen-lists-its-own-actions): Click, Audio and subtitles; Back, Keep watching -->
+  <div style="position: absolute; right: 80px; top: 60px; padding: 24px; border-radius: 20px; background: rgba(8, 10, 14, 0.82); font-size: 25px; color: #F2F4F8; display: flex; flex-direction: column; gap: 12px">
+    <div style="font-weight: 600; color: #A7B0BF">Remote</div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Click</span><span>Audio and subtitles</span></div>
+    <div style="display: flex; gap: 16px"><span style="color: #A7B0BF; min-width: 260px">Back</span><span>Keep watching</span></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
