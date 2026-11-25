@@ -7,6 +7,7 @@
 	--rule: #1e2530;
 	--link: #5bb8ff;
 	--tip: #4fd1c5;
+	--glow: #1a2a44;
 	--link-hover: #8ecdff;
 	--frame: #4a5566;
 	--gutter: 64px;
@@ -27,6 +28,7 @@
 		--rule: #e3e7ec;
 		--link: #0066cc;
 		--tip: #119c8f;
+		--glow: #e3ebf6;
 		--link-hover: #004c99;
 		--frame: #c5ccd6;
 	}
