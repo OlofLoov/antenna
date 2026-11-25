@@ -25,6 +25,10 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     <div style="display: flex; align-items: center; gap: 16px">
       <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="#A7B0BF"><path d="M7 5l12 7-12 7z"/></svg>
       <span style="font-size: 38px; font-weight: 600">The Long Way Home</span>
+      <!-- title.transport.tracks: the Audio and Subtitles button at the trailing end of the title row, as the subtitle and audio buttons sit on the right of Apple's transport bar (player-controls-and-playback-errors/audio-and-subtitles-from-the-bar-on-apple-tv). A 66 pt circle on the 0.14 surface with the captions bubble (SF Symbol captions.bubble, captions.bubble.fill while full subtitles are on) at 30 pt in the primary color. Unfocused here; focused on TV-Title-Player-TracksButton. Grayed out at 0.4 and never focusable when the title has one sound and no subtitles. VoiceOver: "Audio and Subtitles", value "Subtitles On" or "Subtitles Off". -->
+      <span style="margin-left: auto; width: 66px; height: 66px; border-radius: 33px; background: rgba(255,255,255,0.14); display: inline-flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M7 10h4M13 10h4M7 13h6"/></svg>
+      </span>
     </div>
 
     <!-- title.transport.track: 10 pt line on the 0.25 surface, played part in the accent, 24 pt white knob at the time on screen -->
@@ -41,7 +45,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
     </div>
   </div>
 
-  <!-- Remote, while the bar shows or not: click left or right skips 10 seconds back or forward; select and play/pause pause and play; holding select opens the tracks panel (TV-Title-Player-Tracks) and hides the bar; Menu closes the movie. A slide while paused sets a target (TV-Title-Player-Scrub). An optional Siri Remote hint layer goes between this bar and the panel. -->
+  <!-- Remote, while the bar shows or not: click left or right skips 10 seconds back or forward; select and play/pause pause and play; a swipe or click down shows the bar and moves focus to title.transport.tracks (TV-Title-Player-TracksButton), or to the Next episode button first while it shows (TV-Title-Player-NextButton); holding select opens the tracks panel on Audio (TV-Title-Player-Tracks) and hides the bar; Menu closes the movie. A slide while paused sets a target (TV-Title-Player-Scrub). An optional Siri Remote hint layer goes between this bar and the panel. -->
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1920,"height":1080}}'>
