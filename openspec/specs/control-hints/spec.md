@@ -56,6 +56,12 @@ The system SHALL list the actions of the part of the screen that has the highlig
 - **THEN** it lists swipe down for the next episode in place of swipe left or right to scrub
 - **AND** with focus on the button it lists Click to play the next episode and Back to keep watching
 
+#### Scenario: Audio and subtitles in the movie player
+- **GIVEN** a movie playing on Apple TV with no Next episode button
+- **WHEN** the legend shows
+- **THEN** it lists swipe down for audio and subtitles, and no hold
+- **AND** with focus on the bar's Audio and Subtitles button it lists Click for audio and subtitles and Back to keep watching
+
 #### Scenario: Up next
 - **GIVEN** the Up next card showing with focus on Play now
 - **WHEN** the legend shows

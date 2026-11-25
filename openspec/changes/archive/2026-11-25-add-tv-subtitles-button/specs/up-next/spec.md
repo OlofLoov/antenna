@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Up next on the Siri Remote
-The system SHALL let the viewer reach the Next episode button and the Up next card on Apple TV by swiping or clicking down, while clicks left and right keep skipping 10 seconds, play/pause keeps pausing and a slide keeps showing the bar. While the button shows, down SHALL reach it before the bar's Audio and Subtitles button, and a second down SHALL reach that one. When the card shows, it SHALL take focus on Play now. Back with focus on the button or the card SHALL put focus back on the picture and, on the card, cancel it. Back with focus on the picture SHALL still close the episode.
+The system SHALL let the viewer reach the Next episode button and the Up next card on Apple TV by swiping or clicking down, before the bar's Audio and Subtitles button, while clicks left and right skip 10 seconds, play/pause pauses and a slide shows the bar. When the card shows, it SHALL take focus on Play now. Back with focus on the button or the card SHALL put focus back on the picture and, on the card, cancel it. Back with focus on the picture SHALL still close the episode.
 
 #### Scenario: Reaching the button
 - **GIVEN** an episode in its last minute on Apple TV with the Next episode button showing
