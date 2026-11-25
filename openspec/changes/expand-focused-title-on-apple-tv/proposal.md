@@ -36,9 +36,11 @@ highlight are already there when it gets to them.
 - Back from a title page or the player, the poster it opened from has the
   highlight again and is expanded at once.
 - On every platform, posters load ahead of the highlight or the scroll:
-  the next posters in the direction of travel along a row, and the first
-  posters of the rows just below. They are decoded at the card's size away
-  from the main thread, as on screen.
+  the next three in the direction of travel along a row, and the posters
+  the row just below shows first. They are decoded at the card's size on
+  screen away from the main thread, and memory stays at 50 MB.
+- A poster that is not in memory yet shows a quiet shape in its place and
+  fades in when it arrives. One already in memory shows at once.
 - A benchmark records frames missed while moving along and down the rows
   on the `large` library, before and after, in design.md.
 
@@ -60,20 +62,24 @@ None.
 
 - `movies-and-series-browsing`: "Preview of the focused title on Apple TV"
   becomes "Expanded card for the focused title on Apple TV". "Browsing stays
-  responsive" adds posters ahead of the highlight and a frame budget for
-  moving through the rows. "Title details are asked once per title" says
+  responsive" adds posters ahead of the highlight, a 50 MB poster memory on
+  every platform and a budget for moving through the rows. "Rows in a
+  predictable order" adds the placeholder and fade for a poster still
+  loading. "Title details are asked once per title" says
   card where it said preview.
 
 ## Impact
 
 - Apps: `ShelfTVScreen`, `ShelfTVFocusFollower`, `ShelfPreviewFocus`, the
   `ShelfView` poster card, `ShelfModel` (details readable per title),
-  `PosterLoading` and `PosterCache` (prefetch), and a new expanded card
+  `PosterLoading`, `PosterTile` and `PosterCache` (prefetch, the
+  placeholder and fade, 50 MB on every platform), and a new expanded card
   component in `Apps/Shared/Components/Shelf/`. `ShelfPreview` goes.
 - AntennaCore: a pure prefetch window over a row's titles, with tests.
 - Boards: `TV-Movies-Expanded`, `TV-Movies-Expanded-Loading` and
   `TV-Movies-Expanded-Poster-Only` replace the three `TV-Movies-Preview`
-  boards.
+  boards. `TV-Movies-Expanded-Loading` also draws posters still loading,
+  and the design-system reference gains the poster placeholder token.
 - UI tests in `ShelfPreviewTVUITests`, `ShelfRowsUpTVUITests` and
   `ShelfLargeTVUITests` move from the preview to the card.
 - Works alongside `posters-open-the-title-page`, which makes a movie poster

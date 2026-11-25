@@ -5,27 +5,24 @@ import Foundation
 /// (movies-and-series-browsing/browsing-stays-responsive).
 ///
 /// Every art frame fills its box, so the picture is decoded large enough
-/// to cover the box on both sides, with room for the Apple TV focus lift,
-/// and never larger than it is.
+/// to cover the box on both sides at its resting size, and never larger
+/// than it is. The Apple TV focus lift scales the decoded picture up a
+/// little instead of keeping a larger one in memory.
 public struct PosterFit: Sendable, Hashable {
-    /// Extra room over the frame, for a focused card that grows on Apple TV.
-    public static let headroom = 1.25
     /// Frames are rounded up to this many pixels, so frames of nearly the
     /// same size share a decoded picture.
     public static let step = 64
 
-    /// The frame in pixels, rounded up to `step`, headroom included.
+    /// The frame in pixels, rounded up to `step`.
     public let width: Int
     public let height: Int
 
     /// The frame of `width` by `height` points on a screen of `scale`
-    /// pixels per point, with `headroom` over it; nil for an empty frame,
-    /// which loads nothing yet. A backdrop sized to the window passes a
-    /// headroom of 1, since nothing it fills grows on focus.
-    public init?(width: Double, height: Double, scale: Double, headroom: Double = PosterFit.headroom) {
-        guard width > 0, height > 0, scale > 0, headroom > 0 else { return nil }
-        self.width = Self.rounded(width * scale * headroom)
-        self.height = Self.rounded(height * scale * headroom)
+    /// pixels per point; nil for an empty frame, which loads nothing yet.
+    public init?(width: Double, height: Double, scale: Double) {
+        guard width > 0, height > 0, scale > 0 else { return nil }
+        self.width = Self.rounded(width * scale)
+        self.height = Self.rounded(height * scale)
     }
 
     /// The longest side, in pixels, to decode a picture of

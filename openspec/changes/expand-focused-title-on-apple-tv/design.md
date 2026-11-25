@@ -24,14 +24,22 @@ See proposal.md for why. What exists on 2026-11-25:
 New: `TV-Movies-Expanded`, `TV-Movies-Expanded-Loading` and
 `TV-Movies-Expanded-Poster-Only`. They replace `TV-Movies-Preview`,
 `TV-Movies-Preview-Loading` and `TV-Movies-Preview-Poster-Only`, which are
-deleted. `TV-Movies`, `TV-Movies-Rows` and the iPhone, iPad and Mac boards
-do not change. Series uses the same boards with `series.` identifiers.
+deleted. `TV-Movies-Expanded-Loading` also draws posters still loading:
+the quiet Surface 0.06 shape at the end of Drama and across Comedy, with a
+note on the fade. `TV-Movies`, `TV-Movies-Rows` and the iPhone, iPad and
+Mac boards do not change; their posters take the same shape while they
+load, at their own poster sizes. The design-system reference gains a
+Poster placeholder token. Series uses the same boards with `series.`
+identifiers.
 
 Design-system requirements followed:
 `design-system/apple-tv-content-stays-in-the-safe-area` (the rows and the
 card's copy start at x 80), `design-system/controls-use-system-styles` (the
 card is the poster's own button, with the system card focus),
-`design-system/one-accent-color-per-profile` (the eyebrow is muted).
+`design-system/one-accent-color-per-profile` (the eyebrow is muted),
+`design-system/visual-changes-update-the-boards-in-the-same-change` (the
+placeholder). The fade follows the Reduce Motion rule the card already
+follows: no animation, the poster appears at once.
 
 Not drawn: the card in a row of a right-to-left language. It mirrors as
 the rows do, with the posters after it moving to the left.
@@ -94,8 +102,12 @@ Options:
   900 is hundreds of megabytes of downloads and more than the 500 MB disk
   limit.
 - **Load a window ahead.** Chosen. `PosterPrefetch` in AntennaCore says
-  which: when a poster in a row shows, the next 8 in its row; when a row
-  shows, the first 8 posters of each of the 2 rows under it.
+  which: when a poster in a row shows, the next 3 in the direction the row
+  is scrolling, told by the poster that row showed last
+  (`PosterPrefetch.Trail`); when a row shows, the posters the row under it
+  shows first, or on the way up the row above it, as many as fit the
+  window's width (8 on Apple TV, 4 on iPhone). Decision 5 says why the
+  window is this small.
   `PosterCache.prefetch` loads and decodes them at the card's frame, the
   same key the card asks for, so the card finds them in memory. A card that
   asks while one loads joins it. Each row is a group: when a row scrolls
@@ -104,32 +116,68 @@ Options:
   leave a queue. A card that stops waiting leaves a load running while a
   row still wants it. Prefetches run at utility priority.
 
-The triggers are `onAppear` of a poster and of a row, which every platform
-has, so iPhone, iPad and Mac load ahead of their scroll too. They read the
-rows from the library in the action, not in a body, so a change to the
-rows redraws nothing.
+The triggers are the `task` of a poster and of a row, which every
+platform has, so iPhone, iPad and Mac load ahead of their scroll too. They
+read the rows from the library in the task, not in a body, so a change to
+the rows redraws nothing.
 
-### 5. Poster memory on Apple TV
+### 5. Poster memory
 
-Measuring the prefetch found the second cause of name tiles. On a 4K
-Apple TV a poster decodes for its card at 576 by 832 pixels with the
-focus headroom, about 2 MB, so the 50 MB memory limit held about 25
-posters. Three rows on screen are already 24, so moving down and back up
-asked for most posters again from disk, and posters loaded ahead were let
-go before their cards showed. Six rows down and back up, with the next
-eight posters of each row loaded ahead, touch about 150 posters.
+The first pass of this change raised the poster memory on Apple TV from
+50 MB to 400 MB. A poster decoded for its card with room for the focus
+lift (1.25 times the card) took 576 by 832 pixels on a 4K Apple TV, about
+2 MB, so 50 MB held about 25 posters. With the next 8 posters of each row
+and the first 8 of the 2 rows under it loaded ahead, posters were let go
+before their cards showed. On 2026-11-25 the owner turned 400 MB down as
+wasteful. Posters do not need to be that big; they can load as they come,
+with an animation on the poster, and a cache where it helps.
 
 Options:
-- **Decode smaller.** The card is 212 by 318 pt on a 2x screen; smaller
-  posters look soft on a 4K TV.
-- **Load less ahead along each row.** Halves what a row holds, but the
-  posters the highlight reaches next are the ones a swipe right needs.
-- **Raise the limit on Apple TV.** Chosen, at 400 MB. On the walk down
-  and up (below), 160 MB still found 3 posters in 10 not in memory, and
-  320 MB 1 in 8 from the second walk on, once the banner's backdrops and
-  the rows walked before filled it. 400 MB found about 1 in 170. `NSCache`
-  still lets go of entries under memory pressure. iPhone, iPad and Mac
-  keep 50 MB; their posters are a third of the size.
+- **Raise the limit on Apple TV.** 400 MB found 1 poster in 170 not ready
+  on the walk down and up. It keeps eight times the memory, most of it for
+  posters the viewer has passed. Rejected.
+- **Keep 50 MB and decode posters smaller than the card.** Saves memory,
+  but every poster on screen looks soft on a 4K TV, not only during a
+  move. Rejected.
+- **Keep 50 MB, decode at the card's resting size, load a small window
+  ahead, and fade a late poster in.** Chosen.
+
+What that means:
+- 50 MB on every platform, Apple TV included (`PosterCache.memoryLimit`).
+  The disk keeps 500 MB, so a poster that left memory decodes again from
+  the file instead of downloading.
+- A poster decodes at the card's size on screen, points times the screen
+  scale, rounded up to 64 pixels: 448 by 640 on a 4K Apple TV, about
+  1.1 MB, so 50 MB holds about 44. `PosterFit` has no focus headroom any
+  more. The card's focus lift scales the picture up a little; that is
+  accepted. Banner and title page backdrops decode at the window's size as
+  before.
+- The expanded card needs no larger decode. It shows the poster whole at
+  70% of the card's height over a blurred copy, smaller than the poster in
+  the row, so it uses the decode the row already holds. The backdrop that
+  fades in after the 0.8 s rest decodes at the card's width, 566 by 318 pt,
+  and only for the card that rested.
+- A card whose poster is not in memory shows a quiet shape in Surface 0.06
+  at the poster's size, with no name, and the poster fades in over 0.2 s
+  when it lands (`PosterLoading.fadeIn`). A poster already in memory draws
+  in the card's first frame without the fade: the card looks it up
+  synchronously in `PosterCache.kept` before the first frame, without
+  waiting for the actor. Under Reduce Motion the poster appears at once. A
+  title with no poster, or one that failed, still shows its name tile.
+  Drawn on `TV-Movies-Expanded-Loading`; the reference has the token.
+- A card that leaves the screen lets go of its picture, so the cache is the
+  only place decoded posters stay, and 50 MB is the real limit.
+- The window ahead is 3 posters in the direction of travel and the posters
+  the next row in the direction of the scroll shows first (decision 4). On
+  Apple TV that is two and a half rows on screen, about 20 posters, plus 3
+  and 8 ahead: about 31 posters, 36 MB. The 8 MB of a 1920 by 1080 banner
+  backdrop shares the same limit.
+- The memory lets go of the poster shown longest ago first
+  (`PosterCache.Memory`), and empties itself when the system runs low on
+  memory, as `NSCache` did.
+- The cancellation rules stay: each row is a group, and a row that scrolls
+  away stops the loads it asked for that no card waits for and no other row
+  wants.
 
 ## Measuring
 
@@ -179,19 +227,64 @@ same launch. Not ready is `posterMisses` over `posterAsks`.
 | Standing still | main `d12910bb` | 5 (19) / 502, 7 (69) / 474, 6 (119) / 505 | |
 | | card, prefetch, 400 MB | 12 (210) / 589, 15 (202) / 589, 11 (188) / 591 | |
 
-What this shows:
-- Loading ahead works once the memory holds it: at 400 MB about 1 poster
-  in 170 is still loading when its card shows. Without it the first walk
-  finds 85 of 183 still loading, and later walks 1 in 8, since the first
+What this showed then:
+- Loading ahead worked once the memory held it: at 400 MB about 1 poster
+  in 170 was still loading when its card showed. Without it the first walk
+  found 85 of 183 still loading, and later walks 1 in 8, since the first
   walk left most of their posters in memory.
-- The change misses about twice as many frames as main in the
-  simulator, on every walk and standing still too, with the prefetch or
-  without. Not explained yet. Standing still presses nothing, so the
-  moves and the card's growing are not the whole cause; the screen now
-  shows two and a half rows instead of one, and each probe reading walks
-  the app's accessibility tree on its main thread, which may count as
-  missed frames. Instruments' hitch templates do not record on the tvOS
-  simulator, so this needs the device check below before archiving.
+- The change missed about twice as many frames as main in the simulator,
+  on every walk and standing still too, with the prefetch or without. Not
+  explained. Standing still presses nothing, so the moves and the card's
+  growing are not the whole cause; the screen shows two and a half rows
+  instead of one, and each probe reading walks the app's accessibility
+  tree on its main thread, which may count as missed frames. Instruments'
+  hitch templates do not record on the tvOS simulator, so this needs the
+  device check below before archiving.
+
+### At 50 MB, 2026-11-25
+
+The same simulator, fixture server and walks, with the Mac at a load
+average of 2 to 6. The commit before this rework, `973cdeb7` (400 MB,
+focus headroom, 8 ahead), ran again in the same hour to compare.
+
+`posterAsks` counts differently now. Before, every load a card or the
+expanded card started counted, and a card coming back on screen asked
+again. Now a card counts once each time it shows, when it looks in memory
+before its first frame, and the expanded card's picture does not count.
+So the asks are lower and compare only within each build.
+
+| Walk | Build | Dropped frames (hitch ms) over frames counted | Posters not ready |
+|------|-------|-----------------------------------------------|-------------------|
+| Along the posters | `973cdeb7`, 400 MB | 75 (1200) / 492, 75 (1188) / 498, 73 (1218) / 468 | 2 of 38, 0 of 34, 0 of 35 |
+| | 50 MB, no prefetch | 73 (1164) / 467, 79 (1255) / 493, 74 (1203) / 463 | 4 of 13, 2 of 13, 0 of 13 |
+| | 50 MB, prefetch | 72 (1190) / 468, 78 (1249) / 493, 73 (1211) / 496 | 0 of 13, 0 of 13, 0 of 13 |
+| Down and up the rows | `973cdeb7`, 400 MB | 88 (1456) / 662, 78 (1283) / 671, 88 (1383) / 665 | 1 of 182, 1 of 156, 1 of 158 |
+| | 50 MB, no prefetch | 82 (1374) / 667, 92 (1505) / 660, 88 (1437) / 663 | 85 of 112, 99 of 126, 104 of 127 |
+| | 50 MB, prefetch | 78 (1288) / 671, 80 (1291) / 668, 92 (1502) / 656 | 14 of 112, 30 of 126, 50 of 127 |
+| Standing still | 50 MB, prefetch | 11 (195) / 591, 10 (175) / 589, 9 (206) / 591 | |
+
+What this shows:
+- Frames: 50 MB misses as many frames as 400 MB on every walk. The
+  posters that load late cost no frames that the probe sees.
+- Along a row the window ahead is enough: no poster was still loading
+  when its card showed.
+- Down and up the rows, 1 card in 8 showed the placeholder on the first
+  walk, 1 in 4 on the second and 2 in 5 on the third, where 400 MB had
+  almost none. Most of these are rows coming back on the way up, whose
+  posters left memory; they decode again from the disk, so the
+  placeholder shows for the time of a file read and a decode, and the
+  poster fades in. Without loading ahead, 3 in 4 or more did. Why each
+  walk finds more than the one before is not explained yet.
+- A geometry reader on every row, to count the posters a row shows, cost
+  about 40 dropped frames per walk down and up (about 127 against 88). The
+  count now comes from the window's width, read once.
+- The memory now lets go of the poster shown longest ago first, where
+  `NSCache` lets go in no set order. On this walk that made no measurable
+  difference (12, 31 and 53 not ready with `NSCache`); it is kept because
+  the order is then known.
+- The next row ahead follows the direction of the scroll: the row under
+  on the way down, the row above on the way up. Loading only the row
+  under found 46 of 112, 65 of 123 and 72 of 123 not ready.
 
 ## What to check on the device
 
@@ -206,6 +299,12 @@ What this shows:
   again at once.
 - Instruments' Animation Hitches template on the device while browsing:
   under 5 ms/s is the target.
+- Move down ten rows quickly and back up: posters not yet there are quiet
+  shapes that fade in, with no name tiles flashing, and a poster seen a
+  moment ago shows at once. With Reduce Motion on they appear without the
+  fade.
+- Instruments' Allocations on the device: decoded posters stay under 50 MB
+  after ten minutes of browsing.
 
 ## Open after this change
 

@@ -5,29 +5,22 @@ import Foundation
 import ImageIO
 import Synchronization
 
-/// Movie and series posters, decoded and kept in memory up to 50 MB (400 MB
-/// on Apple TV) and as files on disk up to 500 MB (movies-and-series-browsing).
+/// Movie and series posters, decoded and kept in memory up to 50 MB and as
+/// files on disk up to 500 MB (movies-and-series-browsing).
 /// Entries are named by a SHA-256 hash of the poster's address, so no file
 /// name or file holds the address. A poster that fails to load or decode gives nil, and the
 /// screen shows the name tile.
 actor PosterCache {
     static let shared = PosterCache()
 
-    /// On Apple TV a poster decoded for a 4K screen takes about 2 MB, and
-    /// moving down six rows and back up with the posters loaded ahead
-    /// touches about 150 of them, so Apple TV keeps 400 MB; elsewhere
-    /// posters are a third of that size
+    /// The same on every platform. Posters decode at their card's resting
+    /// size, about 1.1 MB on a 4K Apple TV, so 50 MB holds the two and a half
+    /// rows on screen and the few loaded ahead; the disk holds the rest
     /// (movies-and-series-browsing/browsing-stays-responsive).
-    static let memoryLimit = {
-        #if os(tvOS)
-            400 * 1024 * 1024
-        #else
-            50 * 1024 * 1024
-        #endif
-    }()
+    static let memoryLimit = 50 * 1024 * 1024
     static let diskLimit = 500 * 1024 * 1024
 
-    private let memory = NSCache<NSString, Poster>()
+    private nonisolated let memory: Memory
     private let directory: URL
     private let session: URLSession
     private let diskLimit: Int
@@ -44,7 +37,82 @@ actor PosterCache {
         self.directory = directory
         self.session = session
         self.diskLimit = diskLimit
-        memory.totalCostLimit = memoryLimit
+        memory = Memory(limit: memoryLimit)
+    }
+
+    /// Decoded posters up to a limit in bytes, letting go of the least
+    /// recently shown first, so the posters on screen and those just loaded
+    /// ahead stay (movies-and-series-browsing/browsing-stays-responsive).
+    /// `NSCache` lets go in no set order. Safe from any thread, so a card can
+    /// look for its poster without waiting for the actor: the entries sit
+    /// behind a mutex, and the memory pressure source is set up once in
+    /// `init`. Empties itself when the system runs low on memory.
+    private final class Memory: @unchecked Sendable {
+        private struct Entry {
+            let poster: Poster
+            var used: UInt64
+        }
+
+        private struct State {
+            var entries: [String: Entry] = [:]
+            var cost = 0
+            var clock: UInt64 = 0
+        }
+
+        private let state = Mutex(State())
+        private let limit: Int
+        private let pressure = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .global(qos: .utility))
+
+        init(limit: Int) {
+            self.limit = limit
+            pressure.setEventHandler { [weak self] in self?.removeAll() }
+            pressure.activate()
+        }
+
+        deinit {
+            pressure.cancel()
+        }
+
+        func removeAll() {
+            state.withLock { $0 = State() }
+        }
+
+        func object(forKey key: NSString) -> Poster? {
+            state.withLock { state in
+                guard var entry = state.entries[key as String] else { return nil }
+                state.clock += 1
+                entry.used = state.clock
+                state.entries[key as String] = entry
+                return entry.poster
+            }
+        }
+
+        func setObject(_ poster: Poster, forKey key: NSString, cost: Int) {
+            guard cost <= limit else { return }
+            state.withLock { state in
+                state.clock += 1
+                if let old = state.entries[key as String] { state.cost -= old.poster.cost }
+                state.entries[key as String] = Entry(poster: poster, used: state.clock)
+                state.cost += cost
+                while state.cost > limit, let oldest = state.entries.min(by: { $0.value.used < $1.value.used })?.key {
+                    state.cost -= state.entries.removeValue(forKey: oldest)?.poster.cost ?? 0
+                }
+            }
+        }
+    }
+
+    /// The poster for `fit` if it is in memory now, without waiting for the
+    /// actor, so a card whose poster is kept draws it in its first frame.
+    /// The browsing benchmarks count each call as a card asking, and a nil
+    /// as a poster not ready (movies-and-series-browsing/browsing-stays-responsive).
+    nonisolated func kept(_ url: URL, fitting fit: PosterFit?) -> Poster? {
+        let key = Self.key(url)
+        let kept = memory.object(forKey: (fit.map { "\(key)@\($0.key)" } ?? key) as NSString)
+        #if DEBUG
+            Self.asks.add(1, ordering: .relaxed)
+            if kept == nil { Self.misses.add(1, ordering: .relaxed) }
+        #endif
+        return kept
     }
 
     /// The hex SHA-256 of the address, the entry's name in memory and on disk.
@@ -64,14 +132,8 @@ actor PosterCache {
     func poster(for url: URL, fitting fit: PosterFit? = nil) async -> Poster? {
         let key = Self.key(url)
         let memoryKey = fit.map { "\(key)@\($0.key)" } ?? key
-        #if DEBUG
-            Self.asks.add(1, ordering: .relaxed)
-        #endif
         if let kept = memory.object(forKey: memoryKey as NSString) { return kept }
         guard !Task.isCancelled else { return nil }
-        #if DEBUG
-            Self.misses.add(1, ordering: .relaxed)
-        #endif
         let waiter = UUID()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -156,10 +218,11 @@ actor PosterCache {
     }
 
     #if DEBUG
-        /// Cards that asked for a poster not yet in memory, since launch.
-        /// The browsing benchmarks read it (movies-and-series-browsing/browsing-stays-responsive).
+        /// Calls to `kept` that found nothing, since launch: cards that
+        /// showed the placeholder. The browsing benchmarks read it
+        /// (movies-and-series-browsing/browsing-stays-responsive).
         static let misses = Atomic<Int>(0)
-        /// Cards that asked for a poster, since launch.
+        /// Calls to `kept`, since launch.
         static let asks = Atomic<Int>(0)
     #endif
 

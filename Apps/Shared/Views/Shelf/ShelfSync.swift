@@ -58,7 +58,8 @@ struct ShelfSync: ViewModifier {
             }
             .environment(\.posterLoader, Self.posters)
             .environment(\.posterPrefetcher, Self.loadsAhead ? Self.prefetcher : nil)
-            .environment(\.artFit, PosterFit(width: window.width, height: window.height, scale: scale, headroom: 1))
+            .environment(\.artFit, PosterFit(width: window.width, height: window.height, scale: scale))
+            .environment(\.shelfWindowWidth, window.width)
             // Only growing changes it, so a window being resized does not
             // load every picture again at each step.
             .onGeometryChange(for: CGSize.self) {
@@ -102,7 +103,8 @@ struct ShelfSync: ViewModifier {
     /// One loader each for the app's life. A loader made in `body` is a new
     /// closure on every redraw, which SwiftUI reads as a changed environment
     /// and redraws every poster and logo for.
-    private static let posters = ShelfView.PosterLoader { await PosterCache.shared.poster(for: $0, fitting: $1) }
+    private static let posters = ShelfView.PosterLoader(
+        load: { await PosterCache.shared.poster(for: $0, fitting: $1) }, kept: { PosterCache.shared.kept($0, fitting: $1) })
     private static let prefetcher = PosterPrefetcher(
         prefetch: { await PosterCache.shared.prefetch($0, fitting: $1, group: $2) },
         stop: { await PosterCache.shared.stopPrefetching($0) })

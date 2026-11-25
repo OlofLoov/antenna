@@ -5,6 +5,56 @@
 
 ## MODIFIED Requirements
 
+### Requirement: Rows in a predictable order
+The system SHALL show, after Continue watching and My list, Recently watched, Recently added newest first and one row per category that has titles in the provider's order, each headed with its name and number of titles, leaving out a row with nothing in it.
+
+#### Scenario: Provider categories
+- **GIVEN** the provider's movies and categories
+- **WHEN** the user opens Movies
+- **THEN** after Continue watching and My list come Recently watched, Recently added, newest first, and one row per category that has titles, in the provider's order
+- **AND** each row is headed with its name and number of titles
+
+#### Scenario: Rows with nothing in them
+- **GIVEN** a profile that has watched nothing
+- **WHEN** the user opens Movies
+- **THEN** there is no Recently watched row, and Recently added follows My list
+
+#### Scenario: Two sources with the same category
+- **GIVEN** two Xtream sources share a category name
+- **WHEN** the rows show
+- **THEN** their titles merge into one row
+
+#### Scenario: Thousands of categories
+- **GIVEN** the provider has thousands of categories
+- **WHEN** the user scrolls
+- **THEN** rows load as they scroll into view and only visible rows fetch posters
+
+#### Scenario: Missing or broken poster
+- **GIVEN** a title's poster is missing or broken
+- **WHEN** its poster shows
+- **THEN** the title's name shows on a plain tile, never an empty frame
+
+#### Scenario: A poster still loading
+- **GIVEN** a title's poster is not in memory yet
+- **WHEN** its card shows
+- **THEN** the card holds a quiet shape the size of the poster, with no name on it
+- **AND** the poster fades in over about 0.2 seconds when it arrives, or appears at once with Reduce Motion on
+
+#### Scenario: A poster already in memory
+- **GIVEN** a title's poster is in memory, as when the viewer scrolls back to it or it loaded ahead
+- **WHEN** its card shows
+- **THEN** the poster shows in the card's first frame, with no shape before it and no fade
+
+#### Scenario: Entries without a name or id
+- **GIVEN** the provider lists entries without a name or id
+- **WHEN** the rows fill
+- **THEN** those entries are skipped
+
+#### Scenario: VoiceOver reads a poster
+- **GIVEN** VoiceOver is on
+- **WHEN** the user moves to a poster
+- **THEN** it is read as title, year and, when in progress, the minutes left
+
 ### Requirement: Expanded card for the focused title on Apple TV
 On Apple TV the poster with the highlight in a row of Movies or Series SHALL grow at once into a landscape card the height of a poster, with the posters after it moving aside. The card SHALL show the title's picture, category and name at once, and its facts and up to two lines of plot once the provider has answered. The provider SHALL be asked about a title only after the highlight has stayed on it for 0.8 seconds. No preview SHALL show at the top of the section, and the focused row SHALL rest just under the tab bar with the rows below it in view. iPhone, iPad and Mac SHALL show no expanded card.
 
@@ -114,7 +164,7 @@ The system SHALL ask the provider for a title's details at most once per launch 
 - **AND** a card whose episodes failed to load does not ask again each time it scrolls back into view
 
 ### Requirement: Browsing stays responsive
-The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. What a long session keeps in memory SHALL stay within fixed limits. Posters SHALL load ahead of where the viewer is going, so the posters the highlight or the scroll reaches are already there.
+The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. What a long session keeps in memory SHALL stay within fixed limits. Posters SHALL load ahead of where the viewer is going, so most posters the highlight or the scroll reaches are already there, and a poster that is not SHALL fade in when it arrives.
 
 #### Scenario: A large library loads
 - **GIVEN** a source with 100 000 movies
@@ -180,13 +230,20 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 #### Scenario: Posters ahead of the highlight
 - **GIVEN** Movies is open on a library of thousands of titles whose posters take a moment to arrive
 - **WHEN** a poster in a row shows
-- **THEN** the next eight posters along that row start loading
-- **AND** when a row shows, the first eight posters of each of the two rows under it start loading
-- **AND** they are decoded at the size of a card, away from the screen, as the posters on screen are
+- **THEN** the next three posters along that row in the direction it is scrolling start loading
+- **AND** when a row shows, the posters the next row in the direction of the scroll shows first start loading: the row under it on the way down, the row above on the way up
+- **AND** they are decoded at the size of a card on screen, away from the screen, as the posters on screen are
 - **AND** this holds on iPhone, iPad, Mac and Apple TV
+
+#### Scenario: Posters kept in memory
+- **GIVEN** an Apple TV 4K with a large library
+- **WHEN** the viewer moves through dozens of rows
+- **THEN** the decoded posters kept in memory stay under 50 MB, as on iPhone, iPad and Mac, each at the size its card shows it with no room for the focus lift
+- **AND** the poster files kept on the device stay under 500 MB, so a poster that left memory decodes again from its file
 
 #### Scenario: Moving along a row and down the rows on Apple TV
 - **GIVEN** Apple TV on a library of 9 000 movies in 80 rows, with posters that each take a tenth of a second to arrive
 - **WHEN** the viewer presses right ten times and left ten times, then moves down six rows and up six, without waiting
-- **THEN** at most one in ten of the posters that come into view is still loading when it appears
+- **THEN** along the row at most one in ten of the posters that come into view is still loading when it appears
+- **AND** down and up the rows fewer than half are, and each of those fades in when it arrives
 - **AND** the screen, the banner and the rows are not drawn again for those moves

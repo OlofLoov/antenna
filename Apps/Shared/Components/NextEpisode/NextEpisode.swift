@@ -148,10 +148,10 @@ enum NextEpisode {
         let number: Int?
         let sizes: Sizes
 
-        @State private var poster: Poster?
+        @State private var poster = PosterPhase.loading
 
         var body: some View {
-            FilledArt(image: poster?.image, background: TitlePage.placeholder) {
+            FilledArt(image: poster.image, background: TitlePage.placeholder) {
                 if let number {
                     Text("\(number)")
                         .font(.boardStyle(sizes.number, weight: .bold))

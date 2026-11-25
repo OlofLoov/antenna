@@ -29,6 +29,7 @@ patterns and shared components the requirements point to.
 | Accent | `#5BB8FF` | The app tint. Progress fills, guide now line, NOW and UP NEXT badges, iPhone selected tab, links, and system controls that tint (the prominent button on iPhone, iPad and Mac, switches, selected picker values). Never eyebrows. Text and glyphs on an accent fill, a prominent button's label or a badge, are Ground (`Palette.onAccent`); white on the five accents is under 2.7:1 |
 | Live dot | `#FF5F57` | Only the small dot before "LIVE" |
 | Logo placeholder | `#26344A`, `#1E3A5F` | Tile with channel initials when no logo has loaded |
+| Poster placeholder | Surface `0.06` | A movie or series poster's shape while its picture loads, with nothing on it. The picture fades in over 0.2 s, at once under Reduce Motion; one already in memory shows with no fade. A missing or broken poster shows the name on `#26344A` |
 | Focus (tvOS) | background `#F2F4F8`, text `#0B0E13`, shadow `0 12px 32px rgba(0,0,0,.45)` | The focused element, always |
 
 Type is the system font in the platform's text styles. A board gives a size
