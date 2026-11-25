@@ -7,3 +7,10 @@ mac 03-movies.png movies-mac.jpg
 iPhone 02-iPhone-17-Pro-Max-guide.png guide-iphone.jpg
 iPhone 05-iPhone-17-Pro-Max-add-source.png add-source-iphone.jpg
 iPad 01-iPad-Pro-13-inch-M5-live.png live-tv-ipad.jpg
+appleTV 04-player.png player-apple-tv.jpg
+iPhone 01-iPhone-17-Pro-Max-live.png live-iphone.jpg
+iPhone 03-iPhone-17-Pro-Max-movies.png movies-iphone.jpg
+iPhone 04-iPhone-17-Pro-Max-player.png player-iphone.jpg
+iPad 02-iPad-Pro-13-inch-M5-guide.png guide-ipad.jpg
+iPad 03-iPad-Pro-13-inch-M5-movies.png movies-ipad.jpg
+iPad 04-iPad-Pro-13-inch-M5-player.png player-ipad.jpg

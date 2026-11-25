@@ -34,5 +34,33 @@
 	"live-tv-ipad.jpg": {
 		"width": 900,
 		"height": 1200
+	},
+	"player-apple-tv.jpg": {
+		"width": 1200,
+		"height": 675
+	},
+	"live-iphone.jpg": {
+		"width": 600,
+		"height": 1303
+	},
+	"movies-iphone.jpg": {
+		"width": 600,
+		"height": 1303
+	},
+	"player-iphone.jpg": {
+		"width": 600,
+		"height": 1303
+	},
+	"guide-ipad.jpg": {
+		"width": 900,
+		"height": 1200
+	},
+	"movies-ipad.jpg": {
+		"width": 900,
+		"height": 1200
+	},
+	"player-ipad.jpg": {
+		"width": 900,
+		"height": 1200
 	}
 }
