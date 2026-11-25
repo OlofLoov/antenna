@@ -15,18 +15,25 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 </helmet>
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
 
-  <!-- Same page as iPhone-Movies.dc.html scrolled past Recently added. The hero has scrolled away; movies.kind and the search button stay pinned on the ground color -->
+  <!-- Same page as iPhone-Movies.dc.html scrolled past Recently added. The banner card has scrolled away under the bar, which stays where it was -->
 
-  <!-- Pinned top bar -->
-  <div style="height: 98px; flex: 0 0 auto; position: relative; background: #0B0E13; border-bottom: 1px solid rgba(255,255,255,0.08)">
-    <!-- top bar over the art: the section's name (movies.title, a large bold title; Series shows "Series") and the profile button (profile.button: the current profile's color and initial in a 32 pt circle, or a person glyph with one profile; plain, no glass). No Movies | Series switch and no search button: Series and Search are in the tab bar (live-tv-on-iphone-ipad-mac/the-iphone-tab-bar). -->
-    <div style="position: absolute; left: 0; right: 0; top: 54px; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
-      <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.3px; font-family: ui-rounded, -apple-system, system-ui, 'Helvetica Neue', sans-serif" role="heading" aria-level="1">Movies</div>
-      <div role="button" aria-label="Profile, Kids" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
+  <!-- movies.bar (movies-and-series-browsing/a-pinned-top-bar-on-iphone): pinned under the status bar from the start, clear, with no glass, fill or line of its own. Rows scroll under it and the system's soft scroll edge effect blurs and dims them there (design-system/liquid-glass-stays-on-the-navigation-layer). One 44 pt row, 16 pt from the leading edge and 12 pt from the trailing edge. No Movies | Series switch and no search button: Series and Search are in the tab bar (live-tv-on-iphone-ipad-mac/the-iphone-tab-bar). -->
+  <div style="position: absolute; left: 0; right: 0; top: 0; z-index: 1; padding-top: 54px">
+    <!-- the system's soft scroll edge effect over the rows passing under the bar: blurred and dimmed toward the top edge, no line -->
+    <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 118px; backdrop-filter: blur(6px); background: linear-gradient(to bottom, rgba(11,14,19,0.72) 0, rgba(11,14,19,0.5) 70%, rgba(11,14,19,0) 100%); -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%); mask-image: linear-gradient(to bottom, #000 70%, transparent 100%)"></div>
+    <div style="position: relative; height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 16px">
+      <!-- movies.title: the section's name in the rounded display style, never shrunk; Series shows "Series" -->
+      <div style="flex: 0 0 auto; font-size: 28px; font-weight: 700; letter-spacing: -0.3px; font-family: ui-rounded, -apple-system, system-ui, 'Helvetica Neue', sans-serif" role="heading" aria-level="1">Movies</div>
+      <!-- movies.genres (movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone): the open list's name, its count and a chevron in a glass capsule, the system glass button style with no fill, outline or shadow of its own; 36 pt drawn inside a 44 pt hit area. The name truncates before the count. Tapping it opens the Genres sheet (iPhone-Movies-Genres.dc.html). -->
+      <div role="button" aria-label="All movies, 214 titles" style="min-width: 0; height: 36px; padding: 0 12px; border-radius: 18px; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); display: flex; align-items: center; gap: 6px; color: #F2F4F8"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0">All movies</bdi><span style="flex: 0 0 auto; font-size: 15px; color: #D7DEE8; font-variant-numeric: tabular-nums">· 214</span><span style="flex: 0 0 auto; color: #D7DEE8; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
+      <div style="flex: 1 1 auto"></div>
+      <!-- profile.button: the current profile's color and initial in a 32 pt circle, or a person glyph with one profile; plain, no glass -->
+      <div role="button" aria-label="Profile, Kids" style="flex: 0 0 auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center">
         <span style="width: 32px; height: 32px; border-radius: 16px; background: #C084FC; color: #0B0E13; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">K</span>
       </div>
     </div>
   </div>
+  <div style="height: 24px; flex: 0 0 auto"></div>
 
   <!-- My list (movies.row.myList), current kind only -->
   <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px">
