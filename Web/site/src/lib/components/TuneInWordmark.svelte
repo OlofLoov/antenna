@@ -1,10 +1,13 @@
 <script lang="ts">
-	// The wordmark above the home page's headline, playing Hello once as the
-	// page opens and sending one Tuning ring from each tip as the TV's picture
-	// snaps in (antuna-website/the-home-page-tunes-in). The shapes are the
-	// header's; the times are tune-in-home-hero design.md decision 1. The
-	// still mark is the default, and the motion only runs when the device does
-	// not ask for reduced motion.
+	// The wordmark above the home page's headline (antuna-website/the-home-page-tunes-in).
+	// It draws on, plays one loop of Tuning while the TV searches for a
+	// signal and Got it as the picture snaps in, then stands still
+	// (tuning-on-the-home-hero design.md decision 1, with the app's
+	// MarkMotion keyframes). The triangle, the mouth and the eye are shapes
+	// in the ground color over the head, so they move the same in every
+	// browser. `held` stops it where it is (the-tv-zaps-through-the-app).
+	let { held = false }: { held?: boolean } = $props();
+
 	const letters = [
 		'M99.0 -59.0A40.0 40.0 0 1 0 19.0 -59.0A40.0 40.0 0 1 0 99.0 -59.0M99.0 -99.0V-19.0',
 		'M147.0 -19.0V-99.0M147.0 -59.0A40.0 40.0 0 0 1 227.0 -59.0V-19.0',
@@ -16,6 +19,7 @@
 
 <svg
 	class="mark"
+	class:held
 	aria-hidden="true"
 	focusable="false"
 	width="300"
@@ -28,28 +32,22 @@
 		stroke-linecap="round"
 		stroke-linejoin="round"
 		>{#each letters as d (d)}<path class="letter" {d} pathLength="1" />{/each}</g
-	><mask id="tune-in-cut" maskUnits="userSpaceOnUse" x="560" y="-200" width="220" height="230"
-		><rect x="560" y="-200" width="220" height="230" fill="#fff" /><path
-			class="hole"
+	><g class="body"
+		><path
+			d="M673 -118A59 59 0 0 1 673 0C640 0 616 -20 606 -46Q604 -54 611 -57L609 -61L612 -66Q610 -67 612 -72C624 -100 646 -118 673 -118Z"
+			fill="currentColor"
+		/><path
+			class="tail"
+			d="M694 -99C694 -111 700 -119 711 -120L733 -122Q740 -122 738 -116Q726 -90 727 -59Q726 -28 738 -2Q740 4 733 4L711 2C700 1 694 -7 694 -19Z"
+			fill="currentColor"
+		/><path class="mouth cut" d="M641 -60L605 -56.3L606 -68Z" /><path
+			class="hole cut"
 			d="M659 -81L695 -59L659 -37Z"
-			fill="#000"
-			stroke="#000"
 			stroke-width="6"
 			stroke-linejoin="round"
-		/><path class="mouth" d="M641 -60L605 -56.3L606 -68Z" fill="#000" /><g class="eye"
-			><circle class="eye-in" cx="650" cy="-80" r="10" fill="#000" /></g
-		></mask
-	><g mask="url(#tune-in-cut)"
-		><g class="body"
-			><path
-				d="M673 -118A59 59 0 0 1 673 0C640 0 616 -20 606 -46Q604 -54 611 -57L609 -61L612 -66Q610 -67 612 -72C624 -100 646 -118 673 -118Z"
-				fill="currentColor"
-			/><path
-				d="M694 -99C694 -111 700 -119 711 -120L733 -122Q740 -122 738 -116Q726 -90 727 -59Q726 -28 738 -2Q740 4 733 4L711 2C700 1 694 -7 694 -19Z"
-				fill="currentColor"
-			/></g
+		/><g class="eye"><g class="look"><circle class="eye-in cut" cx="650" cy="-80" r="10" /></g></g
 		></g
-	><g class="left"
+	><g class="antenna left"
 		><path
 			class="stick"
 			d="M656 -112L640 -140"
@@ -63,7 +61,7 @@
 			cy="-148.7"
 			r="10"
 		/></g
-	><g class="right"
+	><g class="antenna right"
 		><path
 			class="stick"
 			d="M690 -112L704 -141"
@@ -89,6 +87,16 @@
 		overflow: visible;
 	}
 
+	.cut {
+		fill: var(--bg);
+		stroke: var(--bg);
+	}
+
+	.mouth,
+	.eye-in {
+		stroke: none;
+	}
+
 	.tip {
 		fill: var(--tip);
 	}
@@ -110,13 +118,36 @@
 		transform-origin: center;
 	}
 
+	.tail {
+		transform-box: fill-box;
+		transform-origin: 0% 50%;
+	}
+
 	.mouth {
 		transform-box: fill-box;
 		transform-origin: 100% 64%;
 	}
 
+	.antenna {
+		transform-box: view-box;
+	}
+
+	.left {
+		transform-origin: 656px -112px;
+	}
+
+	.right {
+		transform-origin: 690px -112px;
+	}
+
 	.eye-in {
 		transform: scale(0);
+	}
+
+	/* Important, since each animation shorthand below sets the play state too. */
+	.held,
+	.held :global(*) {
+		animation-play-state: paused !important;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -147,22 +178,6 @@
 			animation: grow 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) 0.5s forwards;
 		}
 
-		.hole {
-			animation: hole 3.2s ease-in-out both;
-		}
-
-		.eye-in {
-			animation: eye 3.2s ease-in-out both;
-		}
-
-		.eye {
-			animation: blink 0.24s ease-in-out 2.45s;
-		}
-
-		.mouth {
-			animation: say 0.5s ease-in-out 1.55s both;
-		}
-
 		.left .stick {
 			animation: draw 0.25s ease-out 1.05s both;
 		}
@@ -173,19 +188,65 @@
 
 		.tip {
 			transform: scale(0);
-			animation: grow 0.35s cubic-bezier(0.3, 1.8, 0.5, 1) 1.25s forwards;
+			animation:
+				grow 0.35s cubic-bezier(0.3, 1.8, 0.5, 1) 1.25s forwards,
+				hop 0.45s cubic-bezier(0.3, 0, 0.4, 1) 4.3s;
 		}
 
 		.right .tip {
-			animation-delay: 1.32s;
+			animation:
+				grow 0.35s cubic-bezier(0.3, 1.8, 0.5, 1) 1.32s forwards,
+				hop 0.45s cubic-bezier(0.3, 0, 0.4, 1) 4.38s;
+		}
+
+		.left {
+			animation: lean-left 2.4s ease-in-out 1.6s;
+		}
+
+		.right {
+			animation: lean-right 2.4s ease-in-out 1.6s;
 		}
 
 		.left .ring {
-			animation: ring 1.2s ease-out 1.6s forwards;
+			animation: ring 1.2s ease-out 1.6s 2;
 		}
 
 		.right .ring {
-			animation: ring 1.2s ease-out 1.9s forwards;
+			animation: ring 1.2s ease-out 2.2s 2;
+		}
+
+		.look {
+			animation: look 2.4s ease-in-out 1.6s;
+		}
+
+		.hole {
+			transform: scale(0);
+			animation:
+				open 0.3s cubic-bezier(0.3, 1.4, 0.5, 1) 0.83s forwards,
+				to-eye 0.35s ease-in 1.6s forwards,
+				back 1.2s ease-in-out 4s forwards;
+		}
+
+		.eye-in {
+			animation:
+				grow 0.3s cubic-bezier(0.3, 1.6, 0.5, 1) 1.85s forwards,
+				shrink 1.2s ease-in-out 4s forwards;
+		}
+
+		.eye {
+			animation:
+				blink 2.4s ease-in-out 1.6s,
+				squint 1.2s ease-in-out 4s;
+		}
+
+		.mouth {
+			animation:
+				breathe 2.4s ease-in-out 1.6s,
+				gulp 0.6s ease-out 4.1s;
+		}
+
+		.tail {
+			animation: flick 0.7s ease-out 4.15s;
 		}
 	}
 
@@ -215,66 +276,72 @@
 		}
 	}
 
-	@keyframes hole {
-		0%,
-		26% {
+	@keyframes open {
+		from {
 			transform: translate(0, 0) scale(0);
 		}
-		32% {
-			transform: translate(0, 0) scale(1.15);
-		}
-		36%,
-		62% {
-			transform: translate(0, 0) scale(1);
-		}
-		70%,
-		86% {
-			transform: translate(-21px, -21px) scale(0);
-		}
-		95%,
-		100% {
+		to {
 			transform: translate(0, 0) scale(1);
 		}
 	}
 
-	@keyframes eye {
+	@keyframes to-eye {
+		from {
+			transform: translate(0, 0) scale(1);
+		}
+		to {
+			transform: translate(-21px, -21px) scale(0);
+		}
+	}
+
+	@keyframes back {
 		0%,
-		66% {
-			transform: scale(0);
+		52% {
+			transform: translate(-21px, -21px) scale(0);
 		}
-		72% {
-			transform: scale(1.15);
-		}
-		75%,
-		86% {
-			transform: scale(1);
+		80% {
+			transform: translate(0, 0) scale(1.12);
 		}
 		90%,
 		100% {
+			transform: translate(0, 0) scale(1);
+		}
+	}
+
+	@keyframes shrink {
+		0%,
+		50% {
+			transform: scale(1);
+		}
+		60%,
+		100% {
 			transform: scale(0);
 		}
 	}
 
-	@keyframes blink {
+	@keyframes lean-left {
 		0%,
 		100% {
-			transform: scale(1, 1);
+			transform: rotate(0);
 		}
-		50% {
-			transform: scale(1, 0.1);
+		30% {
+			transform: rotate(-14deg);
+		}
+		65% {
+			transform: rotate(9deg);
 		}
 	}
 
-	@keyframes say {
+	@keyframes lean-right {
 		0%,
 		100% {
-			transform: scaleY(1);
+			transform: rotate(0);
 		}
-		40% {
-			transform: scaleY(3);
+		30% {
+			transform: rotate(-9deg);
 		}
-		70% {
-			transform: scaleY(1.5);
+		65% {
+			transform: rotate(14deg);
 		}
 	}
 
@@ -286,6 +353,94 @@
 		to {
 			opacity: 0;
 			transform: scale(2.6);
+		}
+	}
+
+	@keyframes look {
+		0%,
+		100% {
+			transform: translate(0, 0);
+		}
+		30% {
+			transform: translate(-3px, -1px);
+		}
+		60% {
+			transform: translate(3px, -1px);
+		}
+	}
+
+	@keyframes blink {
+		0%,
+		80%,
+		92%,
+		100% {
+			transform: scale(1, 1);
+		}
+		86% {
+			transform: scale(1, 0.1);
+		}
+	}
+
+	@keyframes squint {
+		0%,
+		100% {
+			transform: scale(1, 1);
+		}
+		12%,
+		40% {
+			transform: scale(1.15, 0.4);
+		}
+	}
+
+	@keyframes breathe {
+		0%,
+		100% {
+			transform: scaleY(1);
+		}
+		50% {
+			transform: scaleY(2.1);
+		}
+	}
+
+	@keyframes gulp {
+		0%,
+		100% {
+			transform: scaleY(1);
+		}
+		30% {
+			transform: scaleY(3.4);
+		}
+		55% {
+			transform: scaleY(1);
+		}
+		75% {
+			transform: scaleY(1.8);
+		}
+	}
+
+	@keyframes flick {
+		0%,
+		100% {
+			transform: skewY(0);
+		}
+		25% {
+			transform: skewY(-20deg);
+		}
+		55% {
+			transform: skewY(12deg);
+		}
+		80% {
+			transform: skewY(-3deg);
+		}
+	}
+
+	@keyframes hop {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		45% {
+			transform: translateY(-9px);
 		}
 	}
 

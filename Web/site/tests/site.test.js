@@ -34,6 +34,7 @@ import { externalize, routeName } from '../scripts/externalize-start.js';
 import {
 	channels,
 	devices,
+	mayAnimate,
 	mayDrift,
 	mayZap,
 	nextChannel,
@@ -325,18 +326,45 @@ describe('the home page hero', () => {
 	test('the tune-in follows the timeline in design.md', () => {
 		const stage = styleOf(source('TuneInStage.svelte'));
 		const mark = styleOf(source('TuneInWordmark.svelte'));
-		expect(stage).toContain(`tune-static ${seconds(timing.picture)} linear both`);
+		const loop = seconds(timing.tuningLoop);
+		const tuning = seconds(timing.tuningFrom);
+		const picture = seconds(timing.picture);
+		expect(timing.picture).toBe(timing.tuningFrom + timing.tuningLoop);
+		expect(timing.picture - timing.staticFrom).toBeGreaterThanOrEqual(2500);
+		expect(timing.picture - timing.staticFrom).toBeLessThanOrEqual(3500);
+
+		expect(stage).toContain(`tune-static ${picture} linear both`);
+		expect(stage).toContain(`animation: off 0s ${picture} both`);
 		expect(stage).toContain(
-			`snap ${seconds(timing.snap)} cubic-bezier(0.2, 0.8, 0.3, 1) ${seconds(timing.picture)} both`
+			`snap ${seconds(timing.snap)} cubic-bezier(0.2, 0.8, 0.3, 1) ${picture} forwards`
 		);
+
+		for (const track of ['lean-left', 'lean-right', 'look'])
+			expect(mark).toContain(`${track} ${loop} ease-in-out ${tuning};`);
+		expect(mark).toContain(`blink ${loop} ease-in-out ${tuning},`);
+		expect(mark).toContain(`breathe ${loop} ease-in-out ${tuning},`);
+		expect(mark).toContain(`ring ${seconds(timing.ring)} ease-out ${tuning} 2;`);
 		expect(mark).toContain(
-			`ring ${seconds(timing.ring)} ease-out ${seconds(timing.picture)} forwards`
+			`ring ${seconds(timing.ring)} ease-out ${seconds(timing.tuningFrom + timing.secondRing)} 2;`
 		);
-		expect(mark).toContain(
-			`ring ${seconds(timing.ring)} ease-out ${seconds(timing.secondRing)} forwards`
+		expect(mark).toContain(`to-eye 0.35s ease-in ${tuning} forwards`);
+		expect(mark).toContain(`back ${seconds(timing.gotIt)} ease-in-out ${picture} forwards`);
+		expect(mark).toContain(`squint ${seconds(timing.gotIt)} ease-in-out ${picture};`);
+		expect(mark).toContain(`shrink ${seconds(timing.gotIt)} ease-in-out ${picture} forwards`);
+		expect(mark).not.toContain('infinite');
+	});
+
+	// antuna-website/the-home-page-tunes-in
+	test('the triangle, eye and mouth are shapes in the ground color, with no mask', () => {
+		const html = hero();
+		const at = html.indexOf('class="mark');
+		const svg = html.slice(html.lastIndexOf('<svg', at), html.indexOf('</svg>', at));
+		expect(svg).not.toContain('<mask');
+		expect(svg).not.toContain('mask=');
+		expect(svg.match(/class="[^"]*\bcut\b[^"]*"/g)).toHaveLength(3);
+		expect(styleOf(source('TuneInWordmark.svelte'))).toMatch(
+			/\.cut \{\s*fill: var\(--bg\);\s*stroke: var\(--bg\);/
 		);
-		expect(mark).toContain(`hole ${seconds(timing.hello)} ease-in-out both`);
-		expect(timing.picture - timing.staticFrom).toBeGreaterThanOrEqual(1000);
 	});
 
 	// antuna-website/the-tv-zaps-through-the-app
@@ -364,6 +392,10 @@ describe('the home page hero', () => {
 
 	// antuna-website/the-tv-zaps-through-the-app
 	test('the channels stop off screen, in a hidden tab, when paused and before the tune-in ends', () => {
+		const shown = { onScreen: true, tabVisible: true, paused: false };
+		expect(mayAnimate(shown)).toBe(true);
+		for (const change of [{ onScreen: false }, { tabVisible: false }, { paused: true }])
+			expect(mayAnimate({ ...shown, ...change })).toBe(false);
 		const running = {
 			reducedMotion: false,
 			tuned: true,
@@ -389,6 +421,21 @@ describe('the home page hero', () => {
 		expect(scrollDrift(100, 600)).toBe(0);
 		expect(scrollDrift(-300, 600)).toBe(0.5);
 		expect(scrollDrift(-900, 600)).toBe(1);
+	});
+
+	// antuna-website/the-tv-zaps-through-the-app
+	test('Pause channels, the scroll and the tab hold the tune-in and the wordmark', () => {
+		const page = readFileSync(join(SITE, 'src', 'routes', '+page.svelte'), 'utf8');
+		expect(page).toContain('<TuneInWordmark {held} />');
+		expect(page).toContain('<TuneInStage bind:held />');
+		for (const name of ['TuneInStage.svelte', 'TuneInWordmark.svelte'])
+			expect(styleOf(source(name)), name).toMatch(
+				/\.held,\s*\.held :global\(\*\) \{\s*animation-play-state: paused !important;/
+			);
+		const script = source('TuneInStage.svelte');
+		expect(script).toContain('held = !mayAnimate(zapState());');
+		expect(script).toContain('.getAnimations({ subtree: true })');
+		expect(script).toContain("stage.closest('section')");
 	});
 
 	// antuna-website/the-hero-holds-still-with-reduce-motion

@@ -1,6 +1,7 @@
 // The home page hero's channels and timeline (tune-in-home-hero design.md
-// decisions 1, 4 and 5). The CSS in TuneInWordmark.svelte and
-// TuneInStage.svelte plays the same times; the tests read them here.
+// decisions 4 and 5, tuning-on-the-home-hero design.md decisions 1 and 6).
+// The CSS in TuneInWordmark.svelte and TuneInStage.svelte plays the same
+// times; the tests read them here.
 
 import type sizes from '#lib/screenshots.en.json';
 
@@ -26,20 +27,22 @@ export const channels: Channel[] = [
 
 /** Milliseconds from the first paint, as the CSS animations count them. */
 export const timing = {
-	/** Hello, from the first letter to the eye turning back into the triangle. */
-	hello: 3200,
 	/** The static fades in. */
 	staticFrom: 500,
-	/** The static goes, the picture opens and the left tip's ring starts. */
-	picture: 1600,
+	/** The wordmark has drawn on and starts one loop of Tuning. */
+	tuningFrom: 1600,
+	/** One loop of Tuning, as in the app. */
+	tuningLoop: 2400,
+	/** The static goes, the picture opens and the wordmark plays Got it. */
+	picture: 4000,
 	/** The picture opening from a line. */
 	snap: 160,
-	/** The right tip's ring, after the left one. */
-	secondRing: 1900,
+	/** Got it, from the picture to the still mark. */
+	gotIt: 1200,
 	/** One ring, from the tip to gone. */
 	ring: 1200,
-	/** After this the stage drops its tune-in animations. */
-	tuned: 1800,
+	/** The right tip's rings follow the left's by this much. */
+	secondRing: 600,
 	/** From one zap to the next, and from the tune-in to the first. */
 	zapEvery: 4000,
 	/** One zap, from the picture going to the next one fully open. */
@@ -55,7 +58,7 @@ export function nextChannel(index: number, count = channels.length): number {
 export interface ZapState {
 	/** The device asks for reduced motion. */
 	reducedMotion: boolean;
-	/** The tune-in has finished. */
+	/** The tune-in's animations have finished. */
 	tuned: boolean;
 	/** Some of the stage is inside the window. */
 	onScreen: boolean;
@@ -67,7 +70,15 @@ export interface ZapState {
 
 /** True when nothing holds the channels back. */
 export function mayZap(state: ZapState): boolean {
-	return !state.reducedMotion && state.tuned && state.onScreen && state.tabVisible && !state.paused;
+	return !state.reducedMotion && state.tuned && mayAnimate(state);
+}
+
+/**
+ * True when the tune-in, the wordmark and the zaps may move: the hero is
+ * on screen, the tab is in front and Pause channels is off.
+ */
+export function mayAnimate(state: Pick<ZapState, 'onScreen' | 'tabVisible' | 'paused'>) {
+	return state.onScreen && state.tabVisible && !state.paused;
 }
 
 /** True when the devices may follow the pointer and the scroll. */
