@@ -2,8 +2,8 @@
     import AntennaCore
     import SwiftUI
 
-    /// The open genre over the Movies or Series banner on iPhone and in a
-    /// narrow iPad window, as Live's group button (`iPhone-Movies`;
+    /// The open genre in the top bar of Movies or Series on iPhone and in a
+    /// narrow iPad window, on a glass capsule (`iPhone-Movies`;
     /// movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone): the
     /// genre's name, its count and a chevron. Tapping it opens the Genres
     /// sheet. `selection` nil is the rows, read as "All movies" or "All series".
@@ -18,7 +18,7 @@
         var body: some View {
             let list = selection ?? .all
             let name = String(localized: list.name(model.kind))
-            Browse.GroupButton(name: name, count: count(of: list)) {
+            ShelfCategoryButton(name: name, count: count(of: list)) {
                 isPresented = true
             }
             .accessibilityLabel(Text(verbatim: "\(name), \(ShelfText.titles(count(of: list)))"))

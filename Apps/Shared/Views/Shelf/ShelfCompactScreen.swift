@@ -3,17 +3,17 @@
     import SwiftUI
 
     /// The Movies tab or the Series tab on iPhone and in a narrow iPad
-    /// window (boards `iPhone-Movies`, `iPhone-Series`, `iPhone-Movies-Rows`):
-    /// the section's name and the profile button over a tall banner with the
-    /// genre button (the Genres sheet), then the rows or the picked genre's grid
-    /// (`iPhone-Movies-Grid`). Once the banner scrolls away the name and the
-    /// button stay pinned on the ground color. Each tab has its own screen,
-    /// so each keeps its own scroll position and genre.
+    /// window (boards `iPhone-Movies`, `iPhone-Movies-Rows`): a bar pinned at
+    /// the top with the section's name, the genre button (the Genres sheet)
+    /// and the profile button, then the banner card below it, then the rows
+    /// or the picked genre's grid (`iPhone-Movies-Grid`). Everything below
+    /// the bar scrolls under it (movies-and-series-browsing/a-pinned-top-bar-on-iphone).
+    /// Each tab has its own screen, so each keeps its own scroll position
+    /// and genre.
     struct ShelfCompactScreen: View {
         let kind: ShelfTitle.Kind
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfActivity.self) private var activity
-        @State private var pinned = false
         /// The grid in place of the rows; nil shows the rows.
         @State private var list: ShelfList?
 
@@ -54,72 +54,48 @@
 
         private var section: some View {
             let model = library.model(kind)
-            return GeometryReader { proxy in
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.phone.rowSpacing) {
-                        switch model.status {
-                        case .titles(let banner, let waiting):
-                            ShelfBannerHost(model: model, actions: actions) {
-                                ShelfBanner.Phone {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        topBar
-                                            .opacity(pinned ? 0 : 1)
-                                            .accessibilityHidden(pinned)
-                                        ShelfGenreButton(model: model, selection: list) { list = $0 }
-                                    }
-                                    .padding(.top, proxy.safeAreaInsets.top)
-                                }
-                            }
-                            ShelfNotices(model: model, banner: banner, waiting: waiting)
-                            if let list {
-                                ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: actions)
-                            } else {
-                                ShelfRowsContent(model: model, actions: actions) { list = $0 }
-                            }
-                        case let status:
-                            topBar.padding(.top, proxy.safeAreaInsets.top)
-                            ShelfStatusContent(model: model, status: status)
+            return ScrollView {
+                LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.phone.rowSpacing) {
+                    switch model.status {
+                    case .titles(let banner, let waiting):
+                        ShelfBannerHost(model: model, actions: actions) {
+                            ShelfBanner.Phone()
+                                .padding(.horizontal, 16)
                         }
-                    }
-                    .padding(.bottom, 24)
-                }
-                .scrollsToTopOnTabTap()
-                .onScrollGeometryChange(for: Bool.self) { geometry in
-                    geometry.contentOffset.y + geometry.contentInsets.top > 420
-                } action: { _, past in
-                    pinned = past
-                }
-                .ignoresSafeArea(edges: .top)
-                .overlay(alignment: .top) {
-                    if pinned {
-                        topBar
-                            .padding(.bottom, 10)
-                            .background(Palette.ground.ignoresSafeArea(edges: .top))
-                            .overlay(alignment: .bottom) { Rectangle().fill(Palette.surface(0.08)).frame(height: 1) }
+                        ShelfNotices(model: model, banner: banner, waiting: waiting)
+                        if let list {
+                            ShelfGridContent(model: model, list: list, sort: .recentlyAdded, actions: actions)
+                        } else {
+                            ShelfRowsContent(model: model, actions: actions) { list = $0 }
+                        }
+                    case let status:
+                        ShelfStatusContent(model: model, status: status)
                     }
                 }
+                .padding(.top, 8)
+                .padding(.bottom, 24)
             }
+            .scrollsToTopOnTabTap()
+            // The bar is the scroll view's own top bar, so the system blurs
+            // the rows passing under it.
+            .safeAreaBar(edge: .top) { topBar(model) }
             .background(Palette.ground)
             .environment(\.shelfMetrics, .phone)
             .environment(\.shelfPrefix, kind.prefix)
             .task { library.open() }
         }
 
-        /// The section's name and the profile button. Search is the tab
-        /// bar's search button, so the bar has none of its own.
-        private var topBar: some View {
-            HStack {
-                Text(kind.sectionTitle)
-                    .font(.boardStyle(28, weight: .bold))
-                    .foregroundStyle(Palette.text)
-                    .lineLimit(1)
-                    .accessibilityAddTraits(.isHeader)
-                    .accessibilityIdentifier("\(kind.prefix).title")
-                Spacer()
+        /// The section's name, the genre button once there are titles, and
+        /// the profile button. Search is the tab bar's search button, so the
+        /// bar has none of its own.
+        private func topBar(_ model: ShelfModel) -> some View {
+            ShelfTopBar(title: kind.sectionTitle) {
+                if case .titles = model.status {
+                    ShelfGenreButton(model: model, selection: list) { list = $0 }
+                }
+            } profile: {
                 ProfileMenuButton()
             }
-            .padding(.leading, 16)
-            .padding(.trailing, 12)
         }
     }
 #endif

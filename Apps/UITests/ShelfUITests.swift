@@ -192,7 +192,7 @@ final class ShelfUITests: XCTestCase {
         XCTAssertTrue(button.label.hasPrefix("All movies"), button.label)
         // No chips along the top: the drama genre is only in the sheet.
         XCTAssertFalse(app.element("movies.genres.drama").exists, "a genre chip is drawn at the top")
-        XCTAssertLessThan(button.frame.maxY, app.element("movies.hero.title").frame.minY, "the button sits over the banner's copy")
+        XCTAssertLessThan(button.frame.maxY, app.element("movies.hero.title").frame.minY, "the button sits above the banner")
 
         button.tap()
         let sheet = app.element("movies.genres.sheet")
@@ -220,6 +220,38 @@ final class ShelfUITests: XCTestCase {
         XCTAssertFalse(grid.exists)
     }
 
+    // movies-and-series-browsing/a-pinned-top-bar-on-iphone
+    // Owner-found: the name and the genre button sat on the banner art and
+    // vanished on a light picture. They are in a bar above the banner, the
+    // bar stays put as the rows scroll, and its genre button reads the open list.
+    func testTheTopBarStaysAboveTheBanner() throws {
+        let app = try launch(arguments: ["-ui-testing-reduce-motion"])
+        openMovies(app)
+        let bar = app.element("movies.bar")
+        let hero = app.element("movies.hero")
+        let button = app.genreButton("movies")
+        XCTAssertTrue(bar.exists, "no top bar")
+        XCTAssertGreaterThanOrEqual(hero.frame.minY, bar.frame.maxY, "the banner starts under the bar")
+        XCTAssertTrue(bar.frame.contains(CGPoint(x: button.frame.midX, y: button.frame.midY)), "the genre button is not in the bar")
+        XCTAssertTrue(bar.frame.contains(CGPoint(x: app.element("movies.title").frame.midX, y: app.element("movies.title").frame.midY)))
+        XCTAssertTrue(button.label.hasPrefix("All movies"), button.label)
+        XCTAssertGreaterThanOrEqual(button.frame.height, 44, "design-system/targets-are-large-enough-to-hit")
+
+        let resting = bar.frame
+        let buttonAtRest = button.frame
+        for _ in 0..<3 { app.swipeUp() }
+        XCTAssertTrue(waitUntil { hero.frame.maxY < resting.maxY }, "the banner never scrolled under the bar")
+        XCTAssertTrue(same(bar.frame, resting), "the bar moved with the rows: \(bar.frame)")
+        XCTAssertTrue(same(button.frame, buttonAtRest), "the genre button moved with the rows: \(button.frame)")
+
+        // The sheet opens from the button over the scrolled rows.
+
+        app.pickGenre("movies.genres.drama")
+        XCTAssertTrue(app.element("movies.grid").waitForExistence(timeout: 5))
+        XCTAssertEqual(button.label, "Drama, 4 titles")
+        XCTAssertTrue(same(bar.frame, resting), "the bar moved: \(bar.frame)")
+    }
+
     // live-tv-on-iphone-ipad-mac/tap-the-open-tab-to-go-back-to-the-top
     func testTappingMoviesAgainScrollsToTheTop() throws {
         // The banner holds its title: another title's copy moves the title line.
@@ -233,6 +265,12 @@ final class ShelfUITests: XCTestCase {
         app.tabBars.buttons["Movies"].tap()
         XCTAssertTrue(
             waitUntil { title.exists && abs(title.frame.minY - top) < 2 }, "the rows never scrolled back to the banner")
+    }
+
+    /// True when two frames match to within a point.
+    private func same(_ frame: CGRect, _ other: CGRect) -> Bool {
+        abs(frame.minX - other.minX) < 1 && abs(frame.minY - other.minY) < 1 && abs(frame.width - other.width) < 1
+            && abs(frame.height - other.height) < 1
     }
 
     /// True while `element` exists with its top edge at or below `y`.

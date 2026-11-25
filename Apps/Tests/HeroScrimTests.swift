@@ -114,62 +114,31 @@ import Testing
             }
         }
 
-        /// The last column of the iPhone banner is right of the copy and the
-        /// buttons, so only the art and the band are there.
+        /// Column 350 of the iPhone banner card is right of the copy and the
+        /// buttons, so only the art and the band are there. Rows within the
+        /// 26 pt rounded corner at the top and the foot are left out.
         @Test("design-system/the-scrim-blends-into-the-art: the iPhone banner has no line across the picture")
         func phoneBannerHasNoLine() throws {
-            let banner = ShelfBanner.Phone { EmptyView() }
+            let banner = ShelfBanner.Phone()
                 .environment(\.shelfBanner, .preview())
-            let pixels = try Pixels(banner, width: 390, height: 520)
-            #expect(pixels.largestStep(column: 388, from: 0, to: 520) <= 4)
+            let pixels = try Pixels(banner, width: 358, height: 480)
+            #expect(pixels.largestStep(column: 350, from: 30, to: 450) <= 4)
         }
 
-        /// The band behind the section's name and the genre button, on a
-        /// white picture: muted text, the genre's count and chevron, reaches
-        /// 4.5:1 down to the foot of the header, and the band fades into the
-        /// art below with no line.
-        @Test("design-system/the-scrim-blends-into-the-art: the iPhone header stays legible on a white picture")
-        func topScrimOnWhite() throws {
-            let view = ZStack(alignment: .top) {
-                Color.white
-                Color.clear.frame(height: 150).frame(maxWidth: .infinity).background(HeroTopScrim(fade: 56))
-            }
-            let pixels = try Pixels(view, width: 4, height: 520)
-            for y in [0, 75, 148] {
-                let ground = Self.luminance(gray: pixels.brightness(x: 2, y: y))
-                let muted = Self.luminance(red: 0xA7, green: 0xB0, blue: 0xBF)
-                #expect((muted + 0.05) / (ground + 0.05) >= 4.5, "design-system/text-meets-contrast-minimums at row \(y)")
-            }
-            #expect(pixels.largestStep(column: 2, from: 0, to: 520) <= 8)
-            #expect(pixels.brightness(x: 2, y: 260) > 245, "clear below the fade")
-        }
-
-        /// Owner-found: the name and "All series" sat on the bare art and
-        /// vanished on a light picture. The top of the iPhone banner, above
-        /// the copy, is darker than the art alone.
-        @Test("design-system/the-scrim-blends-into-the-art: the iPhone banner darkens behind its header")
-        func phoneBannerHeaderHasGround() throws {
-            let banner = ShelfBanner.Phone { Color.clear.frame(height: 150) }
+        /// Owner-found: the band behind the old header darkened the top of
+        /// every picture. The header is now in the top bar above the card, so
+        /// the top of the card is the art alone, with no picture loaded the
+        /// placeholder color.
+        @Test("design-system/the-scrim-blends-into-the-art: the top of the iPhone banner is not darkened")
+        func phoneBannerTopIsTheArt() throws {
+            let banner = ShelfBanner.Phone()
                 .environment(\.shelfBanner, .preview())
-            let pixels = try Pixels(banner, width: 390, height: 520)
+            let pixels = try Pixels(banner, width: 358, height: 480)
             let art = try Pixels(TitlePage.placeholder, width: 4, height: 4).brightness(x: 2, y: 2)
-            for y in [10, 100, 140] {
-                #expect(pixels.brightness(x: 380, y: y) < art - 20, "row \(y)")
+            // The band under the copy fades in from about 110 pt down.
+            for y in [20, 50, 80] {
+                #expect(abs(pixels.brightness(x: 179, y: y) - art) <= 2, "row \(y)")
             }
         }
     #endif
-
-    /// Relative luminance of an sRGB gray, 0 to 255.
-    private static func luminance(gray: Int) -> Double {
-        luminance(red: gray, green: gray, blue: gray)
-    }
-
-    /// Relative luminance of an sRGB color, channels 0 to 255.
-    private static func luminance(red: Int, green: Int, blue: Int) -> Double {
-        func linear(_ value: Int) -> Double {
-            let channel = Double(value) / 255
-            return channel <= 0.04045 ? channel / 12.92 : pow((channel + 0.055) / 1.055, 2.4)
-        }
-        return 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue)
-    }
 }
