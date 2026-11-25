@@ -24,6 +24,6 @@
 
 ## 5. Verify
 
-- [ ] 5.1 Core tests in English and German, `swift format`, `swiftlint`, `check-rules`, `check-spec-refs`, `check-translations`, `sync-strings --check`, `openspec validate --all --strict`, the site's lint, check, build and tests, and the iOS and tvOS builds pass
-- [ ] 5.2 Each requirement has a test citing `<capability>/<requirement-slug>`
-- [ ] 5.3 `/opsx:verify` passes
+- [x] 5.1 Core tests in English and German, `swift format`, `swiftlint`, `check-rules`, `check-spec-refs`, `check-translations`, `sync-strings --check`, `openspec validate --all --strict`, the site's lint, check, build and tests, and the iOS and tvOS builds pass
+- [x] 5.2 Each requirement has a test citing `<capability>/<requirement-slug>`
+- [x] 5.3 `/opsx:verify` passes
