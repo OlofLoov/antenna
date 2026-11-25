@@ -36,9 +36,8 @@ The system SHALL list the actions of the part of the screen that has the highlig
 - **THEN** swipe up or down reads "Info bar", not "Change channel"
 
 #### Scenario: Movies and series
-- **WHEN** the legend shows on the Movies rows
-- **THEN** Click reads "Play" and hold reads "More info and My list"
-- **AND** on the Series rows Click reads "Open" and hold reads "My list"
+- **WHEN** the legend shows on the Movies rows or the Series rows
+- **THEN** Click reads "Open" and hold reads "My list"
 
 #### Scenario: Scrubbing a movie
 - **GIVEN** a movie playing with the legend showing click left or right to skip 10 seconds and swipe left or right to scrub
