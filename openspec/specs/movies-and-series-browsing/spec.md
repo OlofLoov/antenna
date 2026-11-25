@@ -510,11 +510,11 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 - **AND** the rows that pass under the preview fade into the background without the rows being drawn off screen first
 
 ### Requirement: Pick a genre from a list on iPhone
-The system SHALL show on iPhone, and in a narrow iPad window, one genre button over the Movies and Series banners in place of a row of genre chips, reading the open list's name and count. The button SHALL open a half-height Genres sheet with a search field, listing All, My list and every genre with its count and a checkmark on the open one. Picking one SHALL close the sheet and show that list as the chips did.
+The system SHALL show on iPhone, and in a narrow iPad window, one genre button in the top bar of Movies and Series in place of a row of genre chips, reading the open list's name and count. The button SHALL open a half-height Genres sheet with a search field, listing All, My list and every genre with its count and a checkmark on the open one. Picking one SHALL close the sheet and show that list as the chips did.
 
 #### Scenario: Opening the sheet
 - **GIVEN** Movies is open on iPhone with the rows showing
-- **WHEN** the user looks at the top of the banner
+- **WHEN** the user looks at the top bar
 - **THEN** there are no genre chips, only the button reading "All movies" and the count
 - **AND** tapping it opens the Genres sheet at half height with the search field showing
 
@@ -608,3 +608,37 @@ The system SHALL open a title's page when the user selects its poster in a row, 
 - **GIVEN** the viewer opened a movie's page from a poster deep in a row on Apple TV
 - **WHEN** they press Menu on the page
 - **THEN** the same poster has the highlight and its preview shows
+
+### Requirement: A pinned top bar on iPhone
+On iPhone, and in a narrow iPad window, the system SHALL show Movies and Series under a bar pinned at the top of the screen with the section's name, the genre button and the profile button. The banner SHALL start below the bar, never under it, and rows and posters SHALL scroll under the bar, where the system blurs them so the bar stays legible over any picture.
+
+#### Scenario: Opening Movies
+- **WHEN** the user opens Movies on iPhone
+- **THEN** "Movies", the genre button reading "All movies" and the profile button are in a bar at the top
+- **AND** the banner's picture starts below the bar
+
+#### Scenario: A light picture in the banner
+- **GIVEN** the banner shows a title whose picture is white
+- **WHEN** the user opens Series on iPhone
+- **THEN** "Series" and "All series" with its count and chevron are as legible as over a dark picture, since the picture is below the bar
+
+#### Scenario: Scrolling the rows
+- **GIVEN** Movies is open on iPhone
+- **WHEN** the user scrolls down past the banner and the first rows
+- **THEN** the bar stays where it was with the name, the genre button and the profile button
+- **AND** the posters passing under the bar are blurred there
+
+#### Scenario: A picked genre
+- **GIVEN** Movies is open on iPhone and the user has scrolled down
+- **WHEN** the user picks Drama in the Genres sheet
+- **THEN** the genre button in the bar reads Drama and its count
+
+#### Scenario: No titles yet
+- **GIVEN** the user's sources are still loading their movies
+- **WHEN** the user opens Movies on iPhone
+- **THEN** the bar shows "Movies" and the profile button, with no genre button until there are titles
+
+#### Scenario: A narrow iPad window
+- **GIVEN** the app shares the screen with another app on iPad and its window is narrow
+- **WHEN** the user opens Movies
+- **THEN** Movies shows the same bar and banner as on iPhone
