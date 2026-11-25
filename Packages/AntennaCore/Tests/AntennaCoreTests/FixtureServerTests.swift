@@ -19,7 +19,7 @@ import Testing
             "pcm.mkv", "pcm.mov", "aac-pce.ts", "aac-pce.mkv", "he-aac-v2.ts", "latm.ts", "open-gop-hevc.mkv", "open-gop-h264.mkv",
             "damaged.ts", "jump-forward.ts", "jump-back.ts", "pts-wrap.ts", "late-audio.ts", "audio-pid-change.ts",
             "audio-description.ts",
-            "hevc-640x360.ts",
+            "hevc-640x360.ts", "hev1-in-band.mp4", "hevc-422.mp4",
             "hls-tracks/index.m3u8", "hls-tracks/video.m3u8", "hls-tracks/audio-en.m3u8", "hls-tracks/audio-de.m3u8",
             "hls-tracks/subs-en.m3u8", "hls-tracks/subs-sv.m3u8", "hls-tracks/subs-en.vtt", "hls-tracks/subs-sv.vtt",
         ] + (0..<3).map { "hls-tracks/video\($0).ts" }

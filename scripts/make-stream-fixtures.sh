@@ -209,6 +209,24 @@ ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
     -c:v libx265 -preset ultrafast -tag:v hev1 -x265-params "log-level=error:bframes=0" -b:v 100k \
     -c:a aac -b:a 48k -ac 2 -movflags +faststart "$out/hev1.mp4"
 
+# HEVC tagged hev1 whose parameter sets travel only in the samples: x265
+# repeats them before each keyframe, and the hvcC array count is set to 0,
+# leaving the arrays as unread bytes at the end of the box.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx265 -preset ultrafast -tag:v hev1 -x265-params "log-level=error:bframes=0:repeat-headers=1" -b:v 100k \
+    -c:a aac -b:a 48k -ac 2 -movflags +faststart "$work/hev1-in-band.mp4"
+python3 -I - "$work/hev1-in-band.mp4" "$out/hev1-in-band.mp4" <<'PY'
+import sys
+data = bytearray(open(sys.argv[1], "rb").read())
+data[data.index(b"hvcC") + 4 + 22] = 0
+open(sys.argv[2], "wb").write(data)
+PY
+
+# 10-bit HEVC 4:2:2, which Apple's player never gets ready for.
+ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \
+    -c:v libx265 -preset ultrafast -pix_fmt yuv422p10le -tag:v hvc1 -x265-params "log-level=error:bframes=0" -b:v 100k \
+    -c:a aac -b:a 48k -ac 2 -movflags +faststart "$out/hevc-422.mp4"
+
 # Surround sound: 5.1 Dolby Digital and Dolby Digital Plus under the same picture.
 # ffmpeg cannot encode Atmos; that is checked on a receiver.
 ff -f lavfi -i "$(video 320x180 25 2)" -f lavfi -i "$(tone 440 2)" \

@@ -43,8 +43,24 @@ extension AVPlayerEngine {
         observe(item)
         player.replaceCurrentItem(with: item)
         let deadline = ContinuousClock.now + readyTimeout
+        let isFile = probe.sniff != .hls && !isHLSAddress
+        var formatChecked = !isFile
+        // Asks for the tracks, so their status below turns loaded.
+        if isFile { Task { [asset = item.asset] in _ = try? await asset.load(.tracks) } }
         while item.status != .readyToPlay {
-            if item.status == .failed { throw Self.failure(from: item.error, host: url.host()) }
+            if item.status == .failed {
+                let failure = Self.failure(from: item.error, host: url.host())
+                if isFile, Self.handsOver(failure) { throw EngineHandoff.toDemuxer }
+                throw failure
+            }
+            // HEVC Apple's player stalls on goes to the demuxer as soon as
+            // the tracks are known
+            // (playback-engine/hevc-plays-wherever-the-device-decodes-it).
+            if !formatChecked, case .loaded(let tracks) = item.asset.status(of: .tracks) {
+                formatChecked = true
+                if await Self.systemSkips(tracks) { throw EngineHandoff.toDemuxer }
+                guard generation == mine else { throw CancellationError() }
+            }
             // An item can stay unknown for good, for example when no segment
             // ever arrives; without a limit `load` would never return.
             guard ContinuousClock.now < deadline else { throw PlaybackFailure.timedOut }
@@ -52,9 +68,9 @@ extension AVPlayerEngine {
             guard generation == mine else { throw CancellationError() }
         }
         // A file whose picture or sound Apple's player cannot decode, such
-        // as HEVC tagged hev1 or MP2 sound in MP4, reaches ready and then
+        // as MP2 sound in MP4, reaches ready and then
         // plays black or silent. The demuxer decodes it. HLS stays here.
-        if probe.sniff != .hls, !isHLSAddress, await !Self.canDecode(item.asset) {
+        if isFile, await !Self.canDecode(item.asset) {
             guard generation == mine else { throw CancellationError() }
             // AV1 or VP9 the FFmpeg path has no hardware decoder for either
             // fails here, so the two paths never hand it back and forth
@@ -91,6 +107,35 @@ extension AVPlayerEngine {
             return true
         }
         return false
+    }
+
+    /// True when a file Apple's player failed with `failure` may play on
+    /// the demuxer: it found no decoder for the picture, and the codec is
+    /// not AV1 or VP9 without the hardware, which the demuxer would hand
+    /// straight back (playback-engine/hevc-plays-wherever-the-device-decodes-it).
+    nonisolated static func handsOver(_ failure: PlaybackFailure) -> Bool {
+        guard case .cannotDecode(let codec) = failure else { return false }
+        return !["av1", "vp9"].contains(codec) || DemuxEngine.decodesInHardware(codec: codec)
+    }
+
+    /// True when the first video track is HEVC Apple's player does not
+    /// read in a file: marked `hev1`, with no parameter sets in its record,
+    /// or other than 4:2:0 at 8 or 10 bits.
+    /// It waits on those for seconds, or for good, without failing.
+    static func systemSkips(_ tracks: [AVAssetTrack]) async -> Bool {
+        guard let video = tracks.first(where: { $0.mediaType == .video }),
+            let format = try? await video.load(.formatDescriptions).first
+        else { return false }
+        return systemSkips(format)
+    }
+
+    /// The format check behind `systemSkips(_:)`.
+    nonisolated static func systemSkips(_ format: CMFormatDescription) -> Bool {
+        let code = format.mediaSubType.rawValue
+        guard code == kCMVideoCodecType_HEVC else { return CodecName.name(code) == "hevc" }
+        let atoms = CMFormatDescriptionGetExtension(format, extensionKey: kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms)
+        let record = ((atoms as? [String: Any])?["hvcC"] as? Data).flatMap(HEVCConfiguration.init(hvcC:))
+        return record.map { !$0.appleReadsInFiles || $0.parameterSetArrays == 0 } ?? false
     }
 
     /// "av1" or "vp9" when the asset's first video track is in that codec,

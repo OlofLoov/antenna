@@ -17,7 +17,10 @@ extension DemuxRun {
     /// with no hardware decoder in MP4 or QuickTime goes to Apple's player,
     /// which fails with the codec named when it cannot decode it either
     /// (playback-engine/av1-and-vp9-play-where-the-device-decodes-them).
-    static func undecodable(video codec: String, format: String) -> any Error {
+    /// A picture whose configuration is broken cannot be read, whatever
+    /// the device (playback-engine/hevc-plays-wherever-the-device-decodes-it).
+    static func undecodable(video codec: String, format: String, error: (any Error)? = nil) -> any Error {
+        if error as? SampleBuilder.BuildError == .malformed { return PlaybackFailure.unreadable }
         if SampleBuilder.hardwareOnlyCodecs.contains(codec), format.contains("mp4") { return EngineHandoff.toSystemPlayer }
         return PlaybackFailure.cannotDecode(codec: codec)
     }

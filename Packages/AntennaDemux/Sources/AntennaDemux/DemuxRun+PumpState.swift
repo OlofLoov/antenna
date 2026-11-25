@@ -40,5 +40,10 @@ extension DemuxRun {
         var soundEnds: [Int: CMTime] = [:]
         /// Where the newest sound buffer queued ends.
         var soundQueuedTo: CMTime?
+        /// The newest picture format VideoToolbox was asked to decode.
+        var checkedFormat: CMFormatDescription?
+        /// Set when VideoToolbox has no decoder for the picture format,
+        /// which stops the run.
+        var undecodable: PlaybackFailure?
     }
 }

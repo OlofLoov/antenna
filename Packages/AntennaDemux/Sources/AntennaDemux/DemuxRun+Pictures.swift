@@ -48,7 +48,9 @@ extension DemuxRun {
             state.fieldsDecided = true
             state.fields = Self.fieldPictures(for: builder, keyframe: packet)
         }
-        for buffer in (try? builder.sampleBuffers(for: packet)) ?? [] {
+        let buffers = (try? builder.sampleBuffers(for: packet)) ?? []
+        guard decoderFound(builder, &state) else { return false }
+        for buffer in buffers {
             let shown = (try? state.fields?.buffers(from: buffer)) ?? [buffer]
             for picture in shown {
                 guard takePicture(picture, &state) else { return false }
@@ -56,6 +58,17 @@ extension DemuxRun {
         }
         if packet.isKeyframe, state.announced { notePicture(builder, at: packet.presentationTime, &state) }
         return true
+    }
+
+    /// False, with `state.undecodable` set, when the builder made a new
+    /// picture format VideoToolbox has no decoder for
+    /// (playback-engine/hevc-plays-wherever-the-device-decodes-it).
+    func decoderFound(_ builder: SampleBuilder, _ state: inout PumpState) -> Bool {
+        guard let format = builder.formatDescription, format !== state.checkedFormat else { return true }
+        state.checkedFormat = format
+        guard let codec = SampleBuilder.decoderMissing(for: format) else { return true }
+        state.undecodable = .cannotDecode(codec: codec)
+        return false
     }
 
     /// Drops pictures until the next keyframe: a picture that refers to a

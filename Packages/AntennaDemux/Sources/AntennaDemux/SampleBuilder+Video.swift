@@ -2,6 +2,7 @@ import AntennaCore
 import AudioToolbox
 import CoreMedia
 import Foundation
+import VideoToolbox
 
 extension SampleBuilder {
     // MARK: H.264
@@ -37,6 +38,21 @@ extension SampleBuilder {
                 return Data(bytes: base + start.payload, count: end - start.payload)
             }
         }
+    }
+
+    /// The NAL units in a sample with 4-byte lengths. Stops at a length
+    /// that runs past the end.
+    static func nalUnits(lengthPrefixed data: Data) -> [Data] {
+        var units: [Data] = []
+        var index = data.startIndex
+        while index + 4 <= data.endIndex {
+            let length = data[index..<(index + 4)].reduce(0) { $0 << 8 | Int($1) }
+            let end = index + 4 + length
+            guard length > 0, end <= data.endIndex else { break }
+            units.append(Data(data[(index + 4)..<end]))
+            index = end
+        }
+        return units
     }
 
     static func lengthPrefixed(_ units: [Data]) -> Data {
@@ -238,6 +254,33 @@ extension SampleBuilder {
             parameterSetSizes: sets.map(\.count), nalUnitHeaderLength: 4, extensions: nil, formatDescriptionOut: &format)
         guard status == noErr, let format else { throw BuildError.malformed }
         return format
+    }
+
+    /// Nil when VideoToolbox has a decoder for an H.264 or HEVC `format`,
+    /// otherwise the codec with its profile, such as "hevc 4:2:2 10-bit"
+    /// (playback-engine/hevc-plays-wherever-the-device-decodes-it). Other
+    /// codecs answer nil: they have paths of their own.
+    static func decoderMissing(for format: CMFormatDescription) -> String? {
+        let type = CMFormatDescriptionGetMediaSubType(format)
+        guard type == kCMVideoCodecType_HEVC || type == kCMVideoCodecType_H264 else { return nil }
+        var session: VTDecompressionSession?
+        let status = VTDecompressionSessionCreate(
+            allocator: nil, formatDescription: format, decoderSpecification: nil, imageBufferAttributes: nil,
+            outputCallback: nil, decompressionSessionOut: &session)
+        if let session { VTDecompressionSessionInvalidate(session) }
+        guard status != noErr else { return nil }
+        return codecName(of: format)
+    }
+
+    /// The codec of an H.264 or HEVC format with its profile, read from
+    /// the configuration record CoreMedia keeps with it.
+    static func codecName(of format: CMFormatDescription) -> String {
+        let atoms = CMFormatDescriptionGetExtension(format, extensionKey: kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms)
+        let records = atoms as? [String: Any]
+        if CMFormatDescriptionGetMediaSubType(format) == kCMVideoCodecType_H264 {
+            return (records?["avcC"] as? Data).map(H264Profile.codecName(avcC:)) ?? "h264"
+        }
+        return (records?["hvcC"] as? Data).flatMap(HEVCConfiguration.init(hvcC:))?.codecName ?? "hevc"
     }
 
     /// The dynamic range a video format's transfer function says.
