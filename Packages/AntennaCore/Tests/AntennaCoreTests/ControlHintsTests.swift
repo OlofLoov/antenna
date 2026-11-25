@@ -8,7 +8,7 @@ import Testing
         .livePicture(swipe: .changesChannel), .livePicture(swipe: .showsZapBar), .infoBar(swipe: .changesChannel),
         .infoBar(swipe: .showsZapBar), .overlayGroups, .overlayChannels, .guide, .tabBar, .titleRows(.movie), .titleRows(.series),
         .titlePage, .titlePlayer(scrubbing: false), .titlePlayer(scrubbing: true), .titlePlayer(scrubbing: false, nextEpisode: true),
-        .nextEpisodeButton, .upNext(asking: false), .upNext(asking: true), .settings,
+        .nextEpisodeButton, .titleTracksButton, .upNext(asking: false), .upNext(asking: true), .settings,
     ]
 
     @Test("control-hints/remote-hints-show-what-the-buttons-do every screen lists between two and five controls, each once")
@@ -46,9 +46,21 @@ import Testing
                 ControlHintScreen.titleRows(kind).hints(.english)
                     == [ControlHint(.click, "Open"), ControlHint(.hold, "My list"), ControlHint(.back, "Tab bar")])
         }
-        #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).contains(ControlHint(.hold, "Audio and subtitles")))
+        #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).contains(ControlHint(.swipeDown, "Audio and subtitles")))
         #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).first == ControlHint(.clickLeftRight, "Skip 10 seconds"))
         #expect(ControlHintScreen.titlePlayer(scrubbing: true).hints(.english).contains(ControlHint(.back, "Cancel")))
+    }
+
+    @Test("control-hints/each-screen-lists-its-own-actions the movie player names swipe down for audio and subtitles")
+    func tracksButton() {
+        // player-controls-and-playback-errors/audio-and-subtitles-from-the-bar-on-apple-tv
+        let playing = ControlHintScreen.titlePlayer(scrubbing: false).hints(.english)
+        #expect(playing.contains(ControlHint(.swipeDown, "Audio and subtitles")))
+        #expect(!playing.contains { $0.control == .hold })
+        #expect(
+            ControlHintScreen.titleTracksButton.hints(.english) == [
+                ControlHint(.click, "Audio and subtitles"), ControlHint(.back, "Keep watching"),
+            ])
     }
 
     @Test("control-hints/each-screen-lists-its-own-actions the end of an episode names the next one")

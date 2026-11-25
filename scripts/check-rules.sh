@@ -148,7 +148,7 @@ check_except "design-system/display-headings-are-rounded: only the type scale pi
 
 check_except "design-system/controls-use-system-styles:ButtonStyle types only in the app-drawn parts" \
   '(struct|class|enum)[[:space:]]+[A-Za-z]+(<[^>]*>)?[[:space:]]*:[^{]*\b(Primitive)?ButtonStyle\b' \
-  'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift|Apps/Shared/Components/FocusCard\.swift' \
+  'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift|Apps/Shared/Components/FocusCard\.swift|Apps/Shared/Components/Transport/TransportTracksButton\.swift' \
   Apps
 
 # A prominent button is filled with the accent, and white on any of the

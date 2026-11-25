@@ -91,6 +91,9 @@ extension ZapBar {
         let badges: [ZapBarBadge]
         let catchUp: String?
         let hint: String
+        /// The second footer line, naming the hold that opens the info panel
+        /// (tv-zap-bar-and-number-entry/the-info-bar-names-the-hold).
+        let tracksHint: String
         /// How the LIVE badge looks: red dot at live, muted and outlined behind it.
         var live = LiveStyle.live
 
@@ -141,6 +144,16 @@ extension ZapBar {
                 }
                 .font(.boardStyle(20))
                 .foregroundStyle(Palette.textMuted)
+                HStack(spacing: 10) {
+                    Image(systemName: "captions.bubble")
+                        .font(.boardStyle(20))
+                        .accessibilityHidden(true)
+                    Text(tracksHint)
+                }
+                .font(.boardStyle(20))
+                .foregroundStyle(Palette.textMuted)
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("zapBar.tracksHint")
             }
         }
     }
@@ -173,7 +186,9 @@ extension View {
                     title: "Premier League: Arsenal v Liverpool", times: "20:00 – 22:00", progress: 0.78,
                     next: "22:00 · Match of the Day", remaining: "26 min left"))
         } status: {
-            ZapBar.Status(badges: ZapBarBadge.previewBadges(), catchUp: "Catch-up 7 days", hint: "Press to browse channels")
+            ZapBar.Status(
+                badges: ZapBarBadge.previewBadges(), catchUp: "Catch-up 7 days", hint: "Press to browse channels",
+                tracksHint: "Hold for info, audio and subtitles")
         }
     }
 }
@@ -188,7 +203,7 @@ extension View {
         } nowPlaying: {
             ZapBar.NowPlaying(content: .message("Guide unavailable"))
         } status: {
-            ZapBar.Status(badges: [], catchUp: nil, hint: "Press to browse channels")
+            ZapBar.Status(badges: [], catchUp: nil, hint: "Press to browse channels", tracksHint: "Hold for info, audio and subtitles")
         }
     }
 }
@@ -213,7 +228,7 @@ extension View {
             } status: {
                 ZapBar.Status(
                     badges: ZapBarBadge.previewBadges(PreviewLanguage.arabic.locale), catchUp: "Catch-up 7 days",
-                    hint: "Press to browse channels")
+                    hint: "Press to browse channels", tracksHint: "Hold for info, audio and subtitles")
             }
         }
     }

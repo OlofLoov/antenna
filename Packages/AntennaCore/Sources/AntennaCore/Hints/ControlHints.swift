@@ -60,6 +60,9 @@ public enum ControlHintScreen: Hashable, Sendable {
     case titlePlayer(scrubbing: Bool, nextEpisode: Bool = false)
     /// Focus on the Next episode button.
     case nextEpisodeButton
+    /// Focus on the Audio and Subtitles button on the movie player's bar
+    /// (player-controls-and-playback-errors/audio-and-subtitles-from-the-bar-on-apple-tv).
+    case titleTracksButton
     /// The Up next card, or "Still watching?" when `asking`.
     case upNext(asking: Bool)
     /// Settings and the pages it opens.
@@ -150,8 +153,8 @@ public enum ControlHintScreen: Hashable, Sendable {
             [
                 ControlHint(.clickLeftRight, words("Skip 10 seconds")),
                 ControlHint(.swipeLeftRight, words("Scrub")),
+                ControlHint(.swipeDown, words("Audio and subtitles")),
                 ControlHint(.playPause, words("Pause or play")),
-                ControlHint(.hold, words("Audio and subtitles")),
                 ControlHint(.back, words("Stop and go back")),
             ]
         case .titlePlayer(scrubbing: true, _):
@@ -163,6 +166,11 @@ public enum ControlHintScreen: Hashable, Sendable {
         case .nextEpisodeButton:
             [
                 ControlHint(.click, words("Play the next episode")),
+                ControlHint(.back, words("Keep watching")),
+            ]
+        case .titleTracksButton:
+            [
+                ControlHint(.click, words("Audio and subtitles")),
                 ControlHint(.back, words("Keep watching")),
             ]
         case .upNext(asking: false):
@@ -209,7 +217,7 @@ extension ControlHintScreen {
         case .overlayGroups, .overlayChannels: .overlayGroups
         case .titlePlayer: .titlePlayer(scrubbing: false)
         case .upNext: .upNext(asking: false)
-        case .guide, .tabBar, .titleRows, .titlePage, .settings, .nextEpisodeButton: self
+        case .guide, .tabBar, .titleRows, .titlePage, .settings, .nextEpisodeButton, .titleTracksButton: self
         }
     }
 
@@ -226,7 +234,7 @@ extension ControlHintScreen {
         case .livePicture, .infoBar, .overlayGroups, .overlayChannels, .guide: .live
         case .titleRows(.movie): .movies
         case .titleRows(.series): .series
-        case .tabBar, .titlePage, .titlePlayer, .nextEpisodeButton, .upNext, .settings: nil
+        case .tabBar, .titlePage, .titlePlayer, .nextEpisodeButton, .titleTracksButton, .upNext, .settings: nil
         }
     }
 }

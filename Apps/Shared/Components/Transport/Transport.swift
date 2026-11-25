@@ -44,13 +44,26 @@ enum Transport {
         /// played part in the accent with the knob, the elapsed time under
         /// its left end and the remaining time under its right. While a
         /// slide moves a target, a second knob and its time show above the
-        /// bar. Never focusable; the remote reaches the picture behind it.
-        struct Bar: View {
+        /// bar. The bar itself never takes focus; the accessory at the end
+        /// of the title row, the Audio and Subtitles button, can.
+        struct Bar<Accessory: View>: View {
             let title: String
             let times: Times
             let isPaused: Bool
             /// Where a slide points, 0 to 1, and its time; nil when none.
             var target: (fraction: Double, time: String)?
+            @ViewBuilder var accessory: Accessory
+
+            init(
+                title: String, times: Times, isPaused: Bool, target: (fraction: Double, time: String)? = nil,
+                @ViewBuilder accessory: () -> Accessory = { EmptyView() }
+            ) {
+                self.title = title
+                self.times = times
+                self.isPaused = isPaused
+                self.target = target
+                self.accessory = accessory()
+            }
 
             var body: some View {
                 VStack(alignment: .leading, spacing: 18) {
@@ -63,6 +76,8 @@ enum Transport {
                         Text(title)
                             .font(.headline)
                             .lineLimit(1)
+                        Spacer(minLength: 24)
+                        accessory
                     }
                     if let fraction = times.fraction {
                         Track(fraction: fraction, target: target)
@@ -144,6 +159,18 @@ enum Transport {
         Transport.Bar(title: "The Long Way Home", times: previewTimes, isPaused: false)
             .frame(maxHeight: .infinity, alignment: .bottom)
             .background(Color(white: 0.2))
+    }
+
+    #Preview("Transport bar, Apple TV, Audio and Subtitles button", traits: .fixedLayout(width: 1920, height: 360)) {
+        Transport.Bar(title: "The Long Way Home", times: previewTimes, isPaused: false) {
+            HStack(spacing: 24) {
+                Transport.TracksButton(subtitlesOn: false, isAvailable: true, reachable: true) {}
+                Transport.TracksButton(subtitlesOn: true, isAvailable: true, reachable: true) {}
+                Transport.TracksButton(subtitlesOn: false, isAvailable: false, reachable: true) {}
+            }
+        }
+        .frame(maxHeight: .infinity, alignment: .bottom)
+        .background(Color(white: 0.2))
     }
 
     #Preview("Transport bar, Apple TV, sliding while paused", traits: .fixedLayout(width: 1920, height: 360)) {

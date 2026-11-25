@@ -189,6 +189,16 @@ extension ShellUITests {
         expect(element("zapBar.catchup"), "label == 'Catch-up 7 days'")
         expect(element("zapBar.hint"), "label == 'Press to browse channels'")
     }
+
+    // tv-zap-bar-and-number-entry/the-info-bar-names-the-hold
+    func testTheInfoBarNamesTheHold() {
+        launchWithBar()
+        freshBar()
+        expect(element("zapBar.tracksHint"), "label == 'Hold for info, audio and subtitles'")
+        XCUIRemote.shared.press(.select, forDuration: 1)
+        XCTAssertTrue(element("player.panel").waitForExistence(timeout: 5), "holding select with the bar up opened no panel")
+        expect(element("zapBar.bar"), "exists == false")
+    }
 }
 
 extension ShellUITests {
