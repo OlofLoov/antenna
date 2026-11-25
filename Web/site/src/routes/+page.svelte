@@ -6,13 +6,17 @@
 	import TuneInStage from '#lib/components/TuneInStage.svelte';
 	import TuneInWordmark from '#lib/components/TuneInWordmark.svelte';
 	import { t } from '#lib/strings.ts';
+
+	// Pause channels, the scroll and the tab hold the wordmark with the TV
+	// (antuna-website/the-tv-zaps-through-the-app).
+	let held = $state(false);
 </script>
 
 <Meta title={t.home.title} description={t.home.description} />
 
 <section class="hero" id="hero">
 	<div class="text">
-		<TuneInWordmark />
+		<TuneInWordmark {held} />
 		<h1>{t.home.hero}</h1>
 		<p class="lead">{t.home.lead}</p>
 		<div class="get">
@@ -21,7 +25,7 @@
 		</div>
 	</div>
 	<div class="stage">
-		<TuneInStage />
+		<TuneInStage bind:held />
 	</div>
 </section>
 

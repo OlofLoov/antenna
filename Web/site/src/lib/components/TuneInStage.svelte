@@ -3,13 +3,16 @@
 	// (antuna-website/the-home-page-tunes-in, the-tv-zaps-through-the-app and
 	// the-hero-holds-still-with-reduce-motion). CSS plays the tune-in from the
 	// first paint; the script zaps, drifts and loads the next channel, and only
-	// while the stage is on screen, the tab is in front and motion is allowed.
+	// while the hero is on screen, the tab is in front and motion is allowed.
+	// It sets `held` when Pause channels, the scroll or the tab stop the hero,
+	// which stops the tune-in here and the wordmark the page passes it to.
 	import { onMount } from 'svelte';
 	import sizes from '#lib/screenshots.en.json';
 	import { t } from '#lib/strings.ts';
 	import {
 		channels,
 		devices,
+		mayAnimate,
 		mayDrift,
 		mayZap,
 		nextChannel,
@@ -17,6 +20,8 @@
 		scrollDrift,
 		timing
 	} from '#lib/tuneIn.ts';
+
+	let { held = $bindable(false) }: { held?: boolean } = $props();
 
 	let stage: HTMLDivElement;
 	let channel = $state(0);
@@ -76,6 +81,7 @@
 			clearTimeout(zapTimer);
 			waitingFor = undefined;
 			running = !state.reducedMotion;
+			held = !mayAnimate(zapState());
 			if (mayZap(zapState())) zapTimer = setTimeout(zap, timing.zapEvery);
 		}
 
@@ -137,24 +143,35 @@
 			schedule();
 			requestDraw();
 		});
-		observer.observe(stage);
+		// The whole hero, so the wordmark plays while a phone shows it above
+		// a TV that is still below the fold.
+		observer.observe(stage.closest('section') ?? stage);
 
-		const tuned = setTimeout(() => {
+		// Tuned once the tune-in's animations have run, which waits for them
+		// while the hero is held (tuning-on-the-home-hero design.md decision 3).
+		let gone = false;
+		const tuneIn = stage
+			.getAnimations({ subtree: true })
+			.filter((animation) =>
+				Number.isFinite(Number(animation.effect?.getComputedTiming().endTime))
+			);
+		Promise.allSettled(tuneIn.map((animation) => animation.finished)).then(() => {
+			if (gone) return;
 			tuning = false;
 			state.tuned = true;
 			if (!state.reducedMotion) load(1);
 			schedule();
-		}, timing.tuned);
+		});
 
 		reschedule = schedule;
-		running = !state.reducedMotion;
+		schedule();
 		addEventListener('pointermove', onPointer, { passive: true });
 		addEventListener('scroll', requestDraw, { passive: true });
 		document.addEventListener('visibilitychange', onVisibility);
 		reduce.addEventListener('change', onReduce);
 
 		return () => {
-			clearTimeout(tuned);
+			gone = true;
 			clearTimeout(zapTimer);
 			clearTimeout(zapEnd);
 			cancelAnimationFrame(frame);
@@ -167,7 +184,7 @@
 	});
 </script>
 
-<div class="stage" class:tuning class:zap={zapping} bind:this={stage}>
+<div class="stage" class:tuning class:held class:zap={zapping} bind:this={stage}>
 	{#each devices as device (device)}
 		<div class="device {device}">
 			<div class="screen">
@@ -186,6 +203,7 @@
 					{/if}
 				{/each}
 				{#if device === 'tv'}
+					<div class="cover" aria-hidden="true"></div>
 					<svg
 						class="static"
 						aria-hidden="true"
@@ -322,6 +340,19 @@
 		fill: #fff;
 	}
 
+	.cover {
+		display: none;
+		position: absolute;
+		inset: 0;
+		background: #000;
+	}
+
+	/* Important, since each animation shorthand below sets the play state too. */
+	.held,
+	.held :global(*) {
+		animation-play-state: paused !important;
+	}
+
 	.lines {
 		background: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.4) 0 1px, transparent 1px 3px);
 	}
@@ -373,14 +404,19 @@
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
+		.tuning .cover {
+			display: block;
+			animation: off 0s 4s both;
+		}
+
 		.tuning .static {
-			animation: tune-static 1.6s linear both;
+			animation: tune-static 4s linear both;
 		}
 
 		.tuning .lines {
 			animation:
-				tune-static 1.6s linear both,
-				roll 1.6s linear both;
+				tune-static 4s linear both,
+				roll 4s linear both;
 		}
 
 		.tuning .grain,
@@ -389,18 +425,16 @@
 		}
 
 		.tuning .tv img.on {
-			animation:
-				power 0s 1.6s both,
-				snap 0.16s cubic-bezier(0.2, 0.8, 0.3, 1) 1.6s both;
+			animation: snap 0.16s cubic-bezier(0.2, 0.8, 0.3, 1) 4s forwards;
 		}
 
 		.tuning .ipad img.on,
 		.tuning .iphone img.on {
-			animation: appear 0.3s ease-out 1.6s both;
+			animation: appear 0.3s ease-out 4s both;
 		}
 
 		.tuning .number {
-			animation: appear 0.2s ease-out 1.7s both;
+			animation: appear 0.2s ease-out 4.1s both;
 		}
 
 		.zap .static,
@@ -419,11 +453,11 @@
 
 	@keyframes tune-static {
 		0%,
-		31% {
+		12.5% {
 			opacity: 0;
 		}
-		44%,
-		96% {
+		17.5%,
+		98% {
 			opacity: 0.45;
 		}
 		100% {
@@ -436,7 +470,7 @@
 			background-position: 0 0;
 		}
 		to {
-			background-position: 0 24px;
+			background-position: 0 60px;
 		}
 	}
 
@@ -449,12 +483,9 @@
 		}
 	}
 
-	@keyframes power {
-		from {
-			visibility: hidden;
-		}
+	@keyframes off {
 		to {
-			visibility: visible;
+			visibility: hidden;
 		}
 	}
 

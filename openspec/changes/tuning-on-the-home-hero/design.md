@@ -134,9 +134,11 @@ Options considered:
 The page owns one `held` flag that it binds to the stage and passes to the
 wordmark. The stage's script sets it when Pause channels is on, the hero is
 off screen or the tab is hidden (`mayAnimate` in `tuneIn.ts`). Each
-component then sets `animation-play-state: paused` on its elements, so the
-static, the snap, Tuning and Got it stop on the frame they are at and go on
-from it.
+component then sets `animation-play-state: paused !important` on its
+elements, so the static, the snap, Tuning and Got it stop on the frame they
+are at and go on from it. It needs `!important` because each `animation`
+shorthand in the components resets the play state from a more specific
+selector.
 
 The stage no longer drops `tuning` on a timer. It waits for the stage's
 finite animations to finish (`getAnimations` and `finished`), so a held
