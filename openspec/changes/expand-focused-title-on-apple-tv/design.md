@@ -106,8 +106,13 @@ Options:
   is scrolling, told by the poster that row showed last
   (`PosterPrefetch.Trail`); when a row shows, the posters the row under it
   shows first, or on the way up the row above it, as many as fit the
-  window's width (8 on Apple TV, 4 on iPhone). Decision 5 says why the
-  window is this small.
+  window's width (8 on Apple TV, 4 on iPhone). A row that just came into
+  view loads nothing along it for 0.5 s, since its first posters show all
+  at once. On Apple TV, while the highlight rests, the rows above and
+  below it load the 8 posters around the poster to the right of its
+  column, which they show once it moves into them (see "Why each walk
+  finds more posters not ready"). Decision 5 says why the window is this
+  small.
   `PosterCache.prefetch` loads and decodes them at the card's frame, the
   same key the card asks for, so the card finds them in memory. A card that
   asks while one loads joins it. Each row is a group: when a row scrolls
@@ -262,10 +267,12 @@ So the asks are lower and compare only within each build.
 | | 50 MB, no prefetch | 73 (1164) / 467, 79 (1255) / 493, 74 (1203) / 463 | 4 of 13, 2 of 13, 0 of 13 |
 | | 50 MB, prefetch | 72 (1190) / 468, 78 (1249) / 493, 73 (1211) / 496 | 0 of 13, 0 of 13, 0 of 13 |
 | | 50 MB, prefetch, backdrops apart | 76 (1267) / 463, 74 (1232) / 498, 83 (1330) / 459 | 0 of 13, 0 of 12, 0 of 13 |
+| | 50 MB, around the highlight | 81 (1290) / 519, 82 (1323) / 519, 78 (1271) / 519 | 0 of 13, 0 of 12, 0 of 12 |
 | Down and up the rows | `973cdeb7`, 400 MB | 88 (1456) / 662, 78 (1283) / 671, 88 (1383) / 665 | 1 of 182, 1 of 156, 1 of 158 |
 | | 50 MB, no prefetch | 82 (1374) / 667, 92 (1505) / 660, 88 (1437) / 663 | 85 of 112, 99 of 126, 104 of 127 |
 | | 50 MB, prefetch | 78 (1288) / 671, 80 (1291) / 668, 92 (1502) / 656 | 14 of 112, 30 of 126, 50 of 127 |
 | | 50 MB, prefetch, backdrops apart | 91 (1430) / 662, 86 (1366) / 667, 87 (1384) / 661 | 14 of 112, 29 of 126, 50 of 127 |
+| | 50 MB, around the highlight | 94 (1548) / 687, 92 (1539) / 718, 98 (1572) / 684 | 6 of 112, 15 of 126, 36 of 127 |
 | Standing still | 50 MB, prefetch | 11 (195) / 591, 10 (175) / 589, 9 (206) / 591 | |
 
 What this shows:
@@ -278,8 +285,8 @@ What this shows:
   almost none. Most of these are rows coming back on the way up, whose
   posters left memory; they decode again from the disk, so the
   placeholder shows for the time of a file read and a decode, and the
-  poster fades in. Without loading ahead, 3 in 4 or more did. Why each
-  walk finds more than the one before is not explained yet.
+  poster fades in. Without loading ahead, 3 in 4 or more did. Each walk
+  finding more than the one before is explained below.
 - Backdrops sharing the 50 MB with posters do not explain it. "Backdrops
   apart" kept wide pictures in a memory of their own, 24 MB, with the same
   order of letting go and the same purge on low memory, and posters alone
@@ -288,10 +295,60 @@ What this shows:
   for a 4K window, about 33 MB, would not fit in 24 MB at all.
 - Also ruled out: the order the memory lets go in (the `NSCache` runs
   below), and how far the next row loads ahead on the first walk (14 of
-  112 against 46 of 112 with only the row under). Not yet looked at:
-  whether rows the stack keeps alive off screen skip the load of the row
-  past them, and whether a row scrolled away stops loads the next row
-  still needs.
+  112 against 46 of 112 with only the row under).
+
+#### Why each walk finds more posters not ready
+
+A debug probe, `shelf.debug.posterTrace`, counts where posters go:
+loads started ahead, loads stopped, posters let go of before any card
+showed them, by who asked, and cards that found no load at all. The
+benchmark prints it before and after each walk, with the row and the
+position the highlight is on.
+
+- The highlight does not come back to where it started. Each move up or
+  down lands it a poster to the right of its column, since the expanded
+  card is wider than a poster and the focus engine picks the poster under
+  its middle. The first walk starts on the first poster of Recently added
+  and ends on the eighth; the second ends on the ninth, the third on the
+  tenth. Every row the highlight moves into then scrolls sideways to that
+  column, to posters nothing loaded: the rows had loaded their start as
+  they came into view. Cards that found no load at all went from 12 to 15
+  to 24 per walk.
+- Pressing left 15 times after each walk, so every walk starts on the
+  first poster, found 5, 20 and 24 not ready instead of 14, 29 and 50
+  (with the change below). The rise from the first walk to the second
+  remains: the first starts with only the first rows in memory, the later
+  ones with what the walk before left.
+- Rows the stack keeps alive do not skip loading: the rows load ahead 11
+  times per walk, every walk. A row scrolling away stopped no load (0 in
+  every walk), and no load was left running after a walk. Rows still
+  listed about 22 finished loads as wanted after each walk; that is fixed,
+  it did not cause misses.
+- Each row coming into view showed its first 9 or 10 posters at once, and
+  each asked for the 3 after it, so posters that were never shown loaded
+  along the rows, 53 to 85 per walk, and 44 to 64 of them were let go of
+  unshown. Now a row loads nothing along it for 0.5 s after it comes into
+  view (`PosterPrefetch.Trail.settle`): 13 to 21 per walk.
+
+What changed:
+- While the highlight rests on a poster, the rows above and below load
+  the 8 posters around the poster to the right of its column
+  (`PosterPrefetch.around`), the ones they show once the highlight moves
+  into them. A new position stops what the last one asked for that no
+  card waits for.
+- The 0.5 s pause along a row that just came into view, and a finished
+  load is no longer listed as wanted.
+- "Around the highlight" in the table: 6, 15 and 36 not ready. Loading the
+  next row around the column instead of at its start, without the rows by
+  the highlight, made it worse (21, 59 and 65): the rows still show their
+  start as they come into view.
+- Each walk still finds more than the one before, since the highlight
+  still moves right: cards that found no load at all were 9, 18 and 39. Keeping the highlight in its column on a move between
+  rows, as Netflix does, would stop that; it is a change to how the card
+  moves, left for the owner (Open after this change).
+- Dropped frames on the walk down and up are 92 to 98, against 78 to 92
+  before this change. It may be the lookup of the highlight's position in
+  its row on each move, or noise; not measured apart.
 - A geometry reader on every row, to count the posters a row shows, cost
   about 40 dropped frames per walk down and up (about 127 against 88). The
   count now comes from the window's width, read once.
@@ -325,6 +382,9 @@ What this shows:
 
 ## Open after this change
 
+- A move up or down from the expanded card lands the highlight a poster to
+  the right, so a walk down and back up ends further along each row. Keep
+  the column on a move between rows?
 - `title-detail-and-episode-picker/back-to-where-you-were` says "with that
   poster focused and its preview showing". `posters-open-the-title-page`
   modifies the same requirement; whichever change archives second says

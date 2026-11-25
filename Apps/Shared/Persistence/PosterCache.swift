@@ -51,6 +51,8 @@ actor PosterCache {
         private struct Entry {
             let poster: Poster
             var used: UInt64
+            var shown = false
+            var origin = ""
         }
 
         private struct State {
@@ -77,25 +79,35 @@ actor PosterCache {
             state.withLock { $0 = State() }
         }
 
-        func object(forKey key: NSString) -> Poster? {
+        func object(forKey key: NSString, shown: Bool = true) -> Poster? {
             state.withLock { state in
                 guard var entry = state.entries[key as String] else { return nil }
                 state.clock += 1
                 entry.used = state.clock
+                entry.shown = entry.shown || shown
                 state.entries[key as String] = entry
                 return entry.poster
             }
         }
 
-        func setObject(_ poster: Poster, forKey key: NSString, cost: Int) {
+        func setObject(_ poster: Poster, forKey key: NSString, cost: Int, origin: String = "") {
             guard cost <= limit else { return }
             state.withLock { state in
                 state.clock += 1
                 if let old = state.entries[key as String] { state.cost -= old.poster.cost }
-                state.entries[key as String] = Entry(poster: poster, used: state.clock)
+                state.entries[key as String] = Entry(poster: poster, used: state.clock, origin: origin)
                 state.cost += cost
                 while state.cost > limit, let oldest = state.entries.min(by: { $0.value.used < $1.value.used })?.key {
-                    state.cost -= state.entries.removeValue(forKey: oldest)?.poster.cost ?? 0
+                    let gone = state.entries.removeValue(forKey: oldest)
+                    state.cost -= gone?.poster.cost ?? 0
+                    #if DEBUG
+                        PosterTrace.evicted.add(1, ordering: .relaxed)
+                        if gone?.shown == false {
+                            PosterTrace.evictedUnshown.add(1, ordering: .relaxed)
+                            if gone?.origin == "along" { PosterTrace.evictedUnshownAlong.add(1, ordering: .relaxed) }
+                            if gone?.origin == "below" { PosterTrace.evictedUnshownRow.add(1, ordering: .relaxed) }
+                        }
+                    #endif
                 }
             }
         }
@@ -134,6 +146,13 @@ actor PosterCache {
         let memoryKey = fit.map { "\(key)@\($0.key)" } ?? key
         if let kept = memory.object(forKey: memoryKey as NSString) { return kept }
         guard !Task.isCancelled else { return nil }
+        #if DEBUG
+            if loading[memoryKey] == nil {
+                PosterTrace.missCold.add(1, ordering: .relaxed)
+            } else {
+                PosterTrace.missInFlight.add(1, ordering: .relaxed)
+            }
+        #endif
         let waiter = UUID()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -164,6 +183,11 @@ actor PosterCache {
     private func finish(_ memoryKey: String, id: UUID, with poster: Poster?) {
         guard loading[memoryKey]?.id == id, let done = loading.removeValue(forKey: memoryKey) else { return }
         for waiter in done.waiters.values { waiter.resume(returning: poster) }
+        // A finished load is no longer wanted by any row.
+        for (group, keys) in prefetching where keys.contains(memoryKey) {
+            let rest = keys.subtracting([memoryKey])
+            prefetching[group] = rest.isEmpty ? nil : rest
+        }
     }
 
     /// A cancelled caller stops waiting with nothing; the last one out
@@ -174,6 +198,9 @@ actor PosterCache {
         if running.waiters.isEmpty, !prefetching.values.contains(where: { $0.contains(memoryKey) }) {
             running.task.cancel()
             loading[memoryKey] = nil
+            #if DEBUG
+                PosterTrace.cancelledByCard.add(1, ordering: .relaxed)
+            #endif
         } else {
             loading[memoryKey] = running
         }
@@ -189,12 +216,20 @@ actor PosterCache {
         for url in urls {
             let key = Self.key(url)
             let memoryKey = "\(key)@\(fit.key)"
-            guard memory.object(forKey: memoryKey as NSString) == nil else { continue }
+            #if DEBUG
+                PosterTrace.prefetchAsked.add(1, ordering: .relaxed)
+            #endif
+            guard memory.object(forKey: memoryKey as NSString, shown: false) == nil else { continue }
             wanted.insert(memoryKey)
             guard loading[memoryKey] == nil else { continue }
+            #if DEBUG
+                PosterTrace.prefetchStarted.add(1, ordering: .relaxed)
+                if group.hasPrefix("along") { PosterTrace.startedAlong.add(1, ordering: .relaxed) }
+            #endif
             let id = UUID()
+            let origin = String(group.prefix { $0 != "." })
             let task = Task(priority: .utility) {
-                let poster = await load(url, key: key, memoryKey: memoryKey, fit: fit)
+                let poster = await load(url, key: key, memoryKey: memoryKey, fit: fit, origin: origin)
                 finish(memoryKey, id: id, with: poster)
             }
             loading[memoryKey] = Load(id: id, task: task, waiters: [:])
@@ -202,6 +237,9 @@ actor PosterCache {
         // Only loads still running are worth remembering.
         wanted = wanted.filter { loading[$0] != nil }
         prefetching[group] = wanted.isEmpty ? nil : wanted
+        #if DEBUG
+            traceGauges()
+        #endif
     }
 
     /// Stops the loads `group` asked for that no card waits for and no
@@ -214,8 +252,22 @@ actor PosterCache {
             guard let running = loading[key], running.waiters.isEmpty else { continue }
             running.task.cancel()
             loading[key] = nil
+            #if DEBUG
+                PosterTrace.cancelledByRow.add(1, ordering: .relaxed)
+            #endif
         }
+        #if DEBUG
+            traceGauges()
+        #endif
     }
+
+    #if DEBUG
+        private func traceGauges() {
+            PosterTrace.loading.store(loading.count, ordering: .relaxed)
+            PosterTrace.groups.store(prefetching.count, ordering: .relaxed)
+            PosterTrace.wanted.store(prefetching.values.reduce(0) { $0 + $1.count }, ordering: .relaxed)
+        }
+    #endif
 
     #if DEBUG
         /// Calls to `kept` that found nothing, since launch: cards that
@@ -228,6 +280,9 @@ actor PosterCache {
 
     /// The posters each group asked to prefetch that are still loading.
     private var prefetching: [String: Set<String>] = [:]
+
+    /// The posters rows still want loaded, over every row. For tests.
+    var wanted: Int { prefetching.values.reduce(0) { $0 + $1.count } }
 
     /// The loads in flight, waited for or not. For tests.
     var inFlight: Int { loading.count }
@@ -250,11 +305,11 @@ actor PosterCache {
         return poster
     }
 
-    private func load(_ url: URL, key: String, memoryKey: String, fit: PosterFit?) async -> Poster? {
+    private func load(_ url: URL, key: String, memoryKey: String, fit: PosterFit?, origin: String = "") async -> Poster? {
         let file = directory.appending(path: key)
         if let data = try? Data(contentsOf: file), let poster = await Self.decode(data, fit: fit) {
             try? FileManager.default.setAttributes([.modificationDate: Date.now], ofItemAtPath: file.path)
-            remember(poster, key: memoryKey)
+            remember(poster, key: memoryKey, origin: origin)
             return poster
         }
         let signpost = BrowseSignposts.signposter.beginInterval("poster")
@@ -263,7 +318,7 @@ actor PosterCache {
             (response as? HTTPURLResponse).map({ (200..<300).contains($0.statusCode) }) ?? true,
             let poster = await Self.decode(data, fit: fit)
         else { return nil }
-        remember(poster, key: memoryKey)
+        remember(poster, key: memoryKey, origin: origin)
         store(data, at: file)
         return poster
     }
@@ -275,8 +330,8 @@ actor PosterCache {
         Poster(data: data, fitting: fit)
     }
 
-    private func remember(_ poster: Poster, key: String) {
-        memory.setObject(poster, forKey: key as NSString, cost: poster.cost)
+    private func remember(_ poster: Poster, key: String, origin: String = "") {
+        memory.setObject(poster, forKey: key as NSString, cost: poster.cost, origin: origin)
     }
 
     private func store(_ data: Data, at file: URL) {
@@ -367,3 +422,41 @@ final class Poster: @unchecked Sendable {
     /// The decoded size in bytes, what it costs the memory limit.
     var cost: Int { image.bytesPerRow * image.height }
 }
+
+#if DEBUG
+    /// Where posters go between loading ahead and showing, since launch,
+    /// for the browsing benchmarks. Read by the large shelf's probe.
+    enum PosterTrace {
+        static let prefetchAsked = Atomic<Int>(0)
+        static let prefetchStarted = Atomic<Int>(0)
+        static let cancelledByRow = Atomic<Int>(0)
+        static let cancelledByCard = Atomic<Int>(0)
+        static let evicted = Atomic<Int>(0)
+        static let evictedUnshown = Atomic<Int>(0)
+        static let evictedUnshownAlong = Atomic<Int>(0)
+        static let evictedUnshownRow = Atomic<Int>(0)
+        static let startedAlong = Atomic<Int>(0)
+        static let missCold = Atomic<Int>(0)
+        static let missInFlight = Atomic<Int>(0)
+        static let rowTriggers = Atomic<Int>(0)
+        static let alongTriggers = Atomic<Int>(0)
+        /// Gauges, as of the last prefetch or stop.
+        static let loading = Atomic<Int>(0)
+        static let groups = Atomic<Int>(0)
+        static let wanted = Atomic<Int>(0)
+        /// The row the Apple TV highlight is in and its position there.
+        static let focusedRow = Mutex("")
+
+        static var line: String {
+            func v(_ counter: borrowing Atomic<Int>) -> Int { counter.load(ordering: .relaxed) }
+            let counts: [(String, Int)] = [
+                ("ask", v(prefetchAsked)), ("start", v(prefetchStarted)), ("startAlong", v(startedAlong)),
+                ("cxRow", v(cancelledByRow)), ("cxCard", v(cancelledByCard)), ("evict", v(evicted)),
+                ("evictUnshown", v(evictedUnshown)), ("euAlong", v(evictedUnshownAlong)), ("euRow", v(evictedUnshownRow)),
+                ("missCold", v(missCold)), ("missFlight", v(missInFlight)), ("rowTrig", v(rowTriggers)),
+                ("alongTrig", v(alongTriggers)), ("loading", v(loading)), ("groups", v(groups)), ("wanted", v(wanted)),
+            ]
+            return (counts.map { $0.0 + "=" + String($0.1) } + ["row=" + focusedRow.withLock { $0 }]).joined(separator: " ")
+        }
+    }
+#endif

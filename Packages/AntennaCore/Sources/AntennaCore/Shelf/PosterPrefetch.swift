@@ -42,26 +42,58 @@ public enum PosterPrefetch {
         0..<max(0, min(count, visible))
     }
 
+    /// The `visible` positions of a row of `count` posters around `column`,
+    /// half before it and half after: what a row shows once it scrolls
+    /// sideways to the Apple TV highlight at that column. The row's start
+    /// without a column, or while the column is within the first screen.
+    public static func around(_ column: Int?, count: Int, visible: Int) -> Range<Int> {
+        guard let column, visible > 0 else { return start(count: count, visible: visible) }
+        let first = max(0, min(column - visible / 2, count - visible))
+        return first..<max(first, min(count, first + visible))
+    }
+
     /// The last poster each row showed, or the last row a section showed,
     /// to tell which way it is moving. A row seen again after scrolling
     /// away starts afresh.
+    ///
+    /// A row that comes into view shows its first posters all at once.
+    /// Those are not a scroll along the row, so for `settle` after a row's
+    /// first poster shows, its posters load nothing ahead. Walking down and
+    /// up the rows, those loads were never shown and pushed the posters
+    /// about to show out of memory.
     public struct Trail: Sendable {
+        /// How long a row that came into view loads nothing along it.
+        public static let settle = Duration.milliseconds(500)
+
         private var last: [String: Int] = [:]
+        private var arrived: [String: ContinuousClock.Instant] = [:]
 
         public init() {}
 
         /// The positions to load once the poster or row at `index` of
         /// `line` shows: the next `along`, forward unless it is before the
-        /// one shown last.
-        public mutating func shown(_ index: Int, in line: String, count: Int, along: Int = PosterPrefetch.along) -> Range<Int> {
-            let direction: Direction = last[line].map { index < $0 ? .backward : .forward } ?? .forward
+        /// one shown last. With `time`, nothing while the line is within
+        /// `settle` of its first poster showing.
+        public mutating func shown(
+            _ index: Int, in line: String, count: Int, along: Int = PosterPrefetch.along, at time: ContinuousClock.Instant? = nil
+        ) -> Range<Int> {
+            let previous = last[line]
             last[line] = index
+            if let time {
+                if previous == nil { arrived[line] = time }
+                if let start = arrived[line], time - start < Self.settle { return 0..<0 }
+            }
+            let direction: Direction = previous.map { index < $0 ? .backward : .forward } ?? .forward
             return PosterPrefetch.ahead(of: index, count: count, going: direction, along: along)
         }
 
         /// Forgets a row that scrolled away.
         public mutating func forget(_ line: String) {
             last[line] = nil
+            arrived[line] = nil
         }
+
+        /// True while `line` is remembered, for tests: only rows on screen are.
+        public func remembers(_ line: String) -> Bool { last[line] != nil }
     }
 }
