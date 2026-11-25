@@ -48,6 +48,37 @@ import Testing
         #expect(PosterPrefetch.start(count: 0, visible: 8).isEmpty)
     }
 
+    // Found on 2026-11-25 with the large library at 50 MB: walking six rows down and up, each row that came
+    // into view loaded the 3 posters past its first ones, which were never shown and pushed the posters about
+    // to show out of memory. More posters were still loading with each walk: 14, then 30, then 50 of about 120.
+    @Test("movies-and-series-browsing/browsing-stays-responsive a row coming into view loads nothing along it until it settles")
+    func rowComingIntoView() {
+        var trail = PosterPrefetch.Trail()
+        let start = ContinuousClock.now
+        for index in 0..<10 {
+            #expect(trail.shown(index, in: "drama", count: 100, at: start + .milliseconds(10 * index)).isEmpty)
+        }
+        #expect(trail.shown(10, in: "drama", count: 100, at: start + .seconds(1)) == 11..<14, "a scroll along the row loads ahead")
+        trail.forget("drama")
+        #expect(trail.shown(0, in: "drama", count: 100, at: start + .seconds(2)).isEmpty, "back in view, it settles again")
+        #expect(trail.remembers("drama"))
+        trail.forget("drama")
+        #expect(!trail.remembers("drama"), "a row that scrolled away is not remembered")
+    }
+
+    // Found on 2026-11-25 with the large library: each move between rows lands the Apple TV highlight a
+    // poster to the right, so after one walk six rows down and up it sat on the eighth poster. The rows it
+    // moved into scrolled sideways to posters nothing had loaded, and more were still loading with each
+    // walk: 14, then 30, then 50 of about 120.
+    @Test("movies-and-series-browsing/browsing-stays-responsive the rows by the highlight load the posters around its column")
+    func aroundTheHighlight() {
+        #expect(PosterPrefetch.around(nil, count: 100, visible: 8) == 0..<8, "no highlight, the row's start")
+        #expect(PosterPrefetch.around(2, count: 100, visible: 8) == 0..<8, "within the first screen")
+        #expect(PosterPrefetch.around(9, count: 100, visible: 8) == 5..<13)
+        #expect(PosterPrefetch.around(98, count: 100, visible: 8) == 92..<100, "never past the end")
+        #expect(PosterPrefetch.around(9, count: 5, visible: 8) == 0..<5, "a short row whole")
+    }
+
     @Test("movies-and-series-browsing/browsing-stays-responsive a row shows as many posters as fit its width")
     func visible() {
         #expect(PosterPrefetch.visible(width: 1_920, poster: 212, gap: 20, gutter: 80) == 8, "Apple TV, the eighth cut by the edge")

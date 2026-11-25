@@ -9,6 +9,7 @@
 - [x] 1.7 Let a card off screen drop its picture, so the cache holds the only decoded posters
 - [x] 1.8 Test that a card whose poster is in memory draws it without waiting for a load, and one whose poster is not shows the placeholder (`PosterLoadingTests`)
 - [x] 1.9 Record the benchmarks with and without the prefetch in design.md, at 50 MB
+- [x] 1.10 Find why each walk down and up finds more posters not ready: a debug probe for where posters go (`shelf.debug.posterTrace`); the rows by the highlight load around its column; a row coming into view loads nothing along it for 0.5 s; a finished load is no longer wanted
 
 ## 2. The expanded card
 

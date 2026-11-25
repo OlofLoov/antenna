@@ -139,6 +139,12 @@
                         ("posterMisses", PosterCache.misses.load(ordering: .relaxed)),
                         ("posterAsks", PosterCache.asks.load(ordering: .relaxed)),
                     ]
+                    let trace = PosterTrace.line
+                    Text(verbatim: trace)
+                        .font(.system(size: 8))
+                        .foregroundStyle(Palette.textMuted)
+                        .accessibilityIdentifier("shelf.debug.posterTrace")
+                        .accessibilityValue(trace)
                     ForEach(counts, id: \.0) { name, value in
                         let count = String(value)
                         Text(verbatim: count)

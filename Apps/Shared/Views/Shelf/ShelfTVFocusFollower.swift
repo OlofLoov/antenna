@@ -33,6 +33,7 @@
                 .onChange(of: focusedRow != nil, initial: true) { _, now in
                     if inRows != now { inRows = now }
                 }
+                .prefetchesAroundTheHighlight(row: focusedRow, title: focusedTitle)
                 // Nothing moves until the highlight has been in a row, so
                 // the banner's buttons take presses as soon as they show.
                 .task(id: focusedRow) {

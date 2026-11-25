@@ -232,6 +232,8 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 - **WHEN** a poster in a row shows
 - **THEN** the next three posters along that row in the direction it is scrolling start loading
 - **AND** when a row shows, the posters the next row in the direction of the scroll shows first start loading: the row under it on the way down, the row above on the way up
+- **AND** a row that has just come into view loads nothing along it until it has been in view for half a second
+- **AND** on Apple TV, while the highlight rests on a poster, the rows above and below it load the posters around its column, which they show once the highlight moves into them
 - **AND** they are decoded at the size of a card on screen, away from the screen, as the posters on screen are
 - **AND** this holds on iPhone, iPad, Mac and Apple TV
 

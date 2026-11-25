@@ -174,6 +174,7 @@ import UniformTypeIdentifiers
         for url in urls {
             #expect(await cache.inMemory(url, fitting: card), "decoded at the card's size before any card asks")
         }
+        #expect(await cache.wanted == 0, "a row wants nothing once its loads finish")
         let shown = try #require(await cache.poster(for: urls[0], fitting: card))
         #expect(shown.image.width < 600, "decoded for the card, not whole")
     }

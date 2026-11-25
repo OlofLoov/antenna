@@ -239,13 +239,23 @@ final class ShelfLargeTVUITests: XCTestCase {
             posterMisses: probe("shelf.debug.posterMisses"), posterAsks: probe("shelf.debug.posterAsks"))
     }
 
+    /// Where posters went between loading ahead and showing, as the
+    /// section's probe reads it.
+    var trace: String {
+        Thread.sleep(forTimeInterval: 0.7)
+        let probe = app.descendants(matching: .any).matching(identifier: "shelf.debug.posterTrace").firstMatch
+        return probe.exists ? (probe.value as? String ?? "") : "none"
+    }
+
     /// Runs `walk` `times` times and reports the frames each run missed.
     func measureGaps(_ label: String, times: Int = 3, walk: () -> Void) {
         var runs: [Gaps] = []
-        for _ in 0..<times {
+        for run in 0..<times {
             let before = gaps
+            print("TRACE \(label) \(run) before: \(trace) focus=\(focused)")
             walk()
             runs.append(gaps - before)
+            print("TRACE \(label) \(run) after: \(trace) focus=\(focused)")
         }
         let line = runs.map {
             "\($0.dropped) dropped, \($0.hitchMs) ms over \($0.frames) frames, \($0.posterMisses) of \($0.posterAsks) posters not ready"
