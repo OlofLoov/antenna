@@ -29,5 +29,8 @@ import Testing
         #expect(ShelfColumn.target(from: 9, landed: 1, count: 3) == 2)
         #expect(ShelfColumn.target(from: 9, landed: 2, count: 3) == nil)
         #expect(ShelfColumn.target(from: 0, landed: 0, count: 0) == nil, "an empty row")
+        #expect(ShelfColumn.landing(column: 9, count: 2) == 1)
+        #expect(ShelfColumn.landing(column: 7, count: 100) == 7)
+        #expect(ShelfColumn.landing(column: 0, count: 0) == nil)
     }
 }

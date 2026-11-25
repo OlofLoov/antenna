@@ -322,6 +322,7 @@ struct ReturnFocus: ViewModifier {
     let origin: TitleRoute.Origin
     @Environment(ShelfLibrary.self) private var library
     @FocusState private var focused: Bool
+    @Environment(\.shelfRowFocus) private var rowFocus
 
     /// How many times the poster asks for focus, 100 ms apart.
     static let attempts = 10
@@ -336,6 +337,7 @@ struct ReturnFocus: ViewModifier {
         #if os(tvOS)
             content
                 .focused($focused)
+                .modifier(InRowFocus(focus: rowFocus, id: title.id))
                 // Before the frame draws, so the poster the focus engine
                 // picked does not grow first (ShelfColumn).
                 .onChange(of: requestKey.flatMap { library.model(title.kind).focusRequests.value($0) }) { _, request in

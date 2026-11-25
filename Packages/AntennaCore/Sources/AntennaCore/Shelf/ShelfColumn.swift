@@ -18,6 +18,14 @@ public enum ShelfColumn {
         return target == landed ? nil : target
     }
 
+    /// The position in a row of `count` posters that a move up or down
+    /// lands on, with the highlight at `column` in the row it leaves. Nil
+    /// for an empty row.
+    public static func landing(column: Int, count: Int) -> Int? {
+        guard count > 0 else { return nil }
+        return min(max(0, column), count - 1)
+    }
+
     /// The row between `from` and `to` in `order`, the section's rows top
     /// to bottom, when a move went two rows at once. The focus engine does
     /// that when nothing in the row it passed sits under the highlight, as

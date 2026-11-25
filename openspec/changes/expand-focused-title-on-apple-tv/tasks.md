@@ -20,6 +20,8 @@
 - [x] 2.5 Move `ShelfPreviewTVUITests`, `ShelfRowsUpTVUITests` and `ShelfLargeTVUITests` to the card; add `testAFastSwipeExpandsEachPosterAndAsksOnlyTheLast`
 - [x] 2.6 Update the Apple TV walk-through step for the rows to anchor on the card
 - [x] 2.7 Keep the highlight's column on a move up or down (`ShelfColumn`, `ShelfModel.focusRequests`), with `testDownAndUpTheRowsKeepsTheColumn`
+- [x] 2.8 Steer a move between rows with each row's default focus, so it is one focus move, and keep the correction for the moves it misses
+- [x] 2.9 Read the benchmark's probes outside the measured walk; measure each part of the card against main and record it in design.md
 
 ## 3. Verify
 

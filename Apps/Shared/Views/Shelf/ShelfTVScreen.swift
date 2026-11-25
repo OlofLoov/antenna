@@ -25,6 +25,8 @@
         /// never redraws the screen.
         @State private var bannerShown = ShelfBannerShown()
         @State private var rowHeights = ShelfRowHeights()
+        /// The highlight's position in its row, which every row lands on.
+        @State private var column = ShelfColumnState()
         @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
 
         @Environment(ShelfPlayback.self) private var playback
@@ -95,7 +97,7 @@
                     .background {
                         ShelfTVFocusFollower(
                             model: model, proxy: proxy, position: $position, inRows: $inRows, follow: follow,
-                            bannerShown: bannerShown, rowHeights: rowHeights, reduceMotion: reduceMotion)
+                            bannerShown: bannerShown, rowHeights: rowHeights, column: column, reduceMotion: reduceMotion)
                     }
             }
         }
@@ -121,6 +123,7 @@
                 // Room for the last row to come up under the tab bar.
                 .padding(.bottom, Self.screenHeight - Self.rowTop - 200)
                 .environment(\.shelfRowHeights, rowHeights)
+                .environment(\.shelfColumn, column)
             }
             .scrollsToTopFromTabBar($position)
             // Swiping down from the tab bar lands on the banner's Play button

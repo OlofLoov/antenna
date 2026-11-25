@@ -450,6 +450,9 @@ final class Poster: @unchecked Sendable {
         /// many times, on the main actor.
         static let lookupMicros = Atomic<Int>(0)
         static let lookups = Atomic<Int>(0)
+        /// Moves between rows the focus engine landed off the column, so
+        /// the follower moved the highlight a second time.
+        static let corrections = Atomic<Int>(0)
 
         static func lookup(since start: ContinuousClock.Instant) {
             let elapsed = ContinuousClock.now - start
@@ -466,7 +469,7 @@ final class Poster: @unchecked Sendable {
                 ("evictUnshown", v(evictedUnshown)), ("euAlong", v(evictedUnshownAlong)), ("euRow", v(evictedUnshownRow)),
                 ("missCold", v(missCold)), ("missFlight", v(missInFlight)), ("rowTrig", v(rowTriggers)),
                 ("alongTrig", v(alongTriggers)), ("loading", v(loading)), ("groups", v(groups)), ("wanted", v(wanted)),
-                ("lookups", v(lookups)), ("lookupMicros", v(lookupMicros)),
+                ("lookups", v(lookups)), ("lookupMicros", v(lookupMicros)), ("corrections", v(corrections)),
             ]
             return (counts.map { $0.0 + "=" + String($0.1) } + ["row=" + focusedRow.withLock { $0 }]).joined(separator: " ")
         }
