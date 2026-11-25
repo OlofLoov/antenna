@@ -163,7 +163,6 @@
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
         @Environment(\.sourceRefresher) private var refresher
-        @Environment(ShelfActivity.self) private var activity
         @Environment(ShelfPlayback.self) private var playback
         @Query private var records: [SourceRecord]
         /// The last session's tab was opened once, at the first appearance.
@@ -373,8 +372,8 @@
     }
 
     extension CompactTabs {
-        /// A channel or programme plays in Live; a movie plays and a series
-        /// opens its page, as from the Movies tab
+        /// A channel or programme plays in Live; a movie or series opens its
+        /// page, as from the Movies tab
         /// (search/pick-a-channel-or-title-to-watch).
         private var picks: SearchPicks {
             SearchPicks(
@@ -382,12 +381,7 @@
                 programme: { hit, channel in
                     guard !hit.isOnNow, navigator.showLater(hit.programme, on: channel) else { return watch(channel) }
                 },
-                title: { title in
-                    switch title.kind {
-                    case .movie: playback.play(title, library: shelves, activity: activity)
-                    case .series: shelves.openPage(title, from: .search, in: title.kind)
-                    }
-                },
+                title: { shelves.openPage($0, from: .search, in: $0.kind) },
                 person: { shelves.openPerson($0, fromSearchIn: .movie) })
         }
 

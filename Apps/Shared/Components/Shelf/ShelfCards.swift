@@ -150,7 +150,8 @@ extension ShelfView {
         }
     }
 
-    /// The poster menu's More info item, which opens a movie's page
+    /// The More info item in the menu of a card that plays when selected,
+    /// which opens the movie's page
     /// (title-detail-and-episode-picker/open-a-movie-s-page).
     struct MoreInfoMenuItem: View {
         let open: () -> Void

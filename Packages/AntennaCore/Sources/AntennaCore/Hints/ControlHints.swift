@@ -127,13 +127,7 @@ public enum ControlHintScreen: Hashable, Sendable {
     /// Movies, series and their players, Up next and Settings.
     private func titleHints(_ words: Words) -> [ControlHint] {
         switch self {
-        case .titleRows(.movie):
-            [
-                ControlHint(.click, words("Play")),
-                ControlHint(.hold, words("More info and My list")),
-                ControlHint(.back, words("Tab bar")),
-            ]
-        case .titleRows(.series):
+        case .titleRows:
             [
                 ControlHint(.click, words("Open")),
                 ControlHint(.hold, words("My list")),

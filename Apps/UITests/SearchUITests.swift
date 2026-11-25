@@ -146,14 +146,17 @@ final class SearchUITests: XCTestCase {
     }
 
     // search/pick-a-channel-or-title-to-watch, a movie
-    func testPickingAMoviePlaysIt() throws {
+    // title-detail-and-episode-picker/open-a-movie-s-page, from a search result
+    func testPickingAMovieOpensItsPageOverSearch() throws {
         let app = try launch()
         search(app, "long harbor")
         let result = app.element("search.result.title.0")
         XCTAssertTrue(result.waitForExistence(timeout: 10))
         result.tap()
-        XCTAssertTrue(app.element("movies.player").waitForExistence(timeout: 5))
-        app.element("movies.player.close").tap()
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+        XCTAssertEqual(app.element("title.name").label, "The Long Harbor")
+        XCTAssertFalse(app.element("movies.player").exists, "nothing plays")
+        app.element("title.back").tap()
         XCTAssertTrue(app.element("search.result.title.0").waitForExistence(timeout: 5), "back at Search")
     }
 

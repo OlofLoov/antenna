@@ -66,7 +66,7 @@ extension ShellUITests {
         moveAlongTheBar(.right, to: "shell.tab.movies")
         press(.select)
         expectFocus("movies.hero.play")
-        expect(legend, "label CONTAINS 'Hold, More info and My list.'")
+        expect(legend, "label CONTAINS 'Click, Open.' AND label CONTAINS 'Hold, My list.'")
 
         press(.menu)
         expectFocus("shell.tab.movies")

@@ -66,18 +66,15 @@ final class TitleUITests: XCTestCase {
         XCTAssertTrue(app.element("movies.hero.info").isHittable)
     }
 
-    // title-detail-and-episode-picker/open-a-movie-s-page, from the poster's menu
+    // title-detail-and-episode-picker/open-a-movie-s-page, from the poster
     // title-detail-and-episode-picker/what-the-title-is-about, missing fields
-    func testThePosterMenuOpensAMovieWithFieldsMissing() throws {
+    func testThePosterOpensAMovieWithFieldsMissing() throws {
         let app = try launch()
         openSection(app, "movies")
         app.swipeUp()
         let poster = card(app, "movies", in: "action", "xtream#cabin#vod#3")
         XCTAssertTrue(poster.waitForExistence(timeout: 5))
-        poster.press(forDuration: 1.2)
-        let info = app.element("movies.menu.info")
-        XCTAssertTrue(info.waitForExistence(timeout: 5))
-        info.tap()
+        poster.tap()
 
         XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
         XCTAssertEqual(app.element("title.name").label, "Salt Road")
@@ -272,8 +269,7 @@ final class TitleUITests: XCTestCase {
         openSection(app, "movies")
         let poster = card(app, "movies", in: "recentlyAdded", "xtream#cabin#vod#2")
         XCTAssertTrue(poster.waitForExistence(timeout: 5))
-        poster.press(forDuration: 1.2)
-        app.element("movies.menu.info").tap()
+        poster.tap()
         let play = app.element("title.play")
         XCTAssertTrue(play.waitForExistence(timeout: 5))
         XCTAssertEqual(play.label, "Resume")

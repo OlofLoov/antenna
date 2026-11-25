@@ -8,8 +8,8 @@ struct TitleRoute: Equatable {
     enum Origin: Equatable {
         /// The banner's More info button.
         case banner
-        /// A poster, or the More info item in its menu, in the row or grid
-        /// named by its identifier part.
+        /// A poster or card, or the More info item in its menu, in the row
+        /// or grid named by its identifier part.
         case poster(row: String)
         /// A search result; the page shows over Search, not the section.
         case search

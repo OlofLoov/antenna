@@ -54,7 +54,7 @@ final class AppJourneys: XCTestCase {
         journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion", store])
         open("movies", label: "Movies", in: journey)
         journey.snap("movies", anchor: "movies.hero.title")
-        let poster = journey.element("movies.card.xtream#cabin#vod#2")
+        let poster = journey.element("movies.row.continueWatching").descendants(matching: .any)["movies.card.xtream#cabin#vod#2"].firstMatch
         if poster.waitForExistence(timeout: 10) { poster.tap() }
         journey.waitForPicture()
         journey.snap("player", anchor: "title.transport")
@@ -168,7 +168,7 @@ final class AppJourneys: XCTestCase {
     func testMoviePlayer() {
         let journey = Journey(self, arguments: ["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"])
         open("movies", label: "Movies", in: journey)
-        let poster = journey.element("movies.card.xtream#cabin#vod#2")
+        let poster = journey.element("movies.row.continueWatching").descendants(matching: .any)["movies.card.xtream#cabin#vod#2"].firstMatch
         if poster.waitForExistence(timeout: 10) { poster.tap() }
         journey.snap("movie-player-transport", anchor: "title.transport")
     }

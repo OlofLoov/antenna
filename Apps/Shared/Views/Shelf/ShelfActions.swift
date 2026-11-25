@@ -6,7 +6,8 @@ import SwiftUI
 /// screen that makes them again on a redraw does not redraw the rows and
 /// the banner that take them (movies-and-series-browsing/browsing-stays-responsive).
 struct ShelfActions: Equatable {
-    /// Plays the title, from the banner or from the poster in a row or grid.
+    /// Plays the title, from the banner, a Continue watching card or a movie
+    /// in Recently watched.
     var play: @MainActor (ShelfTitle, TitleRoute.Origin) -> Void
     /// Opens the title's page (title-detail-and-episode-picker).
     var open: @MainActor (ShelfTitle, TitleRoute.Origin) -> Void
@@ -35,13 +36,32 @@ struct ShelfActions: Equatable {
         lhs.source == rhs.source && lhs.kind == rhs.kind
     }
 
-    /// What selecting a poster in `row` does: a movie plays, a series
-    /// opens its page (title-detail-and-episode-picker/open-a-series-page).
+    /// The Recently watched row's identifier part.
+    static let recentlyWatched = "recentlyWatched"
+
+    /// Whether selecting `title`'s poster in `row` plays it: only a movie in
+    /// Recently watched does. Every other poster opens its page
+    /// (movies-and-series-browsing/a-poster-opens-its-page).
+    static func plays(_ title: ShelfTitle, in row: String) -> Bool {
+        title.kind == .movie && row == recentlyWatched
+    }
+
+    /// What selecting a poster in `row` does: a movie in Recently watched
+    /// plays, anything else opens its page
+    /// (movies-and-series-browsing/a-poster-opens-its-page,
+    /// title-detail-and-episode-picker/open-a-movie-s-page).
     @MainActor func select(_ title: ShelfTitle, in row: String) {
-        switch title.kind {
-        case .movie: play(title, .poster(row: row))
-        case .series: open(title, .poster(row: row))
+        if Self.plays(title, in: row) {
+            play(title, .poster(row: row))
+        } else {
+            open(title, .poster(row: row))
         }
+    }
+
+    /// What a Continue watching card does: plays straight away, a series
+    /// from its next episode (movies-and-series-browsing/a-poster-opens-its-page).
+    @MainActor func resume(_ title: ShelfTitle, in row: String) {
+        play(title, .poster(row: row))
     }
 
     /// What Trailer does on the title page and the banner, nil for no

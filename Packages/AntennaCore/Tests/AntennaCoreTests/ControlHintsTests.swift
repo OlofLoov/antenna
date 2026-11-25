@@ -39,10 +39,13 @@ import Testing
         #expect(ControlHintScreen.infoBar(swipe: .changesChannel).hints(.english).contains(ControlHint(.back, "Hide the info bar")))
     }
 
-    @Test("control-hints/each-screen-lists-its-own-actions a movie poster plays and a series poster opens")
+    @Test("control-hints/each-screen-lists-its-own-actions a movie or series poster opens its page")
     func titleRows() {
-        #expect(ControlHintScreen.titleRows(.movie).hints(.english).first == ControlHint(.click, "Play"))
-        #expect(ControlHintScreen.titleRows(.series).hints(.english).first == ControlHint(.click, "Open"))
+        for kind in [ShelfTitle.Kind.movie, .series] {
+            #expect(
+                ControlHintScreen.titleRows(kind).hints(.english)
+                    == [ControlHint(.click, "Open"), ControlHint(.hold, "My list"), ControlHint(.back, "Tab bar")])
+        }
         #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).contains(ControlHint(.hold, "Audio and subtitles")))
         #expect(ControlHintScreen.titlePlayer(scrubbing: false).hints(.english).first == ControlHint(.clickLeftRight, "Skip 10 seconds"))
         #expect(ControlHintScreen.titlePlayer(scrubbing: true).hints(.english).contains(ControlHint(.back, "Cancel")))
