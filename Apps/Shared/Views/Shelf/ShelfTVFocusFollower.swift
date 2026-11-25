@@ -22,8 +22,12 @@
         let reduceMotion: Bool
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfPlayback.self) private var playback
+        @Environment(ShelfActivity.self) private var activity
         @FocusedValue(\.shelfFocusedRow) private var focusedRow
         @FocusedValue(\.shelfFocusedTitle) private var focusedTitle
+        /// Counts the moves back to the highlight's column. The focus
+        /// engine scrolls again for each, so the row is placed again.
+        @State private var corrections = 0
 
         var body: some View {
             let browsing = browsing
@@ -33,10 +37,11 @@
                 .onChange(of: focusedRow != nil, initial: true) { _, now in
                     if inRows != now { inRows = now }
                 }
+                .onChange(of: focusedTitle?.id) { keepColumn() }
                 .prefetchesAroundTheHighlight(row: focusedRow, title: focusedTitle)
                 // Nothing moves until the highlight has been in a row, so
                 // the banner's buttons take presses as soon as they show.
-                .task(id: focusedRow) {
+                .task(id: PlaceKey(row: focusedRow, corrections: corrections)) {
                     guard focusedRow != nil || follow.placedRow != nil else { return }
                     let wait = ShelfRowPlacement.wait(
                         top: focusedRow.flatMap { rowHeights.tops[$0] }, height: focusedRow.flatMap { rowHeights.heights[$0] })
@@ -61,6 +66,11 @@
         /// True while the highlight is in a row and no page covers the rows.
         private var browsing: Bool {
             focusedRow != nil && library.top == nil
+        }
+
+        private struct PlaceKey: Hashable {
+            var row: String?
+            var corrections: Int
         }
 
         private struct RestKey: Hashable {
@@ -93,6 +103,72 @@
             }
             guard follow.schedule.check(at: .now) != nil else { return }
             show(title)
+        }
+
+        /// Keeps the highlight's column on a move up or down between rows
+        /// of posters: the focus engine lands it a poster to the right,
+        /// and this moves it back before the frame draws (`ShelfColumn`).
+        private func keepColumn() {
+            // A press that came before the last correction took effect wins.
+            if let pending = follow.pending {
+                model.focusRequests.set(nil, for: pending)
+                follow.pending = nil
+            }
+            guard let row = focusedRow, let title = focusedTitle else {
+                follow.spot = nil
+                return
+            }
+            #if DEBUG
+                let start = ContinuousClock.now
+                defer { PosterTrace.lookup(since: start) }
+            #endif
+            let moved = follow.spot.flatMap { $0.row == row || follow.restoring ? nil : $0 }
+            let passed = moved.flatMap { ShelfColumn.skipped(rowOrder(from: $0.row, to: row), from: $0.row, to: row) }
+            if let moved, let between = passed.flatMap(titles(in:)), let passed, !between.isEmpty {
+                request(row: passed, index: min(moved.index, between.count - 1), in: between)
+                return
+            }
+            guard let titles = titles(in: row), let index = titles.firstIndex(where: { $0.id == title.id }) else {
+                follow.spot = nil
+                return
+            }
+            if let moved, let target = ShelfColumn.target(from: moved.index, landed: index, count: titles.count) {
+                request(row: row, index: target, in: titles)
+                return
+            }
+            follow.spot = ShelfPreviewFollow.Spot(row: row, index: index)
+        }
+
+        /// Asks the poster at `index` of `row` to take the highlight.
+        private func request(row: String, index: Int, in titles: [ShelfTitle]) {
+            follow.spot = ShelfPreviewFollow.Spot(row: row, index: index)
+            follow.requests += 1
+            let key = "\(row)|\(titles[index].id)"
+            follow.pending = key
+            model.focusRequests.set(follow.requests, for: key)
+            corrections += 1
+        }
+
+        /// The section's rows top to bottom, as far as a move between
+        /// `from` and `to` needs: Continue watching only when it is one of
+        /// them, since it is the first row.
+        private func rowOrder(from: String, to: String) -> [String] {
+            var order: [String] = []
+            if from == "continueWatching" || to == "continueWatching" { order.append("continueWatching") }
+            if !activity.myList(model).isEmpty { order.append("myList") }
+            if !activity.recentlyWatched(model).isEmpty { order.append("recentlyWatched") }
+            return order + model.rows.map(\.identifier)
+        }
+
+        /// The posters of a row, in order; nil for Continue watching, whose
+        /// cards are wider than posters, so the column does not carry over.
+        private func titles(in row: String) -> [ShelfTitle]? {
+            switch row {
+            case "continueWatching": nil
+            case "myList": activity.myList(model)
+            case "recentlyWatched": activity.recentlyWatched(model)
+            default: model.rows.first { $0.identifier == row }?.titles
+            }
         }
 
         private func show(_ title: ShelfTitle) {
@@ -156,5 +232,15 @@
         var placedRow: String?
         /// True from a page's close until its poster has focus again.
         var restoring = false
+        /// Where the highlight is: its row and position there.
+        struct Spot {
+            var row: String
+            var index: Int
+        }
+        var spot: Spot?
+        /// Counts the focus requests, so asking a poster twice asks again.
+        var requests = 0
+        /// The request not yet taken, cleared by the next focus change.
+        var pending: String?
     }
 #endif

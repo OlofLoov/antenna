@@ -187,6 +187,53 @@ What that means:
   away stops the loads it asked for that no card waits for and no other row
   wants.
 
+### 6. The highlight keeps its column between rows
+
+Measuring found that each move up or down landed the highlight a poster
+to the right: the focus engine picks the poster under the middle of the
+expanded card, which is 566 pt wide where a poster is 212. A walk six rows
+down and back up from the first poster of Recently added ended on the
+eighth. The owner called it a bug on 2026-11-25: the Apple TV app and
+Netflix keep the column.
+
+Options:
+- **Leave the focus engine's choice.** The drift above. Rejected.
+- **The poster at the same screen x as the resting poster the highlight
+  left.** Needs each row's sideways scroll offset, read from every row's
+  geometry; a geometry reader on every row cost about 40 dropped frames
+  per walk down and up (decision 5, "At 50 MB"). Rejected.
+- **The poster at the same position in the row.** Chosen. On the boards
+  every row starts at x 80 and only scrolls sideways once the highlight
+  walks along it, so for rows the highlight has not walked along this is
+  the same screen x. A row shorter than the position lands on its last
+  poster. Continue watching's cards are wider than posters, so a move into
+  or out of it keeps the focus engine's choice.
+
+How: `ShelfTVFocusFollower` remembers the row and position the highlight
+is on. When it lands in another row on a different position than the one
+it left, `ShelfColumn.target` names the position, and the follower asks
+that poster to take focus through `ShelfModel.focusRequests`, a
+`KeyedValues` keyed by row and title, so only that poster redraws. The
+poster takes focus in an `onChange`, before the frame draws, so the poster
+the focus engine picked does not grow first. Each correction places the
+row again, since the focus engine scrolls for it too; without that, a row
+was left 39 pt above its place in `ShelfRowsUpTVUITests`.
+
+A second press before the correction lands moves from the poster the
+focus engine picked. Over a short row, such as a My list of two posters,
+nothing sits under that poster, and the focus engine passes the row:
+`ShelfRowsUpTVUITests` saw two quick presses up from Recently added land in
+Continue watching. That was its flake, "myList does not hold the
+highlight". `ShelfColumn.skipped` finds the row passed over and the
+highlight lands in it, and a correction not yet taken is dropped when the
+next press lands. The class then passed 6 runs in a row.
+
+Finding the position in a row and the rows' order takes 16 to 40 µs per
+move on the simulator, measured with the debug probe (770 to 1 900 µs over
+48 moves on the walk down and up), so it costs no frames. The rows by the
+highlight now load the posters around its column instead of the one to its
+right.
+
 ## Measuring
 
 As in `keep-apple-tv-browsing-smooth`: the `large` shelf script, 9 000
@@ -268,11 +315,13 @@ So the asks are lower and compare only within each build.
 | | 50 MB, prefetch | 72 (1190) / 468, 78 (1249) / 493, 73 (1211) / 496 | 0 of 13, 0 of 13, 0 of 13 |
 | | 50 MB, prefetch, backdrops apart | 76 (1267) / 463, 74 (1232) / 498, 83 (1330) / 459 | 0 of 13, 0 of 12, 0 of 13 |
 | | 50 MB, around the highlight | 81 (1290) / 519, 82 (1323) / 519, 78 (1271) / 519 | 0 of 13, 0 of 12, 0 of 12 |
+| | 50 MB, column kept | 80 (1290) / 550, 79 (1287) / 521, 86 (1320) / 518 | 0 of 10, 0 of 13, 0 of 12 |
 | Down and up the rows | `973cdeb7`, 400 MB | 88 (1456) / 662, 78 (1283) / 671, 88 (1383) / 665 | 1 of 182, 1 of 156, 1 of 158 |
 | | 50 MB, no prefetch | 82 (1374) / 667, 92 (1505) / 660, 88 (1437) / 663 | 85 of 112, 99 of 126, 104 of 127 |
 | | 50 MB, prefetch | 78 (1288) / 671, 80 (1291) / 668, 92 (1502) / 656 | 14 of 112, 30 of 126, 50 of 127 |
 | | 50 MB, prefetch, backdrops apart | 91 (1430) / 662, 86 (1366) / 667, 87 (1384) / 661 | 14 of 112, 29 of 126, 50 of 127 |
 | | 50 MB, around the highlight | 94 (1548) / 687, 92 (1539) / 718, 98 (1572) / 684 | 6 of 112, 15 of 126, 36 of 127 |
+| | 50 MB, column kept | 106 (1730) / 674, 93 (1523) / 686, 95 (1575) / 686 | 2 of 104, 1 of 120, 1 of 120 |
 | Standing still | 50 MB, prefetch | 11 (195) / 591, 10 (175) / 589, 9 (206) / 591 | |
 
 What this shows:
@@ -342,13 +391,21 @@ What changed:
   next row around the column instead of at its start, without the rows by
   the highlight, made it worse (21, 59 and 65): the rows still show their
   start as they come into view.
-- Each walk still finds more than the one before, since the highlight
-  still moves right: cards that found no load at all were 9, 18 and 39. Keeping the highlight in its column on a move between
-  rows, as Netflix does, would stop that; it is a change to how the card
-  moves, left for the owner (Open after this change).
-- Dropped frames on the walk down and up are 92 to 98, against 78 to 92
-  before this change. It may be the lookup of the highlight's position in
-  its row on each move, or noise; not measured apart.
+- Each walk still found more than the one before, since the highlight
+  still moved right: cards that found no load at all were 9, 18 and 39.
+  Decision 6 keeps the column, and "column kept" in the table found 2, 1
+  and 1 not ready. At 0.4 s between presses the highlight still slips a
+  poster now and then: the three walks ended on the first, second and
+  third poster of Recently added, against the eighth, ninth and tenth
+  before. `testDownAndUpTheRowsKeepsTheColumn` walks at 0.6 s and comes
+  back to the first poster in each of 10 runs.
+- Dropped frames on the walk down and up went from 78 to 92 (before the
+  rows by the highlight loaded ahead) to 92 to 98, and to 93 to 106 with
+  the column kept (103 to 105 in a first run). Finding the highlight's
+  position is not the cause: 16 to 40 µs a move. With the column kept,
+  each move between rows is two focus changes, the focus engine's and the
+  correction, each starting the rest timer and the loads around the
+  highlight again. Not measured apart.
 - A geometry reader on every row, to count the posters a row shows, cost
   about 40 dropped frames per walk down and up (about 127 against 88). The
   count now comes from the window's width, read once.
@@ -382,9 +439,6 @@ What changed:
 
 ## Open after this change
 
-- A move up or down from the expanded card lands the highlight a poster to
-  the right, so a walk down and back up ends further along each row. Keep
-  the column on a move between rows?
 - `title-detail-and-episode-picker/back-to-where-you-were` says "with that
   poster focused and its preview showing". `posters-open-the-title-page`
   modifies the same requirement; whichever change archives second says

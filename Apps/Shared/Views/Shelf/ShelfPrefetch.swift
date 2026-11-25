@@ -46,8 +46,8 @@ extension EnvironmentValues {
 /// and when a row shows, the posters the next row in the direction of the
 /// scroll shows first: the row under it on the way down, the row above on
 /// the way up. On Apple TV, the rows above and below the highlight also
-/// load the posters they will show once it moves into them, which are
-/// around its column rather than at their start. Continue watching, My list and Recently watched are short
+/// load the posters around its column, which they show once it moves into
+/// them. Continue watching, My list and Recently watched are short
 /// and load as they show; under them the first category row loads ahead. Once a row
 /// scrolls away, what it asked for that no card waits for stops loading.
 /// Every poster decodes at its card's size on screen, the frame the card
@@ -152,12 +152,12 @@ private struct PrefetchNextRow: ViewModifier {
     }
 }
 
-/// A move up or down lands the highlight a poster or two to the right of
-/// its column, and the row it lands in scrolls sideways to show it. The
-/// rows above and below the highlight load the posters around that column
-/// while it rests, since their start, which loaded as they came into view,
-/// is not what they will show. A new position stops what the last one
-/// asked for that no card waits for.
+/// A move up or down keeps the highlight's column, and the row it lands in
+/// scrolls sideways to show it once the highlight has moved along a row.
+/// The rows above and below the highlight load the posters around that
+/// column while it rests, since their start, which loaded as they came
+/// into view, is not what they will show then. A new position stops what
+/// the last one asked for that no card waits for.
 private struct PrefetchAroundHighlight: ViewModifier {
     let row: String?
     let title: ShelfTitle?
@@ -175,16 +175,22 @@ private struct PrefetchAroundHighlight: ViewModifier {
             await prefetcher.stop(group)
             guard let row, let title, width > 0, let fit = RowPosterFit(metrics: metrics, scale: scale).fit else { return }
             let rows = library.model(title.kind).rows
+            #if DEBUG
+                let start = ContinuousClock.now
+            #endif
             guard let position = rows.firstIndex(where: { $0.identifier == row }),
                 let column = rows[position].titles.firstIndex(where: { $0.id == title.id })
             else { return }
+            #if DEBUG
+                PosterTrace.lookup(since: start)
+            #endif
             #if DEBUG
                 PosterTrace.focusedRow.withLock { $0 = "\(row)#\(column)" }
             #endif
             let visible = PosterPrefetch.visible(width: width, poster: metrics.poster.width, gap: metrics.gap, gutter: metrics.gutter)
             let urls = [position - 1, position + 1].filter { rows.indices.contains($0) }.flatMap { neighbor in
                 let titles = rows[neighbor].titles
-                return PosterPrefetch.around(column + 1, count: titles.count, visible: visible).compactMap { titles[$0].posterURL }
+                return PosterPrefetch.around(column, count: titles.count, visible: visible).compactMap { titles[$0].posterURL }
             }
             await prefetcher.prefetch(urls, fit, group)
         }

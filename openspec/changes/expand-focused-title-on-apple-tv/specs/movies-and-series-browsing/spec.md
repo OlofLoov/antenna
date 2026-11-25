@@ -73,6 +73,12 @@ On Apple TV the poster with the highlight in a row of Movies or Series SHALL gro
 #### Scenario: Moving to another row
 - **WHEN** the viewer moves down from one row to the next
 - **THEN** the card in the row they left shrinks back to a poster, the new row comes up to rest under the tab bar, and the poster they land on grows into a card
+- **AND** that poster is at the same position in its row as the one they left, or the row's last poster when the row is shorter
+
+#### Scenario: Down the rows and back up
+- **GIVEN** the highlight is on the first poster of Recently added
+- **WHEN** the viewer moves down six rows and back up six
+- **THEN** the highlight is on the first poster of Recently added again
 
 #### Scenario: Moving up to the row above
 - **GIVEN** the highlight is in a row below the first

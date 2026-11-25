@@ -446,6 +446,17 @@ final class Poster: @unchecked Sendable {
         static let wanted = Atomic<Int>(0)
         /// The row the Apple TV highlight is in and its position there.
         static let focusedRow = Mutex("")
+        /// Time spent finding the highlight's position in its row, and how
+        /// many times, on the main actor.
+        static let lookupMicros = Atomic<Int>(0)
+        static let lookups = Atomic<Int>(0)
+
+        static func lookup(since start: ContinuousClock.Instant) {
+            let elapsed = ContinuousClock.now - start
+            let micros = elapsed.components.seconds * 1_000_000 + elapsed.components.attoseconds / 1_000_000_000_000
+            lookupMicros.add(Int(micros), ordering: .relaxed)
+            lookups.add(1, ordering: .relaxed)
+        }
 
         static var line: String {
             func v(_ counter: borrowing Atomic<Int>) -> Int { counter.load(ordering: .relaxed) }
@@ -455,6 +466,7 @@ final class Poster: @unchecked Sendable {
                 ("evictUnshown", v(evictedUnshown)), ("euAlong", v(evictedUnshownAlong)), ("euRow", v(evictedUnshownRow)),
                 ("missCold", v(missCold)), ("missFlight", v(missInFlight)), ("rowTrig", v(rowTriggers)),
                 ("alongTrig", v(alongTriggers)), ("loading", v(loading)), ("groups", v(groups)), ("wanted", v(wanted)),
+                ("lookups", v(lookups)), ("lookupMicros", v(lookupMicros)),
             ]
             return (counts.map { $0.0 + "=" + String($0.1) } + ["row=" + focusedRow.withLock { $0 }]).joined(separator: " ")
         }

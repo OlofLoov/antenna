@@ -326,10 +326,23 @@ struct ReturnFocus: ViewModifier {
     /// How many times the poster asks for focus, 100 ms apart.
     static let attempts = 10
 
+    /// The key `ShelfModel.focusRequests` asks this poster by.
+    private var requestKey: String? {
+        guard case .poster(let row) = origin else { return nil }
+        return "\(row)|\(title.id)"
+    }
+
     func body(content: Content) -> some View {
         #if os(tvOS)
             content
                 .focused($focused)
+                // Before the frame draws, so the poster the focus engine
+                // picked does not grow first (ShelfColumn).
+                .onChange(of: requestKey.flatMap { library.model(title.kind).focusRequests.value($0) }) { _, request in
+                    guard request != nil, let requestKey else { return }
+                    focused = true
+                    library.model(title.kind).focusRequests.set(nil, for: requestKey)
+                }
                 .task(id: library.returning?.title) {
                     guard let back = library.returning, back.title == title, back.origin == origin else { return }
                     // As the page closes the focus engine puts the highlight

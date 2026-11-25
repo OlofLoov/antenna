@@ -37,6 +37,9 @@ final class ShelfModel {
     /// Details by title id for the Apple TV expanded card, where each card
     /// redraws only for its own answer.
     @ObservationIgnored let cardDetails = KeyedValues<String, ShelfDetails>()
+    /// Asks the poster keyed `row|titleID` to take the Apple TV highlight,
+    /// so a move between rows keeps its column; only that poster redraws.
+    @ObservationIgnored let focusRequests = KeyedValues<String, Int>()
     /// Titles whose info call has answered or failed.
     private(set) var answered: Set<String> = []
     /// True when the current profile shows adult content. Unless it is set
