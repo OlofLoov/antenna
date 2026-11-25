@@ -75,11 +75,15 @@ unchanged.
 | 1.6 s | | the static goes, the picture opens from a line in 0.16 s, the left tip's ring starts |
 | 1.9 s | | the right tip's ring starts |
 | 2.1 to 3.2 s | the triangle becomes the eye, blinks, comes back | channel number 1 in the corner |
-| 1.6 + 4 s, then every 4 s | | zap to the next channel |
+| 5.8 s or a little later, then every 4 s | | zap to the next channel |
 
 The rings are Tuning's (`mk-ring`, 1.2 s, ease-out, scale 1 to 2.6, opacity
 0.7 to 0), played once per tip instead of looping, 0.3 s apart instead of
 0.6 s so both are on screen while the picture comes in.
+
+The script counts from when it starts, which is after the first paint: it
+drops the tune-in at 1.8 s and zaps 4 s after that, so the first zap comes
+at 5.8 s at the earliest.
 
 A zap lasts 0.36 s. The picture on screen is replaced at once by the next
 one, which opens from a line over 0.18 s after a 0.12 s delay, while the
@@ -95,9 +99,10 @@ Options considered:
 
 ### 2. CSS for the tune-in, script for the zapping
 
-`HeroTuneIn.svelte` (new, in `src/lib/components/`) holds the wordmark, the
-stage and the pause button. Hello, the static and the snap are CSS
-animations in its `<style>`, keyed to classes in the prerendered markup, so
+Two new components in `src/lib/components/`: `TuneInWordmark.svelte` (the
+wordmark above the h1, Hello and the rings) and `TuneInStage.svelte` (the
+TV, iPad, iPhone and the pause button, in the hero's second column). Hello,
+the static and the snap are CSS animations in their `<style>`, keyed to classes in the prerendered markup, so
 they start with the first paint and need no script. The script does what
 CSS cannot: the zapping, the pointer and scroll drift, the pause button,
 loading the next channel and stopping all of that off screen.
@@ -155,9 +160,10 @@ the markup. Each zap starts loading the channel after it. A channel whose
 pictures are not ready is skipped until they are. With Reduce Motion or
 scripts off, nothing else loads.
 
-The budget stays as it is. The first image is the same file, and the extra
-HTML is the hero's SVG and markup, about 6 KB. Measured numbers are in the
-implementation PR and in tasks.md.
+The budget stays as it is. The first image is the same file. Measured with
+`npm run build`: the home page goes from 199,950 to 221,687 bytes with its
+scripts, styles and first image (budget 512,000; the HTML grows by 4.5 KB),
+and its compressed script from 45.3 KB to 48.5 KB (budget 60 KB).
 
 ### 5. Screenshots
 
@@ -193,8 +199,8 @@ width:
   the 600:1303 screen.
 
 At 720 px and below the hero stacks: text, then the stage at full width,
-100 by 100, with the TV 100 % wide at the top, the iPad 38 % wide from 8 %
-on the left and the iPhone 19 % wide 10 % from the right, both on the
+100 by 95, with the TV 100 % wide at the top, the iPad 38 % wide from 8 %
+on the left and the iPhone 21 % wide 10 % from the right, both on the
 bottom, overlapping the TV's lower edge. Everything is in percent of the
 stage, so nothing overflows sideways.
 
@@ -202,9 +208,10 @@ The pause button sits under the stage on the right, small, in the muted
 text color. It is in the markup with `hidden` and the script shows it when
 the zapping can run, so a page without script has no dead button.
 
-The glow is a `radial-gradient` on the hero: an ellipse centered behind the
-TV from `#1A2A44` to `--bg`, ending inside the hero so it has no edge. In
-light mode it runs from `#E3EBF6` to `--bg`. The TV, iPad and iPhone frames
+The glow is a `radial-gradient(closest-side ...)` on a layer behind the
+hero that reaches into the page's gutters, centered behind the TV, from
+`--glow` (`#1A2A44`) to `--bg`. It reaches the ground at its closest sides,
+so it has no edge. In light mode `--glow` is `#E3EBF6`. The TV, iPad and iPhone frames
 stay dark in both modes.
 
 ### 7. Accessibility
