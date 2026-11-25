@@ -3,9 +3,14 @@ import Foundation
 extension CodecName {
     /// How a codec name an engine reports reads on screen. "h264" and "avc1"
     /// read "H.264", "hevc", "hvc1" and "hev1" read "HEVC", and so on. A
-    /// codec with no entry is upper-cased.
+    /// codec with no entry is upper-cased. A profile after the codec stays
+    /// as it is: "hevc 4:2:2 10-bit" reads "HEVC 4:2:2 10-bit".
     public static func display(_ codec: String) -> String {
-        switch codec.lowercased() {
+        let parts = codec.split(separator: " ", maxSplits: 1)
+        if parts.count == 2, ["hevc", "h264"].contains(parts[0].lowercased()) {
+            return display(String(parts[0])) + " " + parts[1]
+        }
+        return switch codec.lowercased() {
         case "h264", "avc1", "avc3": "H.264"
         case "hevc", "hvc1", "hev1", "h265": "HEVC"
         case "mpeg2video", "mp2v": "MPEG-2"

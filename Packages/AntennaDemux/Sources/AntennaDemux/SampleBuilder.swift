@@ -30,6 +30,9 @@ public final class SampleBuilder {
         case mp3
         case hevcAnnexB
         case hevcHVCC
+        /// HEVC with 4-byte lengths whose configuration record lists no
+        /// parameter sets: they arrive in the samples, as `hev1` allows.
+        case hevcInBand
         case dolby
         case opus
         case flac
@@ -81,8 +84,7 @@ public final class SampleBuilder {
         case "aac":
             codec = .aacADTS
         case "hevc" where stream.extradata.first == 1:
-            codec = .hevcHVCC
-            formatDescription = try Self.hevcFormat(parameterSets: Self.hevcParameterSets(hvcC: stream.extradata))
+            (codec, formatDescription) = try Self.hevcCodec(hvcC: stream.extradata)
         case "hevc":
             codec = .hevcAnnexB
         case "ac3", "eac3":
@@ -148,12 +150,8 @@ public final class SampleBuilder {
             return try annexB(packet, parameterSets: [7, 8], dropped: [7, 8, 9], type: Self.h264Type) {
                 try Self.h264Format(sps: $0[0], pps: $0[1])
             }
-        case .hevcAnnexB:
-            return try annexB(
-                packet, parameterSets: [32, 33, 34], dropped: [32, 33, 34, 35], type: Self.hevcType, keep: Self.isHEVCBaseLayer
-            ) {
-                try Self.hevcFormat(parameterSets: $0)
-            }
+        case .hevcAnnexB, .hevcInBand:
+            return try hevc(packet)
         case .h264AVCC, .hevcHVCC, .compressedVideo:
             return try formatDescription.map { try Self.videoBuffer(lengthPrefixedSample(packet), format: $0, packet: packet) }
         case .mpeg4Video:
@@ -227,15 +225,45 @@ public final class SampleBuilder {
         }
     }
 
-    /// A video buffer from Annex B bytes: the format is taken from the
-    /// parameter sets when a packet carries all of them, and the units of
-    /// the `dropped` types, and those `keep` turns down, are left out of
-    /// the sample.
+    /// The HEVC mode for an hvcC record: its parameter sets make the
+    /// format, or, when it lists none, they come in the samples.
+    private static func hevcCodec(hvcC: Data) throws -> (Codec, CMFormatDescription?) {
+        guard let sets = try? hevcParameterSets(hvcC: hvcC) else { return (.hevcInBand, nil) }
+        return (.hevcHVCC, try hevcFormat(parameterSets: sets))
+    }
+
+    /// An HEVC buffer from a packet's units, base layer only, with the
+    /// parameter sets taken from the packet.
+    private func hevc(_ packet: DemuxedPacket) throws -> CMSampleBuffer? {
+        let units: [Data]
+        if case .hevcInBand = codec {
+            units = Self.nalUnits(lengthPrefixed: packet.data)
+        } else {
+            units = Self.nalUnits(annexB: packet.data)
+        }
+        return try inBand(
+            units.filter(Self.isHEVCBaseLayer), packet, parameterSets: [32, 33, 34], dropped: [32, 33, 34, 35], type: Self.hevcType
+        ) {
+            try Self.hevcFormat(parameterSets: $0)
+        }
+    }
+
+    /// A video buffer from Annex B bytes.
     private func annexB(
         _ packet: DemuxedPacket, parameterSets: [Int], dropped: Set<Int>, type: (Data) -> Int?,
-        keep: (Data) -> Bool = { _ in true }, format makeFormat: ([Data]) throws -> CMFormatDescription
+        format makeFormat: ([Data]) throws -> CMFormatDescription
     ) throws -> CMSampleBuffer? {
-        let units = Self.nalUnits(annexB: packet.data).filter(keep)
+        try inBand(
+            Self.nalUnits(annexB: packet.data), packet, parameterSets: parameterSets, dropped: dropped, type: type, format: makeFormat)
+    }
+
+    /// A video buffer from a packet's units: the format is taken from the
+    /// parameter sets when the packet carries all of them, and the units
+    /// of the `dropped` types are left out of the sample.
+    private func inBand(
+        _ units: [Data], _ packet: DemuxedPacket, parameterSets: [Int], dropped: Set<Int>, type: (Data) -> Int?,
+        format makeFormat: ([Data]) throws -> CMFormatDescription
+    ) throws -> CMSampleBuffer? {
         let sets = parameterSets.compactMap { wanted in units.last { type($0) == wanted } }
         if sets.count == parameterSets.count, sets != videoParameterSets || formatDescription == nil {
             formatDescription = try makeFormat(sets)

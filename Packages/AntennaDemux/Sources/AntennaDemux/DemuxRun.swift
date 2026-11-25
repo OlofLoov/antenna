@@ -196,14 +196,14 @@ final class DemuxRun: @unchecked Sendable {
         let announced = pump(&prepared, &state, ready: ready)
         guard !isCancelled else { return }
         if announced {
-            let failure = bytes.failureReason
+            let failure = state.undecodable ?? bytes.failureReason
             ended(failure)
             // The last seconds of a film still play from the feeds. A sound
             // switch or an audio output change in them is served from the
             // ring until the engine lets the run go.
             if failure == nil { serveSoundRequests(prepared, &state) }
         } else {
-            ready(.failure(bytes.failureReason ?? PlaybackFailure.unreadable))
+            ready(.failure(state.undecodable ?? bytes.failureReason ?? PlaybackFailure.unreadable))
         }
     }
 
@@ -226,9 +226,10 @@ final class DemuxRun: @unchecked Sendable {
             return .failure(bytes.failureReason ?? PlaybackFailure.unreadable)
         }
         let video = demuxer.streams.first { $0.kind == .video }
-        guard let videoBuilder = Result(catching: { try video.map(SampleBuilder.init) }).success else {
+        let built = Result(catching: { try video.map(SampleBuilder.init) })
+        guard let videoBuilder = built.success else {
             demuxer.close()
-            return .failure(Self.undecodable(video: video?.codec ?? "video", format: demuxer.format))
+            return .failure(Self.undecodable(video: video?.codec ?? "video", format: demuxer.format, error: built.failure))
         }
         let tracks = DemuxStart.tracks(of: demuxer.streams)
         var sounds: [Int: SampleBuilder] = [:]
@@ -471,6 +472,12 @@ extension Result {
     /// The success value, nil for a failure.
     fileprivate var success: Success? {
         if case .success(let value) = self { return value }
+        return nil
+    }
+
+    /// The error of a failure, nil for a success.
+    fileprivate var failure: Failure? {
+        if case .failure(let error) = self { return error }
         return nil
     }
 }

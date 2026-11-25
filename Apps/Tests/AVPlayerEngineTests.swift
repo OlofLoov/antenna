@@ -1,4 +1,5 @@
 import AntennaCore
+import AntennaDemux
 import AntennaTestSupport
 import Foundation
 import Testing
@@ -50,6 +51,25 @@ import Testing
         await #expect(throws: EngineHandoff.toDemuxer) { try await harness.engine.load(harness.url("hev1.mp4")) }
         #expect(harness.engine.state == .idle)
         await harness.stop()
+    }
+
+    @Test(
+        "playback-engine/hevc-plays-wherever-the-device-decodes-it HEVC 4:2:2 and hev1 with in-band parameter sets go to the demuxer",
+        .progressiveHTTP, arguments: ["hevc-422.mp4", "hev1-in-band.mp4"])
+    func hevcApplesPlayerSkipsHandsOver(file: String) async throws {
+        let harness = try await PlayerHarness()
+        await #expect(throws: EngineHandoff.toDemuxer) { try await harness.engine.load(harness.url(file)) }
+        #expect(harness.engine.state == .idle)
+        await harness.stop()
+    }
+
+    @Test("playback-engine/hevc-plays-wherever-the-device-decodes-it a file with no decoder on Apple's player tries the demuxer")
+    func decoderNotFoundHandsOver() {
+        #expect(AVPlayerEngine.handsOver(.cannotDecode(codec: "hevc")))
+        #expect(AVPlayerEngine.handsOver(.cannotDecode(codec: "dolby vision")))
+        #expect(!AVPlayerEngine.handsOver(.notFound))
+        #expect(!AVPlayerEngine.handsOver(.unreadable))
+        #expect(AVPlayerEngine.handsOver(.cannotDecode(codec: "av1")) == DemuxEngine.decodesInHardware(codec: "av1"))
     }
 
     @Test("playback-engine/every-common-stream-type-plays raw MPEG-TS at an HLS address goes to the demuxer")
