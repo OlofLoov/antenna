@@ -154,7 +154,7 @@ enum ShelfExpandedCard {
                         shown = Shown(url: poster, image: image)
                     }
                     guard let backdrop, backdrop != shown?.url,
-                        let fit = PosterFit(width: ShelfExpandedCard.width, height: metrics.poster.height, scale: scale, headroom: 1)
+                        let fit = PosterFit(width: ShelfExpandedCard.width, height: metrics.poster.height, scale: scale)
                     else { return }
                     let image = await loader.load(backdrop, fit)?.image
                     guard !Task.isCancelled, image != nil else { return }

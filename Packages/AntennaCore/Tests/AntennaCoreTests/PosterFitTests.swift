@@ -6,19 +6,19 @@ import Testing
 /// Posters decode at the size of the frame that shows them, never larger
 /// than they are, and always large enough to cover the frame.
 @Suite struct PosterFitTests {
-    @Test("movies-and-series-browsing/browsing-stays-responsive a frame is its pixels with room for the focus lift, rounded up")
+    @Test("movies-and-series-browsing/browsing-stays-responsive a frame is its resting size in pixels, rounded up")
     func frame() throws {
         let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
-        #expect(card.width == 320 && card.height == 448, "265 and 397.5 rounded up to 64")
+        #expect(card.width == 256 && card.height == 320, "212 and 318 rounded up to 64, with no room for the focus lift")
         let phone = try #require(PosterFit(width: 110, height: 165, scale: 3))
-        #expect(phone.width == 448 && phone.height == 640)
+        #expect(phone.width == 384 && phone.height == 512)
         #expect(PosterFit(width: 0, height: 100, scale: 2) == nil, "no size yet, nothing loads")
         #expect(PosterFit(width: 100, height: 100, scale: 0) == nil)
     }
 
     @Test("movies-and-series-browsing/browsing-stays-responsive a 4K backdrop decodes at the size of a 1080p window")
     func backdropForTheWindow() throws {
-        let window = try #require(PosterFit(width: 1_920, height: 1_080, scale: 1, headroom: 1))
+        let window = try #require(PosterFit(width: 1_920, height: 1_080, scale: 1))
         #expect(window.width == 1_920 && window.height == 1_088)
         #expect(window.longestSide(pictureWidth: 3_840, pictureHeight: 2_160) == 1_935, "a quarter of the pixels")
         #expect(window.longestSide(pictureWidth: 1_280, pictureHeight: 720) == nil, "a w1280 backdrop decodes as it is")
@@ -28,7 +28,7 @@ import Testing
     func covers() throws {
         let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
         let side = try #require(card.longestSide(pictureWidth: 2000, pictureHeight: 3000))
-        #expect(side == 480, "the width needs the most: 2000 times 0.16 is 320, so 3000 becomes 480")
+        #expect(side == 384, "the width needs the most: 2000 times 0.128 is 256, so 3000 becomes 384")
         let scale = Double(side) / 3000
         #expect(Double(2000) * scale >= Double(card.width) - 0.5)
         #expect(Double(3000) * scale >= Double(card.height) - 0.5)
@@ -50,6 +50,6 @@ import Testing
         let one = try #require(PosterFit(width: 212, height: 318, scale: 1))
         let two = try #require(PosterFit(width: 210, height: 316, scale: 1))
         #expect(one == two)
-        #expect(one.key == "320x448")
+        #expect(one.key == "256x320")
     }
 }

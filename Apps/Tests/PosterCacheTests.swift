@@ -178,6 +178,34 @@ import UniformTypeIdentifiers
         #expect(shown.image.width < 600, "decoded for the card, not whole")
     }
 
+    // Found on 2026-11-25 with the large library at 50 MB: walking down and up the rows, posters loaded
+    // ahead were let go before their cards showed, more with every walk, since NSCache lets go in no set order.
+    @Test("movies-and-series-browsing/browsing-stays-responsive memory lets go of the poster shown longest ago first")
+    func leastRecentlyShownGoesFirst() async throws {
+        let urls = try (0..<4).map { try poster("recent-\($0)") }
+        let frame = try #require(PosterFit(width: 64, height: 64, scale: 1))
+        // A 64 by 64 poster costs 16 KB; three fit.
+        let cache = PosterCache(directory: cacheFolder, memoryLimit: 3 * 64 * 64 * 4)
+        for url in urls.prefix(3) { _ = await cache.poster(for: url, fitting: frame) }
+        #expect(cache.kept(urls[0], fitting: frame) != nil, "shown again, so it is the most recent")
+        _ = await cache.poster(for: urls[3], fitting: frame)
+        #expect(await cache.inMemory(urls[0], fitting: frame))
+        #expect(await !cache.inMemory(urls[1], fitting: frame), "shown longest ago, so it went")
+        #expect(await cache.inMemory(urls[2], fitting: frame))
+        #expect(await cache.inMemory(urls[3], fitting: frame))
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a card finds a kept poster without waiting")
+    func keptWithoutWaiting() async throws {
+        let url = try poster("kept-now", side: 600, height: 900)
+        let cache = PosterCache(directory: cacheFolder)
+        let card = try #require(PosterFit(width: 212, height: 318, scale: 2))
+        #expect(cache.kept(url, fitting: card) == nil, "not loaded yet")
+        let loaded = try #require(await cache.poster(for: url, fitting: card))
+        #expect(cache.kept(url, fitting: card) === loaded)
+        #expect(cache.kept(url, fitting: PosterFit(width: 110, height: 165, scale: 2)) == nil, "kept per frame")
+    }
+
     @Test("movies-and-series-browsing/browsing-stays-responsive a row scrolled away stops loading the posters nobody waits for")
     func prefetchStops() async throws {
         let configuration = URLSessionConfiguration.ephemeral

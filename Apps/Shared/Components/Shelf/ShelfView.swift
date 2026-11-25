@@ -47,20 +47,23 @@ enum ShelfView {
     /// previews leave it out and show the name tiles.
     struct PosterLoader: Sendable {
         var load: @Sendable (URL, PosterFit?) async -> Poster?
+        /// The poster if it is in memory now, without waiting, so a card
+        /// can draw it in its first frame.
+        var kept: @Sendable (URL, PosterFit?) -> Poster? = { _, _ in nil }
     }
 
-    /// The poster, or the name tile while it is missing, loading or broken.
-    /// Fetches only once the card is on screen.
+    /// The poster, a quiet placeholder while it loads, or the name tile
+    /// when it is missing or broken. Fetches only once the card is on screen.
     struct PosterArt: View {
         let name: String
         let url: URL?
 
         @Environment(\.shelfMetrics) private var metrics
-        @State private var poster: Poster?
+        @State private var phase = PosterPhase.loading
 
         var body: some View {
-            PosterTile(name: name, image: poster?.image, cornerRadius: metrics.corner, nameSize: metrics.caption + 2)
-                .loadsPoster(url, into: $poster)
+            PosterTile(name: name, phase: phase, cornerRadius: metrics.corner, nameSize: metrics.caption + 2)
+                .loadsPoster(url, into: $phase)
         }
     }
 

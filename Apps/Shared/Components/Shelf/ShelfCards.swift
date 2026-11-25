@@ -90,10 +90,10 @@ extension ShelfView {
         let url: URL?
 
         @Environment(\.shelfMetrics) private var metrics
-        @State private var poster: Poster?
+        @State private var poster = PosterPhase.loading
 
         var body: some View {
-            FilledArt(image: poster?.image, background: Browse.tile) {
+            FilledArt(image: poster.image, background: Browse.tile) {
                 Text(name)
                     .font(.boardStyle(metrics.caption + 2, weight: .semibold))
                     .foregroundStyle(Palette.text)
