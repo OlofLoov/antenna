@@ -10,7 +10,7 @@ import Testing
         start.addingTimeInterval(seconds)
     }
 
-    @Test("movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv a title shows once it has rested 0.8 seconds")
+    @Test("movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv a title shows once it has rested 0.8 seconds")
     func rest() {
         var schedule = PreviewSchedule()
         schedule.start(on: "banner")
@@ -25,7 +25,7 @@ import Testing
         #expect(schedule.check(at: at(5)) == nil, "a rested title is not asked about twice")
     }
 
-    @Test("movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv posters passed on the way never show")
+    @Test("movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv posters passed on the way never show")
     func fastSwipe() {
         var schedule = PreviewSchedule(shown: "first")
         for index in 0..<10 {
@@ -38,7 +38,7 @@ import Testing
         #expect(schedule.check(at: at(2.8)) == "eleventh")
     }
 
-    @Test("movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv leaving the rows drops the pending title")
+    @Test("movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv leaving the rows drops the pending title")
     func leaving() {
         var schedule = PreviewSchedule(shown: "a")
         schedule.focused("b", at: at(0))
@@ -51,7 +51,7 @@ import Testing
         #expect(schedule.shown == "a", "the banner's title is only the first one")
     }
 
-    @Test("movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv back from a page the poster shows at once")
+    @Test("movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv back from a page the poster shows at once")
     func restored() {
         var schedule = PreviewSchedule(shown: "a")
         schedule.focused("b", at: at(0))
@@ -76,7 +76,7 @@ import Testing
         #expect(queue.ask("fourth") == "fourth")
     }
 
-    @Test("movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv the eyebrow is the category alone")
+    @Test("movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv the eyebrow is the category alone")
     func eyebrow() {
         let title = ShelfTitle(id: "xtream#h#vod#1", kind: .movie, sourceID: UUID(), name: "The Long Harbor", category: "Thriller")
         let text = BannerText(preview: title, details: ShelfDetails(year: 2024, plot: "A harbour pilot."), locale: .english)

@@ -98,14 +98,38 @@ Options:
   shows, the first 8 posters of each of the 2 rows under it.
   `PosterCache.prefetch` loads and decodes them at the card's frame, the
   same key the card asks for, so the card finds them in memory. A card that
-  asks while one loads joins it. Each row is a group; a newer call for the
-  group stops the group's loads nobody waits for, so a fast swipe does not
-  leave a queue. Prefetches run at utility priority.
+  asks while one loads joins it. Each row is a group: when a row scrolls
+  away, the loads it asked for that no card waits for and no other row
+  wants stop (`PosterCache.stopPrefetching`), so a fast scroll does not
+  leave a queue. A card that stops waiting leaves a load running while a
+  row still wants it. Prefetches run at utility priority.
 
 The triggers are `onAppear` of a poster and of a row, which every platform
 has, so iPhone, iPad and Mac load ahead of their scroll too. They read the
 rows from the library in the action, not in a body, so a change to the
 rows redraws nothing.
+
+### 5. Poster memory on Apple TV
+
+Measuring the prefetch found the second cause of name tiles. On a 4K
+Apple TV a poster decodes for its card at 576 by 832 pixels with the
+focus headroom, about 2 MB, so the 50 MB memory limit held about 25
+posters. Three rows on screen are already 24, so moving down and back up
+asked for most posters again from disk, and posters loaded ahead were let
+go before their cards showed. Six rows down and back up, with the next
+eight posters of each row loaded ahead, touch about 150 posters.
+
+Options:
+- **Decode smaller.** The card is 212 by 318 pt on a 2x screen; smaller
+  posters look soft on a 4K TV.
+- **Load less ahead along each row.** Halves what a row holds, but the
+  posters the highlight reaches next are the ones a swipe right needs.
+- **Raise the limit on Apple TV.** Chosen, at 400 MB. On the walk down
+  and up (below), 160 MB still found 3 posters in 10 not in memory, and
+  320 MB 1 in 8 from the second walk on, once the banner's backdrops and
+  the rows walked before filled it. 400 MB found about 1 in 170. `NSCache`
+  still lets go of entries under memory pressure. iPhone, iPad and Mac
+  keep 50 MB; their posters are a third of the size.
 
 ## Measuring
 
@@ -132,7 +156,42 @@ presses right and 10 left with no wait; down the rows is 6 presses down and
 | Down and up the rows | 257 (4205) / 401, 306 (5029) / 377, 284 (4632) / 411 |
 | Standing still | 19 (506) / 550, 83 (1373) / 461, 27 (402) / 608 |
 
-The implementation PRs add the numbers after each step.
+### After, 2026-11-25
+
+Measured on a quiet Mac (load average under 5), so the numbers above do
+not compare with these. Main at `d12910bb` was run again on the same
+simulator for that. The fixture server is a small Python script that
+answers every `poster/` and `backdrop/` path with the same 600 by 900 or
+1920 by 1080 JPEG after 100 ms; it is not in the repository. Every run
+is the same walk as above, three runs each, one after the other in the
+same launch. Not ready is `posterMisses` over `posterAsks`.
+
+| Walk | Build | Dropped frames (hitch ms) over frames counted | Posters not ready |
+|------|-------|-----------------------------------------------|-------------------|
+| Along the posters | main `d12910bb` | 38 (621) / 413, 42 (669) / 409, 38 (590) / 414 | not counted |
+| | card, no prefetch | 77 (1272) / 464, 75 (1227) / 495, 72 (1173) / 499 | 6 of 37, 0 of 35, 0 of 35 |
+| | card, prefetch, 400 MB | 73 (1233) / 466, 73 (1167) / 496, 75 (1181) / 463 | 1 of 37, 1 of 34, 0 of 35 |
+| Down and up the rows | main `d12910bb` | 49 (766) / 582, 39 (602) / 619, 38 (606) / 622 | not counted |
+| | card, no prefetch | 84 (1405) / 668, 80 (1313) / 670, 86 (1343) / 670 | 85 of 183, 18 of 158, 19 of 158 |
+| | card, prefetch, 160 MB | 88 (1450) / 663, 82 (1314) / 670, 90 (1473) / 662 | 39 of 182, 49 of 156, 58 of 158 |
+| | card, prefetch, 320 MB | 79 (1313) / 670, 85 (1393) / 665, 82 (1364) / 668 | 1 of 182, 18 of 156, 20 of 158 |
+| | card, prefetch, 400 MB | 84 (1401) / 667, 81 (1377) / 669, 81 (1299) / 669 | 1 of 184, 1 of 169, 1 of 160 |
+| Standing still | main `d12910bb` | 5 (19) / 502, 7 (69) / 474, 6 (119) / 505 | |
+| | card, prefetch, 400 MB | 12 (210) / 589, 15 (202) / 589, 11 (188) / 591 | |
+
+What this shows:
+- Loading ahead works once the memory holds it: at 400 MB about 1 poster
+  in 170 is still loading when its card shows. Without it the first walk
+  finds 85 of 183 still loading, and later walks 1 in 8, since the first
+  walk left most of their posters in memory.
+- The change misses about twice as many frames as main in the
+  simulator, on every walk and standing still too, with the prefetch or
+  without. Not explained yet. Standing still presses nothing, so the
+  moves and the card's growing are not the whole cause; the screen now
+  shows two and a half rows instead of one, and each probe reading walks
+  the app's accessibility tree on its main thread, which may count as
+  missed frames. Instruments' hitch templates do not record on the tvOS
+  simulator, so this needs the device check below before archiving.
 
 ## What to check on the device
 

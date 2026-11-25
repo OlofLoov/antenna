@@ -162,6 +162,67 @@ import UniformTypeIdentifiers
         #expect(await cache.waiting == 0)
     }
 
+    // Owner-found on 2026-11-25: posters showed their name tiles as the
+    // highlight reached them, since each started loading only on screen.
+    @Test("movies-and-series-browsing/browsing-stays-responsive posters loaded ahead are in memory when their cards ask")
+    func prefetchedPostersAreInMemory() async throws {
+        let urls = try (0..<3).map { try poster("ahead-\($0)", side: 600, height: 900) }
+        let cache = PosterCache(directory: cacheFolder)
+        let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
+        await cache.prefetch(urls, fitting: card, group: "row")
+        try await eventually { await cache.inFlight == 0 }
+        for url in urls {
+            #expect(await cache.inMemory(url, fitting: card), "decoded at the card's size before any card asks")
+        }
+        let shown = try #require(await cache.poster(for: urls[0], fitting: card))
+        #expect(shown.image.width < 600, "decoded for the card, not whole")
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a row scrolled away stops loading the posters nobody waits for")
+    func prefetchStops() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [SilentURLProtocol.self]
+        let cache = PosterCache(directory: cacheFolder, session: URLSession(configuration: configuration))
+        let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
+        let urls = try (0..<3).map { try #require(URL(string: "https://silent.example/ahead-\($0)-\(UUID().uuidString).jpg")) }
+        await cache.prefetch(urls, fitting: card, group: "row")
+        // Another row wants the third, as the rows under a row share posters with their own.
+        await cache.prefetch([urls[2]], fitting: card, group: "other")
+        try await eventually { urls.allSatisfy { SilentURLProtocol.started($0) } }
+        // A card asks for the second poster while it loads, so it keeps loading.
+        let waiting = Task { await cache.poster(for: urls[1], fitting: card) }
+        try await eventually { await cache.waiting == 1 }
+        await cache.stopPrefetching("row")
+        try await eventually { SilentURLProtocol.stopped(urls[0]) }
+        #expect(SilentURLProtocol.stopped(urls[0]), "nobody waits for the first, so it stops")
+        #expect(!SilentURLProtocol.stopped(urls[1]), "a card waits for the second")
+        #expect(!SilentURLProtocol.stopped(urls[2]), "another row wants the third")
+        #expect(await cache.inFlight == 2)
+        waiting.cancel()
+        _ = await waiting.value
+        await cache.stopPrefetching("other")
+        try await eventually { await cache.inFlight == 0 }
+        #expect(await cache.inFlight == 0)
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a load a row still wants outlives a card that stopped waiting")
+    func prefetchOutlivesACard() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [SilentURLProtocol.self]
+        let cache = PosterCache(directory: cacheFolder, session: URLSession(configuration: configuration))
+        let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
+        let url = try #require(URL(string: "https://silent.example/kept-\(UUID().uuidString).jpg"))
+        await cache.prefetch([url], fitting: card, group: "row")
+        let waiting = Task { await cache.poster(for: url, fitting: card) }
+        try await eventually { await cache.waiting == 1 }
+        waiting.cancel()
+        _ = await waiting.value
+        #expect(await cache.inFlight == 1, "the row still wants it")
+        #expect(!SilentURLProtocol.stopped(url))
+        await cache.stopPrefetching("row")
+        try await eventually { await cache.inFlight == 0 }
+    }
+
     private func eventually(_ condition: () async -> Bool) async throws {
         let deadline = ContinuousClock.now + .seconds(5)
         while await !condition(), ContinuousClock.now < deadline { try await Task.sleep(for: .milliseconds(10)) }

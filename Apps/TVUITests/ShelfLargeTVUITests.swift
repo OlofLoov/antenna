@@ -8,7 +8,8 @@ import XCTest
 /// `TEST_RUNNER_ANTENNA_BENCHMARKS=1`. With
 /// `TEST_RUNNER_ANTENNA_POSTER_HOST=http://127.0.0.1:<port>` posters and
 /// backdrops load from a fixture server on the Mac; without it every poster
-/// shows its name tile.
+/// shows its name tile. `TEST_RUNNER_ANTENNA_NO_PREFETCH=1` turns off
+/// loading posters ahead, to compare.
 @MainActor
 final class ShelfLargeTVUITests: XCTestCase {
     let remote = XCUIRemote.shared
@@ -72,6 +73,10 @@ final class ShelfLargeTVUITests: XCTestCase {
         if let host = ProcessInfo.processInfo.environment["ANTENNA_POSTER_HOST"] {
             app.launchArguments += ["-ui-testing-poster-host", host]
         }
+        // For a run to compare with posters loading only as their cards show.
+        if ProcessInfo.processInfo.environment["ANTENNA_NO_PREFETCH"] == "1" {
+            app.launchArguments.append("-ui-testing-no-prefetch")
+        }
         app.launchInEnglish()
         // The system bar takes Menu only once something on the page has focus.
         _ = focusedElement.waitForExistence(timeout: 10)
@@ -106,11 +111,11 @@ final class ShelfLargeTVUITests: XCTestCase {
         XCTAssertTrue(office.waitForExistence(timeout: 15), "Office's titles never reached Recently added")
     }
 
-    /// Down from the banner into Recently added, and the preview showing.
+    /// Down from the banner into Recently added, with the focused poster grown into its card.
     func enterRows(_ tab: String) {
         press(.down)
         expect(focusedElement, "identifier BEGINSWITH '\(tab).card.'")
-        expect(element("\(tab).preview"), "exists == true")
+        expect(element("\(tab).card.focused.title"), "exists == true")
     }
 
     // MARK: Focus
@@ -141,12 +146,12 @@ final class ShelfLargeTVUITests: XCTestCase {
         XCTAssertLessThanOrEqual(redraws("rows") - rows, 2, "the rows redrew as the highlight moved across posters")
         // The banner may redraw once for its own clock, as its picture's wait runs out.
         XCTAssertLessThanOrEqual(redraws("banner") - banner, 1, "the banner redrew as the highlight moved across posters")
-        // The preview changing title once the last poster rests redraws the screen; the moves before it do not.
-        XCTAssertLessThan(redraws("screen") - screen, 5, "the screen redrew on every move across posters")
+        // Nothing on the screen changes for a move between posters; only the cards do.
+        XCTAssertLessThanOrEqual(redraws("screen") - screen, 1, "the screen redrew as the highlight moved across posters")
     }
 
     /// Opens the page of the fourth poster in the third row of `tab`, goes
-    /// back with Menu, and expects that poster focused with its preview.
+    /// back with Menu, and expects that poster focused with its card.
     func backFromAPageOpenedFromTheThirdRow(_ tab: String, arguments: [String] = []) {
         open(tab, arguments: arguments)
         enterRows(tab)
@@ -162,7 +167,7 @@ final class ShelfLargeTVUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 2)
         press(.menu)
         expectFocus(poster)
-        expect(element("\(tab).preview"), "exists == true")
+        expect(element("\(tab).card.focused.title"), "exists == true")
         // The highlight stays on the poster once the section has settled.
         Thread.sleep(forTimeInterval: 1)
         XCTAssertEqual(focused, poster)
@@ -212,19 +217,26 @@ final class ShelfLargeTVUITests: XCTestCase {
 
     // MARK: Hitches
 
-    /// Frames the main thread missed so far, as the section's probe counts them.
+    /// Frames the main thread missed so far, as the section's probe counts
+    /// them, and posters a card asked for before they were in memory.
     struct Gaps {
         var frames = 0
         var dropped = 0
         var hitchMs = 0
+        var posterMisses = 0
+        var posterAsks = 0
 
         static func - (lhs: Gaps, rhs: Gaps) -> Gaps {
-            Gaps(frames: lhs.frames - rhs.frames, dropped: lhs.dropped - rhs.dropped, hitchMs: lhs.hitchMs - rhs.hitchMs)
+            Gaps(
+                frames: lhs.frames - rhs.frames, dropped: lhs.dropped - rhs.dropped, hitchMs: lhs.hitchMs - rhs.hitchMs,
+                posterMisses: lhs.posterMisses - rhs.posterMisses, posterAsks: lhs.posterAsks - rhs.posterAsks)
         }
     }
 
     var gaps: Gaps {
-        Gaps(frames: probe("shelf.debug.frames"), dropped: probe("shelf.debug.dropped"), hitchMs: probe("shelf.debug.hitchMs"))
+        Gaps(
+            frames: probe("shelf.debug.frames"), dropped: probe("shelf.debug.dropped"), hitchMs: probe("shelf.debug.hitchMs"),
+            posterMisses: probe("shelf.debug.posterMisses"), posterAsks: probe("shelf.debug.posterAsks"))
     }
 
     /// Runs `walk` `times` times and reports the frames each run missed.
@@ -235,7 +247,10 @@ final class ShelfLargeTVUITests: XCTestCase {
             walk()
             runs.append(gaps - before)
         }
-        let line = runs.map { "\($0.dropped) dropped, \($0.hitchMs) ms over \($0.frames) frames" }.joined(separator: "; ")
+        let line = runs.map {
+            "\($0.dropped) dropped, \($0.hitchMs) ms over \($0.frames) frames, \($0.posterMisses) of \($0.posterAsks) posters not ready"
+        }
+        .joined(separator: "; ")
         print("HITCHES \(label): \(line)")
         let attachment = XCTAttachment(string: line)
         attachment.name = "hitches \(label)"

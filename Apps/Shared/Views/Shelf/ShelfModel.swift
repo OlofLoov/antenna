@@ -34,6 +34,9 @@ final class ShelfModel {
     /// Each title's description by title id, for the Apple TV poster's
     /// VoiceOver hint, where each poster redraws only for its own.
     @ObservationIgnored let hints = KeyedValues<String, String>()
+    /// Details by title id for the Apple TV expanded card, where each card
+    /// redraws only for its own answer.
+    @ObservationIgnored let cardDetails = KeyedValues<String, ShelfDetails>()
     /// Titles whose info call has answered or failed.
     private(set) var answered: Set<String> = []
     /// True when the current profile shows adult content. Unless it is set
@@ -367,6 +370,7 @@ final class ShelfModel {
         }
         details[title.id] = ShelfDetails(answer)
         hints.set(details[title.id]?.plot, for: title.id)
+        cardDetails.set(details[title.id], for: title.id)
         heard(title, answer)
         asked.insert(title.id)
         answered.insert(title.id)

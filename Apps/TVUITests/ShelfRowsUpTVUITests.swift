@@ -1,9 +1,9 @@
 import XCTest
 
-/// Moving up through the rows of Movies and Series on Apple TV with the
-/// preview showing. Launches the shelf's `watching` script, whose Series
-/// rows are Continue watching, Recently watched, Recently added and a row
-/// per category, and whose Movies add My list.
+/// Moving down and up through the rows of Movies and Series on Apple TV.
+/// Launches the shelf's `watching` script, whose Series rows are Continue
+/// watching, Recently watched, Recently added and a row per category, and
+/// whose Movies add My list.
 @MainActor
 final class ShelfRowsUpTVUITests: XCTestCase {
     let remote = XCUIRemote.shared
@@ -33,22 +33,24 @@ final class ShelfRowsUpTVUITests: XCTestCase {
     }
 
     /// Waits for the row with `identifier` to hold the highlight and come to
-    /// rest wholly between the preview's foot and the foot of the screen.
+    /// rest wholly on screen, its top just under the tab bar.
     func expectPlaced(_ tab: String, _ identifier: String, file: StaticString = #filePath, line: UInt = #line) {
         let row = element("\(tab).row.\(identifier)")
-        let preview = element("\(tab).preview")
         let focused = row.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch
         var placed = false
         for _ in 0..<15 {
-            if focused.exists, preview.exists, row.frame.minY >= preview.frame.maxY, row.frame.maxY <= app.frame.maxY {
+            if focused.exists, (120...200).contains(row.frame.minY), row.frame.maxY <= app.frame.maxY {
                 placed = true
                 break
             }
             Thread.sleep(forTimeInterval: 0.2)
         }
-        XCTAssertTrue(focused.exists, "\(identifier) does not hold the highlight", file: file, line: line)
+        let holder = app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch
         XCTAssertTrue(
-            placed, "\(identifier) at \(row.frame) is not wholly below the preview at \(preview.frame)", file: file, line: line)
+            focused.exists, "\(identifier) does not hold the highlight; \(holder.exists ? holder.identifier : "nothing") does",
+            file: file, line: line)
+        XCTAssertTrue(
+            placed, "\(identifier) at \(row.frame) does not rest just under the tab bar", file: file, line: line)
     }
 
     func walk(_ tab: String, rows: [String], arguments: [String] = []) {
@@ -71,23 +73,23 @@ final class ShelfRowsUpTVUITests: XCTestCase {
         expectPlaced(tab, rows[rows.count - 3])
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving up to the row above
-    // Owner-found on 2026-11-23: moving up left the row under the preview, then slid it down late.
-    func testMovingUpInSeriesPutsTheRowBelowThePreview() {
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, moving up to the row above
+    // Owner-found on 2026-11-23: moving up left the row under the top of the screen, then slid it down late.
+    func testMovingUpInSeriesPutsTheRowUnderTheTabBar() {
         walk("series", rows: ["continueWatching", "recentlyWatched", "recentlyAdded", "drama"])
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving up to the row above
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, moving up to the row above
     // CI on 2026-11-24: the focus engine's own scroll landed after the screen's and left the row
-    // at the tab bar's foot, under the preview. The launch argument makes that happen on every move up.
-    func testMovingUpPutsTheRowBelowThePreviewWhenTheFocusEngineScrollsLast() {
+    // at the tab bar's foot. The launch argument makes that happen on every move up.
+    func testMovingUpPutsTheRowUnderTheTabBarWhenTheFocusEngineScrollsLast() {
         walk(
             "series", rows: ["continueWatching", "recentlyWatched", "recentlyAdded", "drama"],
             arguments: ["-ui-testing-focus-scroll-wins"])
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving up to the row above
-    func testMovingUpInMoviesPutsTheRowBelowThePreview() {
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, moving up to the row above
+    func testMovingUpInMoviesPutsTheRowUnderTheTabBar() {
         walk("movies", rows: ["continueWatching", "myList", "recentlyWatched", "recentlyAdded"])
     }
 }

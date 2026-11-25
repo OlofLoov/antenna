@@ -3,8 +3,10 @@
     import SwiftUI
 
     /// Movies or Series under the Apple TV tab bar (board `TV-Movies`,
-    /// `TV-Movies-Rows`): the banner full bleed, the rows, then the genre
-    /// chips. The banner's Play button is where focus lands when the tab opens.
+    /// `TV-Movies-Rows`, `TV-Movies-Expanded`): the banner full bleed, the
+    /// rows, then the genre chips. The banner's Play button is where focus
+    /// lands when the tab opens. In the rows the focused poster grows into
+    /// the expanded card.
     struct ShelfTVScreen: View {
         let kind: ShelfTitle.Kind
         let focus: FocusState<ShellFocus?>.Binding
@@ -18,14 +20,10 @@
         @State private var position = ScrollPosition(edge: .top)
         /// True while the highlight is in a row, set by `ShelfTVFocusFollower`.
         @State private var inRows = false
-        /// The title the preview shows, the banner's until a poster rests.
-        @State private var previewTitle: ShelfTitle?
         @State private var follow = ShelfPreviewFollow()
         /// The banner's title, written as it pages. Not observed, so paging
         /// never redraws the screen.
         @State private var bannerShown = ShelfBannerShown()
-        /// Preview titles shown for longer than `BannerArt.patience`.
-        @State private var previewWaited: Set<String> = []
         @State private var rowHeights = ShelfRowHeights()
         @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
 
@@ -91,35 +89,36 @@
         }
 
         private func rows(_ model: ShelfModel) -> some View {
-            let previewing = previewing
+            let browsing = browsing
             return ScrollViewReader { proxy in
-                rowsScroll(model, previewing: previewing)
+                rowsScroll(model, browsing: browsing)
                     .background {
                         ShelfTVFocusFollower(
-                            model: model, proxy: proxy, position: $position, inRows: $inRows, previewTitle: $previewTitle,
-                            follow: follow, bannerShown: bannerShown, rowHeights: rowHeights, reduceMotion: reduceMotion)
+                            model: model, proxy: proxy, position: $position, inRows: $inRows, follow: follow,
+                            bannerShown: bannerShown, rowHeights: rowHeights, reduceMotion: reduceMotion)
                     }
             }
         }
 
-        private func rowsScroll(_ model: ShelfModel, previewing: Bool) -> some View {
+        private func rowsScroll(_ model: ShelfModel, browsing: Bool) -> some View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: ShelfView.Metrics.tv.rowSpacing) {
                     switch model.status {
                     case .titles(let banner, let waiting):
-                        ShelfTVBanner(model: model, actions: actions, paused: previewing, bannerShown: bannerShown, focus: focus)
+                        ShelfTVBanner(model: model, actions: actions, paused: browsing, bannerShown: bannerShown, focus: focus)
                             .equatable()
                             // Full bleed behind the tab bar.
                             .padding(.top, -Self.barHeight)
                         ShelfNotices(model: model, banner: banner, waiting: waiting)
                         ShelfRowsContent(model: model, actions: actions) { list = $0 }
+                            .environment(\.shelfExpandedCard, cardSource)
                         genres(model)
                     case let status:
                         ShelfTVStatus(model: model, status: status, focus: focus)
                             .padding(.top, 60)
                     }
                 }
-                // Room for the last row to come up under the preview.
+                // Room for the last row to come up under the tab bar.
                 .padding(.bottom, Self.screenHeight - Self.rowTop - 200)
                 .environment(\.shelfRowHeights, rowHeights)
             }
@@ -136,47 +135,14 @@
             } action: { _, past in
                 scrolled = past
             }
-            // Rows above the focused one pass under the preview and fade into
-            // the ground over 40 pt above its foot. A layer of the ground
-            // color, not a mask, so the rows never render off screen.
             .overlay(alignment: .top) {
-                ZStack {
-                    if previewing {
-                        VStack(spacing: 0) {
-                            Palette.ground.frame(height: Self.rowTop - 40)
-                            LinearGradient(colors: [Palette.ground, Palette.ground.opacity(0)], startPoint: .top, endPoint: .bottom)
-                                .frame(height: 40)
-                        }
-                        .allowsHitTesting(false)
-                        .accessibilityHidden(true)
-                        .transition(.opacity)
-                    }
-                }
-                .animation(ShelfBanner.crossfade, value: previewing)
-            }
-            .overlay(alignment: .top) {
-                if scrolled, !previewing {
+                if scrolled {
                     Palette.ground.frame(height: Self.barHeight).accessibilityHidden(true)
                 }
             }
-            .overlay(alignment: .topTrailing) { heroClock(shows: !scrolled && !previewing && library.top == nil) }
-            .overlay(alignment: .top) {
-                ZStack {
-                    if previewing {
-                        ShelfPreview.Television()
-                            .environment(\.shelfPreview, previewContext(model))
-                            .transition(.opacity)
-                    }
-                }
-                .animation(ShelfBanner.crossfade, value: previewing)
-            }
-            .task(id: previewTitle?.id) {
-                guard let id = previewTitle?.id, !previewWaited.contains(id) else { return }
-                try? await Task.sleep(for: BannerArt.patience)
-                if !Task.isCancelled { previewWaited.insert(id) }
-            }
+            .overlay(alignment: .topTrailing) { heroClock(shows: !scrolled && !browsing && library.top == nil) }
             .onChange(of: library.top == nil) { _, closed in
-                // Back from a page opened from a poster, its preview shows at
+                // Back from a page opened from a poster, its details show at
                 // once (title-detail-and-episode-picker/back-to-where-you-were).
                 guard closed, list == nil, case .poster? = library.returning?.origin else { return }
                 follow.restoring = true
@@ -196,20 +162,16 @@
             .ignoresSafeArea()
         }
 
-        /// True while the highlight is in a row of the section, so the
-        /// preview shows (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
-        private var previewing: Bool {
+        /// True while the highlight is in a row of the section and nothing
+        /// covers it: the banner holds its title.
+        private var browsing: Bool {
             inRows && list == nil && library.top == nil
         }
 
-        private func previewContext(_ model: ShelfModel) -> PreviewContext? {
-            guard let title = previewTitle ?? bannerShown.title else { return nil }
-            let details = model.details[title.id]
-            let settled = model.answered.contains(title.id) || previewWaited.contains(title.id)
-            let art = BannerArt.choose(
-                details: details, answered: model.answered.contains(title.id), waited: previewWaited.contains(title.id),
-                poster: title.posterURL)
-            return PreviewContext(text: BannerText(preview: title, details: details), art: art, bare: art == nil && settled)
+        /// Each title's details for its expanded card, read per title
+        /// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
+        private var cardSource: ExpandedCardSource {
+            ExpandedCardSource { [library] title in library.model(title.kind).cardDetails.value(title.id) }
         }
 
         /// The system tab bar holds no clock, so the hero draws it in its top right (`TV-Shell-TabView`).
@@ -249,7 +211,6 @@
                         .accessibilityIdentifier("\(kind.prefix).genres.all")
                 }
             }
-            // The preview keeps the last title it showed.
             .shelfFocusRow("genres")
         }
 
@@ -298,7 +259,7 @@
         enum Part: Hashable { case play, info, trailer, myList }
 
         var body: some View {
-            Group {
+            HStack(spacing: 16) {
                 ShelfBanner.PlayButton(type: .tv)
                     .fixedSize()
                     .focused(focus, equals: .content)
@@ -315,6 +276,10 @@
                     .focused($focused, equals: .myList)
                     .onMoveCommand { if $0.reading(direction) == .right { banner?.actions.page(1) } }
             }
+            // Up from the rows lands on Play, whichever card the highlight left
+            // (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, back to the banner).
+            .focusSection()
+            .defaultFocus($focused, .play, priority: .userInitiated)
             // Every move between the buttons starts the banner's wait again.
             .onChange(of: focused) { _, part in
                 banner?.actions.interacting(part != nil)
@@ -375,36 +340,40 @@
         }
     }
 
-    /// Where and when the focused row of Movies or Series comes to rest
-    /// under the Apple TV preview
-    /// (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
+    /// Where and when the focused row of Movies or Series comes to rest:
+    /// its header just under the tab bar, with the rows below it in view
+    /// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
     enum ShelfRowPlacement {
         /// The tab bar's height, the top inset of the rows' scroll view.
         static let barHeight: CGFloat = SystemTabBar.bottom
-        /// Where the focused row's header aims while the preview shows.
-        static let rowTop: CGFloat = ShelfPreview.height + 16
+        /// Where the focused row's header rests, 36 pt under the tab bar.
+        static let rowTop: CGFloat = barHeight + 36
         static let screenHeight: CGFloat = 1080
         /// How long a move down takes the focus engine to scroll before the rows are placed.
         static let settle = Duration.milliseconds(350)
+        /// How far a placed row may sit from `rowTop` before it is placed again.
+        static let slack: CGFloat = 8
 
         /// How long to wait before placing a row whose top is at `top` on
-        /// screen. A row below the preview waits for the focus engine's
-        /// scroll to settle, so the two never move the rows at once. A row
-        /// under the preview, as after moving up, comes down at once. The
-        /// focus engine counts it as on screen and leaves it there, hidden.
-        static func wait(top: CGFloat?) -> Duration {
-            guard let top, top < ShelfPreview.height else { return settle }
-            return .zero
+        /// screen and whose height is `height`. A row wholly on screen, or
+        /// above where rows rest as after moving up, is placed at once: the
+        /// focus engine leaves it where it is. A row cut by the foot of the
+        /// screen waits for the focus engine's scroll to settle, so the two
+        /// never move the rows at once.
+        static func wait(top: CGFloat?, height: CGFloat?) -> Duration {
+            guard let top else { return settle }
+            if top < rowTop { return .zero }
+            return top + (height ?? screenHeight) <= screenHeight ? .zero : settle
         }
 
-        /// How many times a row that rests under the preview is placed again.
+        /// How many times a row that rests away from `rowTop` is placed again.
         static let attempts = 3
 
-        /// True when a placed row whose top is at `top` on screen rests
-        /// under the preview, as when the focus engine's scroll lands last.
+        /// True when a placed row whose top is at `top` on screen is not
+        /// where rows rest, as when the focus engine's scroll lands last.
         static func misplaced(top: CGFloat?) -> Bool {
             guard let top else { return false }
-            return top < ShelfPreview.height
+            return abs(top - rowTop) > slack
         }
 
         /// The anchor that puts a row of `rowHeight` at `rowTop`. The scroll
@@ -414,19 +383,20 @@
         }
     }
 
-    /// The title the Apple TV banner shows, for the preview to start on.
+    /// The title the Apple TV banner shows. The rest schedule starts on it,
+    /// so landing on its poster asks nothing the banner has not asked.
     @MainActor
     final class ShelfBannerShown {
         var title: ShelfTitle?
     }
 
     /// The banner with its buttons. It redraws for its titles and details
-    /// and when the preview starts or stops, not when the preview changes
-    /// title (movies-and-series-browsing/browsing-stays-responsive).
+    /// and when the highlight enters or leaves the rows, not as it moves
+    /// between posters (movies-and-series-browsing/browsing-stays-responsive).
     private struct ShelfTVBanner: View {
         let model: ShelfModel
         let actions: ShelfActions
-        /// True while the preview shows over it.
+        /// True while the highlight is in the rows.
         let paused: Bool
         let bannerShown: ShelfBannerShown
         let focus: FocusState<ShellFocus?>.Binding

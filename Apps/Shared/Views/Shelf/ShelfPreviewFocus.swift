@@ -11,24 +11,28 @@ extension FocusedValues {
 extension View {
     /// On Apple TV, gives a row an id and a height to scroll by, and tells
     /// the screen when the highlight is in it
-    /// (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
+    /// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
+    /// On every platform, loads the start of the rows under it ahead.
     func shelfFocusRow(_ identifier: String) -> some View {
         #if os(tvOS)
             modifier(ShelfRowReport(identifier: identifier))
                 .id(ShelfRowAnchor.id(identifier))
                 .focusedValue(\.shelfFocusedRow, identifier)
+                .prefetchesTheRowsBelow(identifier)
         #else
-            self
+            prefetchesTheRowsBelow(identifier)
         #endif
     }
 
     /// On Apple TV, tells the screen when the highlight is on this title
     /// and gives VoiceOver its plot as a hint once the details are known.
+    /// On every platform, loads the posters after it in its row ahead.
     func shelfPreviewFocus(_ title: ShelfTitle) -> some View {
         #if os(tvOS)
             modifier(ShelfPreviewFocus(title: title))
+                .prefetchesAlongTheRow(title)
         #else
-            self
+            prefetchesAlongTheRow(title)
         #endif
     }
 }
