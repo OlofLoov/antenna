@@ -141,7 +141,12 @@ check_except "design-system/type-uses-text-styles: fixed font sizes only for num
   'Apps/Shared/Components/ZapBar/NumberBox\.swift|Apps/Shared/Components/Player/SubtitleOverlay\.swift|Apps/Shared/Components/Profiles/ProfileBadge\.swift|Apps/Shared/Debug/[A-Za-z]+\.swift' \
   Apps
 
-check_except "design-system/controls-use-system-styles: ButtonStyle types only in the app-drawn parts" \
+check_except "design-system/display-headings-are-rounded: only the type scale picks a font design, and no font loads by name" \
+  '(design:[[:space:]]*\.(rounded|serif|monospaced|default)\b|\.fontDesign\(|Font\.custom\(|\.custom\("[^"]*",[[:space:]]*(size|fixedSize):)' \
+  'Apps/Shared/Components/TypeScale\.swift|Apps/Tests/TypeScaleTests\.swift' \
+  Apps
+
+check_except "design-system/controls-use-system-styles:ButtonStyle types only in the app-drawn parts" \
   '(struct|class|enum)[[:space:]]+[A-Za-z]+(<[^>]*>)?[[:space:]]*:[^{]*\b(Primitive)?ButtonStyle\b' \
   'Apps/Shared/Components/(ChannelOverlay|ZapBar|MultiView)/[A-Za-z]+\.swift|Apps/Shared/Components/GuideGrid/GuideBlocks\.swift|Apps/Shared/Components/Groups/PasscodePad\.swift|Apps/Shared/Components/FocusCard\.swift' \
   Apps

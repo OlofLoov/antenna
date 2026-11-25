@@ -30,7 +30,7 @@ enum OnboardingWelcome {
                             .accessibilityIdentifier("onboarding.mark")
                         VStack(spacing: Metrics.Spacing.small) {
                             Text(OnboardingWelcome.title)
-                                .font(.largeTitle.bold())
+                                .font(.boardStyle(.largeTitle, weight: .bold))
                                 .accessibilityAddTraits(.isHeader)
                             Text(
                                 """
@@ -94,7 +94,7 @@ enum OnboardingWelcome {
                     .accessibilityIdentifier("onboarding.mark")
                 VStack(spacing: Metrics.Spacing.medium) {
                     Text(OnboardingWelcome.title)
-                        .font(.title2.weight(.semibold))
+                        .font(.boardStyle(.title2, weight: .semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text(
                         """

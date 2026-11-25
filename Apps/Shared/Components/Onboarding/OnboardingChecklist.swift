@@ -76,7 +76,7 @@ enum OnboardingChecklist {
                     VStack(spacing: Metrics.Spacing.large) {
                         VStack(spacing: Metrics.Spacing.xSmall) {
                             Text(headline)
-                                .font(.title.bold())
+                                .font(.boardStyle(.title, weight: .bold))
                                 .accessibilityAddTraits(.isHeader)
                                 .accessibilityIdentifier("onboarding.headline")
                             Text(subtitle)
@@ -159,7 +159,7 @@ enum OnboardingChecklist {
             VStack(spacing: Metrics.Spacing.xxLarge) {
                 VStack(spacing: Metrics.Spacing.small) {
                     Text(title)
-                        .font(.title2.weight(.semibold))
+                        .font(.boardStyle(.title2, weight: .semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text("This runs once.")
                         .foregroundStyle(.secondary)
