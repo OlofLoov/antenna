@@ -33,7 +33,8 @@ If on `main`, create a branch first. Naming:
   it is installed; CI runs all three.
 - If Apps/ changed, the iOS build must pass (see the `sim` skill), and the
   UI test classes for the screens it touches must pass on a local simulator.
-  PR CI no longer runs them; add the `ui-tests` label to run the full suite.
+  No PR runs them; `gh workflow run ui-tests.yml --ref <branch>` runs the
+  full suite on a branch, and it runs every night on main.
 - If the work belongs to an OpenSpec change, run `/opsx:verify <name>` and
   fix what it reports before continuing. When the work adds a dependency,
   target or architecture decision, update `docs/architecture/` with the

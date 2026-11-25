@@ -9,8 +9,6 @@ on:
         description: App languages for the store set, such as "de ar". Empty takes English and the reviewed languages.
         required: false
         default: ""
-  pull_request:
-    types: [labeled, synchronize]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -23,7 +21,6 @@ jobs:
   screenshots:
     name: App screenshots
     runs-on: macos-26
-    if: github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'screenshots')
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v7
