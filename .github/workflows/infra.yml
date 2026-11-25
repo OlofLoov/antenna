@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "Infra/**"
+      - "Web/review/**"
+      - scripts/make-review-xtream.py
       - .github/workflows/infra.yml
   push:
     branches: [main]
@@ -12,6 +14,7 @@ on:
       - "Web/**"
       - scripts/publish-web.sh
       - scripts/make-review-guide.py
+      - scripts/make-review-xtream.py
       - .github/workflows/infra.yml
   workflow_dispatch:
 
@@ -41,6 +44,11 @@ jobs:
           terraform_wrapper: false
       - name: Format
         run: terraform fmt -check -recursive -diff Infra
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: Web/site/.nvmrc
+      - name: Review server function
+        run: node --test Infra/modules/site/tests/review.test.mjs
       - name: Validate and test
         run: |
           for root in Infra/bootstrap Infra/ci Infra/antuna; do

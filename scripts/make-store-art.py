@@ -2,8 +2,10 @@
 """Draws the made-up posters and backdrops the store screenshots show.
 
 Writes Apps/Shared/Debug/StoreArt-<source>-<kind>-<number>-<poster|backdrop>.jpg
-for the scripted movies and series of the shelf UI tests (UITestingShelf).
-Every picture is abstract shapes from the formulas below: no title, person,
+for the scripted movies and series of the shelf UI tests (UITestingShelf),
+and copies the pictures of the titles the App Review demo server lists to
+Web/review/art/<movie|series>-<id>-<poster|backdrop>.jpg, so the reviewer sees
+the art the screenshots show (scripts/make-review-xtream.py). Every picture is abstract shapes from the formulas below: no title, person,
 logo or brand, and no third-party picture is ever committed. The Release
 build leaves the files out (Config/Shared.xcconfig).
 
@@ -14,11 +16,13 @@ Needs ffmpeg for the JPEG step; set FFMPEG to use another binary.
 import math
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 import zlib
 
 OUT = pathlib.Path("Apps/Shared/Debug")
+REVIEW_OUT = pathlib.Path("Web/review/art")
 FFMPEG = os.environ.get("FFMPEG", "ffmpeg")
 
 # (source, kind, number, style, top colour, bottom colour, accent colour)
@@ -37,6 +41,16 @@ TITLES = [
     ("cabin", "series", 3, "bands", (50, 40, 70), (170, 140, 200), (255, 240, 220)),
     ("office", "series", 1, "peaks", (30, 50, 90), (180, 200, 230), (250, 250, 255)),
 ]
+
+# (source, kind, number) of a title above: its name on the review server
+REVIEW = {
+    ("cabin", "vod", 1): "movie-101",
+    ("cabin", "vod", 3): "movie-102",
+    ("cabin", "vod", 4): "movie-103",
+    ("cabin", "vod", 5): "movie-104",
+    ("cabin", "vod", 6): "movie-105",
+    ("cabin", "series", 2): "series-201",
+}
 
 SIZES = {"poster": (400, 600), "backdrop": (1280, 720)}
 
@@ -128,6 +142,7 @@ def draw(style, size, top, bottom, accent, seed):
 
 
 def main():
+    REVIEW_OUT.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as scratch:
         for source, kind, number, style, top, bottom, accent in TITLES:
             for shape, size in SIZES.items():
@@ -139,6 +154,9 @@ def main():
                      "-pix_fmt", "yuvj420p", "-fflags", "+bitexact", "-flags", "+bitexact", "-map_metadata", "-1",
                      str(OUT / name)],
                     check=True)
+                review = REVIEW.get((source, kind, number))
+                if review:
+                    shutil.copyfile(OUT / name, REVIEW_OUT / f"{review}-{shape}.jpg")
 
 
 if __name__ == "__main__":

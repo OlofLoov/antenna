@@ -32,6 +32,7 @@ scripts/publish-web.sh /tmp/site Web/site/build           # the final file tree:
 scripts/site-screenshots.sh en                           # the site's pictures from the newest store-screenshots artifact, with gh and sips
 terraform fmt -check -recursive Infra                    # Terraform 1.17.2, pinned in each root
 terraform -chdir=Infra/antuna init -backend=false && terraform -chdir=Infra/antuna test   # infra plans against a mocked AWS; Infra/ci too
+node --test Infra/modules/site/tests/review.test.mjs     # the App Review demo server's CloudFront Function against the generated answers
 scripts/render-icons.sh                                  # app icons and Apple TV brand assets from design/icon/*.svg
 xcodegen generate                                        # regenerate Antenna.xcodeproj (git-ignored)
 xcodebuild build -project Antenna.xcodeproj -scheme Antenna   -destination 'generic/platform=iOS Simulator'  CODE_SIGNING_ALLOWED=NO

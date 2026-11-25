@@ -3,10 +3,12 @@
 #
 # Copies the plain files in Web/ (everything but the Web/site app), fills the
 # Apple team id into the association file from $APPLE_TEAM_ID while the
-# committed file still holds the placeholder, and writes the App Review guide
+# committed file still holds the placeholder, writes the App Review guide
 # for the review playlist, from yesterday (UTC) for 36 days, or from
-# $REVIEW_GUIDE_START (YYYY-MM-DD) when set. Exits non-zero when the id is
-# missing or malformed, so the placeholder never reaches the site.
+# $REVIEW_GUIDE_START (YYYY-MM-DD) when set, and writes the answers of the
+# App Review demo Xtream server into review/xtream, with art addresses under
+# $REVIEW_BASE_URL or https://antuna.app/review. Exits non-zero when the id
+# is missing or malformed, so the placeholder never reaches the site.
 #
 # With $2, the built SvelteKit app (Web/site/build after `npm run build`), it
 # copies the app's pages in too, and fails when a plain file and a built file
@@ -54,6 +56,8 @@ fi
 yesterday='import datetime; print(datetime.datetime.now(datetime.timezone.utc).date() - datetime.timedelta(days=1))'
 start=${REVIEW_GUIDE_START:-$(python3 -c "$yesterday")}
 python3 scripts/make-review-guide.py Web/review/antuna-review.m3u "$start" 36 >"$out/review/guide.xml"
+python3 scripts/make-review-xtream.py Web/review/antuna-review.m3u "$out/review/xtream" \
+  "${REVIEW_BASE_URL:-https://antuna.app/review}"
 
 if [[ -n "$site" ]]; then
   clashes=""
