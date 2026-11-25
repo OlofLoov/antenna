@@ -67,7 +67,7 @@ The system SHALL show results under Channels, In the guide, Movies & series and 
 #### Scenario: A poster's menu in Search
 - **GIVEN** a movie or series in the results
 - **WHEN** the user long-presses its poster, or holds Select on Apple TV
-- **THEN** the menu offers what the poster offers in Movies or Series: More info on a movie, and Add to My list or Remove from My list
+- **THEN** the menu offers what a poster in a Movies or Series row offers: Add to My list or Remove from My list
 
 #### Scenario: The same programme on two channels
 - **GIVEN** a programme on air on one channel and later on another
@@ -86,7 +86,7 @@ The system SHALL show results under Channels, In the guide, Movies & series and 
 - **THEN** search covers everything already loaded, and missing logos and posters get their stand-ins
 
 ### Requirement: Pick a channel or title to watch
-The system SHALL play a picked channel full screen on Apple TV and in Live elsewhere, switching to All channels when it is outside the current group and keeping the search for later, and SHALL play a picked movie or series as the Movies section does. On Apple TV, coming back to Search SHALL put focus on the result the user picked.
+The system SHALL play a picked channel full screen on Apple TV and in Live elsewhere, switching to All channels when it is outside the current group and keeping the search for later, and SHALL open a picked movie's or series' page, as a poster in the Movies or Series section does. On Apple TV, coming back to Search SHALL put focus on the result the user picked.
 
 #### Scenario: Picking a channel
 - **GIVEN** a channel in the results
@@ -98,11 +98,11 @@ The system SHALL play a picked channel full screen on Apple TV and in Live elsew
 #### Scenario: Picking a movie or series
 - **GIVEN** a movie or series in the results
 - **WHEN** the user picks it
-- **THEN** it plays as it does from the Movies or Series section
+- **THEN** its page opens over Search and nothing starts playing
 
 #### Scenario: Back on the result on Apple TV
 - **GIVEN** a channel, movie, series or person the user picked in Search on Apple TV
-- **WHEN** they come back with Menu from the series' or person's page or from the movie, or swipe down from the tab bar onto Search after the channel played
+- **WHEN** they come back with Menu from the title's or person's page, or swipe down from the tab bar onto Search after the channel played
 - **THEN** the result they picked has focus, with the query and results as they left them
 
 ### Requirement: Pick a programme
