@@ -193,6 +193,26 @@ final class ShelfLargeTVUITests: XCTestCase {
         backFromAPageOpenedFromTheThirdRow("series", arguments: ["-ui-testing-section-focus-lands-last"])
     }
 
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, moving to another row
+    // Found on 2026-11-25: each move up or down landed the highlight a poster to the right, so a walk six rows
+    // down and back up ended on the eighth poster of Recently added instead of the first.
+    func testDownAndUpTheRowsKeepsTheColumn() {
+        open("movies")
+        enterRows("movies")
+        expectBothSources("movies")
+        let start = focused
+        XCTAssertTrue(start.hasPrefix("movies.card."), "focus is on \(start)")
+        for _ in 0..<6 {
+            press(.down)
+            Thread.sleep(forTimeInterval: 0.6)
+        }
+        for _ in 0..<6 {
+            press(.up)
+            Thread.sleep(forTimeInterval: 0.6)
+        }
+        expectFocus(start)
+    }
+
     // tvos-shell/back-from-a-tab-goes-to-the-tab-bar
     // Found on 2026-11-23 with the large library: down from the bar after visiting Series landed on My list.
     func testDownFromTheBarAfterSeriesLandsOnPlay() {
@@ -216,22 +236,6 @@ final class ShelfLargeTVUITests: XCTestCase {
     }
 
     // MARK: Hitches
-
-    /// Frames the main thread missed so far, as the section's probe counts
-    /// them, and posters a card asked for before they were in memory.
-    struct Gaps {
-        var frames = 0
-        var dropped = 0
-        var hitchMs = 0
-        var posterMisses = 0
-        var posterAsks = 0
-
-        static func - (lhs: Gaps, rhs: Gaps) -> Gaps {
-            Gaps(
-                frames: lhs.frames - rhs.frames, dropped: lhs.dropped - rhs.dropped, hitchMs: lhs.hitchMs - rhs.hitchMs,
-                posterMisses: lhs.posterMisses - rhs.posterMisses, posterAsks: lhs.posterAsks - rhs.posterAsks)
-        }
-    }
 
     var gaps: Gaps {
         Gaps(
@@ -394,5 +398,23 @@ final class ShelfLargeTVUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 3)
         remote.press(.menu)
         Thread.sleep(forTimeInterval: 2)
+    }
+}
+
+extension ShelfLargeTVUITests {
+    /// Frames the main thread missed so far, as the section's probe counts
+    /// them, and posters a card asked for before they were in memory.
+    struct Gaps {
+        var frames = 0
+        var dropped = 0
+        var hitchMs = 0
+        var posterMisses = 0
+        var posterAsks = 0
+
+        static func - (lhs: Gaps, rhs: Gaps) -> Gaps {
+            Gaps(
+                frames: lhs.frames - rhs.frames, dropped: lhs.dropped - rhs.dropped, hitchMs: lhs.hitchMs - rhs.hitchMs,
+                posterMisses: lhs.posterMisses - rhs.posterMisses, posterAsks: lhs.posterAsks - rhs.posterAsks)
+        }
     }
 }

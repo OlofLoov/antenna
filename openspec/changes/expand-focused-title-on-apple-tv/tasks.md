@@ -19,6 +19,7 @@
 - [x] 2.4 Remove `ShelfPreview` and the preview overlay; rest the focused row under the tab bar; keep the 0.8 s rest for asking and the focus return from a page or the player
 - [x] 2.5 Move `ShelfPreviewTVUITests`, `ShelfRowsUpTVUITests` and `ShelfLargeTVUITests` to the card; add `testAFastSwipeExpandsEachPosterAndAsksOnlyTheLast`
 - [x] 2.6 Update the Apple TV walk-through step for the rows to anchor on the card
+- [x] 2.7 Keep the highlight's column on a move up or down (`ShelfColumn`, `ShelfModel.focusRequests`), with `testDownAndUpTheRowsKeepsTheColumn`
 
 ## 3. Verify
 
