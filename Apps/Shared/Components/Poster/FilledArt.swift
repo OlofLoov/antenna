@@ -37,6 +37,10 @@ enum PreviewArt {
     static let tallPoster = stripes(width: 200, height: 300)
     /// A 16:9 backdrop.
     static let backdrop = stripes(width: 320, height: 180)
+    /// A white backdrop, the hardest ground for light copy.
+    static let white = solid(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1))
+    /// A near-black backdrop.
+    static let dark = solid(CGColor(srgbRed: 0.06, green: 0.07, blue: 0.09, alpha: 1))
     /// An address for previews whose loader ignores it.
     static let address = URL(fileURLWithPath: "/preview-art")
 
@@ -53,6 +57,19 @@ enum PreviewArt {
             context.setFillColor(CGColor(srgbRed: red, green: 0.35, blue: 0.3 + Double(index) * 0.1, alpha: 1))
             context.fill(CGRect(x: 0, y: index * band, width: width, height: band))
         }
+        return context.makeImage()
+    }
+
+    /// A 16:9 picture of one color.
+    static func solid(_ color: CGColor) -> CGImage? {
+        guard
+            let context = CGContext(
+                data: nil, width: 320, height: 180, bitsPerComponent: 8, bytesPerRow: 0,
+                space: CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        else { return nil }
+        context.setFillColor(color)
+        context.fill(CGRect(x: 0, y: 0, width: 320, height: 180))
         return context.makeImage()
     }
 

@@ -46,6 +46,26 @@ struct HeroFootScrim: View {
     }
 }
 
+/// The band behind the section's name and the genre button at the top of
+/// the iPhone banner: 0.86 at the top edge to 0.8 at the foot of the
+/// content, then clear over the `fade` below it, so the name, the count and
+/// the chevron stay legible on a white picture and the band blends into the
+/// art (design-system/the-scrim-blends-into-the-art). Use it as the
+/// content's background; the fade reaches below the content.
+struct HeroTopScrim: View {
+    let fade: CGFloat
+
+    var body: some View {
+        VStack(spacing: 0) {
+            LinearGradient(colors: [Palette.ground.opacity(0.86), Palette.ground.opacity(0.8)], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Palette.ground.opacity(0.8), Palette.ground.opacity(0)], startPoint: .top, endPoint: .bottom)
+                .frame(height: fade)
+        }
+        .padding(.bottom, -fade)
+        .accessibilityHidden(true)
+    }
+}
+
 #Preview("Hero scrim over art", traits: .fixedLayout(width: 1920, height: 640)) {
     ZStack(alignment: .topLeading) {
         LinearGradient(colors: [.orange, .teal], startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -81,5 +101,17 @@ struct HeroFootScrim: View {
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(HeroFootScrim(fade: 56))
+    }
+}
+
+#Preview("Hero top scrim over white", traits: .fixedLayout(width: 390, height: 320)) {
+    ZStack(alignment: .top) {
+        Color.white
+        Text(verbatim: "Series")
+            .font(.title.bold())
+            .foregroundStyle(Palette.text)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(HeroTopScrim(fade: 56))
     }
 }
