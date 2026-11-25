@@ -23,6 +23,7 @@ extension LiveModel {
             if shownRecents != inputs.recents { catalogue = catalogue.replacingRecents(shownRecents) }
             if groupRules != inputs.rules { catalogue = catalogue.replacingRules(groupRules) }
             self.catalogue = catalogue
+            listed = !inputs.channels.isEmpty
             names = built.names
             restoreGroup()
             building = nil

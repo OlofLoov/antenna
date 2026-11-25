@@ -66,6 +66,27 @@ import Testing
         #expect(engine.loaded.isEmpty)
     }
 
+    @Test("tvos-shell/no-empty-state-before-the-channels-are-listed Live shows loading while the title watched last waits")
+    func loadingWhileTheTitleWaits() async {
+        await launch(watched: movie)
+        #expect(model.launchTitle.holds)
+        #expect(model.tuned == nil)
+        #expect(model.liveScreen == .loading, "both sources have channels, so No channels yet never shows")
+    }
+
+    @Test("tvos-shell/no-empty-state-before-the-channels-are-listed the Guide waits for the channels that loaded to be listed")
+    func guideWaitsForTheCatalogue() async {
+        #expect(model.channelsPending, "before the sources are read")
+        await launch(watched: nil)
+        model.listed = false
+        #expect(model.channelsPending, "loaded but not in the catalogue yet")
+        model.listed = true
+        #expect(!model.channelsPending)
+        model.sourcesChanged([])
+        #expect(!model.channelsPending, "no sources leaves nothing to wait for")
+        #expect(model.liveScreen == .empty)
+    }
+
     @Test("tvos-shell/back-to-the-last-channel-on-launch a title that gives way lets the last channel play full screen")
     func titleGivesWay() async {
         await launch(watched: movie)

@@ -14,6 +14,17 @@
         /// Thrown by a loader for a source whose login is not on this device.
         enum LoadFailure: Error { case waitingForLogin }
 
+        /// True while channels may still arrive: before the sources are
+        /// read, while one loads, and while the channels that loaded are not
+        /// in the catalogue yet. The Guide says "Loading channels" then
+        /// instead of an empty group
+        /// (tvos-shell/no-empty-state-before-the-channels-are-listed).
+        var channelsPending: Bool {
+            guard launched else { return true }
+            if sources.contains(where: { $0.state == .loading }) { return true }
+            return !listed && sources.contains { $0.state.isLoadedWithChannels }
+        }
+
         /// Where focus goes on Live: the picture once tuned, Try again while
         /// the error shows, else the loading or empty screen.
         var liveFocus: ShellFocus {

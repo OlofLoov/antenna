@@ -34,14 +34,18 @@
         }
 
         /// `dismissed` is the set of sources whose banner the user closed;
-        /// the banner comes back when another source fails.
-        init(sources: [LiveSource], dismissed: Set<UUID>) {
-            if sources.contains(where: { $0.state == .loading }) {
+        /// the banner comes back when another source fails. `listed` is
+        /// false while the channels that loaded are not in the list yet:
+        /// the sources then still read as loading, never as empty
+        /// (live-tv-on-iphone-ipad-mac/no-empty-state-before-the-channels-are-listed).
+        init(sources: [LiveSource], dismissed: Set<UUID>, listed: Bool) {
+            let loaded = sources.contains(where: \.state.isLoadedWithChannels)
+            if sources.contains(where: { $0.state == .loading }) || (loaded && !listed) {
                 self = .loading(sources)
                 return
             }
             let waiting = sources.filter { $0.state == .waitingForLogin }
-            guard sources.contains(where: \.state.isLoadedWithChannels) else {
+            guard loaded else {
                 let lines = waiting.map(\.waitingLine)
                 let failures = sources.filter { $0.state == .failed || $0.state == .offline }
                 if !failures.isEmpty, failures.allSatisfy({ $0.state == .offline }) {
@@ -94,9 +98,10 @@
 #if os(iOS) || os(macOS)
     extension LiveModel {
         /// What the list shows for the sources as they stand. Before the
-        /// first sources arrive it is an empty loading list.
+        /// first sources arrive it is an empty loading list, and until the
+        /// channels that loaded are listed it stays loading.
         var status: LiveStatus {
-            launched ? LiveStatus(sources: sources, dismissed: dismissed) : .loading([])
+            launched ? LiveStatus(sources: sources, dismissed: dismissed, listed: listed) : .loading([])
         }
     }
 #endif

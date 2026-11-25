@@ -86,6 +86,7 @@
                 let starred = FavoriteRecord.snapshots(favorites, profile: new.profile)
                 catalogueBuilds.start(new, favorites: starred, recents: shownRecents, latestRecents: { shownRecents }) { built in
                     catalogue = built
+                    model.listed = !new.channels.isEmpty
                     overlayCatalogueChanged()
                 }
             }
