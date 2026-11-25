@@ -35,6 +35,9 @@ The system SHALL show an Audio and Subtitles button on the Apple TV bar of a pla
 - **WHEN** the viewer swipes down
 - **THEN** the bar shows with the button grayed out and focus stays on the picture
 
+## MODIFIED Requirements
+
+
 ### Requirement: Choose audio and subtitles in a movie or episode
 The system SHALL offer in the movie and episode player the same audio and subtitle choices as Live on every platform, and SHALL start each title by the Subtitles setting.
 
