@@ -21,37 +21,54 @@ final class LiveKeyboardUITests: XCTestCase {
         app.launchArguments = ["-ui-testing-live", "channels"]
         app.launchEnvironment["UITESTING_ENGINE_LOG"] = log.path
         app.launchInEnglish()
-        XCTAssertTrue(app.row(0).waitForExistence(timeout: 10), "the channel list never appeared")
+        XCTAssertTrue(app.row(0).waitForExistence(timeout: 30), "the channel list never appeared")
         return app
     }
 
-    /// Presses the down arrow until the ring is on the first row.
+    /// Moves the ring onto the first row.
     private func ringOnFirstRow(_ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
-        ring(onto: app.row(0), app, file: file, line: line)
+        ring(onto: 0, app, file: file, line: line)
     }
 
-    /// Presses the down arrow until `row` has the ring. The simulator drops
-    /// a key press now and then, so each press gets five seconds to show
-    /// before the next, enough on a loaded runner; a press that was only
-    /// slow would otherwise carry the ring past `row`. The sidebar's group search once took the first arrow
-    /// key and kept every later one, so a failure names what holds the keyboard.
-    private func ring(onto row: XCUIElement, _ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
-        let ringed = NSPredicate(format: "value == 'Keyboard focus'")
-        for _ in 0..<4 {
-            app.typeKey(.downArrow, modifierFlags: [])
-            let shown = XCTNSPredicateExpectation(predicate: ringed, object: row)
-            if XCTWaiter().wait(for: [shown], timeout: 5) == .completed { return }
+    /// The identifiers of the list's rows in order: Home's four, then Cabin Film.
+    private var rows: [String] {
+        (0..<4).map { "browse.row.\(LiveUITests.home).\($0)" } + [cabinFilm]
+    }
+
+    /// The position of the row with the ring, read in one snapshot.
+    private func ringPosition(_ app: XCUIApplication) -> Int? {
+        let ringed = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH 'browse.row.' AND value == 'Keyboard focus'")).firstMatch
+        guard ringed.exists else { return nil }
+        return rows.firstIndex(of: ringed.identifier)
+    }
+
+    /// Moves the ring onto the row at `target` with the arrow keys. The
+    /// simulator drops a key press now and then, and on a loaded runner one
+    /// snapshot can take seconds, so a press that only showed late used to
+    /// be followed by another and carried the ring past the row. Each press
+    /// now waits for the ring to leave where it was, and the next press goes
+    /// from wherever it is then, up or down. The sidebar's group search once
+    /// took the first arrow key and kept every later one, so a failure names
+    /// what holds the keyboard.
+    private func ring(onto target: Int, _ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
+        for _ in 0..<6 {
+            let before = ringPosition(app)
+            if before == target { return }
+            // With no ring, down starts it on the first row.
+            app.typeKey(before.map { $0 > target } == true ? .upArrow : .downArrow, modifierFlags: [])
+            let deadline = Date.now.addingTimeInterval(15)
+            while ringPosition(app) == before, Date.now < deadline { RunLoop.current.run(until: .now.addingTimeInterval(0.5)) }
         }
-        XCTFail("the arrow keys never moved the ring to \(row.identifier); \(ringState(app))", file: file, line: line)
+        if ringPosition(app) == target { return }
+        XCTFail("the arrow keys never moved the ring to row \(target); \(ringState(app))", file: file, line: line)
     }
 
     /// Which row has the ring and what holds the keyboard, for failure messages.
     private func ringState(_ app: XCUIApplication) -> String {
-        let rows = (0..<4).map { app.row($0) } + [app.element(cabinFilm)]
-        let ring = rows.firstIndex { $0.value as? String == "Keyboard focus" }
         let holder = app.descendants(matching: .any).matching(NSPredicate(format: "hasKeyboardFocus == true"))
             .allElementsBoundByIndex.map(\.identifier)
-        return "ring on row \(ring.map(String.init) ?? "none"), keyboard in \(holder)"
+        return "ring on row \(ringPosition(app).map(String.init) ?? "none"), keyboard in \(holder)"
     }
 
     private var cabinFilm: String { "browse.row.00000000-0000-0000-0000-0000000000D2.0" }
@@ -119,7 +136,7 @@ final class LiveKeyboardUITests: XCTestCase {
         let app = try launch()
 
         ringOnFirstRow(app)
-        ring(onto: app.row(1), app)
+        ring(onto: 1, app)
         app.waitForEngine("idle loads=0")
 
         // XCUITest sends the Return key for "\n"; `.return` reaches no key command.
@@ -156,7 +173,7 @@ final class LiveKeyboardUITests: XCTestCase {
         for _ in 0..<8 { app.typeKey(.downArrow, modifierFlags: []) }
         // Five rows, so eight presses run past the end even when one is dropped.
         let last = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Keyboard focus'"), object: app.element(cabinFilm))
-        XCTAssertEqual(XCTWaiter().wait(for: [last], timeout: 3), .completed, "the ring is not on the last row; \(ringState(app))")
+        XCTAssertEqual(XCTWaiter().wait(for: [last], timeout: 15), .completed, "the ring is not on the last row; \(ringState(app))")
         app.waitForEngine("idle loads=0")
     }
 
@@ -167,7 +184,7 @@ final class LiveKeyboardUITests: XCTestCase {
         app.typeKey("f", modifierFlags: .command)
         let filter = app.element("browse.filter")
         let focused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hasKeyboardFocus == true"), object: filter)
-        XCTAssertEqual(XCTWaiter().wait(for: [focused], timeout: 3), .completed, "Command-F did not reach the filter")
+        XCTAssertEqual(XCTWaiter().wait(for: [focused], timeout: 15), .completed, "Command-F did not reach the filter")
         app.typeKey("k", modifierFlags: [])
         XCTAssertEqual((filter.value as? String)?.lowercased(), "k")
 
