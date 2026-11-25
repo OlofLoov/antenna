@@ -1,4 +1,12 @@
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+	existsSync,
+	mkdirSync,
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
@@ -91,6 +99,23 @@ describe('the built site', () => {
 		expect(css).toContain('--tip: #4fd1c5;');
 		expect(css).toContain('--tip: #119c8f;');
 		expect(readFileSync(join(BUILD, 'favicon.svg'), 'utf8')).toContain(playTriangle);
+	});
+
+	// antuna-website/headings-are-rounded-like-the-wordmark
+	test('h1 and h2 ask for the rounded system font, body text for the plain one, and no font loads', () => {
+		const assets = join(BUILD, '_app/immutable/assets');
+		const css = readdirSync(assets)
+			.filter((name) => name.endsWith('.css'))
+			.map((name) => readFileSync(join(assets, name), 'utf8'))
+			.join('\n')
+			.replace(/["']/g, '');
+		const plain = '-apple-system,system-ui,Helvetica Neue,sans-serif';
+		expect(css).toContain(`h1,h2{font-family:ui-rounded,${plain}}`);
+		expect(css).toMatch(
+			/body\{[^}]*font:17px\/1\.5 -apple-system,system-ui,Helvetica Neue,sans-serif/
+		);
+		expect(css.match(/ui-rounded/g)).toHaveLength(1);
+		expect(css).not.toContain('@font-face');
 	});
 
 	// antuna-website/the-legal-pages-are-dated-and-link-to-each-other
