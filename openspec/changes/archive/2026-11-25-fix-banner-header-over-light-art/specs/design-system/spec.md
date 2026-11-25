@@ -7,8 +7,7 @@ picture and change smoothly, darkest under the copy and lighter away from
 it, with no edge inside the picture. It MUST sit under the copy in
 right-to-left languages too. On iPhone the section's name and the genre
 button at the top of the banner MUST sit on a darkening of their own that
-fades into the art below them, dark enough for their text to stay legible
-on a white picture.
+fades into the art below them.
 
 #### Scenario: The Apple TV banner
 - **WHEN** the viewer opens Movies or Series on Apple TV
