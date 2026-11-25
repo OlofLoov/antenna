@@ -41,6 +41,11 @@ final class LiveModel {
     private(set) var fullScreen = false
     /// False until the first `sourcesChanged`, so no empty state flashes at launch.
     private(set) var launched = false
+    /// True once the catalogue on screen was built from loaded channels.
+    /// Until then a source that loaded channels still reads as loading, so
+    /// the list and the Guide never show an empty group while the
+    /// catalogue builds (live-tv-on-iphone-ipad-mac/no-empty-state-before-the-channels-are-listed).
+    var listed = false
     /// Sources whose failure banner the user dismissed.
     private(set) var dismissed: Set<UUID> = []
     /// The description of the last failed source in source order. Never

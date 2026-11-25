@@ -13,8 +13,10 @@ import Testing
             [LiveSource(id: home, name: "Home", state: homeState), LiveSource(id: cabin, name: "Cabin", state: cabinState)]
         }
 
-        private func status(_ homeState: LiveSource.State, _ cabinState: LiveSource.State, dismissed: Set<UUID> = []) -> LiveStatus {
-            LiveStatus(sources: sources(homeState, cabinState), dismissed: dismissed)
+        private func status(
+            _ homeState: LiveSource.State, _ cabinState: LiveSource.State, dismissed: Set<UUID> = [], listed: Bool = true
+        ) -> LiveStatus {
+            LiveStatus(sources: sources(homeState, cabinState), dismissed: dismissed, listed: listed)
         }
 
         private func english(_ resource: LocalizedStringResource?) -> String? {
@@ -78,7 +80,18 @@ import Testing
         func dismissed() {
             #expect(status(.loaded(channels: 3), .failed, dismissed: [cabin]) == .channels(banner: nil, waiting: []))
             let three = sources(.loaded(channels: 3), .failed) + [LiveSource(id: UUID(), name: "Office", state: .offline)]
-            #expect(banner(LiveStatus(sources: three, dismissed: [cabin])) == "Could not load Cabin and Office")
+            #expect(banner(LiveStatus(sources: three, dismissed: [cabin], listed: true)) == "Could not load Cabin and Office")
+        }
+
+        @Test(
+            "live-tv-on-iphone-ipad-mac/no-empty-state-before-the-channels-are-listed loaded but unlisted reads as loading"
+        )
+        func notListedYet() {
+            let unlisted = status(.loaded(channels: 412), .loaded(channels: 0), listed: false)
+            #expect(unlisted == .loading(sources(.loaded(channels: 412), .loaded(channels: 0))))
+            #expect(!unlisted.isMessage, "no empty or error message while the list builds")
+            #expect(status(.loaded(channels: 0), .failed, listed: false) == .failed(waiting: []), "nothing loaded is not held back")
+            #expect(status(.loaded(channels: 0), .loaded(channels: 0), listed: false) == .empty(waiting: []))
         }
     }
 #endif

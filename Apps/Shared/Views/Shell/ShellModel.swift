@@ -64,6 +64,8 @@
         @ObservationIgnored var launchStarted: LastChannelKey?
         /// True once the first `sourcesChanged` has run.
         private(set) var launched = false
+        /// The catalogue on screen was built from loaded channels.
+        var listed = false
         @ObservationIgnored private(set) var deadlinePassed = false
         /// A Top Shelf item waiting for its source; the launch tune waits while set.
         @ObservationIgnored var shelfItem: UUID?
@@ -111,12 +113,12 @@
 
         // MARK: Derived state
 
-        /// `.loading` until the first `sourcesChanged`, so the empty screen
-        /// never flashes at launch.
+        /// `.empty` only once every source added nothing; until then, with
+        /// nothing tuned, `.loading` (tvos-shell/no-empty-state-before-the-channels-are-listed).
         var liveScreen: LiveScreen {
             if tuned != nil { return .playing }
             if !launched { return .loading }
-            return sources.contains { $0.state == .loading } ? .loading : .empty
+            return sources.allSatisfy(\.state.addedNothing) ? .empty : .loading
         }
 
         // MARK: Sources

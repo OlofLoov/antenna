@@ -104,7 +104,10 @@
                 ) {
                     days(data, now: now)
                 } rows: {
-                    if data.rows.isEmpty {
+                    if data.rows.isEmpty, shell.channelsPending {
+                        // (tvos-shell/no-empty-state-before-the-channels-are-listed)
+                        GuideGrid.Empty(text: "Loading channels")
+                    } else if data.rows.isEmpty {
                         GuideGrid.Empty(text: "No channels in \(catalogue.label(of: group))")
                     } else {
                         ZStack(alignment: .topLeading) {

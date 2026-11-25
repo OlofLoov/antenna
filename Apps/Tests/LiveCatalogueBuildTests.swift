@@ -100,6 +100,28 @@ import Testing
             #expect(!live.catalogue.groups.contains(.all), "the hidden group stays hidden")
         }
 
+        @Test(
+            "live-tv-on-iphone-ipad-mac/no-empty-state-before-the-channels-are-listed loading until the catalogue lands"
+        )
+        func loadingUntilListed() async {
+            let gate = HeldBuild(held: 3)
+            let live = live(gate: gate, sizes: [3])
+            #expect(live.status == .loading([]), "before the sources are read")
+            live.sourcesChanged([descriptor])
+            while await !gate.isWaiting { await Task.yield() }
+            #expect(live.sources.map(\.state) == [.loaded(channels: 3)])
+            #expect(live.rows.isEmpty, "the catalogue is still building")
+            guard case .loading = live.status else {
+                Issue.record("an empty list showed while the catalogue built: \(live.status)")
+                return
+            }
+
+            await gate.open()
+            await live.settled()
+            #expect(live.status == .channels(banner: nil, waiting: []))
+            #expect(live.rows.count == 3)
+        }
+
         @Test("live-tv-on-iphone-ipad-mac/type-to-narrow-the-list the filter reads the name index built with the catalogue")
         func filterAfterBuild() async {
             let gate = HeldBuild(held: -1)
