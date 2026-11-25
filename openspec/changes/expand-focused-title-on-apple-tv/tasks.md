@@ -7,7 +7,8 @@
 - [x] 1.5 Keep 50 MB of posters in memory on every platform, Apple TV included, and decode each at its card's resting size with no focus headroom
 - [x] 1.6 Show a quiet placeholder in the poster's shape while it loads and fade the poster in over 0.2 s, with no fade for a poster in memory and none under Reduce Motion; draw it on `TV-Movies-Expanded-Loading`
 - [x] 1.7 Let a card off screen drop its picture, so the cache holds the only decoded posters
-- [x] 1.8 Record the benchmarks with and without the prefetch in design.md, at 50 MB
+- [x] 1.8 Test that a card whose poster is in memory draws it without waiting for a load, and one whose poster is not shows the placeholder (`PosterLoadingTests`)
+- [x] 1.9 Record the benchmarks with and without the prefetch in design.md, at 50 MB
 
 ## 2. The expanded card
 

@@ -160,9 +160,11 @@ What that means:
 - A card whose poster is not in memory shows a quiet shape in Surface 0.06
   at the poster's size, with no name, and the poster fades in over 0.2 s
   when it lands (`PosterLoading.fadeIn`). A poster already in memory draws
-  in the card's first frame without the fade: the card looks it up
-  synchronously in `PosterCache.kept` before the first frame, without
-  waiting for the actor. Under Reduce Motion the poster appears at once. A
+  without the fade: the card looks it up in `PosterCache.kept` as it is
+  laid out, without waiting for the actor. `PosterLoadingTests` draws a
+  card in a window once and checks both cases; it does not tell the
+  lookup at layout from the one in the card's task, which also ran before
+  that draw. Under Reduce Motion the poster appears at once. A
   title with no poster, or one that failed, still shows its name tile.
   Drawn on `TV-Movies-Expanded-Loading`; the reference has the token.
 - A card that leaves the screen lets go of its picture, so the cache is the
@@ -171,7 +173,8 @@ What that means:
   the next row in the direction of the scroll shows first (decision 4). On
   Apple TV that is two and a half rows on screen, about 20 posters, plus 3
   and 8 ahead: about 31 posters, 36 MB. The 8 MB of a 1920 by 1080 banner
-  backdrop shares the same limit.
+  backdrop shares the same limit; keeping backdrops apart changed nothing
+  on the walk down and up ("At 50 MB").
 - The memory lets go of the poster shown longest ago first
   (`PosterCache.Memory`), and empties itself when the system runs low on
   memory, as `NSCache` did.
@@ -258,9 +261,11 @@ So the asks are lower and compare only within each build.
 | Along the posters | `973cdeb7`, 400 MB | 75 (1200) / 492, 75 (1188) / 498, 73 (1218) / 468 | 2 of 38, 0 of 34, 0 of 35 |
 | | 50 MB, no prefetch | 73 (1164) / 467, 79 (1255) / 493, 74 (1203) / 463 | 4 of 13, 2 of 13, 0 of 13 |
 | | 50 MB, prefetch | 72 (1190) / 468, 78 (1249) / 493, 73 (1211) / 496 | 0 of 13, 0 of 13, 0 of 13 |
+| | 50 MB, prefetch, backdrops apart | 76 (1267) / 463, 74 (1232) / 498, 83 (1330) / 459 | 0 of 13, 0 of 12, 0 of 13 |
 | Down and up the rows | `973cdeb7`, 400 MB | 88 (1456) / 662, 78 (1283) / 671, 88 (1383) / 665 | 1 of 182, 1 of 156, 1 of 158 |
 | | 50 MB, no prefetch | 82 (1374) / 667, 92 (1505) / 660, 88 (1437) / 663 | 85 of 112, 99 of 126, 104 of 127 |
 | | 50 MB, prefetch | 78 (1288) / 671, 80 (1291) / 668, 92 (1502) / 656 | 14 of 112, 30 of 126, 50 of 127 |
+| | 50 MB, prefetch, backdrops apart | 91 (1430) / 662, 86 (1366) / 667, 87 (1384) / 661 | 14 of 112, 29 of 126, 50 of 127 |
 | Standing still | 50 MB, prefetch | 11 (195) / 591, 10 (175) / 589, 9 (206) / 591 | |
 
 What this shows:
@@ -275,6 +280,18 @@ What this shows:
   placeholder shows for the time of a file read and a decode, and the
   poster fades in. Without loading ahead, 3 in 4 or more did. Why each
   walk finds more than the one before is not explained yet.
+- Backdrops sharing the 50 MB with posters do not explain it. "Backdrops
+  apart" kept wide pictures in a memory of their own, 24 MB, with the same
+  order of letting go and the same purge on low memory, and posters alone
+  in the 50 MB. It found 14, 29 and 50 not ready, the same as before. That
+  memory is not in the code: it bought nothing here, and a backdrop decoded
+  for a 4K window, about 33 MB, would not fit in 24 MB at all.
+- Also ruled out: the order the memory lets go in (the `NSCache` runs
+  below), and how far the next row loads ahead on the first walk (14 of
+  112 against 46 of 112 with only the row under). Not yet looked at:
+  whether rows the stack keeps alive off screen skip the load of the row
+  past them, and whether a row scrolled away stops loads the next row
+  still needs.
 - A geometry reader on every row, to count the posters a row shows, cost
   about 40 dropped frames per walk down and up (about 127 against 88). The
   count now comes from the window's width, read once.
