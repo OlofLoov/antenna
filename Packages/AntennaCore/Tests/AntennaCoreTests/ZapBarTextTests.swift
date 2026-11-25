@@ -115,4 +115,10 @@ import Testing
         #expect(Channel(id: "a", name: "A", streamURL: link).catchUpFooter == nil)
         #expect(ZapBarText.browseHint(.english) == "Press to browse channels")
     }
+
+    @Test("tv-zap-bar-and-number-entry/the-info-bar-names-the-hold the second footer line names the hold, in each language")
+    func tracksHint() {
+        #expect(ZapBarText.tracksHint(.english) == "Hold for info, audio and subtitles")
+        #expect(ZapBarText.tracksHint(Locale(identifier: "sv_SE")) == "Håll ned för info, ljud och undertexter")
+    }
 }

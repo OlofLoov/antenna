@@ -8,9 +8,10 @@ import SwiftUI
 /// (player-controls-and-playback-errors/move-around-in-a-movie-or-episode;
 /// `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`,
 /// `TV-Title-Player-Transport`, `TV-Title-Player-Scrub`). The audio and
-/// subtitle lists sit top right on iPhone, iPad and Mac and in a panel held
-/// open from select on Apple TV (`iPhone-Title-Player-Tracks`,
-/// `iPad-Title-Player-Tracks`, `TV-Title-Player-Tracks`;
+/// subtitle lists sit top right on iPhone, iPad and Mac. On Apple TV they
+/// are a panel opened from the bar's Audio and Subtitles button or by
+/// holding select (`iPhone-Title-Player-Tracks`, `iPad-Title-Player-Tracks`,
+/// `TV-Title-Player-Tracks`, `TV-Title-Player-TracksButton`;
 /// player-controls-and-playback-errors/choose-audio-and-subtitles-in-a-movie-or-episode).
 /// Near the end of an episode the Next episode button and the Up next card
 /// sit bottom right (up-next capability).
@@ -66,47 +67,6 @@ struct ShelfPlayerView: View {
     }
 }
 
-/// The error in place of a movie or episode that cannot play, with Try
-/// again and a way back to the page
-/// (player-controls-and-playback-errors/a-movie-or-episode-that-cannot-play-says-why).
-/// Menu on Apple TV and Escape on a Mac go back too.
-private struct TitleFailure: View {
-    let failure: FailureMessage
-    let title: String
-    let retry: () -> Void
-    let close: () -> Void
-    #if os(tvOS)
-        @FocusState private var retryFocused: Bool
-    #endif
-
-    var body: some View {
-        #if os(tvOS)
-            PlayerStatus.TelevisionFailure(
-                title: failure.title, explanation: failure.explanation, detail: title, hint: "Press Menu to go back"
-            ) {
-                Button("Try again", action: retry)
-                    .focused($retryFocused)
-                    .accessibilityIdentifier("player.retry")
-                Button("Back", action: close)
-                    .accessibilityIdentifier("player.error.back")
-            }
-            .onExitCommand(perform: close)
-            .task { retryFocused = true }
-            .ignoresSafeArea()
-        #else
-            PlayerStatus.Failure(channel: title, title: failure.title, explanation: failure.explanation) {
-                Button("Try again", action: retry)
-                    .accessibilityIdentifier("player.retry")
-                Button("Back", action: close)
-                    .buttonStyle(.bordered)
-                    .keyboardShortcut(.cancelAction)
-                    .accessibilityIdentifier("player.error.back")
-            }
-            .ignoresSafeArea()
-        #endif
-    }
-}
-
 extension ShelfPlayback.UpNextShown {
     /// The card's words, nil while only the button shows.
     var card: NextEpisode.Content? {
@@ -139,14 +99,22 @@ extension TitleTransport {
     /// The Siri Remote over the playing title. The picture takes focus so
     /// select, Menu and play/pause reach it; the panel takes focus while
     /// open. Select and play/pause play and pause, or play from the target
-    /// of a slide. Menu puts a target back, or closes the title. Holding
-    /// select opens the panel. A hint layer for the remote goes between the
-    /// bar and the panel.
+    /// of a slide. Menu puts a target back, or closes the title. Down
+    /// reaches the Next episode button while it shows, then the bar's Audio
+    /// and Subtitles button, which opens the panel on Subtitles. Holding
+    /// select opens it on Audio. A hint layer for the remote goes between
+    /// the bar and the panel.
     private struct TitleRemoteLayer: View {
         let playback: ShelfPlayback
         let transport: TitleTransport
         let title: String
         @FocusState private var focus: TitlePanelFocus?
+        /// True from a down that sends focus to the bar's button until focus
+        /// leaves it. Only then can the button take focus, so the focus
+        /// engine never moves to it on its own and holds the bar up.
+        @State private var tracksReachable = false
+        /// False while the Next episode button or the bar's button has focus.
+        @State private var pictureReachable = true
         @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
         @Environment(\.locale) private var locale
         @Environment(\.layoutDirection) private var direction
@@ -156,30 +124,28 @@ extension TitleTransport {
             let upNext = panel == nil ? playback.upNext : nil
             let card = transport.isScrubbing ? nil : upNext?.card
             ZStack {
-                HoldButton(click: transport.select, hold: openPanel) {
+                HoldButton(click: transport.select, hold: { openPanel(on: .audio) }) {
                     Color.clear
                 }
                 .buttonStyle(FocusHolderStyle())
-                .disabled(panel != nil || card != nil)
+                .disabled(panel != nil || card != nil || !pictureReachable)
                 .focused($focus, equals: .picture)
                 .controlHints(.titlePlayer(scrubbing: transport.isScrubbing, nextEpisode: upNext?.isButton == true))
-                .task { focus = .picture }
+                .task(id: pictureReachable) { if pictureReachable { focus = .picture } }
                 .onExitCommand { menu() }
                 .onPlayPauseCommand { transport.select() }
-                // Down reaches the Next episode button; left and right stay skips
-                // (up-next/up-next-on-the-siri-remote).
-                .onMoveCommand { direction in
-                    if direction == .down, upNext?.isButton == true {
-                        playback.noteInput()
-                        focus = .nextEpisode
-                    }
-                }
+                // Down reaches the Next episode button, then the bar's button; left
+                // and right stay skips (up-next/up-next-on-the-siri-remote).
+                .onMoveCommand { move($0, nextEpisode: upNext?.isButton == true) }
                 .accessibilityHidden(true)
                 if transport.controlsShown, panel == nil {
-                    Transport.Bar(title: title, times: transport.times, isPaused: transport.isPaused, target: target)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .allowsHitTesting(false)
-                        .transition(.opacity)
+                    Transport.Bar(title: title, times: transport.times, isPaused: transport.isPaused, target: target) {
+                        if let tracks = playback.tracks {
+                            tracksButton(tracks, nextEpisode: upNext?.isButton == true)
+                        }
+                    }
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .transition(.opacity)
                 }
                 if let notice = transport.notice {
                     Transport.Notice(text: Words(locale)(notice))
@@ -214,8 +180,13 @@ extension TitleTransport {
             }
             .animation(.easeOut(duration: 0.25), value: transport.controlsShown)
             .animation(.easeOut(duration: 0.25), value: upNext)
-            .onChange(of: voiceOver, initial: true) { _, on in
-                transport.held = on
+            // The bar stays while VoiceOver runs or its button has focus.
+            .onChange(of: voiceOver || focus == .tracks, initial: true) { _, holds in
+                transport.held = holds
+            }
+            .onChange(of: focus) { _, new in
+                if new != .tracks { tracksReachable = false }
+                if new == .tracks || new == .nextEpisode { pictureReachable = false }
             }
             // The card takes focus on Play now; when it or the button goes,
             // focus goes back to the picture.
@@ -223,11 +194,11 @@ extension TitleTransport {
                 if shows {
                     focus = .nextEpisode
                 } else if focus == .nextEpisode, upNext?.isButton != true {
-                    focus = .picture
+                    backToPicture()
                 }
             }
             .onChange(of: upNext == nil) { _, gone in
-                if gone, focus == .nextEpisode { focus = .picture }
+                if gone, focus == .nextEpisode { backToPicture() }
             }
         }
 
@@ -242,18 +213,56 @@ extension TitleTransport {
                 .controlHints(.upNext(asking: upNext.isAsking))
                 .onExitCommand {
                     playback.cancelUpNext()
-                    focus = .picture
+                    backToPicture()
                 }
                 .onPlayPauseCommand { transport.playPause() }
             } else if upNext.isButton {
                 NextEpisode.Button { playback.playNext() }
                     .focused($focus, equals: .nextEpisode)
                     .controlHints(.nextEpisodeButton)
-                    .onExitCommand { focus = .picture }
+                    .onExitCommand { backToPicture() }
                     .onPlayPauseCommand { transport.playPause() }
-                    .onMoveCommand { direction in
-                        if direction == .up { focus = .picture }
-                    }
+                    .onMoveCommand { move($0, nextEpisode: true) }
+            }
+        }
+
+        /// The Audio and Subtitles button at the end of the bar's title row
+        /// (player-controls-and-playback-errors/audio-and-subtitles-from-the-bar-on-apple-tv).
+        private func tracksButton(_ tracks: TitleTracks, nextEpisode: Bool) -> some View {
+            Transport.TracksButton(subtitlesOn: tracks.subtitlesOn, isAvailable: tracks.hasTrackChoices, reachable: tracksReachable) {
+                openPanel(on: .subtitles)
+            }
+            .focused($focus, equals: .tracks)
+            .controlHints(.titleTracksButton)
+            .onExitCommand { backToPicture() }
+            .onPlayPauseCommand { transport.playPause() }
+            .onMoveCommand { move($0, nextEpisode: nextEpisode) }
+            // Focus moves once the button is on screen and enabled.
+            .task(id: tracksReachable) {
+                if tracksReachable { focus = .tracks }
+            }
+        }
+
+        /// Up and down between the picture, the Next episode button and the
+        /// bar's button. Down always shows the bar.
+        private func move(_ direction: MoveCommandDirection, nextEpisode: Bool) {
+            let next: TitlePanelFocus?
+            switch direction {
+            case .down:
+                playback.noteInput()
+                transport.show(after: .touch)
+                next = TitleRemoteMoves.down(from: focus, nextEpisode: nextEpisode, hasChoices: playback.tracks?.hasTrackChoices == true)
+            case .up:
+                next = TitleRemoteMoves.up(from: focus, nextEpisode: nextEpisode)
+            default:
+                return
+            }
+            if next == .tracks {
+                tracksReachable = true
+            } else if next == .picture {
+                backToPicture()
+            } else if let next {
+                focus = next
             }
         }
 
@@ -268,17 +277,30 @@ extension TitleTransport {
             Task { await playback.close() }
         }
 
-        /// Opens the panel on Audio with focus on its tab.
-        private func openPanel() {
+        /// Opens the panel on `tab` with focus on it: Audio from the hold,
+        /// Subtitles from the bar's button.
+        private func openPanel(on tab: PanelTab) {
             guard let tracks = playback.tracks else { return }
             playback.noteInput()
-            tracks.panel = .audio
-            focus = .segment(.audio)
+            tracks.panel = tab
+            focus = .segment(tab)
+        }
+
+        /// Focus back on the picture. While a button below it has focus the
+        /// picture cannot take focus, so a swipe down from the Next episode
+        /// button reaches the bar instead of the full-screen picture; it
+        /// comes back here first.
+        private func backToPicture() {
+            if pictureReachable {
+                focus = .picture
+            } else {
+                pictureReachable = true
+            }
         }
 
         private func closePanel() {
             playback.tracks?.panel = nil
-            focus = .picture
+            backToPicture()
         }
     }
 #else
@@ -441,19 +463,4 @@ extension TitleTransport {
             .accessibilityHidden(true)
         }
     }
-#endif
-
-#if os(tvOS)
-    /// Where focus is in the Apple TV movie player.
-    enum TitlePanelFocus: Hashable {
-        case picture
-        /// The Next episode button, or Play now on the Up next card.
-        case nextEpisode
-        case segment(PanelTab)
-        /// A track row by its id, or `TrackMenu.offID`.
-        case track(String)
-        /// The Subtitles On/Off switch after the tabs.
-        case subtitles
-    }
-
 #endif

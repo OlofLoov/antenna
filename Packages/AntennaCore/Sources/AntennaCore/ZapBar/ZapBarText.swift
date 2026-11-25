@@ -62,6 +62,12 @@ public enum ZapBarText {
         Words(locale)("Press to browse channels")
     }
 
+    /// The info bar's second footer line, naming the hold that opens the
+    /// info panel (tv-zap-bar-and-number-entry/the-info-bar-names-the-hold).
+    public static func tracksHint(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Hold for info, audio and subtitles")
+    }
+
     /// The programme on now, or the guide grid's wording in its place:
     /// "Loading guide…" while it loads, "Guide unavailable" after it failed,
     /// "No programme information" otherwise

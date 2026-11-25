@@ -43,6 +43,7 @@
                     ZapBar.Status(
                         badges: badges,
                         catchUp: channel.catchUpFooter, hint: rewinds ? TimeshiftText.liveHint() : ZapBarText.browseHint(),
+                        tracksHint: ZapBarText.tracksHint(),
                         live: rewinds ? .behind : .live)
                 }
                 .accessibilityLabel(spoken(line))
