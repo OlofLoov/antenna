@@ -97,6 +97,16 @@ a:focus-visible {
 	border-radius: 4px;
 }
 
+h1,
+h2 {
+	font-family:
+		ui-rounded,
+		-apple-system,
+		system-ui,
+		'Helvetica Neue',
+		sans-serif;
+}
+
 h1 {
 	font-size: 44px;
 	line-height: 1.1;
