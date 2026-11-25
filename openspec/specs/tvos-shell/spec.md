@@ -202,7 +202,7 @@ The system SHALL show a loading screen on Live while no channel plays and at lea
 - **THEN** a source waiting for its password loads once the password is on this Apple TV, and the loading screen never appears while a channel plays
 
 ### Requirement: An empty screen with Retry
-The system SHALL show a "No channels yet" screen naming each source that added nothing and why ("no channels", "offline", "could not load its channels" or "waiting for its login to sync from iCloud"), once no source is loading and no channel plays, with Open Settings, focused first, and Try again. Try again SHALL load those sources again behind the loading screen and give the last channel another 10 seconds.
+The system SHALL show a "No channels yet" screen naming each source that added nothing and why ("no channels", "offline", "could not load its channels" or "waiting for its login to sync from iCloud"), once no source is loading, no source has channels and no channel plays, with Open Settings, focused first, and Try again. Try again SHALL load those sources again behind the loading screen and give the last channel another 10 seconds.
 
 #### Scenario: Nothing to play
 - **GIVEN** every source has finished, failed or is waiting for its password, and none has any channels
@@ -487,3 +487,16 @@ The loading screen at launch SHALL show the Antuna wordmark playing Tuning above
 - **GIVEN** the loading screen with the mark tuning
 - **WHEN** a channel starts playing
 - **THEN** the loading screen and its mark go at once, with no wait for the mark
+
+### Requirement: No empty state before the channels are listed
+The system SHALL show the loading screen on Live while a source has channels and none plays yet, as while the launch waits for the page of the title watched last. The Guide SHALL read "Loading channels" in place of an empty group before the sources are read, while a source loads, and while the channels that loaded are not listed yet.
+
+#### Scenario: The title watched last opens at launch
+- **GIVEN** the profile last watched a movie on this Apple TV and its sources load before the movie's page opens
+- **WHEN** Live shows while the page is on its way
+- **THEN** the loading screen lists each source with its channel count, and "No channels yet" never shows
+
+#### Scenario: The Guide while the sources load
+- **GIVEN** the sources are still loading
+- **WHEN** the user opens the Guide
+- **THEN** the grid reads "Loading channels", and "No channels in" the group shows only once the channels are listed and the group has none
