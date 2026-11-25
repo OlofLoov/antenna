@@ -161,7 +161,7 @@ final class TVJourneys: XCTestCase {
         remote.press(.right)
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         XCTAssertTrue(focused.exists, "no poster in Recently added took focus")
-        journey.snap("movies-row-focus", anchor: "movies.row.recentlyAdded")
+        journey.snap("movies-row-focus", anchor: "movies.card.focused.title")
     }
 
     /// The Long Harbor's cast and crew with the first name focused, then

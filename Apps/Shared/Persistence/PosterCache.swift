@@ -3,16 +3,28 @@ import CoreGraphics
 import CryptoKit
 import Foundation
 import ImageIO
+import Synchronization
 
-/// Movie and series posters, decoded and kept in memory up to 50 MB and as
-/// files on disk up to 500 MB (movies-and-series-browsing). Entries are named
-/// by a SHA-256 hash of the poster's address, so no file name or file holds
-/// the address. A poster that fails to load or decode gives nil, and the
+/// Movie and series posters, decoded and kept in memory up to 50 MB (400 MB
+/// on Apple TV) and as files on disk up to 500 MB (movies-and-series-browsing).
+/// Entries are named by a SHA-256 hash of the poster's address, so no file
+/// name or file holds the address. A poster that fails to load or decode gives nil, and the
 /// screen shows the name tile.
 actor PosterCache {
     static let shared = PosterCache()
 
-    static let memoryLimit = 50 * 1024 * 1024
+    /// On Apple TV a poster decoded for a 4K screen takes about 2 MB, and
+    /// moving down six rows and back up with the posters loaded ahead
+    /// touches about 150 of them, so Apple TV keeps 400 MB; elsewhere
+    /// posters are a third of that size
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    static let memoryLimit = {
+        #if os(tvOS)
+            400 * 1024 * 1024
+        #else
+            50 * 1024 * 1024
+        #endif
+    }()
     static let diskLimit = 500 * 1024 * 1024
 
     private let memory = NSCache<NSString, Poster>()
@@ -52,8 +64,14 @@ actor PosterCache {
     func poster(for url: URL, fitting fit: PosterFit? = nil) async -> Poster? {
         let key = Self.key(url)
         let memoryKey = fit.map { "\(key)@\($0.key)" } ?? key
+        #if DEBUG
+            Self.asks.add(1, ordering: .relaxed)
+        #endif
         if let kept = memory.object(forKey: memoryKey as NSString) { return kept }
         guard !Task.isCancelled else { return nil }
+        #if DEBUG
+            Self.misses.add(1, ordering: .relaxed)
+        #endif
         let waiter = UUID()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
@@ -87,16 +105,73 @@ actor PosterCache {
     }
 
     /// A cancelled caller stops waiting with nothing; the last one out
-    /// cancels the load.
+    /// cancels the load, unless a row still wants it loaded ahead.
     private func leave(_ memoryKey: String, waiter: UUID) {
         guard var running = loading[memoryKey], let continuation = running.waiters.removeValue(forKey: waiter) else { return }
         continuation.resume(returning: nil)
-        if running.waiters.isEmpty {
+        if running.waiters.isEmpty, !prefetching.values.contains(where: { $0.contains(memoryKey) }) {
             running.task.cancel()
             loading[memoryKey] = nil
         } else {
             loading[memoryKey] = running
         }
+    }
+
+    /// Loads and decodes posters before anyone asks for them, so they are in
+    /// memory when their cards come into view
+    /// (movies-and-series-browsing/browsing-stays-responsive). A card that
+    /// asks while one loads joins it. `group` names who asked, such as a
+    /// row, for `stopPrefetching` once it scrolls away.
+    func prefetch(_ urls: [URL], fitting fit: PosterFit, group: String) {
+        var wanted = prefetching[group, default: []]
+        for url in urls {
+            let key = Self.key(url)
+            let memoryKey = "\(key)@\(fit.key)"
+            guard memory.object(forKey: memoryKey as NSString) == nil else { continue }
+            wanted.insert(memoryKey)
+            guard loading[memoryKey] == nil else { continue }
+            let id = UUID()
+            let task = Task(priority: .utility) {
+                let poster = await load(url, key: key, memoryKey: memoryKey, fit: fit)
+                finish(memoryKey, id: id, with: poster)
+            }
+            loading[memoryKey] = Load(id: id, task: task, waiters: [:])
+        }
+        // Only loads still running are worth remembering.
+        wanted = wanted.filter { loading[$0] != nil }
+        prefetching[group] = wanted.isEmpty ? nil : wanted
+    }
+
+    /// Stops the loads `group` asked for that no card waits for and no
+    /// other group wants, as when a row scrolls away, so a fast scroll does
+    /// not leave a queue of posters nobody sees.
+    func stopPrefetching(_ group: String) {
+        guard let keys = prefetching.removeValue(forKey: group) else { return }
+        let others = prefetching.values.reduce(into: Set<String>()) { $0.formUnion($1) }
+        for key in keys.subtracting(others) {
+            guard let running = loading[key], running.waiters.isEmpty else { continue }
+            running.task.cancel()
+            loading[key] = nil
+        }
+    }
+
+    #if DEBUG
+        /// Cards that asked for a poster not yet in memory, since launch.
+        /// The browsing benchmarks read it (movies-and-series-browsing/browsing-stays-responsive).
+        static let misses = Atomic<Int>(0)
+        /// Cards that asked for a poster, since launch.
+        static let asks = Atomic<Int>(0)
+    #endif
+
+    /// The posters each group asked to prefetch that are still loading.
+    private var prefetching: [String: Set<String>] = [:]
+
+    /// The loads in flight, waited for or not. For tests.
+    var inFlight: Int { loading.count }
+
+    /// True when the poster at `url` decoded for `fit` is in memory. For tests.
+    func inMemory(_ url: URL, fitting fit: PosterFit) -> Bool {
+        memory.object(forKey: "\(Self.key(url))@\(fit.key)" as NSString) != nil
     }
 
     /// The callers waiting for a load, over every load in flight. For tests.

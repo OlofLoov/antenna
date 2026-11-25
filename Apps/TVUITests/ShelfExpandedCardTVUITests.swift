@@ -1,11 +1,11 @@
 import XCTest
 
-/// The preview at the top of Movies and Series on Apple TV
-/// (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
+/// The focused poster growing into a card in its row of Movies and Series
+/// on Apple TV (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
 /// Launches the shell's `channels` scenario, whose Movies are Night Ferry,
 /// Snow Day and Copper Hills, or the shelf's `titles` script.
 @MainActor
-final class ShelfPreviewTVUITests: XCTestCase {
+final class ShelfExpandedCardTVUITests: XCTestCase {
     let remote = XCUIRemote.shared
     var app = XCUIApplication()
 
@@ -78,89 +78,94 @@ final class ShelfPreviewTVUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 1)
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv
-    func testRestingOnAPosterShowsItsPreview() {
+    /// The frame of the card with focus, for its size.
+    var focusedFrame: CGRect {
+        app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.frame
+    }
+
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv
+    func testRestingOnAPosterExpandsItInPlace() {
         openMovies()
         XCTAssertEqual(element("movies.hero.title").label, "Night Ferry")
         press(.down)
-        expect(element("movies.preview"), "exists == true")
         XCTAssertTrue(focused.hasPrefix("movies.card."), focused)
-        expect(element("movies.preview.title"), "label == 'Night Ferry'")
-        // The row comes to rest 16 pt under the preview's 520 pt foot.
+        expect(element("movies.card.focused.title"), "label == 'Night Ferry'")
+        XCTAssertFalse(element("movies.preview").exists, "no preview at the top")
+        // The row rests just under the tab bar, with room for the rows below.
         let row = element("movies.row.recentlyAdded")
-        for _ in 0..<10 where !(518...590).contains(row.frame.minY) {
+        for _ in 0..<10 where !(120...200).contains(row.frame.minY) {
             Thread.sleep(forTimeInterval: 0.3)
         }
-        XCTAssertTrue((518...590).contains(row.frame.minY), "the row's top is at \(row.frame.minY)")
+        XCTAssertTrue((120...200).contains(row.frame.minY), "the row's top is at \(row.frame.minY)")
+        XCTAssertGreaterThan(focusedFrame.width, 500, "the focused poster grew into a landscape card: \(focusedFrame)")
 
         press(.right)
-        expect(element("movies.preview.title"), "label == 'Snow Day'", timeout: 5)
-        expect(element("movies.preview.facts"), "label CONTAINS '2002'")
-        expect(element("movies.preview.plot"), "label == 'The story of Snow Day.'")
+        expect(element("movies.card.focused.title"), "label == 'Snow Day'")
+        expect(element("movies.card.focused.facts"), "label CONTAINS '2002'")
+        expect(element("movies.card.focused.plot"), "label == 'The story of Snow Day.'")
+        XCTAssertGreaterThan(focusedFrame.width, 500, "the next poster grew in its place: \(focusedFrame)")
     }
 
     // design-system/apple-tv-content-stays-in-the-safe-area
-    // The hero copy, the preview copy and the rows started 64 pt from the side; the safe area is 80.
+    // The hero copy and the rows started 64 pt from the side; the safe area is 80.
     func testMoviesKeepsTheSafeEdges() {
         openMovies()
         XCTAssertEqual(element("movies.hero.title").frame.minX, 80, accuracy: 1, "the hero copy starts at the safe edge")
         // Play has focus, and its platter grows a few points past its place at the margin.
         XCTAssertGreaterThanOrEqual(element("movies.hero.play").frame.minX, 72, "Play starts at the safe edge")
         press(.down)
-        expect(element("movies.preview.title"), "label == 'Night Ferry'")
-        XCTAssertEqual(element("movies.preview.title").frame.minX, 80, accuracy: 1, "the preview copy starts at the safe edge")
-        let row = element("movies.row.recentlyAdded")
-        let cards = row.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'movies.card.'"))
-        guard let frame = cards.allElementsBoundByIndex.map(\.frame).min(by: { $0.minX < $1.minX }) else {
-            return XCTFail("the row has no cards")
-        }
-        // The focused poster grows about its middle; its 212 pt resting frame starts at the margin.
-        XCTAssertEqual(frame.midX - 106, 80, accuracy: 1, "the first card starts at the safe edge: \(frame)")
+        expect(element("movies.card.focused.title"), "label == 'Night Ferry'")
+        // The first card has focus and grows about its middle; its resting frame starts at the margin.
+        let frame = focusedFrame
+        XCTAssertEqual(frame.minX, 80, accuracy: 40, "the first card starts at the safe edge: \(frame)")
+        XCTAssertGreaterThanOrEqual(element("movies.card.focused.title").frame.minX, 80, "the card's copy is inside the safe area")
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, moving quickly along a row
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, moving quickly along a row
     // movies-and-series-browsing/title-details-are-asked-once-per-title
-    func testAFastSwipeAsksNothingOnTheWay() {
+    func testAFastSwipeExpandsEachPosterAndAsksOnlyTheLast() {
         open("movies", rights: 2)
         press(.down)
-        expect(element("movies.preview"), "exists == true")
+        expect(element("movies.card.focused.title"), "exists == true")
         Thread.sleep(forTimeInterval: 2)
         let before = infoLoads
         XCTAssertGreaterThanOrEqual(before, 0)
-        // Each press lands well inside the 0.8 second rest.
+        // Each press lands well inside the 0.8 second rest, and each poster grows as the highlight reaches it.
         press(.right, times: 3)
+        expect(element("movies.card.focused.title"), "exists == true", timeout: 2)
         Thread.sleep(forTimeInterval: 2)
         XCTAssertLessThanOrEqual(infoLoads, before + 1, "only the poster the highlight stopped on is asked about")
+        XCTAssertGreaterThan(focusedFrame.width, 500, "the poster it stopped on is a card: \(focusedFrame)")
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, back to the banner
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, back to the banner
     func testUpFromTheFirstRowGoesBackToTheBanner() {
         openMovies()
         press(.down)
-        expect(element("movies.preview"), "exists == true")
+        expect(element("movies.card.focused.title"), "exists == true")
         press(.up)
         expectFocus("movies.hero.play")
-        expect(element("movies.preview"), "exists == false")
+        expect(element("movies.card.focused.title"), "exists == false")
         XCTAssertEqual(element("movies.hero.title").label, "Night Ferry", "the banner shows the title it showed before")
     }
 
-    // movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv, back from a title page
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, back from a title page or the player
     // movies-and-series-browsing/title-details-are-asked-once-per-title, the page uses the kept answer
-    func testBackFromAPageShowsThePreviewAtOnce() {
+    func testBackFromAPageExpandsThePosterAtOnce() {
         open("series", rights: 3)
         press(.down)
         expectFocus("series.card.xtream#cabin#series#2")
         press(.right, times: 2)
         expectFocus("series.card.xtream#cabin#series#1")
-        expect(element("series.preview.title"), "label == 'Northern Lights'", timeout: 5)
-        expect(element("series.preview.plot"), "label == 'A series about Northern Lights.'")
+        expect(element("series.card.focused.title"), "label == 'Northern Lights'", timeout: 5)
+        expect(element("series.card.focused.plot"), "label == 'A series about Northern Lights.'")
         let asked = infoLoads
         press(.select)
         expectFocus("title.play")
-        XCTAssertEqual(infoLoads, asked, "the page uses the preview's answer")
+        XCTAssertEqual(infoLoads, asked, "the page uses the card's answer")
         press(.menu)
         expectFocus("series.card.xtream#cabin#series#1")
-        expect(element("series.preview.title"), "label == 'Northern Lights'", timeout: 2)
+        expect(element("series.card.focused.plot"), "label == 'A series about Northern Lights.'")
         XCTAssertEqual(infoLoads, asked)
     }
 }

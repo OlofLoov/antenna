@@ -134,7 +134,11 @@
                             .accessibilityValue(count)
                     }
                     let gaps = FrameGaps.shared
-                    let counts = [("frames", gaps.frames), ("dropped", gaps.dropped), ("hitchMs", gaps.hitchMilliseconds)]
+                    let counts = [
+                        ("frames", gaps.frames), ("dropped", gaps.dropped), ("hitchMs", gaps.hitchMilliseconds),
+                        ("posterMisses", PosterCache.misses.load(ordering: .relaxed)),
+                        ("posterAsks", PosterCache.asks.load(ordering: .relaxed)),
+                    ]
                     ForEach(counts, id: \.0) { name, value in
                         let count = String(value)
                         Text(verbatim: count)

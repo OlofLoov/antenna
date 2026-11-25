@@ -410,8 +410,15 @@
     }
 
     extension UITestingShelf {
+        /// `-ui-testing-no-prefetch` loads each poster only once its card
+        /// shows, as before posters loaded ahead, for the benchmarks to
+        /// compare (movies-and-series-browsing/browsing-stays-responsive).
+        static var loadsAhead: Bool {
+            !ProcessInfo.processInfo.arguments.contains("-ui-testing-no-prefetch")
+        }
+
         /// `-ui-testing-focus-scroll-wins` scrolls a row placed after a move
-        /// up back under the preview a few frames later, as the focus
+        /// up back to the tab bar's foot a few frames later, as the focus
         /// engine's own scroll does when it lands after the screen's.
         static let focusScrollWinsArgument = "-ui-testing-focus-scroll-wins"
 

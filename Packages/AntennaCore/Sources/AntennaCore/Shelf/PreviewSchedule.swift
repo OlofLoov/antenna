@@ -1,7 +1,7 @@
 import Foundation
 
 /// Which title the Apple TV preview shows, from the highlight's moves
-/// (movies-and-series-browsing/preview-of-the-focused-title-on-apple-tv).
+/// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
 /// A title takes over the preview once the highlight has stayed on it for
 /// `rest`; titles passed on the way never do. Holds no clock: the caller
 /// passes the time of each event.

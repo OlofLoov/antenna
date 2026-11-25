@@ -80,15 +80,17 @@ enum ShelfView {
 
         var body: some View {
             Button(action: select) {
-                PosterArt(name: title.name, url: title.posterURL)
-                    .frame(width: metrics.poster.width, height: metrics.poster.height)
-                    .overlay(alignment: .topLeading) {
-                        if title.kind == .series, badged.contains(.series) {
-                            ShelfBanner.Badge(text: "SERIES", size: max(10, metrics.count - 3))
-                                .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
-                                .padding(metrics.corner * 0.7)
+                ShelfExpandedCard.Expanding(title: title) {
+                    PosterArt(name: title.name, url: title.posterURL)
+                        .frame(width: metrics.poster.width, height: metrics.poster.height)
+                        .overlay(alignment: .topLeading) {
+                            if title.kind == .series, badged.contains(.series) {
+                                ShelfBanner.Badge(text: "SERIES", size: max(10, metrics.count - 3))
+                                    .background(Palette.scrimTint.opacity(0.72), in: cornerShape(.small))
+                                    .padding(metrics.corner * 0.7)
+                            }
                         }
-                    }
+                }
             }
             .posterButtonStyle()
             .accessibilityLabel(label)
