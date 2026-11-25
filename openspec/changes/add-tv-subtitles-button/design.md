@@ -108,7 +108,29 @@ on screen whenever the bar is.
 It becomes VoiceOver or the button having focus. When focus leaves, `held`
 turns false and the bar hides after the usual 5 seconds.
 
-### 6. Grayed out
+### 6. Focus moves only by the screen's rules
+
+The UI tests on the simulator found two moves the focus engine made by
+itself. It gave the bar's button focus with nobody pressing anything,
+which held the bar up. And a swipe down from the Next episode button went
+to the full-screen picture, which contains every point below the button,
+instead of to the bar. So the bar's button can take
+focus only after a down sent focus there (`reachable`), and the picture
+cannot take focus while the Next episode button or the bar's button has
+it. Focus goes back to the picture through one path that enables it first.
+The button keeps its resting look while it cannot take focus, so it uses
+its own button style (white and grown with focus) instead of the system
+one, which would dim it.
+
+That is an exception to `design-system/controls-use-system-styles`, and
+`scripts/check-rules.sh` lists the button's file next to the other
+app-drawn parts. Two ways to keep the system's bordered style failed on
+the simulator. With `.focusable(reachable)` the button took focus, but
+select on it opened no panel. Applying `.focusable(false)` only while out
+of reach replaced the view each time `reachable` changed, and the button
+never took focus.
+
+### 7. Grayed out
 
 With one sound and no subtitles (`TitleTracks.hasTrackChoices` false) the
 button is disabled and at 0.4, as on iPhone, iPad and Mac. A disabled
@@ -120,7 +142,7 @@ still opens the panel, whose Subtitles tab says there are none.
 - `Transport.Bar` gets a `@ViewBuilder accessory` shown at the end of the
   title row; the Live info bar and previews pass none (`EmptyView`).
 - `Transport.TracksButton` (tvOS, in `Components/Transport/`): values
-  `subtitlesOn`, `isAvailable`, closure `open`. Captions bubble,
+  `subtitlesOn`, `isAvailable`, `reachable`, closure `open`. Captions bubble,
   `captions.bubble.fill` while subtitles are on. Label "Audio and
   Subtitles", value "Subtitles On" or "Subtitles Off", identifier
   `title.transport.tracks`.
