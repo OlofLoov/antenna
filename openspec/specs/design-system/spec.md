@@ -594,6 +594,11 @@ either glass or a plain surface, never both.
 - **WHEN** the viewer looks at Close, the track buttons and the skip and pause buttons
 - **THEN** each one sits on glass with the same edge, and none is a dark disc
 
+#### Scenario: The top bar of Movies and Series on iPhone
+- **WHEN** the user scrolls Movies or Series on iPhone
+- **THEN** the genre button in the top bar is a glass capsule with no fill or outline of its own
+- **AND** the bar behind it is clear, with the system's blur over the posters passing under it and no glass of its own
+
 ### Requirement: One spacing and radius scale
 Padding and gaps MUST come from the spacing scale in the reference (4, 8,
 12, 16, 24, 32, 48, 64, 80). Corner radii MUST be one of the four in the
@@ -697,9 +702,7 @@ Where copy sits over a picture, on the Movies and Series banner, the Apple
 TV preview and the title pages, the darkening behind it MUST span the whole
 picture and change smoothly, darkest under the copy and lighter away from
 it, with no edge inside the picture. It MUST sit under the copy in
-right-to-left languages too. On iPhone the section's name and the genre
-button at the top of the banner MUST sit on a darkening of their own that
-fades into the art below them.
+right-to-left languages too.
 
 #### Scenario: The Apple TV banner
 - **WHEN** the viewer opens Movies or Series on Apple TV
@@ -708,12 +711,13 @@ fades into the art below them.
 #### Scenario: The iPhone banner
 - **WHEN** the user opens Movies on iPhone
 - **THEN** the band under the copy fades into the art above it, with no line across the picture
+- **AND** the top of the picture, above the band, is not darkened
 
 #### Scenario: The iPhone header on a white picture
 - **GIVEN** the banner shows a title whose picture is white at the top
 - **WHEN** the user opens Series or Movies on iPhone
-- **THEN** "Series" or "Movies", "All series" or "All movies", its count and its chevron are legible on a darker band
-- **AND** the band fades into the art below the genre button, with no line across the picture
+- **THEN** "Series" or "Movies" and "All series" or "All movies" sit in the top bar above the picture, not on it
+- **AND** the white top of the picture shows as it is, with no band over it
 
 #### Scenario: A title page in Arabic
 - **GIVEN** the app is in Arabic
