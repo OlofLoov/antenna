@@ -288,9 +288,9 @@ The system SHALL offer an App icon row in Settings, Appearance on iPhone, iPad a
 - **THEN** the Home Screen shows the standard icon again
 
 #### Scenario: Another profile on the same device
-- **GIVEN** Dad picked the Teal icon on the iPad
+- **GIVEN** Dad picked the Blue icon on the iPad
 - **WHEN** the iPad switches to Kids
-- **THEN** the icon stays Teal, and the App icon row reads Teal for Kids too
+- **THEN** the icon stays Blue, and the App icon row reads Blue for Kids too
 
 #### Scenario: Another device
 - **GIVEN** Dad picked the Amber icon on the iPhone
@@ -305,6 +305,10 @@ The system SHALL offer an App icon row in Settings, Appearance on iPhone, iPad a
 - **GIVEN** the system cannot change the icon right now
 - **WHEN** the user picks an icon
 - **THEN** the row keeps the icon the Home Screen shows
+
+#### Scenario: The pictures in the row
+- **WHEN** the user opens the App icon row
+- **THEN** each picture is the Antuna a in that icon's colors, the standard one with teal tips
 
 ### Requirement: A User-Agent per source
 The system SHALL let the user set a User-Agent in a source's details on iPhone, iPad, Mac and Apple TV, and SHALL send it on the source's playlist download, its provider calls and its streams. Empty SHALL mean the default. The setting SHALL sync with the source.
