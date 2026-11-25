@@ -65,7 +65,7 @@ enum OnboardingHelp {
             VStack(alignment: .leading, spacing: Metrics.Spacing.xLarge) {
                 VStack(alignment: .leading, spacing: Metrics.Spacing.medium) {
                     Text(OnboardingHelp.title)
-                        .font(.title2.weight(.semibold))
+                        .font(.boardStyle(.title2, weight: .semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text(OnboardingHelp.intro)
                         .foregroundStyle(.secondary)

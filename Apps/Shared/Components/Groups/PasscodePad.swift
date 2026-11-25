@@ -78,7 +78,7 @@ enum PasscodePad {
 
         var body: some View {
             VStack(spacing: 20) {
-                Text(title).font(.title.bold()).foregroundStyle(Palette.text)
+                Text(title).font(.boardStyle(.title, weight: .bold)).foregroundStyle(Palette.text)
                 Text(message).foregroundStyle(Palette.textMuted).multilineTextAlignment(.center)
                 Digits(filled: filled)
                 Text(error ?? .verbatim(" "))
@@ -103,7 +103,7 @@ enum PasscodePad {
 
         var body: some View {
             VStack(spacing: 16) {
-                Text("Enter passcode").font(.title.bold()).foregroundStyle(Palette.text)
+                Text("Enter passcode").font(.boardStyle(.title, weight: .bold)).foregroundStyle(Palette.text)
                 Text(message).foregroundStyle(Palette.textMuted)
                 ProgressView()
                 Text("Waiting for the passcode from iCloud.")

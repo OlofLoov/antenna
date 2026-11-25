@@ -37,12 +37,17 @@ and `TypeScale` (`Apps/Shared/Components/TypeScale.swift`) picks the style
 nearest that size, the larger one on a tie. Nothing on Apple TV is smaller
 than Caption 2 (23 pt); nothing on iPhone, iPad or Mac is smaller than
 Caption 1 (12 pt). iPad and Mac use the iOS column; the Mac's sizes come
-from the system.
+from the system. The top two rows are SF Pro Rounded, set by the step and
+not by the screen; every other row is plain SF Pro
+(design-system/display-headings-are-rounded). A component that names a text
+style instead of a size writes `.font(.boardStyle(.title2))` to get the same
+design. Navigation bar titles are drawn by the system and stay plain. No
+font is bundled or downloaded.
 
 | tvOS size | Text style | iOS size | Text style |
 |-----------|------------|----------|------------|
-| 76 | `.title` (Title 1) | 34 | `.largeTitle` |
-| 57 | `.title2` | 28 | `.title` |
+| 76 | `.title` (Title 1), rounded | 34 | `.largeTitle`, rounded |
+| 57 | `.title2`, rounded | 28 | `.title`, rounded |
 | 48 | `.title3` | 22 | `.title2` |
 | 38 | `.headline` | 20 | `.title3` |
 | 31 | `.callout` | 17 | `.headline` / `.body` |

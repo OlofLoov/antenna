@@ -41,7 +41,7 @@ enum OnboardingKinds {
             VStack(spacing: Metrics.Spacing.xxLarge) {
                 VStack(spacing: Metrics.Spacing.medium) {
                     Text("What kind of source?")
-                        .font(.title2.weight(.semibold))
+                        .font(.boardStyle(.title2, weight: .semibold))
                         .accessibilityAddTraits(.isHeader)
                     Text("Your provider gave you one of these. You can add more later.")
                         .foregroundStyle(.secondary)

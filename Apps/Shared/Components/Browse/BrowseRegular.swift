@@ -36,7 +36,7 @@ extension Browse {
 
         private var heading: some View {
             Text(title)
-                .font(.title.weight(.bold))
+                .font(.boardStyle(.title, weight: .bold))
                 .lineLimit(1)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("browse.header.title")

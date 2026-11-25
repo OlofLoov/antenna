@@ -36,7 +36,7 @@ enum OnboardingSummary {
                             .foregroundStyle(.secondary)
                             .accessibilityIdentifier("onboarding.eyebrow")
                         Text("You're set")
-                            .font(.title2.weight(.semibold))
+                            .font(.boardStyle(.title2, weight: .semibold))
                             .accessibilityAddTraits(.isHeader)
                         if liveCaption != nil {
                             Text(

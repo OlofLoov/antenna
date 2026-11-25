@@ -25,7 +25,7 @@ struct CoverBackdrop: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(Metrics.televisionSafeArea)
         CoverBackdrop()
-        Text("What kind of source?").font(.title2.weight(.semibold))
+        Text("What kind of source?").font(.boardStyle(.title2, weight: .semibold))
     }
     .background(Palette.ground)
 }
