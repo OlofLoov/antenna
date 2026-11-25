@@ -13,6 +13,7 @@ import { afterEach, describe, expect, test } from 'vitest';
 import {
 	BUILD,
 	BUDGET,
+	SITE,
 	checkBudgets,
 	checkEmails,
 	checkLinks,
@@ -26,9 +27,20 @@ import {
 	scriptSizes,
 	siteCsp,
 	styleHash,
+	tags,
 	textOf
 } from '../scripts/check-site.js';
 import { externalize, routeName } from '../scripts/externalize-start.js';
+import {
+	channels,
+	devices,
+	mayDrift,
+	mayZap,
+	nextChannel,
+	pointerDrift,
+	scrollDrift,
+	timing
+} from '../src/lib/tuneIn.ts';
 
 describe('the built site', () => {
 	test('the build exists; run npm run build first', () => {
@@ -244,6 +256,170 @@ describe('the pages', () => {
 			for (const href of ['/support/', '/terms/', '/privacy/'])
 				expect(footer, page.name).toContain(`href="${href}"`);
 		}
+	});
+});
+
+describe('the home page hero', () => {
+	const home = () => readFileSync(join(BUILD, 'index.html'), 'utf8');
+	const hero = () => {
+		const html = home();
+		return html.slice(html.indexOf('id="hero"'), html.indexOf('id="sources"'));
+	};
+	/** @param {string} name */
+	const source = (name) => readFileSync(join(SITE, 'src', 'lib', 'components', name), 'utf8');
+	/** @param {string} code */
+	const styleOf = (code) => code.match(/<style>([\s\S]*)<\/style>/)?.[1] ?? '';
+	/** @param {number} ms */
+	const seconds = (ms) => `${ms / 1000}s`;
+
+	/**
+	 * The CSS with every block under the media query taken out, and the blocks.
+	 * @param {string} css @param {string} query
+	 */
+	function splitMedia(css, query) {
+		const blocks = [];
+		let rest = css;
+		for (let at = rest.indexOf(query); at !== -1; at = rest.indexOf(query)) {
+			let depth = 0;
+			let end = rest.indexOf('{', at);
+			do {
+				if (rest[end] === '{') depth += 1;
+				if (rest[end] === '}') depth -= 1;
+				end += 1;
+			} while (depth > 0);
+			blocks.push(rest.slice(at, end));
+			rest = rest.slice(0, at) + rest.slice(end);
+		}
+		return { rest, blocks };
+	}
+
+	// antuna-website/the-home-page-tunes-in
+	test('the wordmark draws above the headline and the TV, iPad and iPhone show Live', () => {
+		const html = hero();
+		const mark = html.indexOf('class="mark');
+		expect(mark).toBeGreaterThan(-1);
+		expect(mark).toBeLessThan(html.indexOf('<h1'));
+		const svg = html.slice(html.lastIndexOf('<svg', mark), html.indexOf('</svg>', mark));
+		expect(svg).toContain('aria-hidden="true"');
+		expect(svg.match(/class="letter[^"]*"/g)).toHaveLength(5);
+		expect(svg.match(/class="ring[^"]*"/g)).toHaveLength(2);
+		expect(svg.match(/class="tip[^"]*"/g)).toHaveLength(2);
+
+		const images = tags(html).filter((tag) => tag.name === 'img');
+		expect(images.map((image) => image.attributes.src)).toEqual([
+			'/images/en/apple-tv-live.jpg',
+			'/images/en/live-tv-ipad.jpg',
+			'/images/en/live-iphone.jpg'
+		]);
+		expect(images[0].attributes.loading).toBe('eager');
+		expect(html.indexOf('<img')).toBeGreaterThan(html.indexOf('Coming soon to the App Store'));
+		for (const image of images) expect(image.attributes.alt.length).toBeGreaterThan(20);
+
+		const css = readFileSync(join(SITE, 'src', 'lib', 'site.css'), 'utf8');
+		expect(css).toContain('--glow: #1a2a44;');
+		const page = readFileSync(join(SITE, 'src', 'routes', '+page.svelte'), 'utf8');
+		expect(page).toMatch(/radial-gradient\(closest-side at [^,]*, var\(--glow\), var\(--bg\)\)/);
+	});
+
+	// antuna-website/the-home-page-tunes-in
+	test('the tune-in follows the timeline in design.md', () => {
+		const stage = styleOf(source('TuneInStage.svelte'));
+		const mark = styleOf(source('TuneInWordmark.svelte'));
+		expect(stage).toContain(`tune-static ${seconds(timing.picture)} linear both`);
+		expect(stage).toContain(
+			`snap ${seconds(timing.snap)} cubic-bezier(0.2, 0.8, 0.3, 1) ${seconds(timing.picture)} both`
+		);
+		expect(mark).toContain(
+			`ring ${seconds(timing.ring)} ease-out ${seconds(timing.picture)} forwards`
+		);
+		expect(mark).toContain(
+			`ring ${seconds(timing.ring)} ease-out ${seconds(timing.secondRing)} forwards`
+		);
+		expect(mark).toContain(`hole ${seconds(timing.hello)} ease-in-out both`);
+		expect(timing.picture - timing.staticFrom).toBeGreaterThanOrEqual(1000);
+	});
+
+	// antuna-website/the-tv-zaps-through-the-app
+	test('only Live is in the page, and every channel has its three pictures', () => {
+		const html = hero();
+		for (const channel of channels)
+			for (const device of devices)
+				expect(existsSync(join(BUILD, 'images', 'en', channel[device]))).toBe(true);
+		for (const channel of channels.slice(1))
+			for (const device of devices) expect(html).not.toContain(channel[device]);
+		expect(channels.map((channel) => channel.tv)).toEqual([
+			'apple-tv-live.jpg',
+			'guide-apple-tv.jpg',
+			'movies-apple-tv.jpg',
+			'player-apple-tv.jpg'
+		]);
+		expect(channels.map((_, index) => nextChannel(index))).toEqual([1, 2, 3, 0]);
+		expect(timing.zapEvery).toBe(4000);
+		const pause = tags(html).find((tag) => tag.name === 'button');
+		expect(pause?.attributes.class).toContain('pause');
+		expect('hidden' in (pause?.attributes ?? {})).toBe(true);
+		expect(textOf(html)).toContain('Pause channels');
+		expect(html).toMatch(/class="number[^"]*" aria-hidden="true">1</);
+	});
+
+	// antuna-website/the-tv-zaps-through-the-app
+	test('the channels stop off screen, in a hidden tab, when paused and before the tune-in ends', () => {
+		const running = {
+			reducedMotion: false,
+			tuned: true,
+			onScreen: true,
+			tabVisible: true,
+			paused: false
+		};
+		expect(mayZap(running)).toBe(true);
+		for (const change of [
+			{ onScreen: false },
+			{ tabVisible: false },
+			{ paused: true },
+			{ tuned: false },
+			{ reducedMotion: true }
+		])
+			expect(mayZap({ ...running, ...change })).toBe(false);
+		expect(mayDrift(running)).toBe(true);
+		expect(mayDrift({ ...running, onScreen: false })).toBe(false);
+		expect(mayDrift({ ...running, tabVisible: false })).toBe(false);
+		expect(mayDrift({ ...running, reducedMotion: true })).toBe(false);
+		expect(pointerDrift(0, 400, 1280, 800)).toEqual({ x: -1, y: 0 });
+		expect(pointerDrift(2000, -10, 1280, 800)).toEqual({ x: 1, y: -1 });
+		expect(scrollDrift(100, 600)).toBe(0);
+		expect(scrollDrift(-300, 600)).toBe(0.5);
+		expect(scrollDrift(-900, 600)).toBe(1);
+	});
+
+	// antuna-website/the-hero-holds-still-with-reduce-motion
+	test('every animation waits for no-preference, and Reduce Motion only fades the mark', () => {
+		for (const name of ['TuneInStage.svelte', 'TuneInWordmark.svelte']) {
+			const css = styleOf(source(name)).replace(
+				/@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g,
+				''
+			);
+			const moving = splitMedia(css, '@media (prefers-reduced-motion: no-preference)');
+			expect(moving.blocks, name).toHaveLength(1);
+			const still = splitMedia(moving.rest, '@media (prefers-reduced-motion: reduce)');
+			expect(still.rest, name).not.toMatch(/animation:/);
+			for (const block of still.blocks)
+				expect(block.match(/animation:[^;]*/g), name).toEqual([
+					'animation: fade 0.4s ease-out both'
+				]);
+		}
+		const script = source('TuneInStage.svelte');
+		expect(script).toContain("matchMedia('(prefers-reduced-motion: reduce)')");
+		expect(script).toContain('if (!state.reducedMotion) load(1);');
+	});
+
+	// antuna-website/the-hero-holds-still-with-reduce-motion
+	test('the static is dim and smooth, and the screen flashes at most once a zap', () => {
+		const css = styleOf(source('TuneInStage.svelte'));
+		expect(css).not.toMatch(/steps\(/);
+		const opacities = [...css.matchAll(/opacity: (0\.\d+)/g)].map((match) => Number(match[1]));
+		expect(Math.max(...opacities)).toBeLessThanOrEqual(0.45);
+		expect(1000 / timing.zapEvery).toBeLessThan(3);
+		expect(timing.zap).toBeLessThan(timing.zapEvery);
 	});
 });
 

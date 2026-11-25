@@ -23,7 +23,32 @@
 		"hero": "Your TV sources, on every Apple screen.",
 		"lead": "Antuna plays the IPTV sources you already have on iPhone, iPad, Mac and Apple TV. It includes no channels. A purchase unlocks it on all your devices.",
 		"platforms": "iPhone, iPad, Mac, Apple TV",
-		"heroAlt": "Live TV on Apple TV: a made-up news channel playing full screen, with the programme on now and next in the bar below."
+		"tuneIn": {
+			"pause": "Pause channels",
+			"play": "Play channels",
+			"channels": [
+				{
+					"tv": "Live TV on Apple TV: a made-up news channel playing full screen, with the programme on now and next in the bar below.",
+					"ipad": "Live TV on iPad: groups on the left, a list of made-up channels with what is on now, and the playing channel with what is on next.",
+					"iphone": "Live TV on iPhone: the playing channel at the top, and below it a list of made-up channels with what is on now."
+				},
+				{
+					"tv": "The guide on Apple TV: four made-up channels in a time grid, with the playing channel in a small picture at the top.",
+					"ipad": "The guide on iPad: five made-up channels in a time grid, with a line at the current time.",
+					"iphone": "The guide on iPhone: five made-up channels, each with the programme on now and the next ones in a row."
+				},
+				{
+					"tv": "Movies on Apple TV: a banner for a made-up film, then rows of made-up titles to continue watching.",
+					"ipad": "Movies on iPad: a banner for a made-up film above rows of made-up titles to continue watching and in My list.",
+					"iphone": "Movies on iPhone: a banner for a made-up film with Play and Info, then made-up titles to continue watching."
+				},
+				{
+					"tv": "A made-up film playing on Apple TV, with its title and a progress bar along the bottom.",
+					"ipad": "A made-up film playing on iPad, with skip back, pause and skip forward over the picture.",
+					"iphone": "A made-up film playing on iPhone, with skip back, pause and skip forward over the picture and the time along the bottom."
+				}
+			]
+		}
 	},
 	"features": {
 		"title": "Features",

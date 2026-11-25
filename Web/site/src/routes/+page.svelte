@@ -3,6 +3,8 @@
 	import AppStoreLink from '#lib/components/AppStoreLink.svelte';
 	import Meta from '#lib/components/Meta.svelte';
 	import Screenshot from '#lib/components/Screenshot.svelte';
+	import TuneInStage from '#lib/components/TuneInStage.svelte';
+	import TuneInWordmark from '#lib/components/TuneInWordmark.svelte';
 	import { t } from '#lib/strings.ts';
 </script>
 
@@ -10,6 +12,7 @@
 
 <section class="hero" id="hero">
 	<div class="text">
+		<TuneInWordmark />
 		<h1>{t.home.hero}</h1>
 		<p class="lead">{t.home.lead}</p>
 		<div class="get">
@@ -17,8 +20,8 @@
 			<span class="muted">{t.home.platforms}</span>
 		</div>
 	</div>
-	<div class="picture">
-		<Screenshot name="apple-tv-live.jpg" alt={t.home.heroAlt} loading="eager" />
+	<div class="stage">
+		<TuneInStage />
 	</div>
 </section>
 
@@ -47,7 +50,25 @@
 	}
 
 	.hero {
+		position: relative;
+		isolation: isolate;
 		padding-block: 16px 48px;
+	}
+
+	/* The app icon's glow behind the hero (antuna-website/the-home-page-tunes-in). It
+	   reaches the ground color at its closest sides, so it has no edge. */
+	.hero::before {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset-block: -56px 0;
+		inset-inline: calc(-1 * var(--gutter));
+		background: radial-gradient(closest-side at 70% 50%, var(--glow), var(--bg));
+	}
+
+	.stage {
+		flex: 0 1 640px;
+		min-inline-size: 0;
 	}
 
 	.area {
@@ -123,8 +144,15 @@
 			padding-block: 32px;
 		}
 
-		.picture {
+		.picture,
+		.stage {
 			flex-basis: auto;
+		}
+
+		.hero::before {
+			inset-block: auto 0;
+			block-size: 70%;
+			background: radial-gradient(closest-side at 50% 55%, var(--glow), var(--bg));
 		}
 
 		h1 {
