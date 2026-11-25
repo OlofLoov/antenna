@@ -123,5 +123,53 @@ import Testing
             let pixels = try Pixels(banner, width: 390, height: 520)
             #expect(pixels.largestStep(column: 388, from: 0, to: 520) <= 4)
         }
+
+        /// The band behind the section's name and the genre button, on a
+        /// white picture: muted text, the genre's count and chevron, reaches
+        /// 4.5:1 down to the foot of the header, and the band fades into the
+        /// art below with no line.
+        @Test("design-system/the-scrim-blends-into-the-art: the iPhone header stays legible on a white picture")
+        func topScrimOnWhite() throws {
+            let view = ZStack(alignment: .top) {
+                Color.white
+                Color.clear.frame(height: 150).frame(maxWidth: .infinity).background(HeroTopScrim(fade: 56))
+            }
+            let pixels = try Pixels(view, width: 4, height: 520)
+            for y in [0, 75, 148] {
+                let ground = Self.luminance(gray: pixels.brightness(x: 2, y: y))
+                let muted = Self.luminance(red: 0xA7, green: 0xB0, blue: 0xBF)
+                #expect((muted + 0.05) / (ground + 0.05) >= 4.5, "design-system/text-meets-contrast-minimums at row \(y)")
+            }
+            #expect(pixels.largestStep(column: 2, from: 0, to: 520) <= 8)
+            #expect(pixels.brightness(x: 2, y: 260) > 245, "clear below the fade")
+        }
+
+        /// Owner-found: the name and "All series" sat on the bare art and
+        /// vanished on a light picture. The top of the iPhone banner, above
+        /// the copy, is darker than the art alone.
+        @Test("design-system/the-scrim-blends-into-the-art: the iPhone banner darkens behind its header")
+        func phoneBannerHeaderHasGround() throws {
+            let banner = ShelfBanner.Phone { Color.clear.frame(height: 150) }
+                .environment(\.shelfBanner, .preview())
+            let pixels = try Pixels(banner, width: 390, height: 520)
+            let art = try Pixels(TitlePage.placeholder, width: 4, height: 4).brightness(x: 2, y: 2)
+            for y in [10, 100, 140] {
+                #expect(pixels.brightness(x: 380, y: y) < art - 20, "row \(y)")
+            }
+        }
     #endif
+
+    /// Relative luminance of an sRGB gray, 0 to 255.
+    private static func luminance(gray: Int) -> Double {
+        luminance(red: gray, green: gray, blue: gray)
+    }
+
+    /// Relative luminance of an sRGB color, channels 0 to 255.
+    private static func luminance(red: Int, green: Int, blue: Int) -> Double {
+        func linear(_ value: Int) -> Double {
+            let channel = Double(value) / 255
+            return channel <= 0.04045 ? channel / 12.92 : pow((channel + 0.055) / 1.055, 2.4)
+        }
+        return 0.2126 * linear(red) + 0.7152 * linear(green) + 0.0722 * linear(blue)
+    }
 }

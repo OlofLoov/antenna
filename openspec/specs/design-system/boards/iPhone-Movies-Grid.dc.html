@@ -20,6 +20,8 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
 
   <!-- Hero: unchanged from iPhone-Movies.dc.html -->
   <div style="position: relative; width: 390px; height: 520px; background: #22304A; flex: 0 0 auto; overflow: hidden">
+    <!-- header band (design-system/the-scrim-blends-into-the-art): the ground color at 0.86 from the top edge to 0.8 at the foot of the genre button, then clear over the 56 pt below it, so the name, count and chevron stay legible on a white picture. No glass, fill or stroke on the controls themselves. -->
+    <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 0; height: 204px; background: linear-gradient(to bottom, rgba(11,14,19,0.86) 0, rgba(11,14,19,0.8) 148px, rgba(11,14,19,0) 100%)"></div>
     <!-- top bar over the art: the section's name (movies.title, a large bold title; Series shows "Series") and the profile button (profile.button: the current profile's color and initial in a 32 pt circle, or a person glyph with one profile; plain, no glass). No Movies | Series switch and no search button: Series and Search are in the tab bar (live-tv-on-iphone-ipad-mac/the-iphone-tab-bar). -->
     <div style="position: absolute; left: 0; right: 0; top: 54px; height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px">
       <div style="font-size: 28px; font-weight: 700; letter-spacing: -0.3px; font-family: ui-rounded, -apple-system, system-ui, 'Helvetica Neue', sans-serif" role="heading" aria-level="1">Movies</div>
@@ -27,7 +29,7 @@ a{color:#5BB8FF}a:hover{color:#8ECDFF}
         <span style="width: 32px; height: 32px; border-radius: 16px; background: #C084FC; color: #0B0E13; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center">K</span>
       </div>
     </div>
-    <!-- movies.genres (movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone): the open list's name in its own text run, its count and a chevron, as Live's group button (browse.groups), plain with no fill over the art. Tapping it opens the Genres sheet (iPhone-Movies-Genres.dc.html). No genre chips at the top. -->
+    <!-- movies.genres (movies-and-series-browsing/pick-a-genre-from-a-list-on-iphone): the open list's name in its own text run, its count and a chevron, as Live's group button (browse.groups), plain with no fill of its own, on the header band. Tapping it opens the Genres sheet (iPhone-Movies-Genres.dc.html). No genre chips at the top. -->
     <div role="button" aria-label="Thriller, 187 titles" style="position: absolute; left: 0; right: 0; top: 104px; height: 44px; display: flex; align-items: center; gap: 6px; padding: 0 16px; color: #F2F4F8"><bdi style="font-size: 16px; font-weight: 600; white-space: nowrap">Thriller</bdi><span style="font-size: 15px; color: #D7DEE8; font-variant-numeric: tabular-nums">· 187</span><span style="color: #D7DEE8; display: inline-flex"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
     <!-- copy -->
     <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 74px 16px 16px; background: linear-gradient(to bottom, rgba(11,14,19,0) 0, rgba(11,14,19,0.78) 56px, rgba(11,14,19,0.86) 100%); display: flex; flex-direction: column; gap: 8px">
