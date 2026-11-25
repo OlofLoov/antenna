@@ -190,8 +190,8 @@ struct ShelfRowsContent: View {
                     ShelfPoster(title: title, actions: actions)
                 }
             }
-            .environment(\.shelfRow, "recentlyWatched")
-            .shelfFocusRow("recentlyWatched")
+            .environment(\.shelfRow, ShelfActions.recentlyWatched)
+            .shelfFocusRow(ShelfActions.recentlyWatched)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("\(prefix).row.recentlyWatched")
         }
@@ -241,10 +241,11 @@ struct ShelfRowsContent: View {
     }
 }
 
-/// A poster that plays a movie or opens a series' page on select, and
-/// offers More info for a movie and My list in its menu, a long press on
-/// Apple TV (movies-and-series-browsing/keep-a-list-for-later,
-/// title-detail-and-episode-picker/open-a-movie-s-page).
+/// A poster that opens the title's page on select, or plays a movie in
+/// Recently watched, with My list in its menu, a long press on Apple TV.
+/// The menu offers More info only where the poster plays
+/// (movies-and-series-browsing/a-poster-opens-its-page,
+/// movies-and-series-browsing/keep-a-list-for-later).
 struct ShelfPoster: View {
     let title: ShelfTitle
     let actions: ShelfActions
@@ -271,7 +272,7 @@ struct ShelfPoster: View {
             }
         }
         .contextMenu {
-            if title.kind == .movie {
+            if ShelfActions.plays(title, in: row) {
                 ShelfView.MoreInfoMenuItem { actions.open(title, .poster(row: row)) }
             }
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(title)) { actions.toggleMyList(title) }
@@ -296,7 +297,7 @@ struct ShelfContinueCard: View {
             title: item.title, caption: ShelfText.continueCaption(item, episode: episode),
             fraction: item.isNextEpisode ? 1 : item.progress.position / length
         ) {
-            actions.play(item.title, .poster(row: row))
+            actions.resume(item.title, in: row)
         }
         .contextMenu {
             if item.title.kind == .movie {

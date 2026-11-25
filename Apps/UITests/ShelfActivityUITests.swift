@@ -136,6 +136,7 @@ final class ShelfActivityUITests: XCTestCase {
     }
 
     // movies-and-series-browsing/keep-a-list-for-later, the poster's menu
+    // movies-and-series-browsing/a-poster-opens-its-page, the poster's menu
     func testThePosterMenuAddsAndRemoves() throws {
         let app = try launch("titles")
         let poster = card(app, in: "recentlyAdded", "xtream#cabin#vod#2")
@@ -143,6 +144,7 @@ final class ShelfActivityUITests: XCTestCase {
         poster.press(forDuration: 1.2)
         let item = app.element("movies.menu.myList")
         XCTAssertTrue(item.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.element("movies.menu.info").exists, "the poster itself opens the page")
         XCTAssertEqual(item.label, "Add to My list")
         item.tap()
         XCTAssertTrue(app.element("movies.row.myList").waitForExistence(timeout: 5))

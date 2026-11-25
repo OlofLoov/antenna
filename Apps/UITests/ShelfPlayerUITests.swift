@@ -54,6 +54,7 @@ final class ShelfPlayerUITests: XCTestCase {
     }
 
     // movies-and-series-browsing/resume-where-you-left-off, barely started or finished
+    // movies-and-series-browsing/a-poster-opens-its-page
     func testAFinishedMovieStartsFromTheBeginning() throws {
         let app = try launch()
         open(app, "movies")
@@ -61,6 +62,10 @@ final class ShelfPlayerUITests: XCTestCase {
         let poster = card(app, "movies", in: "action", "xtream#cabin#vod#3")
         XCTAssertTrue(poster.waitForExistence(timeout: 5))
         poster.tap()
+        let play = app.element("title.play")
+        XCTAssertTrue(play.waitForExistence(timeout: 5), "the poster opens the movie's page")
+        XCTAssertFalse(app.element("movies.player").exists, "nothing plays from the poster")
+        play.tap()
         expectPlayer(app, "playing 3.mp4 from 0")
     }
 

@@ -146,8 +146,9 @@ final class ShelfLargeTVUITests: XCTestCase {
     }
 
     // title-detail-and-episode-picker/back-to-where-you-were
-    // Found on 2026-11-23 with the large library: back from a movie played from a row, the highlight was on the banner.
-    func testBackFromAMoviePlayedFromARowFocusesItsPoster() {
+    // movies-and-series-browsing/a-poster-opens-its-page, back to the poster on Apple TV
+    // Found on 2026-11-23 with the large library: back from a movie started from a row, the highlight was on the banner.
+    func testBackFromAMoviePageOpenedFromARowFocusesItsPoster() {
         open("movies")
         enterRows("movies")
         expectBothSources("movies")
@@ -157,7 +158,8 @@ final class ShelfLargeTVUITests: XCTestCase {
         let poster = focused
         XCTAssertTrue(poster.hasPrefix("movies.card."), "focus is on \(poster)")
         press(.select)
-        XCTAssertTrue(element("movies.player").waitForExistence(timeout: 10))
+        XCTAssertTrue(element("title.root").waitForExistence(timeout: 10), "the poster opens the movie's page")
+        XCTAssertFalse(element("movies.player").exists, "nothing plays from the poster")
         Thread.sleep(forTimeInterval: 2)
         press(.menu)
         expectFocus(poster)

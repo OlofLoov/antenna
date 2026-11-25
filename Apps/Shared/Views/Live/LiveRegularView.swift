@@ -30,7 +30,6 @@
         @Environment(LiveModel.self) private var live
         @Environment(ShelfLibrary.self) private var shelves
         @Environment(ShelfActivity.self) private var activity
-        @Environment(ShelfPlayback.self) private var playback
         @Environment(SearchModel.self) private var search
         @Environment(GuideBoardModel.self) private var guide
         @State private var section: LiveSection = .live
@@ -304,8 +303,8 @@
             }
         }
 
-        /// A channel or programme plays in Live; a movie plays and a series
-        /// opens its page, as from the Movies section
+        /// A channel or programme plays in Live; a movie or series opens its
+        /// page, as from the Movies section
         /// (search/pick-a-channel-or-title-to-watch).
         private var searchPicks: SearchPicks {
             SearchPicks(
@@ -313,12 +312,7 @@
                 programme: { hit, channel in
                     guard !hit.isOnNow, navigator.showLater(hit.programme, on: channel) else { return watch(channel) }
                 },
-                title: { title in
-                    switch title.kind {
-                    case .movie: playback.play(title, library: shelves, activity: activity)
-                    case .series: shelves.openPage(title, from: .search, in: title.kind)
-                    }
-                },
+                title: { shelves.openPage($0, from: .search, in: $0.kind) },
                 person: { shelves.openPerson($0, fromSearchIn: .movie) })
         }
 

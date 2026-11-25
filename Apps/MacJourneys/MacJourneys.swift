@@ -49,7 +49,7 @@ final class MacJourneys: XCTestCase {
         journey.launch(["-ui-testing-shelf", "watching", "-ui-testing-reduce-motion"] + store)
         open("movies", in: journey)
         journey.snap("movies", anchor: "movies.hero.title")
-        let poster = journey.element("movies.card.xtream#cabin#vod#2")
+        let poster = journey.element("movies.row.continueWatching").descendants(matching: .any)["movies.card.xtream#cabin#vod#2"].firstMatch
         if poster.waitForExistence(timeout: 10) { poster.click() }
         journey.waitForPicture()
         journey.snap("player", anchor: "title.transport")

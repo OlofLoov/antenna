@@ -213,9 +213,10 @@ struct SearchProgrammeResult: View {
     }
 }
 
-/// A movie or series result: the Movies tab's poster card with its menu
-/// (More info on a movie, My list), SERIES on a series, and the name with
-/// its highlight under it, as under a Continue watching card.
+/// A movie or series result: the Movies tab's poster card with its My list
+/// menu, SERIES on a series, and the name with its highlight under it, as
+/// under a Continue watching card. Selecting it opens the title's page
+/// (search/pick-a-channel-or-title-to-watch).
 struct SearchTitleResult: View {
     let hit: SearchResults.TitleHit
     let index: Int
@@ -235,9 +236,6 @@ struct SearchTitleResult: View {
                     feed.pick(hit)
                 }
                 .contextMenu {
-                    if title.kind == .movie {
-                        ShelfView.MoreInfoMenuItem { library.openPage(title, from: .search, in: title.kind) }
-                    }
                     ShelfView.MyListMenuItem(isOnMyList: activity.isOnMyList(title)) { activity.toggleMyList(title) }
                 }
                 .environment(\.searchCursor, cursor)

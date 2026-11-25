@@ -138,7 +138,7 @@
             let activity = activity
             return SearchFeed(
                 model: model, channel: { catalogue.channel(for: $0) }, line: { overlayGuide.line(for: $0, at: $1) },
-                picks: .shell(shell, library: library, activity: activity, playback: playback, watching: watching),
+                picks: .shell(shell, library: library, watching: watching),
                 remember: { activity.recordSearch($0) }, text: SearchText())
         }
 
@@ -163,12 +163,11 @@
 
     extension SearchPicks {
         /// Apple TV: a channel or a programme on now plays full screen, a
-        /// later programme opens the Guide at it, a movie plays and a series
+        /// later programme opens the Guide at it, and a movie or series
         /// opens its page (search/pick-a-channel-or-title-to-watch,
         /// search/pick-a-programme). `watching` runs once a channel plays.
         @MainActor static func shell(
-            _ shell: ShellModel, library: ShelfLibrary, activity: ShelfActivity, playback: ShelfPlayback,
-            watching: @escaping @MainActor () -> Void
+            _ shell: ShellModel, library: ShelfLibrary, watching: @escaping @MainActor () -> Void
         ) -> SearchPicks {
             let watch: @MainActor (Channel) -> Void = { channel in
                 Task {
@@ -183,12 +182,7 @@
                     let key = ProgrammeKey(guideKey: hit.id.guideKey, start: hit.id.start)
                     Task { await shell.show(.guide(programmeKey: key)) }
                 },
-                title: { title in
-                    switch title.kind {
-                    case .movie: playback.play(title, library: library, activity: activity)
-                    case .series: library.openPage(title, from: .search, in: title.kind)
-                    }
-                },
+                title: { library.openPage($0, from: .search, in: $0.kind) },
                 person: { library.openPerson($0, fromSearchIn: .movie) })
         }
     }

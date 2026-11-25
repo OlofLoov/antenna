@@ -189,14 +189,17 @@ final class SearchTVUITests: XCTestCase {
     }
 
     // search/pick-a-channel-or-title-to-watch, back on the result on Apple TV
-    func testMenuOnAMovieComesBackToItsPoster() {
+    func testMenuOnAMoviePageComesBackToItsPoster() {
         openSearchOnTheShelf()
         type("quiet")
         moveToResults("search.result.title.0")
         XCTAssertTrue(element("search.result.title.0").label.contains("Quiet Engines"), element("search.result.title.0").label)
         press(.select)
-        expect(element("shelf.debug.engine"), "value == 'playing 5.mp4 from 0'")
+        XCTAssertTrue(element("title.name").waitForExistence(timeout: 10), "the movie's page opens")
+        XCTAssertEqual(element("title.name").label, "Quiet Engines")
+        XCTAssertFalse(element("movies.player").exists, "nothing plays")
         press(.menu)
+        expect(element("title.name"), "exists == false")
         expectFocus("search.result.title.0")
     }
 
