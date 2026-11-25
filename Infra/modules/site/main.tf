@@ -35,9 +35,10 @@ locals {
   setup_csp = "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
 
   behaviors = [
-    { path = "/setup*", cache = aws_cloudfront_cache_policy.pages.id, headers = aws_cloudfront_response_headers_policy.setup.id },
-    { path = "/_app/immutable/*", cache = data.aws_cloudfront_cache_policy.optimized.id, headers = aws_cloudfront_response_headers_policy.site.id },
-    { path = "/images/*", cache = data.aws_cloudfront_cache_policy.optimized.id, headers = aws_cloudfront_response_headers_policy.site.id },
+    { path = "/review/*", cache = aws_cloudfront_cache_policy.pages.id, headers = aws_cloudfront_response_headers_policy.site.id, function = aws_cloudfront_function.review.arn },
+    { path = "/setup*", cache = aws_cloudfront_cache_policy.pages.id, headers = aws_cloudfront_response_headers_policy.setup.id, function = aws_cloudfront_function.address.arn },
+    { path = "/_app/immutable/*", cache = data.aws_cloudfront_cache_policy.optimized.id, headers = aws_cloudfront_response_headers_policy.site.id, function = aws_cloudfront_function.address.arn },
+    { path = "/images/*", cache = data.aws_cloudfront_cache_policy.optimized.id, headers = aws_cloudfront_response_headers_policy.site.id, function = aws_cloudfront_function.address.arn },
   ]
 }
 
@@ -106,6 +107,13 @@ resource "aws_cloudfront_function" "address" {
   runtime = "cloudfront-js-2.0"
   publish = true
   code    = file("${path.module}/address.js")
+}
+
+resource "aws_cloudfront_function" "review" {
+  name    = "antuna-review-server"
+  runtime = "cloudfront-js-2.0"
+  publish = true
+  code    = file("${path.module}/review.js")
 }
 
 resource "aws_cloudfront_cache_policy" "pages" {
@@ -230,7 +238,7 @@ resource "aws_cloudfront_distribution" "site" {
 
       function_association {
         event_type   = "viewer-request"
-        function_arn = aws_cloudfront_function.address.arn
+        function_arn = ordered_cache_behavior.value.function
       }
     }
   }

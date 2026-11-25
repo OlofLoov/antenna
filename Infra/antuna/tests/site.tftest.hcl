@@ -27,6 +27,22 @@ override_resource {
 }
 
 override_resource {
+  target          = aws_cloudfront_function.review
+  override_during = plan
+  values = {
+    arn = "arn:aws:cloudfront::123456789012:function/antuna-review-server"
+  }
+}
+
+override_resource {
+  target          = aws_cloudfront_cache_policy.pages
+  override_during = plan
+  values = {
+    id = "pages-cache"
+  }
+}
+
+override_resource {
   target          = aws_cloudfront_response_headers_policy.site
   override_during = plan
   values = {
@@ -94,9 +110,9 @@ run "https_only_on_the_domain" {
   assert {
     condition = alltrue(concat(
       [for b in aws_cloudfront_distribution.site.default_cache_behavior : one(b.function_association).function_arn == aws_cloudfront_function.address.arn],
-      [for b in aws_cloudfront_distribution.site.ordered_cache_behavior : one(b.function_association).function_arn == aws_cloudfront_function.address.arn],
+      [for b in aws_cloudfront_distribution.site.ordered_cache_behavior : one(b.function_association).function_arn == aws_cloudfront_function.address.arn if b.path_pattern != "/review/*"],
     ))
-    error_message = "every path must go through the address function"
+    error_message = "every path but the review server must go through the address function"
   }
 
   assert {
@@ -264,5 +280,49 @@ run "the_site_role_can_only_upload_and_invalidate" {
       { Effect = "Allow", Action = "cloudfront:CreateInvalidation", Resource = "arn:aws:cloudfront::123456789012:distribution/E000000000000" },
     ]
     error_message = "the site role may list, write and delete in the site bucket and invalidate the site distribution, nothing else"
+  }
+}
+
+# app-release/app-review-can-open-movies-and-series
+# app-release/the-review-server-answers-only-the-demo-login
+run "the_review_server_runs_its_own_function" {
+  command = plan
+
+  module {
+    source = "../modules/site"
+  }
+
+  assert {
+    condition     = aws_cloudfront_function.review.name == "antuna-review-server" && aws_cloudfront_function.review.runtime == "cloudfront-js-2.0" && aws_cloudfront_function.review.publish
+    error_message = "the review server is the published antuna-review-server function on the 2.0 runtime"
+  }
+
+  assert {
+    condition     = aws_cloudfront_function.review.code == file("../modules/site/review.js")
+    error_message = "the review function's code is review.js"
+  }
+
+  assert {
+    condition     = [for b in aws_cloudfront_distribution.site.ordered_cache_behavior : b.path_pattern] == ["/review/*", "/setup*", "/_app/immutable/*", "/images/*"]
+    error_message = "the review behavior comes first, so no other pattern takes its addresses"
+  }
+
+  assert {
+    condition = alltrue([
+      for b in aws_cloudfront_distribution.site.ordered_cache_behavior :
+      one(b.function_association).event_type == "viewer-request" &&
+      one(b.function_association).function_arn == aws_cloudfront_function.review.arn &&
+      b.cache_policy_id == aws_cloudfront_cache_policy.pages.id &&
+      b.response_headers_policy_id == aws_cloudfront_response_headers_policy.site.id &&
+      b.viewer_protocol_policy == "redirect-to-https" &&
+      b.allowed_methods == toset(["GET", "HEAD"])
+      if b.path_pattern == "/review/*"
+    ])
+    error_message = "/review/* runs the review function on viewer requests, with the pages cache, the site headers, HTTPS only and reads only"
+  }
+
+  assert {
+    condition     = one(one(aws_cloudfront_cache_policy.pages.parameters_in_cache_key_and_forwarded_to_origin).query_strings_config).query_string_behavior == "none"
+    error_message = "the login in the query string must stay out of the cache key and away from the bucket"
   }
 }
