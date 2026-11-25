@@ -66,8 +66,8 @@
   `<nn>-<step>.png`. Add a step for a screen you build, anchored on an
   identifier that only appears once the screen has settled, and name its
   board in the change's `design.md`. A step fails only when its anchor never
-  appears. The `App screenshots` workflow runs them every night, by hand, and
-  on a PR with the `screenshots` label; the PNGs are in the run's
+  appears. The `App screenshots` workflow runs them every night and by hand
+  (`gh workflow run screenshots.yml --ref <branch>`); the PNGs are in the run's
   `app-screenshots` artifact as `<device>/<test>/<nn>-<step>.png`.
 - `testStore` in each walk-through file is the App Store set. The workflow
   runs it once per ready language with `TEST_RUNNER_STORE_LANGUAGE` and

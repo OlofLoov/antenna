@@ -124,18 +124,20 @@ associated domains, and the app runs without sync.
   release PR. A `feat` commit bumps the minor version, a `fix` the patch.
 - **Lint before commit.** The git pre-commit hook runs `swift format lint
   --strict` on staged Swift files, and `swiftlint` when it is installed.
-- **Simulator tests run nightly.** PR CI builds the apps, runs AntennaCore
-  and renders previews. The iPhone, iPad and tvOS UI tests and the tvOS unit
-  tests run in the `UI tests` workflow, split across parallel jobs, every
-  night on main. A failing night opens an issue. To run them on a PR, add
-  the `ui-tests` label; to run them on any branch, `gh workflow run
-  ui-tests.yml --ref <branch>`. Run the UI test classes a change touches on
-  a local simulator before opening its PR (see the `sim` skill).
+- **Simulator tests run nightly.** PR CI runs AntennaCore and builds the
+  apps, and skips both when a PR changes only `openspec/`. A push to main
+  runs only the Linux checks. Every night CI runs AntennaCore, the app
+  builds and the preview snapshots on main, and the `UI tests` workflow runs
+  the iPhone, iPad and tvOS UI tests and the tvOS unit tests, split across
+  parallel jobs. A failing night opens an issue. No PR runs the UI tests;
+  to run them on a branch, `gh workflow run ui-tests.yml --ref <branch>`.
+  Run the UI test classes a change touches on a local simulator before
+  opening its PR (see the `sim` skill).
 - **Screenshots on demand.** The `App screenshots` workflow walks the main
   screens on iPhone, iPad and Apple TV and uploads the PNGs as the
   `app-screenshots` artifact, plus the App Store set per ready language as
-  `store-screenshots`. It runs every night; on a PR, add the
-  `screenshots` label. How to add a step: `docs/conventions.md`, Tests.
+  `store-screenshots`. It runs every night; on a branch, `gh
+  workflow run screenshots.yml --ref <branch>`. How to add a step: `docs/conventions.md`, Tests.
   The store listing text is in `fastlane/metadata/` (`docs/release/store-listing.md`).
 - **Tests cite requirements.** A test that proves a requirement names it as
   `<capability>/<requirement-slug>` in its name or a comment, for example
