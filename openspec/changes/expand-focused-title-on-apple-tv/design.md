@@ -209,13 +209,26 @@ Options:
   poster. Continue watching's cards are wider than posters, so a move into
   or out of it keeps the focus engine's choice.
 
-How: `ShelfTVFocusFollower` remembers the row and position the highlight
-is on. When it lands in another row on a different position than the one
-it left, `ShelfColumn.target` names the position, and the follower asks
-that poster to take focus through `ShelfModel.focusRequests`, a
-`KeyedValues` keyed by row and title, so only that poster redraws. The
+How: each row is a focus section whose default focus, for a move into
+it, is the poster at the highlight's column (`ShelfRowColumn`,
+`.defaultFocus(priority: .userInitiated)`), so the focus engine lands
+there in one move. `ShelfTVFocusFollower` writes the column to a small
+observed `ShelfColumnState`; only the rows' focus modifiers read it, so a
+move along a row redraws no poster. On the walk six rows down and up this
+lands right on all but about 1 move in 12.
+
+The rest it corrects. The follower remembers the row and position the
+highlight is on. When it lands in another row on a different position
+than the one it left, `ShelfColumn.target` names the position, and the
+follower asks that poster to take focus through `ShelfModel.focusRequests`,
+a `KeyedValues` keyed by row and title, so only that poster redraws. The
 poster takes focus in an `onChange`, before the frame draws, so the poster
-the focus engine picked does not grow first. Each correction places the
+the focus engine picked does not grow first. The debug probe counts these
+second moves (`corrections` in `shelf.debug.posterTrace`): 1 per walk,
+where the correction alone made 12. Steering only with the default focus,
+without the correction, ended one walk a poster to the right, and
+`testDownAndUpTheRowsKeepsTheColumn` failed, so both stay. Deciding the
+target in `onMoveCommand` before the engine moves was not tried. Each correction places the
 row again, since the focus engine scrolls for it too; without that, a row
 was left 39 pt above its place in `ShelfRowsUpTVUITests`.
 
@@ -416,6 +429,77 @@ What changed:
 - The next row ahead follows the direction of the scroll: the row under
   on the way down, the row above on the way up. Loading only the row
   under found 46 of 112, 65 of 123 and 72 of 123 not ready.
+
+### Frames against main, 2026-11-25 evening
+
+The same simulator and fixture server. Main is `7b0a4998`, the proposal's
+commit, whose app is main's, built with this branch's benchmark file so
+both measure the same way. Runs alternated main, branch, main, branch in
+one hour, at a load average of 2 to 7; other agents' simulators ran on
+the Mac for parts of the evening, and runs taken then are left out.
+
+The benchmark changed first. Each probe read walks the app's
+accessibility tree on its main thread, and the reads of the poster counts
+and the trace sat inside the window between the two frame counts, so they
+were counted as missed frames: standing still read 8 to 27 dropped
+frames. The frame counts are now read last before a walk and first after
+it, and the trace outside it (`gapsBefore`, `gapsAfter`). Main measured
+the old way had 2 reads inside the window, the branch 6.
+
+| Walk | Build | Dropped frames (hitch ms) over frames counted |
+|------|-------|-----------------------------------------------|
+| Along the posters | main | 36 (668) / 413, 34 (741) / 409, 38 (722) / 409; 36 (700) / 411, 36 (706) / 410, 34 (717) / 411 |
+| | branch | 85 (1536) / 389, 83 (1559) / 390, 94 (1619) / 351; 84 (1527) / 389, 78 (1465) / 396, 84 (1440) / 394 |
+| Down and up the rows | main | 52 (995) / 573, 36 (708) / 589, 34 (643) / 623; 46 (868) / 611, 37 (755) / 619, 36 (708) / 620 |
+| | branch | 91 (1632) / 563, 82 (1520) / 574, 84 (1564) / 571; 95 (1619) / 564, 75 (1358) / 579, 80 (1423) / 576 |
+| Standing still | main | 1 (151) / 505, 2 (104) / 506, 3 (138) / 504; 2 (136) / 504, 2 (132) / 507, 1 (186) / 503 |
+| | branch | 5 (276) / 499, 5 (211) / 470, 4 (251) / 500; 4 (164) / 505, 2 (134) / 505, 2 (160) / 503 |
+
+Standing still is now as quiet as main. Moving, the branch misses about
+twice the frames.
+
+What each part costs, turned off one at a time with a launch argument
+(since removed), on the walk along the posters and down and up, three
+walks each, at a load average of 2 to 4:
+
+| Turned off | Along the posters | Down and up the rows |
+|------------|-------------------|----------------------|
+| nothing | 86, 90, 86 | 91, 72, 80 |
+| the card's blurred copy and shadow | 76, 85, 86 | 86, 76, 83 |
+| the card's picture | 79, 85, 82 | 86, 76, 81 |
+| the card's copy | 81, 80, 78 | 83, 83, 81 |
+| the card's growing animation | 80, 71, 73 | 85, 73, 74 |
+| the whole card (load average 9 to 11) | 55, 54, 59 | 61, 52, 54 |
+
+And earlier, measured the old way: keeping the column with two focus
+changes per move cost about 15 dropped frames per walk down and up; the
+loads around the highlight, the trace probe and the fade did not change
+the counts beyond the runs' spread.
+
+A Time Profiler recording of the walk along the posters, main thread
+only, found 13 500 samples on the branch against 9 600 on main. The
+difference is SwiftUI's own work: per-frame updates driven by the display
+link, 5 060 samples against 1 290, much of it the rows' lazy stacks
+laying out and walking their `ForEach` again on each frame of the growing
+animation; the app's own code is under 1% of the samples. Without the
+growing animation the display link took 1 990.
+
+What changed for frames:
+- The benchmark reads described above.
+- One focus move per move between rows in place of two (decision 6).
+
+Tried and not kept:
+- Blurring a copy an eighth of the size: no change beyond the spread.
+- A growing animation of 0.15 s instead of 0.25 s: no fewer dropped
+  frames.
+
+What remains: the card itself, about 30 dropped frames per walk along the
+posters, which no single part of it explains, and about 15 more from two
+and a half rows on screen where main shows one. Main changes nothing
+on screen for a move along a row until the 0.8 s rest; the card changes
+on every move. Taking the card's growth out of the row's layout, so the
+lazy stack does not lay out again on each frame, is the next thing to
+try; it is a change to how the card is built and is left for the owner.
 
 ## What to check on the device
 

@@ -237,28 +237,15 @@ final class ShelfLargeTVUITests: XCTestCase {
 
     // MARK: Hitches
 
-    var gaps: Gaps {
-        Gaps(
-            frames: probe("shelf.debug.frames"), dropped: probe("shelf.debug.dropped"), hitchMs: probe("shelf.debug.hitchMs"),
-            posterMisses: probe("shelf.debug.posterMisses"), posterAsks: probe("shelf.debug.posterAsks"))
-    }
-
-    /// Where posters went between loading ahead and showing, as the
-    /// section's probe reads it.
-    var trace: String {
-        Thread.sleep(forTimeInterval: 0.7)
-        let probe = app.descendants(matching: .any).matching(identifier: "shelf.debug.posterTrace").firstMatch
-        return probe.exists ? (probe.value as? String ?? "") : "none"
-    }
-
     /// Runs `walk` `times` times and reports the frames each run missed.
     func measureGaps(_ label: String, times: Int = 3, walk: () -> Void) {
         var runs: [Gaps] = []
         for run in 0..<times {
-            let before = gaps
+            // Read outside the walk, since each read costs the app frames.
             print("TRACE \(label) \(run) before: \(trace) focus=\(focused)")
+            let before = gapsBefore
             walk()
-            runs.append(gaps - before)
+            runs.append(gapsAfter - before)
             print("TRACE \(label) \(run) after: \(trace) focus=\(focused)")
         }
         let line = runs.map {
@@ -416,5 +403,36 @@ extension ShelfLargeTVUITests {
                 frames: lhs.frames - rhs.frames, dropped: lhs.dropped - rhs.dropped, hitchMs: lhs.hitchMs - rhs.hitchMs,
                 posterMisses: lhs.posterMisses - rhs.posterMisses, posterAsks: lhs.posterAsks - rhs.posterAsks)
         }
+    }
+
+    /// The counts before a walk. Each probe read walks the app's
+    /// accessibility tree on its main thread, which costs frames, so the
+    /// frame counts are read last, after the poster counts.
+    var gapsBefore: Gaps {
+        let misses = probe("shelf.debug.posterMisses")
+        let asks = probe("shelf.debug.posterAsks")
+        let hitchMs = probe("shelf.debug.hitchMs")
+        let frames = probe("shelf.debug.frames")
+        let dropped = probe("shelf.debug.dropped")
+        return Gaps(frames: frames, dropped: dropped, hitchMs: hitchMs, posterMisses: misses, posterAsks: asks)
+    }
+
+    /// The counts after a walk: the frame counts first, so the reads of the
+    /// others fall outside the walk.
+    var gapsAfter: Gaps {
+        let dropped = probe("shelf.debug.dropped")
+        let frames = probe("shelf.debug.frames")
+        let hitchMs = probe("shelf.debug.hitchMs")
+        let misses = probe("shelf.debug.posterMisses")
+        let asks = probe("shelf.debug.posterAsks")
+        return Gaps(frames: frames, dropped: dropped, hitchMs: hitchMs, posterMisses: misses, posterAsks: asks)
+    }
+
+    /// Where posters went between loading ahead and showing, as the
+    /// section's probe reads it.
+    var trace: String {
+        Thread.sleep(forTimeInterval: 0.7)
+        let probe = app.descendants(matching: .any).matching(identifier: "shelf.debug.posterTrace").firstMatch
+        return probe.exists ? (probe.value as? String ?? "") : "none"
     }
 }

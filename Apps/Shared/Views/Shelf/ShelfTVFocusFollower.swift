@@ -19,6 +19,7 @@
         let follow: ShelfPreviewFollow
         let bannerShown: ShelfBannerShown
         let rowHeights: ShelfRowHeights
+        let column: ShelfColumnState
         let reduceMotion: Bool
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfPlayback.self) private var playback
@@ -106,8 +107,12 @@
         }
 
         /// Keeps the highlight's column on a move up or down between rows
-        /// of posters: the focus engine lands it a poster to the right,
-        /// and this moves it back before the frame draws (`ShelfColumn`).
+        /// of posters (`ShelfColumn`). It writes the column, which each
+        /// row names as its default poster for a move into it
+        /// (`ShelfRowColumn`), so the focus engine lands there in one move.
+        /// When it still lands elsewhere, as after a second press before
+        /// the row read the new column, this moves the highlight back
+        /// before the frame draws.
         private func keepColumn() {
             // A press that came before the last correction took effect wins.
             if let pending = follow.pending {
@@ -133,15 +138,20 @@
                 return
             }
             if let moved, let target = ShelfColumn.target(from: moved.index, landed: index, count: titles.count) {
+                #if DEBUG
+                    PosterTrace.corrections.add(1, ordering: .relaxed)
+                #endif
                 request(row: row, index: target, in: titles)
                 return
             }
             follow.spot = ShelfPreviewFollow.Spot(row: row, index: index)
+            if column.column != index { column.column = index }
         }
 
         /// Asks the poster at `index` of `row` to take the highlight.
         private func request(row: String, index: Int, in titles: [ShelfTitle]) {
             follow.spot = ShelfPreviewFollow.Spot(row: row, index: index)
+            if column.column != index { column.column = index }
             follow.requests += 1
             let key = "\(row)|\(titles[index].id)"
             follow.pending = key
