@@ -8,11 +8,11 @@ final class TitleRegularUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func launch(_ scenario: String = "titles") throws -> XCUIApplication {
+    func launch(_ scenario: String = "titles", extra: [String] = []) throws -> XCUIApplication {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "the wide layout needs an iPad")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"]
+        app.launchArguments = ["-ui-testing-shelf", scenario, "-ui-testing-reduce-motion"] + extra
         app.launchInEnglish()
         XCTAssertTrue(app.element("browse.sidebar").waitForExistence(timeout: 10), "the sidebar never appeared")
         return app
@@ -55,6 +55,25 @@ final class TitleRegularUITests: XCTestCase {
         XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
         XCTAssertEqual(app.element("title.name").label, "Harbor Watch")
         XCTAssertEqual(app.element("title.back").label, "Back to Series")
+    }
+
+    // title-detail-and-episode-picker/the-page-shows-in-one-go
+    func testASeriesShowsTheMarkThenThePageInOneGo() throws {
+        let app = try launch(extra: ["-ui-testing-slow-series"])
+        app.element("browse.section.series").tap()
+        let poster = app.element("series.card.xtream#cabin#series#3")
+        XCTAssertTrue(poster.waitForExistence(timeout: 10))
+        poster.tap()
+
+        let mark = app.element("title.loadingMark")
+        XCTAssertTrue(mark.waitForExistence(timeout: 5))
+        XCTAssertEqual(app.element("title.back").label, "Back to Series")
+        XCTAssertFalse(app.element("title.name").exists, "the name shows before the details are in")
+        XCTAssertFalse(app.element("title.play").exists, "Play shows before the details are in")
+
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 10))
+        XCTAssertFalse(mark.exists)
+        XCTAssertFalse(app.element("episodes.loading").exists, "the episodes come in with the rest")
     }
 
     // title-detail-and-episode-picker/pick-a-season, by the arrow keys
