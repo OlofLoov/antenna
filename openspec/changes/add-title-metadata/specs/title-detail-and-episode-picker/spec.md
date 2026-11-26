@@ -31,12 +31,12 @@ The system SHALL show a matched title's scores from other sites on its page, bel
 ## MODIFIED Requirements
 
 ### Requirement: What the title is about
-The system SHALL show a title's backdrop, year, length or seasons, genre, rating, badges, description, cast and director once the details arrive, and SHALL leave out any field the provider does not give. Every word of the description, cast and director SHALL be reachable: on Apple TV through More, which opens them on a page of their own, and elsewhere by expanding in place. The backdrop SHALL keep its proportions.
+The system SHALL show a title's backdrop, year, length or seasons, genre, rating, badges, description, cast and director once the details arrive, and SHALL leave out any field the provider does not give. Every word of the description, cast and director SHALL be reachable: on Apple TV through More, which opens them on a page of their own, and elsewhere by expanding in place. The backdrop SHALL keep its proportions and show whole, or lose at most 8% at two edges to fill its area.
 
 #### Scenario: A movie with full details
 - **GIVEN** a movie whose details include year 2024, a length of 2 h 08 min, genre Thriller, rating 7.4, age rating 15, a "2160p" name, a description, cast and a director
 - **WHEN** the details arrive
-- **THEN** the backdrop replaces the poster and the page shows year, length, genre, rating and the age and 4K badges, the description cut to a few lines with More, and the cast and director
+- **THEN** the page shows the backdrop, year, length, genre, rating and the age and 4K badges, the description cut to a few lines with More, and the cast and director
 
 #### Scenario: More on Apple TV
 - **GIVEN** a title page on Apple TV whose description runs past its lines
@@ -55,10 +55,28 @@ The system SHALL show a title's backdrop, year, length or seasons, genre, rating
 - **WHEN** its page shows
 - **THEN** the poster sits on black where the backdrop would be
 
+#### Scenario: A 16:9 backdrop on iPhone
+- **GIVEN** a title whose backdrop is 16:9
+- **WHEN** its page shows on an iPhone
+- **THEN** the backdrop spans the screen's width at 16:9 directly under the status bar, with nothing of it cut or covered
+- **AND** a blurred copy of it fills the status bar band and fades into the page below the picture
+
+#### Scenario: A 16:9 backdrop on iPad and Mac
+- **GIVEN** a title whose backdrop is 16:9
+- **WHEN** its page shows on an iPad or a Mac
+- **THEN** the card is 16:9 for its width, between 380 and 560 points tall, and the backdrop shows whole
+- **AND** in a window wide enough to hold the card at 560 the backdrop sits against the right, fading into its blurred copy under the copy
+
+#### Scenario: A series on Apple TV
+- **GIVEN** a series whose backdrop is 16:9
+- **WHEN** its page shows on Apple TV, with the backdrop in the band above the episodes
+- **THEN** the backdrop shows whole at the right of the band over a blurred copy of itself, never cut to a strip of its middle
+
 #### Scenario: A poster sent as the backdrop
 - **GIVEN** a title whose provider's backdrop is a tall picture, such as its poster
-- **WHEN** its page shows on a screen wider than it is tall
-- **THEN** the whole picture shows at the right over a blurred copy of itself, never enlarged to a strip of its middle
+- **WHEN** its page shows
+- **THEN** the whole picture shows with rounded corners over a blurred copy of itself, never enlarged to a strip of its middle
+- **AND** on iPhone it sits in the middle of the 16:9 area, nearly its full height; on iPad, Mac and Apple TV it sits at the right
 
 #### Scenario: Missing fields
 - **GIVEN** a title whose provider leaves fields out
