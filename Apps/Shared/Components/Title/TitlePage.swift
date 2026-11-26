@@ -104,37 +104,6 @@ enum TitlePage {
     /// The board's placeholder color behind missing artwork.
     static let placeholder = Color(red: 0x22 / 255, green: 0x30 / 255, blue: 0x4A / 255)
 
-    /// The first backdrop, laid out by its shape: it fills the frame, or a
-    /// tall one, such as a poster sent as the backdrop, shows whole at the
-    /// bottom right over a blurred copy of itself. Without one the poster
-    /// sits on black, and without a poster its name tile does.
-    struct Backdrop: View {
-        /// The poster's size when there is no backdrop.
-        let poster: CGSize
-        @Environment(\.titlePage) private var page
-        @Environment(\.posterLoader) private var loader
-        @Environment(\.artFit) private var fit
-        @State private var image: Poster?
-
-        var body: some View {
-            let backdrop = page?.state.metadata.backdropURL
-            FittedArt(image: image?.image, background: .black) {
-                if backdrop == nil, let page {
-                    ShelfView.PosterArt(name: page.state.metadata.name, url: page.state.posterURL)
-                        .frame(width: poster.width, height: poster.height)
-                        .accessibilityIdentifier("title.poster")
-                }
-            }
-            .accessibilityHidden(true)
-            .accessibilityIdentifier("title.backdrop")
-            .task(id: backdrop) {
-                image = nil
-                guard let backdrop, let loader else { return }
-                image = await loader.load(backdrop, fit)
-            }
-        }
-    }
-
     /// "MOVIE · THRILLER" in the muted color (design-system/one-accent-color-per-profile).
     struct Eyebrow: View {
         let type: Sizes
@@ -447,6 +416,12 @@ enum TitlePreviewFixtures {
     static let sparse = TitleMetadata(
         movie: ShelfTitle(id: "xtream#fixture#vod#2", kind: .movie, sourceID: ShelfFixtures.source, name: "Salt Road", category: "Action"),
         info: VODInfo(duration: 5_520))
+    /// `full` with a backdrop, for previews that draw it with `PreviewArt.loader`.
+    static var withBackdrop: TitleMetadata {
+        var metadata = full
+        metadata.backdropURL = PreviewArt.address
+        return metadata
+    }
     static let resume = TitlePageContext.PlayState(label: "Resume", enabled: true, fraction: 0.6, remaining: "52 min left")
     /// `full` with every site's score; the provider's rating leaves the details line.
     static let scored = full.merging(TitleMatch(tmdbID: 1, scores: ScoreRow.previewScores))

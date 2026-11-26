@@ -1,11 +1,10 @@
 import Foundation
 
-/// How a banner or title page picture sits in its frame, chosen from the
-/// decoded picture's shape rather than the field it came in, since many
-/// providers send the poster as the backdrop
-/// (movies-and-series-browsing/new-titles-up-front,
-/// title-detail-and-episode-picker/what-the-title-is-about). Neither way
-/// stretches the picture.
+/// How a banner picture sits in its frame, chosen from the decoded
+/// picture's shape rather than the field it came in, since many providers
+/// send the poster as the backdrop
+/// (movies-and-series-browsing/new-titles-up-front). Neither way stretches
+/// the picture. The title page has its own rule, `TitleArtPlacement`.
 public enum ArtFit: Sendable, Hashable {
     /// Scaled to cover the frame at its own proportions and cut at the edges.
     case fill

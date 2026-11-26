@@ -52,11 +52,16 @@
         /// The made-up poster or backdrop `scripts/make-store-art.py` drew
         /// for a scripted shelf title (`xtream#cabin#vod#1`), as a file in
         /// the app bundle; nil without the argument or the file.
+        /// With `-ui-testing-poster-backdrop` a title's backdrop is its
+        /// poster, as many providers send it.
         static func art(for titleID: String, _ art: Art) -> URL? {
             let parts = titleID.split(separator: "#")
             guard isOn, parts.count == 4 else { return nil }
-            return Bundle.main.url(forResource: "StoreArt-\(parts[1])-\(parts[2])-\(parts[3])-\(art.rawValue)", withExtension: "jpg")
+            let shown = art == .backdrop && ProcessInfo.processInfo.arguments.contains(posterBackdropArgument) ? Art.poster : art
+            return Bundle.main.url(forResource: "StoreArt-\(parts[1])-\(parts[2])-\(parts[3])-\(shown.rawValue)", withExtension: "jpg")
         }
+
+        static let posterBackdropArgument = "-ui-testing-poster-backdrop"
 
         /// The clip looping on one muted player shared by every surface; nil
         /// without the argument or without the clip in the bundle.

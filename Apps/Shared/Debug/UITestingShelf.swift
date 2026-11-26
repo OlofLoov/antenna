@@ -309,8 +309,8 @@
                                 trailerURL: details.trailerURL))
                     }
                 case .series:
-                    // A series answers after half a second, so the page shows its name first.
-                    try await Task.sleep(for: .milliseconds(500))
+                    // A series answers after half a second, or three with `-ui-testing-slow-series`.
+                    try await Task.sleep(for: UITestingShelf.seriesAnswerDelay)
                     let details = details(title)
                     return .series(
                         SeriesInfo(
@@ -417,6 +417,17 @@
 
         static var focusScrollWins: Bool {
             ProcessInfo.processInfo.arguments.contains(focusScrollWinsArgument)
+        }
+    }
+
+    extension UITestingShelf {
+        /// `-ui-testing-slow-series` makes a series answer after three
+        /// seconds instead of half of one, long enough for a UI test to see
+        /// the title page wait (title-detail-and-episode-picker/the-page-shows-in-one-go).
+        static let slowSeriesArgument = "-ui-testing-slow-series"
+
+        static var seriesAnswerDelay: Duration {
+            ProcessInfo.processInfo.arguments.contains(slowSeriesArgument) ? .seconds(3) : .milliseconds(500)
         }
     }
 #endif

@@ -7,7 +7,8 @@
         /// column on the Movies banner's left edge, Play and My list, then
         /// what the screen adds below, such as the episodes. Trailer follows
         /// My list when the trailer plays in the app. No tab bar and no
-        /// clock. Play takes focus when the page opens; More sits above the
+        /// clock. The page shows once its details are in, and Play takes
+        /// focus then; More sits above the
         /// buttons when the description is cut.
         struct Television<Below: View>: View {
             /// 4 for a movie, 2 for a series.
@@ -22,64 +23,68 @@
 
             var body: some View {
                 let type = Sizes.tv
-                ZStack(alignment: .topLeading) {
-                    Backdrop(poster: CGSize(width: 300, height: 450))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: artHeight)
-                        .overlay { HeroScrim(copyEnd: 0.57) }
-                        .overlay(alignment: .bottom) {
-                            LinearGradient(colors: [.clear, Palette.ground], startPoint: .top, endPoint: .bottom).frame(height: 240)
-                        }
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 0) {
-                            VStack(alignment: .leading, spacing: type.spacing) {
-                                Eyebrow(type: type)
-                                Name(type: type)
-                                Meta(type: type)
-                                Plot(type: type, lines: plotLines)
-                                HStack(spacing: type.spacing) {
-                                    PlayButton(type: type)
-                                        .fixedSize()
-                                        .focused($focused, equals: .play)
-                                    MyListButton(type: type)
-                                        .fixedSize()
-                                        .focused($focused, equals: .myList)
-                                    TrailerButton(type: type)
-                                        .fixedSize()
-                                }
-                                .padding(.top, 8)
-                                Progress(type: type)
-                                Scores(type: type)
-                                Problem(type: type)
-                                CastChips(type: type)
-                                    .padding(.top, 8)
+                Reveal(mark: 180) {
+                    EmptyView()
+                } content: {
+                    ZStack(alignment: .topLeading) {
+                        Backdrop(poster: CGSize(width: 300, height: 450), margin: 120)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: artHeight)
+                            .overlay { HeroScrim(copyEnd: 0.57) }
+                            .overlay(alignment: .bottom) {
+                                LinearGradient(colors: [.clear, Palette.ground], startPoint: .top, endPoint: .bottom).frame(height: 240)
                             }
-                            .frame(maxWidth: 1080, alignment: .leading)
-                            .padding(.horizontal, 96)
-                            .focusSection()
-                            .accessibilityElement(children: .contain)
-                            .accessibilityIdentifier("title.root")
-                            below
-                                .padding(.top, 48)
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 0) {
+                                VStack(alignment: .leading, spacing: type.spacing) {
+                                    Eyebrow(type: type)
+                                    Name(type: type)
+                                    Meta(type: type)
+                                    Plot(type: type, lines: plotLines)
+                                    HStack(spacing: type.spacing) {
+                                        PlayButton(type: type)
+                                            .fixedSize()
+                                            .focused($focused, equals: .play)
+                                        MyListButton(type: type)
+                                            .fixedSize()
+                                            .focused($focused, equals: .myList)
+                                        TrailerButton(type: type)
+                                            .fixedSize()
+                                    }
+                                    .padding(.top, 8)
+                                    Progress(type: type)
+                                    Scores(type: type)
+                                    Problem(type: type)
+                                    CastChips(type: type)
+                                        .padding(.top, 8)
+                                }
+                                .frame(maxWidth: 1080, alignment: .leading)
+                                .padding(.horizontal, 96)
+                                .focusSection()
+                                .accessibilityElement(children: .contain)
+                                .accessibilityIdentifier("title.root")
+                                below
+                                    .padding(.top, 48)
+                            }
+                            .padding(.top, 260)
+                            .padding(.bottom, 80)
                         }
-                        .padding(.top, 260)
-                        .padding(.bottom, 80)
+                        .scrollClipDisabled()
                     }
-                    .scrollClipDisabled()
-                }
-                .background(Palette.ground)
-                .ignoresSafeArea()
-                .defaultFocus($focused, .play)
-                // More sits above Play and the focus engine picks it over the
-                // default when a long description is cut, so Play asks once.
-                .task {
-                    await Task.yield()
-                    if page?.state.play.enabled ?? false { focused = .play }
-                }
-                // A series' Play waits for its episodes, and a disabled button
-                // cannot hold focus; once Play can play, focus moves to it.
-                .onChange(of: page?.state.play.enabled ?? false) { _, enabled in
-                    if enabled { focused = .play }
+                    .background(Palette.ground)
+                    .ignoresSafeArea()
+                    .defaultFocus($focused, .play)
+                    // More sits above Play and the focus engine picks it over the
+                    // default when a long description is cut, so Play asks once.
+                    .task {
+                        await Task.yield()
+                        if page?.state.play.enabled ?? false { focused = .play }
+                    }
+                    // A series' Play waits for its episodes, and a disabled button
+                    // cannot hold focus; once Play can play, focus moves to it.
+                    .onChange(of: page?.state.play.enabled ?? false) { _, enabled in
+                        if enabled { focused = .play }
+                    }
                 }
             }
         }
@@ -106,6 +111,20 @@
     #Preview("Missing details, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
         TitlePage.Television(plotLines: 4, artHeight: 1080) { EmptyView() }
             .environment(\.titlePage, .preview(TitlePreviewFixtures.sparse, trailer: false))
+            .environment(\.shelfMetrics, .tv)
+    }
+
+    #Preview("Series band with a 16:9 backdrop, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
+        TitlePage.Television(plotLines: 2, artHeight: 520) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.withBackdrop, trailer: false))
+            .environment(\.posterLoader, PreviewArt.loader(PreviewArt.wideSquare))
+            .environment(\.shelfMetrics, .tv)
+    }
+
+    #Preview("Poster as backdrop, Apple TV", traits: .fixedLayout(width: 1920, height: 1080)) {
+        TitlePage.Television(plotLines: 4, artHeight: 1080) { EmptyView() }
+            .environment(\.titlePage, .preview(TitlePreviewFixtures.withBackdrop, trailer: false))
+            .environment(\.posterLoader, PreviewArt.loader(PreviewArt.tallSquare))
             .environment(\.shelfMetrics, .tv)
     }
 #endif
