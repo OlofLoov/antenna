@@ -72,7 +72,7 @@
                     if remember {
                         try await session.load(channel, on: engine, options: options)
                     } else {
-                        try await engine.load(try await StreamResolver.address(for: channel), options: options)
+                        try await StreamResolver.load(channel, on: engine, options: options)
                     }
                 } catch is CancellationError {
                     return

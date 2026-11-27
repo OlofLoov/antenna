@@ -34,9 +34,9 @@ final class SessionTracker {
     /// last channel; a stream that fails to load leaves the last channel as
     /// it was. Throws what the engine throws, or a `PlaybackFailure` when a
     /// portal channel gets no address.
-    func load(_ channel: Channel, on engine: any PlaybackEngine, options: PlaybackOptions) async throws {
+    func load(_ channel: Channel, on engine: any PlaybackEngine, options: PlaybackOptions, toAirPlay: Bool = false) async throws {
         tuned(channel)
-        try await engine.load(try await StreamResolver.address(for: channel), options: options)
+        try await StreamResolver.load(channel, on: engine, options: options, toAirPlay: toAirPlay)
         guard let current = self.channel, current.isSame(as: channel) else { return }
         remember(current)
     }

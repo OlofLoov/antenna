@@ -20,6 +20,23 @@ enum StreamResolver {
             throw PlaybackFailure(error)
         }
     }
+
+    /// Loads `channel` live on `engine`. With `toAirPlay`, an Xtream channel
+    /// whose source can send HLS loads its HLS link with its MPEG-TS link as
+    /// the fallback; every other tune loads the channel's own address
+    /// (playback-engine/a-channel-goes-to-airplay-as-hls).
+    static func load(
+        _ channel: Channel, on engine: any PlaybackEngine, options: PlaybackOptions, toAirPlay: Bool = false,
+        failures: HLSFailureStore = .shared, offers: XtreamHLSOffers = .shared, clients: StalkerClients = .shared
+    ) async throws {
+        let resolved = try await address(for: channel, clients: clients)
+        let offersHLS = channel.sourceID.map(offers.offersHLS) ?? false
+        let live = AirPlayHLS.address(
+            for: channel, resolved: resolved, toAirPlay: toAirPlay, offersHLS: offersHLS, memory: failures.memory, now: .now)
+        var options = options
+        options.fallback = live.fallback
+        try await engine.load(live.url, options: options)
+    }
 }
 
 extension PlaybackFailure {

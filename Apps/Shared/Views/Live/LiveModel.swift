@@ -116,7 +116,8 @@ final class LiveModel {
         player = PlayerModel(
             .init(
                 engine: dependencies.engine, network: dependencies.network, slowDelay: dependencies.slowDelay,
-                airPlay: dependencies.airPlay, pictureInPicture: dependencies.pictureInPicture))
+                airPlay: dependencies.airPlay, pictureInPicture: dependencies.pictureInPicture,
+                airPlayRoute: dependencies.airPlayRoute))
         hold = LiveHold(engine: dependencies.engine, timeshift: player.timeshift, sleep: dependencies.sleep)
         session.recorded = { [weak self] list in self?.recentsChanged(list.entries) }
         session.saved = { [weak self] channel in self?.saveForLaunch(channel) }
@@ -311,7 +312,8 @@ final class LiveModel {
         tuning = Task { [weak self] in
             guard let self else { return }
             do {
-                try await session.load(channel, on: engine, options: languages.options(for: channel).recordingLive())
+                try await session.load(
+                    channel, on: engine, options: languages.options(for: channel).recordingLive(), toAirPlay: player.tunesForAirPlay)
             } catch {
                 if let failure = error as? PlaybackFailure, playing?.isSame(as: channel) == true { player.loadFailed(failure) }
                 return

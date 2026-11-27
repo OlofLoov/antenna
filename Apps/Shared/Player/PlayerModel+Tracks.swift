@@ -77,7 +77,9 @@ extension PlayerModel {
     /// "MPEG-TS · H.264 1080p · AAC 5.1 · Antuna player", or that details
     /// are not available yet.
     var streamLine: String {
-        let container = subject.flatMap { StreamLine.container(pathExtension: $0.channel.streamURL.pathExtension, route: route) }
+        let container = subject.flatMap {
+            StreamLine.container(pathExtension: loadedExtension ?? $0.channel.streamURL.pathExtension, route: route)
+        }
         return StreamLine.text(container: container, presentation: presentation, route: route)
     }
 

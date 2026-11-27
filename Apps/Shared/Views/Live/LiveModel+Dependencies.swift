@@ -42,6 +42,8 @@ extension LiveModel {
         var pictureInPicture: PictureInPictureHooks?
         /// Yields true while the stream plays on AirPlay; nil asks the engine.
         var airPlay: (@MainActor () -> AsyncStream<Bool>)?
+        /// Yields true while the sound route is an AirPlay device; nil follows the device's.
+        var airPlayRoute: (@MainActor () -> AsyncStream<Bool>)?
         /// The tiles' engines and limit when multi-view starts on a Mac.
         var multiView = MultiViewModel.Dependencies()
         /// Builds Start over's catch-up addresses.

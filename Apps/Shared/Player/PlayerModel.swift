@@ -61,6 +61,15 @@ final class PlayerModel {
         var airPlay: (@MainActor () -> AsyncStream<Bool>)?
         /// The Picture in Picture window; nil watches `engine`'s.
         var pictureInPicture: PictureInPictureHooks?
+        /// Yields true while the sound route is an AirPlay device; nil
+        /// follows the device's own route where it has one.
+        var airPlayRoute: (@MainActor () -> AsyncStream<Bool>)?
+        /// Prepares an HLS link on Apple's player for the AirPlay list, or
+        /// closes it with nil; nil uses `engine`'s player.
+        var prepareHLS: (@MainActor (URL?) -> Void)?
+        var failures: HLSFailureStore = .shared
+        var offers: XtreamHLSOffers = .shared
+        var airPlayWait = AirPlayHandoff.waitFor
     }
 
     /// The channel on screen, nil before the first tune.
@@ -79,6 +88,9 @@ final class PlayerModel {
     var presentation: PresentationInfo?
     /// The path that plays the stream.
     var route = EngineRouter.Route.demuxer
+    /// The file type of the address playing, such as "ts" for an HLS
+    /// channel that fell back; nil when the engine does not say.
+    var loadedExtension: String?
     /// The Apple TV info panel's open tab, nil while it is closed.
     var panel: PanelTab?
     /// The audio and subtitles list is open on iPhone, iPad or Mac.
@@ -95,6 +107,10 @@ final class PlayerModel {
     /// The picture plays outside the app's own screens, in the Picture in
     /// Picture window or on an AirPlay device.
     var playsElsewhere: Bool { pictureInPictureActive || airPlayActive }
+    /// How often the AirPlay list opened; the UI tests read it.
+    private(set) var airPlayListOpenings = 0
+    /// Bumped when a source's HLS fails, so the AirPlay button reads `canSendHLS` again.
+    var hlsRefusals = 0
 
     /// Loads the channel again. The owner sets it.
     @ObservationIgnored var reload: @MainActor (Channel) -> Void = { _ in }
@@ -107,7 +123,10 @@ final class PlayerModel {
     @ObservationIgnored let engine: any PlaybackEngine
     /// Pause, rewind and back to live for the channel on screen.
     @ObservationIgnored let timeshift: TimeshiftModel
-    @ObservationIgnored private let dependencies: Dependencies
+    @ObservationIgnored let dependencies: Dependencies
+    /// When the channel plays as HLS for AirPlay.
+    @ObservationIgnored var handoff = AirPlayHandoff()
+    @ObservationIgnored var handoffWait: Task<Void, Never>?
     @ObservationIgnored private var waitTimer: Task<Void, Never>?
     @ObservationIgnored private var recovery: Task<Void, Never>?
     @ObservationIgnored private let pictureInPicture: PictureInPictureHooks
@@ -172,12 +191,27 @@ final class PlayerModel {
         }
     }
 
-    /// Follows whether the stream plays on AirPlay until the calling task ends.
+    /// Follows whether the stream plays on AirPlay, the sound route and the
+    /// HLS fallbacks until the calling task ends.
     func observeAirPlay() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.observeExternalPlayback() }
+            group.addTask { await self.observeAirPlayRoute() }
+            group.addTask { await self.observeHLSFallbacks() }
+        }
+    }
+
+    private func observeExternalPlayback() async {
         let updates = dependencies.airPlay?() ?? engine.airPlayActivity()
         for await active in updates {
             airPlayActive = active
+            airPlayChanged(.externalPlayback(active))
         }
+    }
+
+    func airPlayListOpened(preparesPlayer: Bool) {
+        airPlayListOpenings += 1
+        airPlayChanged(.pickerOpened(preparesPlayer: preparesPlayer))
     }
 
     var device: FailureMessage.Device { dependencies.device }
@@ -214,6 +248,7 @@ final class PlayerModel {
     func presentationChanged(_ info: PresentationInfo?) async {
         presentation = info
         route = await currentRoute()
+        loadedExtension = await (engine as? RoutedEngine)?.loadedExtension
     }
 
     func stateChanged(_ new: PlaybackState) {
@@ -252,6 +287,7 @@ final class PlayerModel {
             tracks = .empty
             presentation = nil
             timeshift.channelChanged()
+            airPlayTuned(new?.channel)
         }
         subject = new
         clearFailure()

@@ -155,13 +155,13 @@
             let script = Script(scenario: scenario)
             let scripted = Engine(log: log)
             // Multi-view starts only from a routed engine; its tiles play on scripted engines too.
-            let multiView = environment[multiViewVariable] != nil
-            var dependencies = LiveModel.Dependencies(
-                engine: multiView ? RoutedEngine(system: scripted, demuxer: scripted) : scripted,
-                load: { try await script.load($0) },
-                hasLogin: { script.hasLogin($0) },
-                guide: nil,
-                programmes: UITestingStoreShots.guide(launched: launched) ?? guide)
+            var dependencies = scriptingAirPlay(
+                LiveModel.Dependencies(
+                    engine: liveEngine(scripted, log: log),
+                    load: { try await script.load($0) },
+                    hasLogin: { script.hasLogin($0) },
+                    guide: nil,
+                    programmes: UITestingStoreShots.guide(launched: launched) ?? guide))
             dependencies.touchHold = .seconds(environment[controlsVariable].flatMap(Double.init) ?? 60)
             dependencies.network = UITestingPlayback.network
             dependencies.slowDelay = UITestingPlayback.slowDelay
@@ -170,7 +170,7 @@
             dependencies.sleep = UITestingRecents.sleep
             dependencies.seen = UITestingRecents.seenChannels()
             dependencies.catchup.scripted = { UITestingTimeshift.address(for: $0, request: $1) }
-            if multiView {
+            if playsMultiView {
                 dependencies.multiView.tiles.make = {
                     let tile = Engine(log: nil)
                     return RoutedEngine(system: tile, demuxer: tile)
@@ -224,7 +224,7 @@
                 if !isHome { cabinLoads += 1 }
                 switch scenario {
                 case .channels, .favorites, .waiting:
-                    return Playlist(channels: isHome ? home + manyGroups + UITestingGroups.adultChannels() : cabin)
+                    return Playlist(channels: isHome ? home + manyGroups + UITestingGroups.adultChannels() : cabinChannels)
                 case .loading:
                     if !isHome { try await Task.sleep(for: .seconds(3600)) }
                     return Playlist(channels: home)
@@ -232,7 +232,7 @@
                     throw URLError(.notConnectedToInternet)
                 case .failing:
                     if !isHome, cabinLoads == 1 { throw URLError(.badServerResponse) }
-                    return Playlist(channels: isHome ? home : cabin)
+                    return Playlist(channels: isHome ? home : cabinChannels)
                 case .error:
                     throw URLError(.cannotFindHost)
                 case .empty:
