@@ -17,7 +17,7 @@
 
             var body: some View {
                 let shown = !UITestingStoreShots.isOn
-                if shown, let engine = (engine as? Engine) ?? ((engine as? RoutedEngine)?.demuxer as? Engine) {
+                if shown, let engine = UITestingLive.scripted(engine) {
                     VStack(alignment: .trailing, spacing: 2) {
                         Text(engine.summary)
                             .font(.system(size: 8))
@@ -33,6 +33,9 @@
                                 .accessibilityIdentifier("browse.debug.player")
                                 .accessibilityValue(summary)
                                 .allowsHitTesting(false)
+                            if UITestingLive.xtreamHLS {
+                                airPlayProbe(player)
+                            }
                         }
                         Button("Switch layout") { Layout.shared.compact.toggle() }
                             .font(.system(size: 8))
@@ -43,6 +46,24 @@
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 }
+            }
+
+            /// `browse.debug.airPlayList` reads how often the AirPlay list
+            /// opened, and `browse.debug.airPlayRoute` switches the scripted
+            /// sound route between the device and an AirPlay device.
+            @ViewBuilder private func airPlayProbe(_ player: PlayerModel) -> some View {
+                Text("list=\(player.airPlayListOpenings)")
+                    .font(.system(size: 8))
+                    .foregroundStyle(Palette.textMuted)
+                    .accessibilityIdentifier("browse.debug.airPlayList")
+                    .accessibilityValue("\(player.airPlayListOpenings)")
+                    .allowsHitTesting(false)
+                Button("Switch AirPlay") { UITestingLive.airPlayRoute.send(!UITestingLive.airPlayRoute.value) }
+                    .font(.system(size: 8))
+                    .foregroundStyle(Palette.textMuted)
+                    .frame(minWidth: 44, minHeight: 24)
+                    .contentShape(Rectangle())
+                    .accessibilityIdentifier("browse.debug.airPlayRoute")
             }
 
             static func name(_ waiting: PlayerWaiting?) -> String {

@@ -127,6 +127,7 @@ struct SourceLoader: Sendable {
             StreamHeaderBook.shared.register(source.headers, server: source.url, source: source.id)
             let live = try await client.liveLoad()
             await timeZones.loaded(source.id, timeZoneName: live.timeZoneName)
+            XtreamHLSOffers.shared.loaded(source.id, offersHLS: live.offersHLS)
             return Playlist(channels: live.channels, serverTimeZone: live.timeZoneName)
         case .m3uFile:
             return keepMovies(try loadFile(source), of: source)

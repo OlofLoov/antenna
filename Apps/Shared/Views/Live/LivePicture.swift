@@ -163,7 +163,7 @@
             let player = live.player
             return TrackPicker.MenuButton(
                 audio: player.audioRows, subtitles: player.subtitleRows,
-                footer: [.verbatim(player.streamLine)] + (player.route == .demuxer ? [Self.noAirPlay] : []),
+                footer: [.verbatim(player.streamLine)],
                 subtitlesOn: player.subtitlesOn, isAvailable: player.hasTrackChoices,
                 pickAudio: { player.selectAudio($0) }, pickSubtitle: { player.selectSubtitle($0) },
                 shown: { $0 ? player.openPicker() : player.closePicker() })
@@ -178,8 +178,39 @@
             #endif
         }
 
-        /// Antuna reads this stream itself, so it cannot go to AirPlay.
+        /// Antuna reads this stream itself, so it cannot go to AirPlay. The
+        /// movie player's menu says so; on Live the AirPlay button says it on press.
         static let noAirPlay: LocalizedStringResource = "AirPlay not available for this stream"
+
+        /// True where the AirPlay list routes one player rather than the
+        /// app's sound, so an HLS link is prepared for it as it opens.
+        private static var airPlayListRoutesOnePlayer: Bool {
+            #if os(macOS)
+                true
+            #else
+                false
+            #endif
+        }
+
+        /// The AirPlay button, on every live channel
+        /// (player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac).
+        /// It opens the list where the channel can go to AirPlay and says
+        /// why not where it cannot.
+        @ViewBuilder private var airPlayButton: some View {
+            let player = live.player
+            if player.airPlayPossible {
+                AirPlayPicker(
+                    opened: { player.airPlayListOpened(preparesPlayer: Self.airPlayListRoutesOnePlayer) },
+                    closed: { player.airPlayListClosed() },
+                    attach: { picker in
+                        #if os(macOS)
+                            live.engine.attachAirPlayList(picker)
+                        #endif
+                    })
+            } else {
+                AirPlayRefusedButton { player.airPlayRefused() }
+            }
+        }
 
         @ViewBuilder private var controls: some View {
             if live.player.timeshift.canRewind {
@@ -235,8 +266,8 @@
         private var topControls: some View {
             HStack(spacing: 0) {
                 // AirPlay at compact width is reached from full screen or Control Center.
-                if live.player.route == .system, live.fullScreen || !isCompact {
-                    AirPlayPicker()
+                if live.fullScreen || !isCompact {
+                    airPlayButton
                 }
                 Browse.PictureInPictureButton(isAvailable: live.canPictureInPicture) {
                     live.engine.startPictureInPicture()

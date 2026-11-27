@@ -32,16 +32,22 @@ final class PlayerExtrasUITests: XCTestCase {
     }
 
     // player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac, a stream that cannot go to AirPlay
-    func testAStreamAntennaReadsItselfHasNoAirPlay() throws {
+    func testAirPlayOnAStreamAntennaReadsItselfSaysItIsNotAvailable() throws {
         let app = try launchPlaying(hls: false)
         showControls(app)
-        XCTAssertFalse(app.element("player.airplay").exists)
-
+        XCTAssertFalse(app.element("player.airplay").exists, "no room at compact width")
         app.openTracksMenu()
+        XCTAssertFalse(app.tracksRow("AirPlay not available for this stream").exists, "the menu says it up front")
+        app.element("browse.player.surface").tap()
 
-        let line = app.tracksRow("AirPlay not available for this stream")
-        XCTAssertTrue(line.exists, "no AirPlay line in the menu")
-        XCTAssertFalse(line.isEnabled)
+        XCUIDevice.shared.orientation = .landscapeLeft
+        showControls(app)
+        let airPlay = app.element("player.airplay")
+        XCTAssertTrue(airPlay.waitForExistence(timeout: 3), "no AirPlay button in full screen")
+        airPlay.tap()
+        let notice = app.element("timeshift.notice")
+        XCTAssertTrue(notice.waitForExistence(timeout: 5), "no notice")
+        XCTAssertEqual(notice.label, "AirPlay not available for this stream")
     }
 
     // player-controls-and-playback-errors/extra-buttons-on-iphone-ipad-and-mac

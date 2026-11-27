@@ -339,7 +339,8 @@ final class TimeshiftModel {
 
     // MARK: Notices
 
-    private func say(_ text: String) {
+    /// Shows `text` over the picture for `noticeFor`, in place of any notice showing.
+    func say(_ text: String) {
         notice = text
         noticeTimer?.cancel()
         let hold = dependencies.noticeFor
