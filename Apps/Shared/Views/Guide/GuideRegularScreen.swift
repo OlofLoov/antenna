@@ -166,6 +166,8 @@
         @Environment(LiveModel.self) private var live
         @Environment(GuideBoardModel.self) private var model
         @Environment(\.guideBoardOpenLive) private var openLive
+        @Environment(\.playDestination) private var destination
+        @Environment(\.openURL) private var openURL
         @Environment(\.layoutDirection) private var layoutDirection
 
         var body: some View {
@@ -173,7 +175,10 @@
                 let reading = GuideBoardReading(live: live, model: model)
                 let data = reading.data(at: context.date, filtered: false)
                 if let details = reading.details(target, data, now: context.date, locale: locale) {
-                    GuideBoard.Details.Popover(details: details, reminder: reading.reminder(target, data, reminders, now: context.date)) {
+                    GuideBoard.Details.Popover(
+                        details: details, reminder: reading.reminder(target, data, reminders, now: context.date),
+                        watchOn: reading.watchOn(target, data, destination: destination, openURL: openURL, now: context.date)
+                    ) {
                         reading.watch(target, data: data, now: context.date)
                         openLive()
                     } close: {

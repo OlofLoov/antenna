@@ -67,6 +67,29 @@ extension TimeshiftModel {
         }
     }
 
+    /// Plays an ended `programme` of the tuned `channel` from its start
+    /// through the provider's catch-up, as a request from a phone asks
+    /// (play-on-apple-tv/play-on-from-what-can-be-played). Without an
+    /// address for it the channel stays live.
+    func watchCatchup(_ programme: Programme, on channel: Channel) {
+        preview = nil
+        userPaused = false
+        catchup = CatchupPlayback(channel: channel, programme: programme, start: programme.start)
+        catchupPosition = 0
+        startOver = .none
+        startingCatchup = true
+        catchupLoad?.cancel()
+        catchupLoad = Task {
+            let request = CatchupRequest(start: programme.start, duration: programme.stop.timeIntervalSince(programme.start), now: now())
+            guard let url = await catchupAddress(channel, request) else {
+                catchup = nil
+                startingCatchup = false
+                return
+            }
+            await playCatchup(url, parking: true, fallback: nil)
+        }
+    }
+
     /// Plays `url`. On the first catch-up load the live buffer is parked
     /// and kept until catch-up plays; when it fails to start, live comes
     /// back with its buffer at `fallback`, or at live saying Start over is

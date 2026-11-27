@@ -49,9 +49,56 @@ extension RoutedEngine {
     /// reads play on Apple's player, raw broadcast streams, Matroska and AVI
     /// on the demuxing engine.
     /// Both share the TV's mode on Apple TV and the picture held over a switch.
+    /// Each one joins `OpenEngines`, so Play on can stop them all.
     @MainActor static func app() -> RoutedEngine {
         let display = DisplayMatcher()
         let hold = FrameHold()
-        return RoutedEngine(system: AVPlayerEngine(display: display, hold: hold), demuxer: DemuxEngine(display: display, hold: hold))
+        let engine = RoutedEngine(system: AVPlayerEngine(display: display, hold: hold), demuxer: DemuxEngine(display: display, hold: hold))
+        OpenEngines.shared.add(engine)
+        return engine
+    }
+}
+
+extension PlaybackEngine {
+    /// Closes the Picture in Picture window on whichever engine has one open.
+    @MainActor func stopPictureInPicture() {
+        #if os(iOS) || os(macOS)
+            AVPlayerEngine.resolve(self)?.pictureInPicture?.stopPictureInPicture()
+            DemuxEngine.resolve(self)?.stopPictureInPicture()
+        #endif
+    }
+}
+
+/// Every engine the app made, held weakly, so one call can close every
+/// stream this device has open
+/// (play-on-apple-tv/starts-at-once-on-the-same-network, the phone was
+/// playing the same thing).
+@MainActor
+final class OpenEngines {
+    static let shared = OpenEngines()
+
+    private struct Held {
+        weak var engine: (any PlaybackEngine)?
+    }
+
+    private var held: [Held] = []
+
+    func add(_ engine: any PlaybackEngine) {
+        held.removeAll { $0.engine == nil }
+        held.append(Held(engine: engine))
+    }
+
+    /// The engines still alive.
+    var engines: [any PlaybackEngine] {
+        held.compactMap(\.engine)
+    }
+
+    /// Closes Picture in Picture, then stops every engine, not pauses, so
+    /// each HTTP connection and demuxer closes. Returns once each reports
+    /// it has stopped.
+    func stopAll() async {
+        let engines = engines
+        for engine in engines { engine.stopPictureInPicture() }
+        for engine in engines { await engine.stop() }
     }
 }

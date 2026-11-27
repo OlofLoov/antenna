@@ -35,15 +35,24 @@
                                     Name(type: type)
                                     Meta(type: type)
                                     Plot(type: type, lines: plotLines)
-                                    // Play across the width, then My list and
-                                    // Trailer in words under it.
+                                    // Play across the width, then My list,
+                                    // Trailer and Play on in words under it,
+                                    // Play on on a row of its own when they do not fit.
                                     PlayButton(type: type)
                                         .padding(.top, 4)
-                                    HStack(spacing: type.spacing) {
-                                        MyListButton(type: type)
-                                            .fixedSize()
-                                        TrailerButton(type: type)
-                                            .fixedSize()
+                                    ViewThatFits(in: .horizontal) {
+                                        HStack(spacing: type.spacing) {
+                                            MyListButton(type: type).fixedSize()
+                                            TrailerButton(type: type).fixedSize()
+                                            PlayOnButton(type: type).fixedSize()
+                                        }
+                                        VStack(alignment: .leading, spacing: type.spacing) {
+                                            HStack(spacing: type.spacing) {
+                                                MyListButton(type: type).fixedSize()
+                                                TrailerButton(type: type).fixedSize()
+                                            }
+                                            PlayOnButton(type: type).fixedSize()
+                                        }
                                     }
                                     Progress(type: type)
                                     Scores(type: type)
@@ -112,6 +121,7 @@
                                                 PlayButton(type: type).fixedSize()
                                                 MyListButton(type: type).fixedSize()
                                                 TrailerButton(type: type).fixedSize()
+                                                PlayOnButton(type: type).fixedSize()
                                             }
                                             .padding(.top, 4)
                                             Progress(type: type)

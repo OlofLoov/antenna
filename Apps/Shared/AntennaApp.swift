@@ -141,6 +141,7 @@ struct AntennaApp: App {
             .modifier(GroupLockTimers(locks: locks))
             .modifier(ReminderRuntime(center: reminders))
             .modifier(LoginDropSweep())
+            .modifier(PlayOnRuntime())
             .modifier(ForgetLoginsOnActivate())
             #if os(macOS)
                 // A file, link or Handoff that arrives goes to the open

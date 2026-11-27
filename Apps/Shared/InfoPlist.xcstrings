@@ -34,43 +34,43 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يتصل Antuna بخوادم التلفزيون على شبكتك المنزلية عندما يشير أحد مصادرك إليها."
+            "value" : "يعثر Antuna على Apple TV لديك ويتصل بخوادم التلفزيون على شبكتك المنزلية."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antuna verbindet sich mit TV-Servern in deinem Heimnetzwerk, wenn eine deiner Quellen dorthin zeigt."
+            "value" : "Antuna findet dein Apple TV und verbindet sich mit TV-Servern in deinem Heimnetzwerk."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Antuna connects to TV servers on your home network when one of your sources points there."
+            "value" : "Antuna finds your Apple TV and connects to TV servers on your home network."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antuna se conecta a servidores de TV de tu red doméstica cuando una de tus fuentes apunta allí."
+            "value" : "Antuna encuentra tu Apple TV y se conecta a servidores de TV de tu red doméstica."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antuna se connecte aux serveurs TV de votre réseau domestique quand l’une de vos sources y renvoie."
+            "value" : "Antuna trouve votre Apple TV et se connecte aux serveurs TV de votre réseau domestique."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Antuna se conecta a servidores de TV na sua rede doméstica quando uma das suas fontes aponta para lá."
+            "value" : "O Antuna encontra sua Apple TV e se conecta a servidores de TV na sua rede doméstica."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Antuna ansluter till TV-servrar i ditt hemnätverk när någon av dina källor pekar dit."
+            "value" : "Antuna hittar din Apple TV och ansluter till TV-servrar i ditt hemnätverk."
           }
         }
       }
