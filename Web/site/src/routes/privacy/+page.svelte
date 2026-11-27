@@ -9,7 +9,7 @@
 
 <article class="prose">
 	<h1>Privacy Policy</h1>
-	<p class="updated">Last updated: November 23, 2026</p>
+	<p class="updated">Last updated: November 28, 2026</p>
 
 	<p>
 		This policy covers Antuna, the TV player for iPhone, iPad, Mac and Apple TV published by Code
@@ -37,6 +37,13 @@
 		Your private iCloud database belongs to your Apple Account. Code Crave cannot read it. Apple
 		stores it under its own <a href="https://www.apple.com/legal/privacy/">privacy policy</a>. If a
 		device is not signed in to iCloud, this data stays on that device.
+	</p>
+	<p>
+		Antuna puts every value it keeps there in encrypted fields, and the names of your Apple TVs too.
+		Your devices encrypt them before they upload them. If you turn on Advanced Data Protection for
+		iCloud, they are end-to-end encrypted: only your devices hold the keys, and Apple cannot read
+		them. Without it, Apple holds the keys, as it does for most iCloud data. Either way, Apple can
+		see how many records Antuna keeps, how large they are and when they changed.
 	</p>
 	<p>
 		Some things stay on one device only: what you watched last there and other settings for that

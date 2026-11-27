@@ -25,9 +25,12 @@ them:
   and never sees the traffic.
 - **The user's private iCloud database and iCloud Keychain.** Sources,
   favorites, settings and watch progress sync through CloudKit's private
-  database, and logins through the iCloud Keychain. Only the user's own
-  devices can read either. The one-time Apple TV login drop is sealed to the
-  TV's key and deleted when the TV picks it up or after ten minutes.
+  database, and logins through the iCloud Keychain. Every value Antuna writes
+  to the database is in a CloudKit encrypted field. With Advanced Data
+  Protection on, only the user's devices hold the keys; without it Apple holds
+  them, as for most iCloud data. Code Crave can read neither. The one-time
+  Apple TV login drop is sealed to the TV's key and deleted when the TV picks
+  it up or after ten minutes.
 - **Apple, for purchases.** StoreKit handles the lifetime unlock and the
   yearly subscription. The app reads the entitlement on the device and keeps
   no receipt. The sales reports in App Store Connect come from Apple's

@@ -374,6 +374,57 @@ else
   printf 'ok   %s\n' "localization: Core reads the device's language, calendar and time zone only as defaults"
 fi
 
+# Every stored property of a synced model goes to CloudKit in an encrypted
+# field, which CloudKit cannot add to a field later
+# (source-management/the-synced-library-is-in-encrypted-fields). A stored
+# property is a `var` at the class's top level with no body. Entries in
+# plain_fields, as `path:property`, may stay plain; there are none.
+plain_fields=''
+read -r -d '' encrypted_py <<'PY' || true
+import re
+import sys
+
+allowed = set(sys.argv[1].split()) if sys.argv[1] else set()
+STORED = re.compile(r"^(@Attribute\(([^)]*)\)\s+)?var\s+(\w+)\s*:[^{]*$")
+
+
+def hits(path):
+    with open(path, encoding="utf-8") as handle:
+        lines = handle.read().split("\n")
+    found = []
+    model = False
+    depth = 0
+    for n, line in enumerate(lines):
+        text = line.strip()
+        if text == "@Model":
+            model = True
+            continue
+        if model and depth == 1 and not text.startswith("//"):
+            match = STORED.match(text)
+            above = lines[n - 1].strip() if n else ""
+            marked = ".allowsCloudEncryption" in (match.group(2) or "") if match else False
+            marked = marked or (above.startswith("@Attribute(") and ".allowsCloudEncryption" in above)
+            if match and not marked:
+                if f"{path}:{match.group(3)}" not in allowed:
+                    found.append(f"{path}:{n + 1}:{line}")
+        if model:
+            depth += line.count("{") - line.count("}")
+            if depth == 0 and "}" in line:
+                model = False
+    return found
+
+
+print("\n".join(hit for path in sys.argv[2:] for hit in hits(path)))
+PY
+
+plain=$(grep -rlE --include='*.swift' '^[[:space:]]*@Model[[:space:]]*$' Apps/Shared Apps/Mobile Apps/TV | xargs python3 -c "$encrypted_py" "$plain_fields" || true)
+if [[ -n "$plain" ]]; then
+  printf 'FAIL %s\n%s\n\n' "source-management/the-synced-library-is-in-encrypted-fields: every stored property of a synced model is marked .allowsCloudEncryption" "$plain"
+  status=1
+else
+  printf 'ok   %s\n' "source-management/the-synced-library-is-in-encrypted-fields: every stored property of a synced model is marked .allowsCloudEncryption"
+fi
+
 # Terraform configures no request log: no CloudFront standard or real-time
 # logs, no S3 server access logs, no API Gateway access logs, no WAF logging
 # or sampled requests (hosting/nothing-keeps-a-record-of-requests).

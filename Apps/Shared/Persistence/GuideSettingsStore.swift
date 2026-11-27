@@ -9,9 +9,9 @@ import SwiftData
 /// entry by entry when read.
 @Model
 final class GuideSettingsRecord {
-    var sourceID: UUID?
-    var payload: Data?
-    var modifiedAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var sourceID: UUID?
+    @Attribute(.allowsCloudEncryption) var payload: Data?
+    @Attribute(.allowsCloudEncryption) var modifiedAt: Date = Date.now
 
     init(sourceID: UUID, payload: Data?, modifiedAt: Date = .now) {
         self.sourceID = sourceID
