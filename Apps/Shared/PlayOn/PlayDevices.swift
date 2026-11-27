@@ -30,7 +30,10 @@ enum PlayOnStoreError: Error, Equatable, Sendable {
     case failed
 
     /// The store error for a CloudKit error, looking inside a partial failure.
+    /// Every CloudKit error the Play on stores see passes here, so a Debug
+    /// build logs its domain and code here.
     static func map(_ error: any Error) -> PlayOnStoreError {
+        PlayOnLog.cloudKit(error)
         guard let error = error as? CKError else { return .failed }
         if error.code == .partialFailure, let inner = error.partialErrorsByItemID?.values.first {
             return map(inner)

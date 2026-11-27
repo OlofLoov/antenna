@@ -4,10 +4,6 @@ import Network
 import Observation
 import SwiftUI
 
-#if os(iOS)
-    import UIKit
-#endif
-
 /// What a screen asks to play on a TV: the item by key, its source and the
 /// names the TV and the messages show.
 struct PlayOnItem: Equatable, Sendable {
@@ -112,7 +108,12 @@ final class PlayDestination {
         var answerLimit = Duration.seconds(3)
         /// How long a TV that was just opened in the menu has to show up on the network.
         var discoveryWait = Duration.milliseconds(1500)
+        /// Waits between reads of the device list while the account has no TV yet.
+        var rereadWait: @MainActor () async throws -> Void = { try await Task.sleep(for: PlayDestination.rereadInterval) }
     }
+
+    /// How often the device list is read again while the scene is active and no TV is listed.
+    static let rereadInterval = Duration.seconds(30)
 
     /// Where `browsing` is kept: true once the user opened Play on with a TV on the account.
     static let browsingKey = "playOn.browsing"
@@ -126,6 +127,10 @@ final class PlayDestination {
 
     @ObservationIgnored let dependencies: Dependencies
     @ObservationIgnored private var active = false
+    /// Reads the device list again until a TV shows up.
+    @ObservationIgnored private var rereading: Task<Void, Never>?
+    /// When the device list was last read.
+    @ObservationIgnored private var lastRead: Date?
 
     init(_ dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -170,8 +175,42 @@ final class PlayDestination {
         await publish()
         await refresh()
         if active, browsing, !tvs.isEmpty { dependencies.browser.start() }
+        rereadUntilATVShows()
         await reconnect()
-        _ = try? await dependencies.queue?.sweep(now: dependencies.now())
+        do {
+            _ = try await dependencies.queue?.sweep(now: dependencies.now())
+        } catch {
+            PlayOnLog.failure("sweep requests", error)
+        }
+    }
+
+    /// A TV that opens Antuna for the first time while the phone is open
+    /// shows up within 30 seconds: until one is listed, the device list is
+    /// read again on that interval while the scene is active
+    /// (play-on-apple-tv/apple-tvs-on-the-same-icloud-account, a TV that registers later).
+    private func rereadUntilATVShows() {
+        guard rereading == nil, active, tvs.isEmpty else { return }
+        rereading = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let wait = self?.dependencies.rereadWait else { return }
+                do { try await wait() } catch { break }
+                guard let self, self.active, !Task.isCancelled else { break }
+                await self.refresh()
+                if !self.tvs.isEmpty {
+                    if self.browsing { self.dependencies.browser.start() }
+                    break
+                }
+            }
+            if !Task.isCancelled { self?.rereading = nil }
+        }
+    }
+
+    /// A screen with a Play on control appeared: with no TV listed yet, the
+    /// device list is read again, at most once every 10 seconds.
+    func lookForTVs() async {
+        guard tvs.isEmpty else { return }
+        if let lastRead, dependencies.now().timeIntervalSince(lastRead) < 10 { return }
+        await refresh()
     }
 
     /// The scene went to the background: browsing stops and the connection
@@ -180,6 +219,8 @@ final class PlayDestination {
     /// The phone opens no stream in between.
     func deactivate() {
         active = false
+        rereading?.cancel()
+        rereading = nil
         if let connection, !connection.stopped {
             resume = Resume(tv: connection.tv.id, request: connection.status?.requestID)
             connection.ended = {}
@@ -307,15 +348,26 @@ final class PlayDestination {
             try await dependencies.devices.save(info)
             published = info
         } catch {
+            PlayOnLog.failure("save this device", error)
             return
         }
-        _ = try? await dependencies.devices.sweep(notSeenSince: now.addingTimeInterval(-PlayDeviceInfo.forgetAfter))
+        do {
+            try await dependencies.devices.sweep(notSeenSince: now.addingTimeInterval(-PlayDeviceInfo.forgetAfter))
+        } catch {
+            PlayOnLog.failure("sweep devices", error)
+        }
     }
 
     /// Reads the account's devices again; a failure keeps the last list.
     func refresh() async {
-        guard let devices = try? await dependencies.devices.all() else { return }
-        self.devices = devices
+        lastRead = dependencies.now()
+        do {
+            let devices = try await dependencies.devices.all()
+            self.devices = devices
+            PlayOnLog.read(devices)
+        } catch {
+            PlayOnLog.failure("read devices", error)
+        }
     }
 
     /// The user opened Play on: from now on the browser runs while the
@@ -397,8 +449,10 @@ final class PlayDestination {
             try await queue.save(request)
             notice = PlayOnNotice(text: PlayOnText.sent(to: tv.name, locale: locale), kind: .sent)
         } catch .offline {
+            PlayOnLog.failure("save request", PlayOnStoreError.offline)
             notice = PlayOnNotice(text: PlayOnText.offline(locale), kind: .error)
         } catch {
+            PlayOnLog.failure("save request", error)
             notice = PlayOnNotice(text: PlayOnText.unreachable(tv.name, locale: locale), kind: .error)
         }
     }
@@ -415,42 +469,6 @@ final class PlayDestination {
             if dependencies.browser.denied { return nil }
         }
         return nil
-    }
-
-    /// What a control does for `item`; nil sends nothing.
-    func actions(_ item: PlayOnItem?, openURL: OpenURLAction) -> PlayOnActions {
-        PlayOnActions(
-            opened: { [weak self] in self?.opened() },
-            pick: { [weak self] id in
-                guard let item else { return }
-                Task { await self?.send(item, to: id) }
-            },
-            openSettings: { if let url = Self.settingsURL { openURL(url) } })
-    }
-
-    /// Antuna's page in Settings, where local network access is turned on.
-    static var settingsURL: URL? {
-        #if os(macOS)
-            URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork")
-        #elseif os(iOS)
-            URL(string: UIApplication.openSettingsURLString)
-        #else
-            nil
-        #endif
-    }
-
-    /// The line for the TV's answer; none for a start while connected,
-    /// where the bar already says what plays.
-    static func notice(
-        for result: PlayAnswer.Result, tv: String, item: PlayOnItem, locale: Locale, connected: Bool = false
-    ) -> PlayOnNotice? {
-        let text = PlayOnText.line(for: result, tv: tv, item: item.title, sourceName: item.sourceName, locale: locale)
-        switch result {
-        case .started: return connected ? nil : PlayOnNotice(text: text, kind: .sent)
-        case .waiting: return PlayOnNotice(text: text, kind: .sent)
-        case .noLogin(let source): return PlayOnNotice(text: text, kind: .error, signIn: source)
-        case .needsPasscode, .noSource, .notFound, .unsupportedVersion: return PlayOnNotice(text: text, kind: .error)
-        }
     }
 }
 

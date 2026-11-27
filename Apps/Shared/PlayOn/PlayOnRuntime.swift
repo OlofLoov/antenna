@@ -5,8 +5,8 @@ import SwiftUI
 /// iPad and Mac it provides `playDestination`, keeps the device list fresh
 /// while the scene is active and shows what each send did. On Apple TV it
 /// listens for requests while the scene is active and provides the inbox
-/// the shell takes them from. Runs only when this build can use CloudKit and
-/// the device is signed in to iCloud
+/// the shell takes them from. Runs only when this build has a CloudKit
+/// container and CloudKit says the iCloud account is available
 /// (play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable, not signed in).
 struct PlayOnRuntime: ViewModifier {
     @Environment(\.scenePhase) private var phase
@@ -26,13 +26,10 @@ struct PlayOnRuntime: ViewModifier {
                     .task { await UITestingPlayOn.deliver(into: inbox) }
                 #endif
                 .onChange(of: phase, initial: true) { _, phase in
-                    if receiver == nil, let make = PlayOnSetup.receiver { receiver = make(inbox) }
-                    guard let receiver else { return }
-                    if phase == .active {
-                        Task { await receiver.activate() }
-                    } else if phase == .background {
-                        receiver.deactivate()
-                    }
+                    Task { await apply(phase) }
+                }
+                .onChange(of: CloudAccount.shared.available) { _, _ in
+                    Task { await apply(phase) }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .playRequestsChanged)) { _ in
                     Task { await receiver?.pickUp() }
@@ -45,14 +42,33 @@ struct PlayOnRuntime: ViewModifier {
                     .overlay(alignment: .bottomLeading) { UITestingPlayOn.Probe(destination: destination) }
                 #endif
                 .onChange(of: phase, initial: true) { _, phase in
-                    if destination == nil { destination = PlayOnSetup.destination?() }
-                    guard let destination else { return }
-                    if phase == .active {
-                        Task { await destination.activate() }
-                    } else if phase == .background {
-                        destination.deactivate()
-                    }
+                    Task { await apply(phase) }
                 }
+                .onChange(of: CloudAccount.shared.available) { _, _ in
+                    Task { await apply(phase) }
+                }
+        #endif
+    }
+
+    /// Builds the Play on parts once the account is known to be available,
+    /// then activates or deactivates them for `phase`.
+    private func apply(_ phase: ScenePhase) async {
+        #if os(tvOS)
+            if receiver == nil, let make = await PlayOnSetup.receiver(), receiver == nil { receiver = make(inbox) }
+            guard let receiver else { return }
+            if phase == .active {
+                await receiver.activate()
+            } else if phase == .background {
+                receiver.deactivate()
+            }
+        #else
+            if destination == nil, let make = await PlayOnSetup.destination(), destination == nil { destination = make() }
+            guard let destination else { return }
+            if phase == .active {
+                await destination.activate()
+            } else if phase == .background {
+                destination.deactivate()
+            }
         #endif
     }
 }
@@ -61,17 +77,19 @@ struct PlayOnRuntime: ViewModifier {
 /// tests ask for; nil when Play on cannot run here.
 @MainActor
 enum PlayOnSetup {
-    static var enabled: Bool {
+    /// True when Play on can run: the build has a CloudKit container and
+    /// CloudKit says the iCloud account is available.
+    static func enabled(_ account: CloudAccount = .shared) async -> Bool {
         #if DEBUG
             if UITestingPlayOn.scenario != nil { return true }
             if ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("-ui-testing") }) { return false }
         #endif
-        return CloudSync.container != nil && FileManager.default.ubiquityIdentityToken != nil
+        return await account.resolve()
     }
 
     #if os(tvOS)
-        static var receiver: ((PlayRequestInbox) -> PlayOnReceiver)? {
-            guard enabled else { return nil }
+        static func receiver() async -> ((PlayRequestInbox) -> PlayOnReceiver)? {
+            guard await enabled() else { return nil }
             #if DEBUG
                 if let scripted = UITestingPlayOn.receiver { return scripted }
             #endif
@@ -83,8 +101,8 @@ enum PlayOnSetup {
             }
         }
     #else
-        static var destination: (() -> PlayDestination)? {
-            guard enabled else { return nil }
+        static func destination() async -> (() -> PlayDestination)? {
+            guard await enabled() else { return nil }
             #if DEBUG
                 if let scripted = UITestingPlayOn.destination { return scripted }
             #endif

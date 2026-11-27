@@ -31,6 +31,8 @@ struct TitleScreen<Page: View>: View {
             .environment(\.titlePage, context)
             .environment(\.episodes, route.title.kind == .series ? episodes : nil)
             .task(id: attempt) { await model.load(refresh: attempt > 0) }
+            // play-on-apple-tv/apple-tvs-on-the-same-icloud-account: a TV that registered since the last read gets its button.
+            .task { await destination?.lookForTVs() }
             .onChange(of: PreferencesStore.current(preferences).lookupsEnabled) { _, on in
                 Task { await model.lookupsChanged(on) }
             }
