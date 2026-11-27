@@ -74,6 +74,7 @@ public actor FixtureServer {
     private var pathsByConnection: [ObjectIdentifier: String] = [:]
     private var scripted: [String: [Behavior]] = [:]
     private var fallback: [String: Behavior] = [:]
+    private var aliases: [String: String] = [:]
     private var started = ContinuousClock.now
     private var cookie: String?
 
@@ -132,6 +133,15 @@ public actor FixtureServer {
     /// Every request for `path` gets `behavior` once its script runs out.
     public func always(_ path: String, _ behavior: Behavior) {
         fallback[normalized(path)] = behavior
+    }
+
+    /// Requests for `path` get the fixture at `fixture`, a path under
+    /// `root`, as an Xtream panel serves `/live/<user>/<password>/<id>.m3u8`
+    /// and `.ts`. A playlist's segment lines then name the fixture's own
+    /// folder, so its segments still load, and under `/live/` it is the
+    /// moving live window.
+    public func alias(_ path: String, to fixture: String) {
+        aliases[normalized(path)] = fixture
     }
 
     /// Every response from now on sets this cookie, or none with nil.
@@ -295,13 +305,20 @@ extension FixtureServer {
 
     func content(for path: String) -> Data? {
         let isLive = path.hasPrefix("/live/")
-        let relative = String((isLive ? path.dropFirst("/live/".count) : path.dropFirst()))
+        let alias = aliases[path]
+        let relative = alias ?? String((isLive ? path.dropFirst("/live/".count) : path.dropFirst()))
         guard !relative.contains(".."), !relative.isEmpty else { return nil }
         let file = root.appending(path: relative)
         guard let data = try? Data(contentsOf: file) else { return nil }
-        guard isLive, file.pathExtension == "m3u8", let playlist = String(data: data, encoding: .utf8) else { return data }
-        let elapsed = ContinuousClock.now - started
-        return Data(Self.livePlaylist(from: playlist, elapsed: elapsed).utf8)
+        guard file.pathExtension == "m3u8", isLive || alias != nil, var playlist = String(data: data, encoding: .utf8) else { return data }
+        if isLive { playlist = Self.livePlaylist(from: playlist, elapsed: ContinuousClock.now - started) }
+        if alias != nil {
+            let folder = (isLive ? "/live/" : "/") + relative.split(separator: "/").dropLast().map { $0 + "/" }.joined()
+            playlist = playlist.split(separator: "\n", omittingEmptySubsequences: false)
+                .map { $0.isEmpty || $0.hasPrefix("#") ? String($0) : folder + $0 }
+                .joined(separator: "\n")
+        }
+        return Data(playlist.utf8)
     }
 
     /// A three segment live window over the segments of a finished playlist.

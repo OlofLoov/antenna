@@ -74,11 +74,14 @@ public struct PlaybackOptions: Sendable, Equatable {
     /// Records live TV to a local buffer while it plays. Engines that
     /// cannot record a stream play it as before and say so in `timeshift()`.
     public var timeshift: TimeshiftRequest?
+    /// The address `RoutedEngine` opens instead when this one fails before
+    /// it first plays. Single engines ignore it.
+    public var fallback: StreamFallback?
 
     public init(
         startPosition: Duration? = nil, isLive: Bool? = nil, preferredAudioLanguages: [String] = [],
         preferredSubtitleLanguages: [String] = [], subtitleMode: SubtitleMode = .auto, remembered: LanguagePick? = nil,
-        timeshift: TimeshiftRequest? = nil
+        timeshift: TimeshiftRequest? = nil, fallback: StreamFallback? = nil
     ) {
         self.startPosition = startPosition
         self.isLive = isLive
@@ -87,6 +90,23 @@ public struct PlaybackOptions: Sendable, Equatable {
         self.subtitleMode = subtitleMode
         self.remembered = remembered
         self.timeshift = timeshift
+        self.fallback = fallback
+    }
+}
+
+/// A second address for the same channel, such as an Xtream channel's
+/// MPEG-TS link behind the HLS link it goes to AirPlay on
+/// (playback-engine/a-source-whose-hls-failed-cannot-airplay).
+/// Holds the login like any stream address: never log or store it.
+public struct StreamFallback: Sendable, Equatable {
+    public var url: URL
+    /// The source the channel belongs to, which `RoutedEngine` names when
+    /// the fallback plays. Nil when the channel has none.
+    public var source: UUID?
+
+    public init(url: URL, source: UUID?) {
+        self.url = url
+        self.source = source
     }
 }
 
