@@ -286,6 +286,52 @@
         }
       }
     },
+    "%@ couldn't find %@." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يعثر %1$@ على %2$@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat %2$@ nicht gefunden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ couldn't find %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ no encontró %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ n’a pas trouvé %2$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ não encontrou %2$@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hittade inte %2$@."
+          }
+        }
+      }
+    },
     "%@ did not send any data for %lld seconds." : {
       "localizations" : {
         "ar" : {
@@ -506,6 +552,92 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "%@ didn't answer. Open Antuna there and try again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يستجب %@. افتح Antuna هناك وحاول مرة أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ hat nicht geantwortet. Öffne Antuna dort und versuche es erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no respondió. Abre Antuna allí y vuelve a intentarlo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ n’a pas répondu. Ouvrez Antuna sur cet appareil et réessayez."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ não respondeu. Abra o Antuna lá e tente de novo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ svarade inte. Öppna Antuna där och försök igen."
+          }
+        }
+      }
+    },
+    "%@ doesn't have %@ yet. Try again in a minute." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يتوفر %2$@ على %1$@ بعد. حاول مرة أخرى بعد دقيقة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hat %2$@ noch nicht. Versuche es in einer Minute erneut."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ doesn't have %2$@ yet. Try again in a minute."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ todavía no tiene %2$@. Vuelve a intentarlo en un minuto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ n’a pas encore %2$@. Réessayez dans une minute."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ainda não tem %2$@. Tente de novo em um minuto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ har inte %2$@ än. Försök igen om en minut."
           }
         }
       }
@@ -804,6 +936,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ är inte en favorit."
+          }
+        }
+      }
+    },
+    "%@ isn't signed in to %@." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ غير مسجَّل الدخول إلى %2$@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ist bei %2$@ nicht angemeldet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ isn't signed in to %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ no ha iniciado sesión en %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ n’est pas connecté à %2$@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ não está conectado a %2$@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ är inte inloggad på %2$@."
           }
         }
       }
@@ -6285,6 +6463,46 @@
         }
       }
     },
+    "Allow local network access" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السماح بالوصول إلى الشبكة المحلية"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff auf lokales Netzwerk erlauben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acceso a la red local"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser l’accès au réseau local"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir acesso à rede local"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillåt åtkomst till lokalt nätverk"
+          }
+        }
+      }
+    },
     "Allow local network access for Antuna in Settings." : {
       "localizations" : {
         "ar" : {
@@ -9761,6 +9979,46 @@
         }
       }
     },
+    "Enter the passcode on %@." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أدخل رمز الدخول على %@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gib den Code auf %@ ein."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce el código en %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez le code sur %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite o código em %@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ange lösenkoden på %@."
+          }
+        }
+      }
+    },
     "Enter the password." : {
       "localizations" : {
         "ar" : {
@@ -10837,6 +11095,46 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "From %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desde %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Från %@"
           }
         }
       }
@@ -16367,6 +16665,86 @@
         }
       }
     },
+    "Play on" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل على"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abspielen auf"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir en"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire sur"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduzir em"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela upp på"
+          }
+        }
+      }
+    },
+    "Play on %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغيل على %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf %@ abspielen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire sur %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduzir em %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela upp på %@"
+          }
+        }
+      }
+    },
     "Play or choose" : {
       "localizations" : {
         "ar" : {
@@ -16527,6 +16905,46 @@
         }
       }
     },
+    "Playing on %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُشغَّل على %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läuft auf %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduciendo en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture sur %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduzindo em %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelas upp på %@"
+          }
+        }
+      }
+    },
     "Plays the next episode of a series when one ends. Applies to this device only." : {
       "localizations" : {
         "ar" : {
@@ -16563,6 +16981,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spelar nästa avsnitt i en serie när ett tar slut. Gäller bara den här enheten."
+          }
+        }
+      }
+    },
+    "Plays when Antuna opens there" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يبدأ التشغيل عند فتح Antuna هناك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läuft, sobald Antuna dort geöffnet wird"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se reproduce cuando se abra Antuna allí"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarre à l’ouverture d’Antuna sur cet appareil"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduz quando o Antuna abrir lá"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelas upp när Antuna öppnas där"
           }
         }
       }
@@ -16923,6 +17381,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Läser tablån…"
+          }
+        }
+      }
+    },
+    "Ready now" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جاهز الآن"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt bereit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo ahora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt maintenant"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto agora"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redo nu"
           }
         }
       }
@@ -18295,6 +18793,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj ruta %lld"
+          }
+        }
+      }
+    },
+    "Sent. %@ offers it when Antuna opens there." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الإرسال. سيعرضه %@ عند فتح Antuna هناك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesendet. %@ bietet es an, sobald Antuna dort geöffnet wird."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado. %@ lo ofrecerá cuando se abra Antuna allí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyé. %@ le proposera à l’ouverture d’Antuna."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado. %@ vai oferecer quando o Antuna abrir lá."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skickat. %@ erbjuder det när Antuna öppnas där."
+          }
+        }
+      }
+    },
+    "Sent. %@ plays it once Antuna is ready there." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الإرسال. سيشغّله %@ عندما يصبح Antuna جاهزًا هناك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesendet. %@ spielt es ab, sobald Antuna dort bereit ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado. %@ lo reproducirá cuando Antuna esté listo allí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyé. %@ le lira dès qu’Antuna sera prêt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado. %@ vai reproduzir quando o Antuna estiver pronto lá."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skickat. %@ spelar upp det när Antuna är redo där."
           }
         }
       }
@@ -23428,6 +24006,46 @@
         }
       }
     },
+    "Update Antuna on %@ to play from here." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدّث Antuna على %@ للتشغيل من هنا."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere Antuna auf %@, um von hier abzuspielen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiza Antuna en %@ para reproducir desde aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettez à jour Antuna sur %@ pour lire depuis cet appareil."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualize o Antuna em %@ para reproduzir daqui."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdatera Antuna på %@ för att spela upp härifrån."
+          }
+        }
+      }
+    },
     "Volume Down" : {
       "localizations" : {
         "ar" : {
@@ -23944,6 +24562,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Titta"
+          }
+        }
+      }
+    },
+    "Watch on %@" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مشاهدة على %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf %@ ansehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regarder sur %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assistir em %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titta på %@"
           }
         }
       }
