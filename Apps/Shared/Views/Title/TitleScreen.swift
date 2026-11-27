@@ -14,6 +14,7 @@ struct TitleScreen<Page: View>: View {
     @Environment(ShelfPlayback.self) private var playback
     @Environment(\.openURL) private var openURL
     @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.playDestination) private var destination
     @Query private var preferences: [PreferencesRecord]
     @State private var expanded = false
     /// The About page over the title page: the whole description on Apple
@@ -68,12 +69,32 @@ struct TitleScreen<Page: View>: View {
                 metadata: metadata, posterURL: route.title.posterURL, loading: model.phase == .loading, play: play,
                 isOnMyList: activity.isOnMyList(route.title), problem: problem, expanded: expandsInPlace && expanded,
                 section: backTitle, aboutOpen: aboutOpener,
-                chips: model.credits.chips, returningChip: returningChip),
+                chips: model.credits.chips, returningChip: returningChip, playOn: playOnItem == nil ? nil : destination?.choice),
             actions: .init(
                 back: { library.closePage() }, play: start, toggleMyList: { activity.toggleMyList(route.title) },
                 retry: { attempt += 1 }, expand: expand,
                 trailer: ShelfActions.trailer(metadata.trailerURL, of: route.title, playback: playback, openURL: openURL),
-                openPerson: { library.openPerson($0.name, chip: $0.id) }, restored: { library.restored() }))
+                openPerson: { library.openPerson($0.name, chip: $0.id) }, restored: { library.restored() },
+                playOn: destination?.actions(playOnItem, openURL: openURL)))
+    }
+
+    /// What Play on sends: the movie from where Resume would start, or the
+    /// episode Play names from its place
+    /// (play-on-apple-tv/play-on-from-what-can-be-played). Nil while a
+    /// series has no episode to start.
+    private var playOnItem: PlayOnItem? {
+        let title = route.title
+        switch title.kind {
+        case .movie:
+            let saved = activity.progress(of: title)
+            let start = saved?.state == .inProgress ? saved?.resumePosition : nil
+            return PlayOnItem(
+                item: .movie(key: PlayItemKeys.title(title)), source: title.sourceID, title: title.name,
+                sourceName: library.movies.source(of: title)?.name ?? "", start: start)
+        case .series:
+            guard let target else { return nil }
+            return .episode(target.episode, of: title, from: target.position, sourceName: library.series.source(of: title)?.name ?? "")
+        }
     }
 
     /// Where Back leads: the person's name over a person's page, else the section.
@@ -141,13 +162,23 @@ struct TitleScreen<Page: View>: View {
             state: .init(
                 seasons: groups.map { .init(id: $0.id, title: $0.title, count: $0.countLabel) }, picked: picked, rows: rows, phase: phase,
                 skipped: model.phase == .loaded ? EpisodeText.skipped(model.skipped) : nil, dwell: dwell,
-                reveal: playback.playing == nil ? model.lastPlayed : nil, aboutOpen: aboutOpener),
+                reveal: playback.playing == nil ? model.lastPlayed : nil, aboutOpen: aboutOpener, playOn: destination?.choice),
             actions: .init(
                 pick: { model.pickedSeason = $0 }, play: playEpisode, retry: { attempt += 1 },
                 describe: { episode in
                     aboutOpener = .episode(episode.id)
                     about = TitleAboutText(episode)
+                },
+                playOn: destination.map { destination in
+                    { episode in destination.actions(episodeItem(episode, progress: progress), openURL: openURL) }
                 }))
+    }
+
+    /// An episode for Play on, from its saved place when it has one.
+    private func episodeItem(_ episode: Episode, progress: [String: WatchProgress]) -> PlayOnItem {
+        let saved = progress[episode.id]
+        let position = saved?.state == .inProgress ? saved?.resumePosition ?? 0 : 0
+        return .episode(episode, of: route.title, from: position, sourceName: library.series.source(of: route.title)?.name ?? "")
     }
 
     /// On Apple TV a season shows after focus rests on its chip for 300 ms.

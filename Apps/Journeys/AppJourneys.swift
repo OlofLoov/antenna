@@ -163,6 +163,19 @@ final class AppJourneys: XCTestCase {
         journey.snap("person", anchor: "person.header")
     }
 
+    /// A film's page with two Apple TVs on the account and the Play on
+    /// menu open (play-on-apple-tv, `iPhone-Title-PlayOn`).
+    func testTitlePlayOn() {
+        let journey = Journey(
+            self, arguments: ["-ui-testing-shelf", "titles", "-ui-testing-reduce-motion", "-ui-testing-play-on", "two"])
+        open("movies", label: "Movies", in: journey)
+        let info = journey.element("movies.hero.info")
+        if info.waitForExistence(timeout: 10) { info.tap() }
+        let menu = journey.element("title.playOn.menu")
+        if menu.waitForExistence(timeout: 10) { menu.tap() }
+        journey.snap("title-play-on", anchor: "title.playOn.menu")
+    }
+
     /// A movie playing with its controls up (add-title-transport-controls,
     /// `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`).
     func testMoviePlayer() {

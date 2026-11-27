@@ -143,6 +143,7 @@ struct SearchChannelResult: View {
                 Browse.Logo(url: channel?.logoURL, initials: initials, isSelected: false)
             }
             .modifier(SearchRow.CursorRing(shape: cornerShape(.medium)))
+            .modifier(LivePlayOnMenu(channel: channel))
         #endif
     }
 }

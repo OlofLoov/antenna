@@ -27,6 +27,9 @@ struct TitlePageContext {
         /// The chip whose person's page just closed, focused again until
         /// `Actions.restored` runs.
         var returningChip: String?
+        /// The Apple TVs Play on lists; nil leaves the button out
+        /// (play-on-apple-tv/play-on-from-what-can-be-played).
+        var playOn: PlayOnChoice?
     }
 
     /// More, or an episode's Description, by episode id.
@@ -59,6 +62,8 @@ struct TitlePageContext {
         var openPerson: (CastChip) -> Void = { _ in }
         /// The returning chip has focus again.
         var restored: () -> Void = {}
+        /// What Play on does; nil with no Apple TV on the account.
+        var playOn: PlayOnActions?
     }
 
     var state: State
@@ -329,6 +334,25 @@ enum TitlePage {
                 }
                 .secondaryActionStyle()
                 .accessibilityIdentifier("title.trailer")
+            }
+        }
+    }
+
+    /// "Play on Living Room", or "Play on" with its menu, beside My list
+    /// (`iPhone-Title-PlayOn`). Absent with no Apple TV on the account.
+    struct PlayOnButton: View {
+        let type: Sizes
+        @Environment(\.titlePage) private var page
+
+        var body: some View {
+            if let choice = page?.state.playOn, let actions = page?.actions.playOn {
+                PlayOnControl.Button(choice: choice, actions: actions) { words in
+                    Label(words, systemImage: "tv")
+                        .font(.boardStyle(type.button, weight: .semibold))
+                        .lineLimit(1)
+                        .frame(minHeight: type.buttonHeight)
+                }
+                .secondaryActionStyle()
             }
         }
     }

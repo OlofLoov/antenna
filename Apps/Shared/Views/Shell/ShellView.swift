@@ -123,6 +123,7 @@
             .modifier(ShellGroupLocks(model: model, catalogue: catalogue) { groupRules = $0 })
             .modifier(multiViewHost)
             .modifier(TopShelfSync(model: model, catalogue: catalogue))
+            .modifier(ShellPlayRequests(model: model, catalogue: catalogue, overlay: overlay, focus: $focus))
             .onChange(of: scenePhase) { _, phase in
                 // Leaving the app stops the ten-second count.
                 guard phase == .active else { return model.session.interrupt() }

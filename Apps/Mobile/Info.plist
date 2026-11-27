@@ -50,8 +50,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_antenna-play._tcp</string>
+	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Antuna connects to TV servers on your home network when one of your sources points there.</string>
+	<string>Antuna finds your Apple TV and connects to TV servers on your home network.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>se.codecrave.antenna.setup</string>

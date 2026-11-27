@@ -15,10 +15,18 @@ extension GuideBoard {
             let toggle: () -> Void
         }
 
+        /// "Watch on Living Room" under Watch; nil leaves it out
+        /// (play-on-apple-tv/play-on-from-what-can-be-played).
+        struct WatchOn {
+            let choice: PlayOnChoice
+            let actions: PlayOnActions
+        }
+
         /// The popover, 340 pt wide, with a close button beside the eyebrow.
         struct Popover: View {
             let details: GuidePanel.Details
             var reminder: ReminderToggle?
+            var watchOn: WatchOn?
             let watch: () -> Void
             let close: () -> Void
 
@@ -44,6 +52,9 @@ extension GuideBoard {
                     Texts(details: details, titleSize: 17, summarySize: 14)
                     WatchButton(size: 15, watch: watch)
                         .padding(.top, 4)
+                    if let watchOn {
+                        WatchOnButton(size: 15, watchOn: watchOn)
+                    }
                     if let reminder {
                         RemindButton(size: 15, reminder: reminder)
                     }
@@ -61,6 +72,7 @@ extension GuideBoard {
         struct Sheet: View {
             let details: GuidePanel.Details
             var reminder: ReminderToggle?
+            var watchOn: WatchOn?
             let watch: () -> Void
 
             var body: some View {
@@ -70,6 +82,9 @@ extension GuideBoard {
                         Texts(details: details, titleSize: 22, summarySize: 15)
                         WatchButton(size: 17, watch: watch)
                             .padding(.top, 6)
+                        if let watchOn {
+                            WatchOnButton(size: 17, watchOn: watchOn)
+                        }
                         if let reminder {
                             RemindButton(size: 17, reminder: reminder)
                         }
@@ -155,6 +170,26 @@ extension GuideBoard {
         }
     }
 
+    /// "Watch on Living Room", or "Play on" with the menu of TVs, a
+    /// secondary action under Watch (`guide.detail.watchOn`).
+    struct WatchOnButton: View {
+        let size: CGFloat
+        let watchOn: Details.WatchOn
+
+        var body: some View {
+            PlayOnControl.Button(
+                choice: watchOn.choice, actions: watchOn.actions, identifier: "guide.detail.watchOn",
+                single: { PlayOnText.watchOn($0, locale: $1) }
+            ) { words in
+                Label(words, systemImage: "tv")
+                    .font(.boardStyle(size, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .secondaryActionStyle()
+            .controlSize(.large)
+        }
+    }
+
     /// Remind me, or Reminder set with a filled bell, the secondary action
     /// under Watch. Setting it keeps the details open
     /// (programme-reminders/set-a-reminder-in-one-tap).
@@ -190,6 +225,18 @@ private let previewDetails = GuidePanel.Details(
     GuideBoard.Details.Popover(details: previewDetails, watch: {}, close: {})
         .padding()
         .background(Palette.ground)
+}
+
+#Preview("Guide details popover, Watch on Living Room") {
+    GuideBoard.Details.Popover(
+        details: previewDetails,
+        watchOn: .init(
+            choice: PlayOnChoice(rows: [.init(id: UUID(), name: "Living Room", ready: true)], accessRefused: false),
+            actions: PlayOnActions(opened: {}, pick: { _ in }, openSettings: {})),
+        watch: {}, close: {}
+    )
+    .padding()
+    .background(Palette.ground)
 }
 
 #Preview("Guide details popover, a later programme") {

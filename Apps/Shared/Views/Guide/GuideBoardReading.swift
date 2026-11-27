@@ -1,6 +1,7 @@
 #if os(iOS) || os(macOS)
     import AntennaCore
     import Foundation
+    import SwiftUI
 
     /// A banner over the guide (guide-on-iphone-ipad-and-mac/channels-with-gaps-or-no-guide).
     struct GuideBanner: Identifiable, Equatable {
@@ -91,6 +92,25 @@
         /// The details' Watch for `target`.
         func watch(_ target: GuideTarget, data: GuideData, now: Date) {
             watch(target.key, programme: cell(target, data)?.programme, now: now)
+        }
+
+        /// What "Watch on Living Room" sends for `target`: a programme on now
+        /// plays the channel live, an ended one on a channel with catch-up
+        /// plays its recording; a later programme has none
+        /// (play-on-apple-tv/play-on-from-what-can-be-played).
+        func playOnItem(_ target: GuideTarget, _ data: GuideData, now: Date) -> PlayOnItem? {
+            guard let programme = cell(target, data)?.programme, let channel = channel(target.key) else { return nil }
+            guard programme.start <= now, programme.stop > now || channel.hasCatchup else { return nil }
+            let name = live.sources.first { $0.id == channel.sourceID }?.name ?? ""
+            return .programme(programme, on: channel, sourceName: name)
+        }
+
+        /// The details' "Watch on Living Room", nil with no TV or nothing to send.
+        @MainActor func watchOn(
+            _ target: GuideTarget, _ data: GuideData, destination: PlayDestination?, openURL: OpenURLAction, now: Date
+        ) -> GuideBoard.Details.WatchOn? {
+            guard let destination, let choice = destination.choice, let item = playOnItem(target, data, now: now) else { return nil }
+            return GuideBoard.Details.WatchOn(choice: choice, actions: destination.actions(item, openURL: openURL))
         }
 
         /// Remind me for a programme that has not started, nil otherwise

@@ -142,13 +142,15 @@ final class ShelfPlayback {
 
     /// Plays a movie from where the user stopped, or a series from the
     /// episode the title page's Play would start, once its episode list loads.
-    func play(_ title: ShelfTitle, library: ShelfLibrary, activity: ShelfActivity) {
+    /// A movie starts at `position` seconds instead when given, as a request
+    /// from a phone asks (play-on-apple-tv/play-on-from-what-can-be-played).
+    func play(_ title: ShelfTitle, from position: Double? = nil, library: ShelfLibrary, activity: ShelfActivity) {
         self.activity = activity
         self.library = library
         run = UpNextRun()
         switch title.kind {
         case .movie:
-            let from = activity.progress(of: title)?.resumePosition ?? 0
+            let from = position ?? activity.progress(of: title)?.resumePosition ?? 0
             start(.movie(title), from: from, source: library.movies.source(of: title))
         case .series:
             Task { await startSeries(title, library: library, activity: activity) }

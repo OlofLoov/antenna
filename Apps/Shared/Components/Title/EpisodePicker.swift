@@ -24,6 +24,8 @@ struct EpisodesContext {
         /// What opened the About page while it shows; when an episode's
         /// Description closes, focus goes back to its row.
         var aboutOpen: TitlePageContext.AboutOpener?
+        /// The Apple TVs an episode's menu offers; nil leaves Play on out.
+        var playOn: PlayOnChoice?
     }
 
     /// Where the list stands.
@@ -63,6 +65,8 @@ struct EpisodesContext {
         /// Shows an episode's whole description
         /// (title-detail-and-episode-picker/what-each-episode-shows).
         var describe: (Episode) -> Void = { _ in }
+        /// What Play on does for an episode (play-on-apple-tv/play-on-from-what-can-be-played).
+        var playOn: ((Episode) -> PlayOnActions)?
     }
 
     var state: State
@@ -233,7 +237,8 @@ enum EpisodePicker {
                             EpisodeRow(
                                 type: type, row: row, play: { episodes.actions.play(row.episode) },
                                 describe: row.episode.plot == nil ? nil : { episodes.actions.describe(row.episode) },
-                                aboutOpen: episodes.state.aboutOpen
+                                aboutOpen: episodes.state.aboutOpen, playOn: episodes.state.playOn,
+                                playOnActions: episodes.actions.playOn.map { $0(row.episode) }
                             )
                             .id(row.id)
                         }
@@ -262,6 +267,9 @@ enum EpisodePicker {
         /// Opens the whole description from the row's menu; nil without one.
         var describe: (() -> Void)?
         var aboutOpen: TitlePageContext.AboutOpener?
+        /// The TVs the row's menu offers, with what picking one does; nil leaves Play on out.
+        var playOn: PlayOnChoice?
+        var playOnActions: PlayOnActions?
         @FocusState private var focused: Bool
 
         var body: some View {
@@ -322,6 +330,9 @@ enum EpisodePicker {
                 if let describe {
                     Button("Description", systemImage: "text.alignleft", action: describe)
                         .accessibilityIdentifier("episodes.row.\(episode.id).description")
+                }
+                if let playOn, let playOnActions {
+                    PlayOnControl.MenuItems(choice: playOn, actions: playOnActions, identifier: "episode.menu.playOn")
                 }
             }
             .focused($focused)

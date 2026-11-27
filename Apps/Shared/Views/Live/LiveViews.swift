@@ -131,6 +131,41 @@
                 Browse.FavoriteMenuButton(isFavorite: live.catalogue.isFavorite(channel)) { toggle(channel) }
                     .accessibilityIdentifier(identifier)
                 extras
+                LivePlayOnMenuItem(channel: channel)
+            }
+        }
+    }
+
+    /// A touch-and-hold menu holding only Play on, for a row that has no
+    /// menu of its own; with no Apple TV on the account the row has no menu.
+    struct LivePlayOnMenu: ViewModifier {
+        let channel: Channel?
+        @Environment(\.playDestination) private var destination
+
+        func body(content: Content) -> some View {
+            if let channel, destination?.choice != nil {
+                content.contextMenu { LivePlayOnMenuItem(channel: channel) }
+            } else {
+                content
+            }
+        }
+    }
+
+    /// "Play on Living Room" in a channel's menu in Live, the Guide and
+    /// Search, absent with no Apple TV on the account
+    /// (play-on-apple-tv/play-on-from-what-can-be-played).
+    struct LivePlayOnMenuItem: View {
+        let channel: Channel
+        @Environment(LiveModel.self) private var live
+        @Environment(\.playDestination) private var destination
+        @Environment(\.openURL) private var openURL
+
+        var body: some View {
+            if let destination, let choice = destination.choice {
+                let name = live.sources.first { $0.id == channel.sourceID }?.name ?? ""
+                PlayOnControl.MenuItems(
+                    choice: choice, actions: destination.actions(.channel(channel, sourceName: name), openURL: openURL),
+                    identifier: "channel.menu.playOn")
             }
         }
     }
