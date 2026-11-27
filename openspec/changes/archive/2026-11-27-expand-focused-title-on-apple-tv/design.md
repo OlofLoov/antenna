@@ -708,6 +708,13 @@ down and up over the target. The rows below the focused one are the
 board's layout (`TV-Movies-Expanded`); the card is the feature. Neither
 has a part that can be turned off alone for the difference.
 
+On 2026-11-27 the owner accepted these numbers: "go with what can be
+fixed, 40+ is fine". The layout stays at two and a half rows and the card
+stays as designed. The change ships at 58 to 67 dropped frames per walk
+along the posters and 62 to 85 down and up, against main's 33 to 36 and
+33 to 55 on the same simulator; the device check below is where hitches
+are judged.
+
 ## What to check on the device
 
 - Move along Recently added and a long category at a steady pace: each

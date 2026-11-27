@@ -153,6 +153,17 @@ The system SHALL show, after Continue watching and My list, Recently watched, Re
 - **WHEN** its poster shows
 - **THEN** the title's name shows on a plain tile, never an empty frame
 
+#### Scenario: A poster still loading
+- **GIVEN** a title's poster is not in memory yet
+- **WHEN** its card shows
+- **THEN** the card holds a quiet shape the size of the poster, with no name on it
+- **AND** the poster fades in over about 0.2 seconds when it arrives, or appears at once with Reduce Motion on
+
+#### Scenario: A poster already in memory
+- **GIVEN** a title's poster is in memory, as when the viewer scrolls back to it or it loaded ahead
+- **WHEN** its card shows
+- **THEN** the poster shows in the card's first frame, with no shape before it and no fade
+
 #### Scenario: Entries without a name or id
 - **GIVEN** the provider lists entries without a name or id
 - **WHEN** the rows fill
@@ -338,90 +349,98 @@ The system SHALL show the provider's rating in the banner's facts line, written 
 - **WHEN** the banner shows a title with a trailer on iPhone
 - **THEN** Play and Info take the first row, and Trailer, with its glyph and the word "Trailer", and My list take the second, all within the screen width
 
-### Requirement: Preview of the focused title on Apple TV
-On Apple TV the system SHALL show, at the top of Movies and Series while the highlight is in a row, a preview of the title the highlight rests on: its picture, name, category, facts and up to three lines of its plot, with the focused row just below. The preview SHALL change only after the highlight has stayed on a poster for 0.8 seconds, and SHALL fade from one title to the next. iPhone, iPad and Mac SHALL show no preview.
+### Requirement: Expanded card for the focused title on Apple TV
+On Apple TV only, the poster with the highlight in a row of Movies or Series SHALL grow at once into a landscape card the height of a poster, with the posters after it moving aside. The card SHALL show the title's picture, category and name at once, and its facts and up to two lines of plot once the provider has answered. The provider SHALL be asked only once the highlight has rested on a title for 0.8 seconds. The focused row SHALL rest just under the tab bar with the rows below it in view.
 
 #### Scenario: Resting on a poster
 - **GIVEN** the viewer is on Movies on Apple TV with the highlight on the banner
 - **WHEN** they move down to a poster in Recently added and stay on it
-- **THEN** the banner scrolls away, the row moves up under the top of the screen, and 0.8 seconds later the top shows that title's backdrop, name, category, year, length and plot
+- **THEN** the banner scrolls away, the row rests just under the tab bar with the next rows below it, and the poster grows into a card with the title's category and name
+- **AND** 0.8 seconds later the provider is asked, and its backdrop, year, length and plot fade into the card when it answers
 
 #### Scenario: Moving quickly along a row
-- **GIVEN** the preview shows a title
+- **GIVEN** the highlight is on a poster in a row
 - **WHEN** the viewer swipes across ten posters without stopping and stops on the eleventh
-- **THEN** the preview keeps the first title until the eleventh has been focused for 0.8 seconds, then fades to it
-- **AND** the provider is not asked about the ten posters passed on the way
+- **THEN** each poster grows into a card while it has the highlight and shrinks back as it leaves
+- **AND** the provider is asked only about the eleventh, once it has had the highlight for 0.8 seconds
 
 #### Scenario: Moving to another row
 - **WHEN** the viewer moves down from one row to the next
-- **THEN** the new row takes the place just under the preview, the row above leaves the screen, and the preview changes once the highlight rests
+- **THEN** the card in the row they left shrinks back to a poster, the new row comes up to rest under the tab bar, and the poster they land on grows into a card
+- **AND** that poster is at the same position in its row as the one they left, or the row's last poster when the row is shorter
+
+#### Scenario: Down the rows and back up
+- **GIVEN** the highlight is on the first poster of Recently added
+- **WHEN** the viewer moves down six rows and back up six
+- **THEN** the highlight is on the first poster of Recently added again
 
 #### Scenario: Moving up to the row above
-- **GIVEN** the highlight is in a row below the first, with the preview showing
+- **GIVEN** the highlight is in a row below the first
 - **WHEN** the viewer moves up to the row above, once or twice in quick succession
-- **THEN** that row comes down from under the preview at once, in one movement, and rests whole just under the preview, as a row does after moving down
+- **THEN** that row comes down in one movement and rests whole just under the tab bar, as a row does after moving down
 
 #### Scenario: Details still loading
-- **GIVEN** the provider has not answered for the title the highlight rests on
-- **WHEN** the preview changes to it
-- **THEN** the name and category show at once, the previous picture stays until the new one is ready or 1.5 seconds pass, and the facts and plot fade in when the provider answers
+- **GIVEN** the provider has not answered for the title the highlight is on
+- **WHEN** the card grows
+- **THEN** it shows the category, the name and the poster, whole at its trailing side over a blurred copy of itself
+- **AND** the facts and plot fade in under the name, and the backdrop over the poster, when the provider answers, without the card changing size
 
 #### Scenario: A title with only a poster
 - **GIVEN** the provider sends no backdrop for the focused title
-- **WHEN** the preview shows it
-- **THEN** the whole poster shows at the right of the preview over a blurred copy of itself, as on the banner
+- **WHEN** the card shows it
+- **THEN** the poster stays whole at the card's trailing side over a blurred copy of itself, with the facts and plot beside it
 
 #### Scenario: The details fail or the device is offline
 - **GIVEN** the provider fails to answer for the focused title, or the Apple TV is offline
-- **WHEN** the preview shows it
-- **THEN** it shows the name, the category and the poster, and no error
-- **AND** the poster can still be played or opened
+- **WHEN** the card shows it
+- **THEN** it shows the category, the name and the poster, and no error
+- **AND** the card can still be played or opened
 
 #### Scenario: A playlist title
 - **GIVEN** the focused title comes from an M3U playlist
-- **WHEN** the preview shows it
-- **THEN** it shows the name, the group and the logo or poster, and the provider is not asked
+- **WHEN** the card shows it
+- **THEN** it shows the group, the name and the logo or poster, and the provider is not asked
 
 #### Scenario: Continue watching
-- **GIVEN** the highlight rests on an episode in Continue watching
-- **WHEN** the preview shows it
-- **THEN** it shows the series' backdrop, name and plot
+- **GIVEN** the highlight is on an episode in Continue watching
+- **WHEN** it rests there
+- **THEN** the card keeps its landscape size and progress bar, and no card in the row grows or shrinks
 
 #### Scenario: Back to the banner
-- **GIVEN** the preview shows a title
-- **WHEN** the viewer moves up from the first row
-- **THEN** the preview fades out, the banner scrolls back with the title it showed before, and the highlight is on Play
+- **GIVEN** the highlight is on a card in the first row
+- **WHEN** the viewer moves up
+- **THEN** the card shrinks back to a poster, the banner scrolls back with the title it showed before, and the highlight is on Play
 
 #### Scenario: Menu from a row
-- **GIVEN** the preview shows a title
+- **GIVEN** the highlight is on a card in a row
 - **WHEN** the viewer presses Menu
 - **THEN** the rows scroll back to the top with the banner showing and the highlight moves to the tab bar
 
 #### Scenario: Back from a title page
-- **GIVEN** the viewer opened a title page from a poster with the preview showing
-- **WHEN** they press Menu on the page
-- **THEN** the same poster has the highlight and its preview shows at once, without waiting
+- **GIVEN** the viewer opened a title page, or played a title, from a poster in a row
+- **WHEN** they press Menu on the page, or leave playback
+- **THEN** the same poster has the highlight and is a card at once, with the details it had, without waiting
 
 #### Scenario: Genres row
 - **WHEN** the viewer moves down to the Genres row
-- **THEN** the preview keeps the last title it showed
+- **THEN** no card is expanded and the provider is not asked
 
 #### Scenario: VoiceOver
 - **GIVEN** VoiceOver is on
-- **WHEN** the highlight rests on a poster whose plot is known
-- **THEN** VoiceOver reads the poster's name, year and minutes left as before, then the plot as its hint
+- **WHEN** the highlight rests on a card whose plot is known
+- **THEN** VoiceOver reads the title's name, year and minutes left as before, then the plot as its hint
 
 #### Scenario: Reduce Motion
 - **GIVEN** Reduce Motion is on
-- **WHEN** the highlight moves between rows
-- **THEN** the rows move into place without sliding, and the preview still fades between titles
+- **WHEN** the highlight moves along a row or between rows
+- **THEN** the card and the posters change size and place without sliding, and the rows move into place without sliding
 
 #### Scenario: iPad
 - **WHEN** the viewer moves the pointer over posters on iPad or Mac
-- **THEN** no preview shows and the banner does not change
+- **THEN** no card grows and the banner does not change
 
 ### Requirement: Title details are asked once per title
-The system SHALL ask the provider for a title's details at most once per launch for the banner, the preview and a Continue watching card together, one preview request at a time, and SHALL use that answer when the title's page opens. Retry on a page SHALL ask again.
+The system SHALL ask the provider for a title's details at most once per launch for the banner, the Apple TV expanded card and a Continue watching card together, one request at a time for the cards, and SHALL use that answer when the title's page opens. Retry on a page SHALL ask again.
 
 #### Scenario: Banner, preview and page
 - **GIVEN** a title was shown in the banner, so its details were asked for
@@ -434,7 +453,7 @@ The system SHALL ask the provider for a title's details at most once per launch 
 - **THEN** the first request finishes, the second poster is skipped, and the third is asked about next
 
 #### Scenario: Retry on a page
-- **GIVEN** a title's details failed for its preview
+- **GIVEN** a title's details failed for its expanded card
 - **WHEN** the viewer opens its page and presses Retry
 - **THEN** the provider is asked again
 
@@ -445,7 +464,7 @@ The system SHALL ask the provider for a title's details at most once per launch 
 - **AND** a card whose episodes failed to load does not ask again each time it scrolls back into view
 
 ### Requirement: Browsing stays responsive
-The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. What a long session keeps in memory SHALL stay within fixed limits.
+The system SHALL keep Movies and Series responding to the remote, touch and pointer for a library of 100 000 movies and 30 000 series whose rows name the cast: while it loads, while its rows and grids redraw in any order, and while details and saved positions arrive. Rows, banner, sorted grids and the people index SHALL be built away from the screen, and a redraw SHALL not walk every title. A long session's memory SHALL stay within fixed limits. Posters SHALL load ahead of the viewer.
 
 #### Scenario: A large library loads
 - **GIVEN** a source with 100 000 movies
@@ -485,12 +504,12 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 
 #### Scenario: Details arrive while a person's page or Search is open
 - **GIVEN** a library of 100 000 movies and 30 000 series whose rows name the cast, with Search or a person's page open
-- **WHEN** the banner turns, a preview rests or a title page opens, each bringing a title's details
+- **WHEN** the banner turns, a card rests or a title page opens, each bringing a title's details
 - **THEN** the names in those details reach the page and Search within a second, without every title being read again
 
 #### Scenario: A large picture behind the banner
 - **GIVEN** posters on screen and a title whose backdrop is a 4K picture
-- **WHEN** the banner, the Apple TV preview or the title's page shows that picture
+- **WHEN** the banner, the Apple TV expanded card or the title's page shows that picture
 - **THEN** it is kept at the size of the window, and the posters on screen stay without loading again
 
 #### Scenario: A full poster folder
@@ -504,10 +523,32 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 - **THEN** episode lists are kept for the latest 100 series asked about and for series with saved progress, and the older ones are let go
 
 #### Scenario: Moving through the rows on Apple TV
-- **GIVEN** Movies or Series is open on Apple TV on a library of thousands of titles in dozens of rows, with the preview showing
+- **GIVEN** Movies or Series is open on Apple TV on a library of thousands of titles in dozens of rows
 - **WHEN** the viewer moves across posters and up and down the rows
-- **THEN** the banner and the rows are not drawn again for those moves, only when the titles, the saved positions or My list change
-- **AND** the rows that pass under the preview fade into the background without the rows being drawn off screen first
+- **THEN** the banner and the rows are not drawn again for those moves, only the poster that loses the highlight and the one that gains it, and the screen when the highlight enters or leaves the rows
+
+#### Scenario: Posters ahead of the highlight
+- **GIVEN** Movies is open on a library of thousands of titles whose posters take a moment to arrive
+- **WHEN** a poster in a row shows
+- **THEN** the next three posters along that row in the direction it is scrolling start loading
+- **AND** when a row shows, the posters the next row in the direction of the scroll shows first start loading: the row under it on the way down, the row above on the way up
+- **AND** a row that has just come into view loads nothing along it until it has been in view for half a second
+- **AND** on Apple TV, while the highlight rests on a poster, the rows above and below it load the posters around its column, which they show once the highlight moves into them
+- **AND** they are decoded at the size of a card on screen, away from the screen, as the posters on screen are
+- **AND** this holds on iPhone, iPad, Mac and Apple TV
+
+#### Scenario: Posters kept in memory
+- **GIVEN** an Apple TV 4K with a large library
+- **WHEN** the viewer moves through dozens of rows
+- **THEN** the decoded posters kept in memory stay under 50 MB, as on iPhone, iPad and Mac, each at the size its card shows it with no room for the focus lift
+- **AND** the poster files kept on the device stay under 500 MB, so a poster that left memory decodes again from its file
+
+#### Scenario: Moving along a row and down the rows on Apple TV
+- **GIVEN** Apple TV on a library of 9 000 movies in 80 rows, with posters that each take a tenth of a second to arrive
+- **WHEN** the viewer presses right ten times and left ten times, then moves down six rows and up six, without waiting
+- **THEN** along the row at most one in ten of the posters that come into view is still loading when it appears
+- **AND** down and up the rows fewer than half are, and each of those fades in when it arrives
+- **AND** the screen, the banner and the rows are not drawn again for those moves
 
 ### Requirement: Pick a genre from a list on iPhone
 The system SHALL show on iPhone, and in a narrow iPad window, one genre button in the top bar of Movies and Series in place of a row of genre chips, reading the open list's name and count. The button SHALL open a half-height Genres sheet with a search field, listing All, My list and every genre with its count and a checkmark on the open one. Picking one SHALL close the sheet and show that list as the chips did.
@@ -607,7 +648,7 @@ The system SHALL open a title's page when the user selects its poster in a row, 
 #### Scenario: Back to the poster on Apple TV
 - **GIVEN** the viewer opened a movie's page from a poster deep in a row on Apple TV
 - **WHEN** they press Menu on the page
-- **THEN** the same poster has the highlight and its preview shows
+- **THEN** the same poster has the highlight and is its expanded card again
 
 ### Requirement: A pinned top bar on iPhone
 On iPhone, and in a narrow iPad window, the system SHALL show Movies and Series under a bar pinned at the top of the screen with the section's name, the genre button and the profile button. The banner SHALL start below the bar, never under it, and rows and posters SHALL scroll under the bar, where the system blurs them so the bar stays legible over any picture.

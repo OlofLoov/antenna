@@ -292,7 +292,7 @@ The system SHALL return the user from a title page to the section they came from
 #### Scenario: Back from a title played from a poster on Apple TV
 - **GIVEN** the viewer played a title from a Continue watching card, or a movie from Recently watched
 - **WHEN** they leave playback with Menu, or it ends
-- **THEN** the rows show at the same place with that card focused and its preview showing, not the banner
+- **THEN** the rows show at the same place with that card or poster focused, not the banner
 
 ### Requirement: The page shows in one go
 The system SHALL keep a title page hidden while its details load and SHALL show it whole, with a short fade, once they arrive or fail. A load longer than 0.3 seconds SHALL show the Antuna mark tuning in the middle of the screen until then, and Got it before the page. Back SHALL stay reachable meanwhile.
@@ -309,7 +309,7 @@ The system SHALL keep a title page hidden while its details load and SHALL show 
 - **THEN** the page fades in whole and the mark never shows
 
 #### Scenario: Details already known
-- **GIVEN** a title whose details the banner, the preview or an earlier visit already asked for
+- **GIVEN** a title whose details the banner, the expanded card or an earlier visit already asked for
 - **WHEN** the user opens its page
 - **THEN** the page shows at once
 

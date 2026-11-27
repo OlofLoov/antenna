@@ -24,7 +24,7 @@
 - [x] 2.9 Read the benchmark's probes outside the measured walk; measure each part of the card against main and record it in design.md
 - [x] 2.10 Draw the card over the focused poster's fixed slot, outside its button, and move the posters after it by offsets (`ShelfCardRoom`, decision 7), with `ShelfCardRoomTests`
 - [x] 2.11 Measure the card outside the row's layout against main and record it in design.md
-- [ ] 2.12 Bring the walks along the posters and down and up within about 15% of main plus the cost of the extra rows
+- [x] 2.12 Bring the walks along the posters and down and up as close to main as the fixes found allow; the owner accepted 58 to 67 along and 62 to 85 down and up on 2026-11-27, against a first target of about 40 and 60
 - [x] 2.13 Bisect the frames outside the card (the rows below, the loads ahead, the column keeping, the probes) and record them in design.md
 - [x] 2.14 Write the column once the highlight rests along a row, and draw the card from the row over its stack with no `zIndex`
 

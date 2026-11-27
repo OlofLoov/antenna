@@ -73,6 +73,17 @@ The system SHALL show, after Continue watching and My list, Trending, Recently w
 - **WHEN** its poster shows
 - **THEN** the title's name shows on a plain tile, never an empty frame
 
+#### Scenario: A poster still loading
+- **GIVEN** a title's poster is not in memory yet
+- **WHEN** its card shows
+- **THEN** the card holds a quiet shape the size of the poster, with no name on it
+- **AND** the poster fades in over about 0.2 seconds when it arrives, or appears at once with Reduce Motion on
+
+#### Scenario: A poster already in memory
+- **GIVEN** a title's poster is in memory, as when the viewer scrolls back to it or it loaded ahead
+- **WHEN** its card shows
+- **THEN** the poster shows in the card's first frame, with no shape before it and no fade
+
 #### Scenario: Entries without a name or id
 - **GIVEN** the provider lists entries without a name or id
 - **WHEN** the rows fill
