@@ -1,7 +1,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: Extra buttons on iPhone, iPad and Mac
-The system SHALL add to the controls on iPhone, iPad and Mac the audio-and-subtitles button, an AirPlay button, and on Mac mute and a volume slider with keyboard shortcuts, each with a spoken label. On a live channel the AirPlay button SHALL show wherever the controls have room for it, and SHALL decide on press: it opens the AirPlay list when the stream plays on Apple's player or can go to AirPlay as HLS, and otherwise says "AirPlay not available for this stream" in a short notice over the picture. In a movie or episode it SHALL show when the stream can go to AirPlay. The audio-and-subtitles menu's stream line SHALL name the format that plays.
+The system SHALL add to the controls on iPhone, iPad and Mac the audio-and-subtitles button, an AirPlay button, and on Mac mute and a volume slider with keyboard shortcuts, each with a spoken label. On a live channel the AirPlay button SHALL show wherever the controls have room, open the AirPlay list on press only when the stream can go to AirPlay, and say otherwise that it cannot. The menu's stream line SHALL name the format that plays.
 
 #### Scenario: The controls show
 - **GIVEN** a channel playing on iPhone, iPad or Mac
