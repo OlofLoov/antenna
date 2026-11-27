@@ -1,5 +1,7 @@
 # Proposal
 
+Narrowed on 2026-11-27. On 2026-11-19 the owner decided against the lookup service this change planned, and CLAUDE.md keeps "no server of our own". What was built stays here and is archived: the lookup protocol, the name cleaner, matches kept on the device, details merged under the provider's, the score row, the switch, and a Debug-only sample lookup. Release builds have no lookup, so they show none of it. The service, the live client, database ids, the TMDB credit, the Privacy Policy text, Trending and people from TMDB moved to the parked change `title-lookups-later`, with their delta requirements. The text below is the proposal as first written; the delta specs are the narrowed ones.
+
 ## Why
 
 The owner's list for discovery, in his words: "Trending; Recents; Categories ny serie movies channel; Movies by actor; Movies by category; Series by actor; Movies; Score on different sites ie rotten tomato, imdb or whatever".
@@ -35,16 +37,16 @@ Out of scope:
 
 ## Capabilities
 
+As narrowed on 2026-11-27.
+
 ### New Capabilities
-- `title-metadata`: matching provider titles to TMDB, what is sent, what is kept, failure handling, the off switch and the credit.
+- `title-metadata`: what a lookup may carry, what is kept on the device, details merged from a match, failure handling, the off switch, and sample scores in Debug builds only.
 
 ### Modified Capabilities
-- `xtream-vod-client`: reads TMDB and IMDb ids.
 - `title-detail-and-episode-picker`: the score row, and the provider rating leaving the details line when scores show.
-- `sources-and-settings`: the lookup switch.
-- `antuna-website`: the Privacy Policy names the lookup service.
-- `design-system`: a credit logo a data licence requires is allowed in Settings, About.
-- `movies-and-series-browsing`: the Trending row and its place in the row order.
+- `sources-and-settings`: the lookup switch, shown while the app has a lookup.
+
+Moved to `title-lookups-later`: `xtream-vod-client` (database ids), `antuna-website` (the Privacy Policy), `design-system` (the credit logo), `movies-and-series-browsing` (Trending), and the `title-metadata` requirements for matching by database id and the credit.
 
 ## Impact
 

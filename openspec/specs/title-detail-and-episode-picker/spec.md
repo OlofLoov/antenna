@@ -109,6 +109,12 @@ The system SHALL show a title's backdrop, year, length or seasons, genre, rating
 - **WHEN** the page shows
 - **THEN** the details line wraps, and VoiceOver reads the name, the details, then the description
 
+#### Scenario: Scores replace the provider's rating
+- **GIVEN** a title with a provider rating of 7.4 that is matched and has at least one score from another site
+- **WHEN** the page shows
+- **THEN** the details line leaves out the provider's rating and the score row shows instead
+- **AND** with no score from another site, the provider's rating stays in the details line
+
 ### Requirement: Play or Resume a movie
 The system SHALL offer Resume with progress for a movie stopped part-way through and Play from the start otherwise, and SHALL return to the page with the button up to date when playback ends.
 
@@ -321,3 +327,31 @@ The system SHALL keep a title page hidden while its details load and SHALL show 
 - **GIVEN** Reduce Motion on
 - **WHEN** a page loads slowly
 - **THEN** the mark shows still or fades as it does elsewhere, and the page still waits for its details
+
+### Requirement: Scores from other sites
+The system SHALL show a matched title's scores from other sites on its page, below the Play and My list buttons, each with the site's name, on iPhone, iPad, Mac and Apple TV, and SHALL leave out a site that has no score for the title.
+
+#### Scenario: A matched movie
+- **GIVEN** a movie matched to the movie database, with a TMDB user score of 74%
+- **WHEN** its page shows
+- **THEN** "TMDB 74%" shows below the buttons
+
+#### Scenario: Scores from several sites
+- **GIVEN** a matched movie with scores from more than one site
+- **WHEN** its page shows
+- **THEN** each score shows with its site's name, in a fixed order, and a site with no score for the title is left out
+
+#### Scenario: No match or lookups off
+- **GIVEN** a title with no match, or lookups turned off
+- **WHEN** its page shows
+- **THEN** no score row shows and the page keeps its layout
+
+#### Scenario: Apple TV focus
+- **GIVEN** a title page on Apple TV with a score row
+- **WHEN** the user moves focus
+- **THEN** the scores take no focus, and focus moves between Play, My list, Trailer and More as before
+
+#### Scenario: VoiceOver
+- **GIVEN** VoiceOver is on
+- **WHEN** it reads the page
+- **THEN** it reads each score with its site after the details, for example "TMDB user score 74 percent"

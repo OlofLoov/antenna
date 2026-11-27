@@ -327,3 +327,26 @@ The system SHALL let the user set a User-Agent in a source's details on iPhone, 
 - **GIVEN** a User-Agent set on the iPhone
 - **WHEN** the Apple TV syncs
 - **THEN** the source there uses it too
+
+### Requirement: A switch for movie database lookups
+The system SHALL show a "Movie info and scores" switch under Preferences in Settings on every device while the app has a lookup to switch, on by default, with a line saying what is looked up in TMDB, and SHALL carry a change to the user's other devices like the other preferences.
+
+#### Scenario: Reading the switch
+- **GIVEN** a build with a lookup, such as a Debug build with sample scores on
+- **WHEN** the user opens Settings on iPhone, iPad, Mac or Apple TV
+- **THEN** Preferences has "Movie info and scores", on, and below it the line "Titles and people you open, and names you search for, are looked up in TMDB. Nothing about you or your sources is sent."
+
+#### Scenario: No lookup
+- **GIVEN** a Release build, which has no lookup yet
+- **WHEN** the user opens Settings
+- **THEN** there is no Movie info and scores switch
+
+#### Scenario: Changing it on one device
+- **GIVEN** an iPhone and an Apple TV on one iCloud account
+- **WHEN** the user turns the switch off on the iPhone
+- **THEN** the Apple TV shows it off once the change arrives, and looks nothing up from then on
+
+#### Scenario: Apple TV focus
+- **GIVEN** Settings on Apple TV
+- **WHEN** focus reaches the switch and the user presses select
+- **THEN** the switch changes and focus stays on it
