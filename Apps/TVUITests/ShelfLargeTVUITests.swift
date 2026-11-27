@@ -66,9 +66,9 @@ final class ShelfLargeTVUITests: XCTestCase {
         probe("shelf.debug.redraws.\(part)")
     }
 
-    func launch() {
+    func launch(arguments: [String] = []) {
         app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shelf", "large"]
+        app.launchArguments = ["-ui-testing-shelf", "large"] + arguments
         if let host = ProcessInfo.processInfo.environment["ANTENNA_POSTER_HOST"] {
             app.launchArguments += ["-ui-testing-poster-host", host]
         }
@@ -78,8 +78,8 @@ final class ShelfLargeTVUITests: XCTestCase {
     }
 
     /// The section's tab opened from the bar, with focus on the banner's Play button.
-    func open(_ tab: String) {
-        launch()
+    func open(_ tab: String, arguments: [String] = []) {
+        launch(arguments: arguments)
         showBar(tab)
         moveAlongTheBar(.right, to: "shell.tab.\(tab)")
         press(.select)
@@ -145,25 +145,47 @@ final class ShelfLargeTVUITests: XCTestCase {
         XCTAssertLessThan(redraws("screen") - screen, 5, "the screen redrew on every move across posters")
     }
 
-    // title-detail-and-episode-picker/back-to-where-you-were
-    // movies-and-series-browsing/a-poster-opens-its-page, back to the poster on Apple TV
-    // Found on 2026-11-23 with the large library: back from a movie started from a row, the highlight was on the banner.
-    func testBackFromAMoviePageOpenedFromARowFocusesItsPoster() {
-        open("movies")
-        enterRows("movies")
-        expectBothSources("movies")
+    /// Opens the page of the fourth poster in the third row of `tab`, goes
+    /// back with Menu, and expects that poster focused with its preview.
+    func backFromAPageOpenedFromTheThirdRow(_ tab: String, arguments: [String] = []) {
+        open(tab, arguments: arguments)
+        enterRows(tab)
+        expectBothSources(tab)
         press(.down, times: 2)
         press(.right, times: 3)
         Thread.sleep(forTimeInterval: 1.5)
         let poster = focused
-        XCTAssertTrue(poster.hasPrefix("movies.card."), "focus is on \(poster)")
+        XCTAssertTrue(poster.hasPrefix("\(tab).card."), "focus is on \(poster)")
         press(.select)
-        XCTAssertTrue(element("title.root").waitForExistence(timeout: 10), "the poster opens the movie's page")
-        XCTAssertFalse(element("movies.player").exists, "nothing plays from the poster")
+        XCTAssertTrue(element("title.root").waitForExistence(timeout: 10), "the poster opens the title's page")
+        XCTAssertFalse(element("\(tab).player").exists, "nothing plays from the poster")
         Thread.sleep(forTimeInterval: 2)
         press(.menu)
         expectFocus(poster)
-        expect(element("movies.preview"), "exists == true")
+        expect(element("\(tab).preview"), "exists == true")
+        // The highlight stays on the poster once the section has settled.
+        Thread.sleep(forTimeInterval: 1)
+        XCTAssertEqual(focused, poster)
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    // movies-and-series-browsing/a-poster-opens-its-page, back to the poster on Apple TV
+    // Found on 2026-11-23 with the large library: back from a movie started from a row, the highlight was on the banner.
+    func testBackFromAMoviePageOpenedFromARowFocusesItsPoster() {
+        backFromAPageOpenedFromTheThirdRow("movies")
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    func testBackFromASeriesPageOpenedFromARowFocusesItsPoster() {
+        backFromAPageOpenedFromTheThirdRow("series")
+    }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    // Found on 2026-11-27: as the page closed, the focus engine's own pick in the section
+    // sometimes landed after the poster's and left the highlight on Play or another poster.
+    // The launch argument moves the highlight after the poster has asked, every time.
+    func testBackFromASeriesPageFocusesItsPosterWhenTheSectionTakesFocusLast() {
+        backFromAPageOpenedFromTheThirdRow("series", arguments: ["-ui-testing-section-focus-lands-last"])
     }
 
     // tvos-shell/back-from-a-tab-goes-to-the-tab-bar

@@ -180,6 +180,14 @@
                 // once (title-detail-and-episode-picker/back-to-where-you-were).
                 guard closed, list == nil, case .poster? = library.returning?.origin else { return }
                 follow.restoring = true
+                #if DEBUG
+                    if UITestingShelf.sectionFocusLandsLast {
+                        Task {
+                            try? await Task.sleep(for: .milliseconds(50))
+                            focus.wrappedValue = .content
+                        }
+                    }
+                #endif
             }
             #if DEBUG
                 .overlay { UITestingShelf.InfoLoadsProbe() }

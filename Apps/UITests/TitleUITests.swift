@@ -358,4 +358,23 @@ final class TitleUITests: XCTestCase {
         expect(app.element("title.name"), "exists == false")
         XCTAssertEqual(poster.frame, before)
     }
+
+    // title-detail-and-episode-picker/back-to-where-you-were
+    // movies-and-series-browsing/a-poster-opens-its-page
+    func testBackFromAMoviePageReturnsToTheSamePlace() throws {
+        let app = try launch()
+        openSection(app, "movies")
+        app.swipeUp()
+        let poster = card(app, "movies", in: "action", "xtream#cabin#vod#3")
+        XCTAssertTrue(poster.waitForExistence(timeout: 5))
+        XCTAssertTrue(poster.isHittable)
+        let before = poster.frame
+        poster.tap()
+        XCTAssertTrue(app.element("title.name").waitForExistence(timeout: 5))
+
+        app.element("title.back").tap()
+        expect(app.element("title.name"), "exists == false")
+        XCTAssertEqual(poster.frame, before, "the same rows at the same scroll position")
+        XCTAssertTrue(poster.isHittable)
+    }
 }
