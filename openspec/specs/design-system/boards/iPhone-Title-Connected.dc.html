@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone title page, connected to an Apple TV</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/play-goes-to-the-tv-while-connected: the iPhone is connected to Living Room, which plays Sport One. Play reads "Play on Living Room" and sends this film there; the Play on button is gone because Play already sends. Resume reads "Resume on Living Room". -->
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <!-- title.backdrop with the poster, as iPhone-Title-About -->
+  <div style="position: relative; width: 390px; height: 300px; background: linear-gradient(180deg, #3B4A5E 0%, #1B2330 70%, #0B0E13 100%); flex: 0 0 auto; overflow: hidden">
+    <div style="position: absolute; left: 16px; top: 54px">
+      <button type="button" aria-label="Back to Movies" style="font: inherit; width: 44px; height: 44px; border-radius: 22px; border: 0; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+    </div>
+    <div style="position: absolute; left: 125px; top: 60px; width: 140px; height: 210px; border-radius: 10px; background: #4A3A2F; box-shadow: 0 12px 32px rgba(0,0,0,0.45)"></div>
+  </div>
+
+  <div style="padding: 18px 16px 0; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">Movie · Action</div>
+    <div style="font-size: 28px; font-weight: 800; line-height: 1.05; letter-spacing: -0.5px; font-family: ui-rounded, -apple-system, system-ui, 'Helvetica Neue', sans-serif">Salt Road</div>
+    <div style="display: flex; gap: 8px; align-items: center; font-size: 13px; color: #D7DEE8"><span>2024</span><span>·</span><span>1 h 32 min</span></div>
+    <div style="font-size: 15px; line-height: 1.45; color: #D7DEE8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">A courier crosses the salt flats with a parcel nobody will name, two days ahead of the people who want it back.</div>
+    <!-- title.play while connected: the label names the TV, the glyph stays the play triangle -->
+    <div style="display: flex; gap: 8px; padding-top: 6px">
+      <button type="button" style="font: inherit; font-size: 15px; font-weight: 700; height: 44px; flex: 1 1 auto; border-radius: 10px; border: 0; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>
+        <span>Play on Living Room</span>
+      </button>
+    </div>
+    <div style="display: flex; gap: 8px">
+      <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; white-space: nowrap; cursor: pointer">Add to My list</button>
+    </div>
+  </div>
+
+  <div style="flex: 1 1 auto"></div>
+
+  <!-- playOn.bar (play-on-apple-tv/connected-to-a-tv): a glass capsule above the tab bar, 56 pt, on every tab but Live, where the picture area carries the same line (iPhone-Live-Connected). The TV glyph in the accent, "Playing on Living Room", what plays, then play or pause with a 44 pt target. Tapping anywhere else on it opens the connected sheet: the item's art, play or pause, "Play on this iPhone" and "Disconnect" (not drawn yet, see design.md). In the Guide it takes the place of guide.nowPlaying. -->
+  <div role="button" aria-label="Playing on Living Room, Sport One, Arsenal v Liverpool" style="margin: 0 8px 8px; height: 56px; flex: 0 0 auto; border-radius: 28px; background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); display: flex; align-items: center; gap: 12px; padding: 0 6px 0 16px">
+    <span style="color: {{accent}}; display: inline-flex"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg></span>
+    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+      <span style="font-size: 12px; color: #A7B0BF">Playing on Living Room</span>
+      <span style="font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One · Arsenal v Liverpool</span>
+    </div>
+    <!-- playOn.bar.playPause -->
+    <button type="button" aria-label="Pause on Living Room" style="font: inherit; width: 44px; height: 44px; border-radius: 22px; border: 0; background: transparent; color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: 0 0 auto">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+    </button>
+  </div>
+
+  <!-- Tab bar (live-tv-on-iphone-ipad-mac/the-iphone-tab-bar): Live, Guide, Movies and Series in the system bar, the open tab in the accent, and Search as the system's round search button at the trailing end. No Settings tab: Settings opens from the profile button (profile.button). -->
+  <div style="height: 84px; flex: 0 0 auto; box-sizing: border-box; padding: 8px 8px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: #11151C; display: flex; justify-content: space-around; align-items: flex-start">
+    <div style="display: flex; gap: 10px; align-items: center; width: 100%">
+    <div role="tablist" style="flex: 1 1 auto; height: 52px; border-radius: 26px; background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center">
+      <div role="tab" aria-selected="false" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #A7B0BF; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg>
+        <span>Live</span>
+      </div>
+      <div role="tab" aria-selected="false" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #A7B0BF; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 10v9"/></svg>
+        <span>Guide</span>
+      </div>
+      <div role="tab" aria-selected="true" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: {{accent}}; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 12.5v4l3.5-2z" fill="currentColor"/></svg>
+        <span>Movies</span>
+      </div>
+      <div role="tab" aria-selected="false" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #A7B0BF; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="15" height="12" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v9"/><path d="M9 10.5v5l4-2.5z" fill="currentColor"/></svg>
+        <span>Series</span>
+      </div>
+    </div>
+    <div role="button" aria-label="Search" aria-pressed="false" style="width: 52px; height: 52px; border-radius: 26px; background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); color: #F2F4F8; display: flex; align-items: center; justify-content: center; flex: 0 0 auto">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </div>
+  </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
