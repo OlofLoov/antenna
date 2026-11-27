@@ -61,6 +61,34 @@
             }
         }
 
+        // MARK: Connected phones
+
+        /// What the TV plays, as connected phones see it; the shell keeps it
+        /// current (play-on-apple-tv/connected-to-a-tv).
+        var status: PlayStatus?
+
+        /// Play, pause or hand-off from a connected phone, for the shell.
+        struct ControlRequest: Identifiable, Equatable {
+            let id = UUID()
+            var control: PlayControl
+        }
+
+        private(set) var controlRequest: ControlRequest?
+
+        /// A phone asked the TV to play, pause or hand off.
+        func receive(_ control: PlayControl) {
+            controlRequest = ControlRequest(control: control)
+        }
+
+        /// The next control, once; the shell acts on it.
+        func takeControl() -> PlayControl? {
+            defer { controlRequest = nil }
+            return controlRequest?.control
+        }
+
+        /// The id of the request the TV plays now, so a status can name it.
+        @ObservationIgnored var playingRequest: UUID?
+
         // MARK: Offer
 
         /// The request the TV offers with Play and Not now: one that waited
@@ -129,6 +157,7 @@
         private var lastRefetch = Date.distantPast
         private var active = false
         private var polling: Task<Void, Never>?
+        private var pump: Task<Void, Never>?
 
         init(
             inbox: PlayRequestInbox, device: PlayOnDevice, devices: any PlayDeviceStoring, queue: (any PlayRequestQueueing)? = nil,
@@ -146,6 +175,23 @@
             }
             listener.refused = { [weak self] in
                 Task { await self?.refetch() }
+            }
+            listener.control = { [weak inbox] control in inbox?.receive(control) }
+            listener.currentStatus = { [weak inbox] in inbox?.status }
+        }
+
+        /// Sends the status to connected phones when it changes, checked
+        /// twice a second, and every five seconds as a sign of life.
+        private func pumpStatus() async {
+            var last: PlayStatus?
+            var sentAt = ContinuousClock.now
+            while !Task.isCancelled {
+                if let status = inbox.status, status != last || ContinuousClock.now - sentAt >= .seconds(5) {
+                    listener.broadcast(status)
+                    last = status
+                    sentAt = .now
+                }
+                try? await Task.sleep(for: .milliseconds(500))
             }
         }
 
@@ -175,12 +221,16 @@
                     try? await Task.sleep(for: Self.pickupInterval)
                 }
             }
+            pump?.cancel()
+            pump = Task { [weak self] in await self?.pumpStatus() }
         }
 
         func deactivate() {
             active = false
             polling?.cancel()
             polling = nil
+            pump?.cancel()
+            pump = nil
             listener.stop()
         }
 

@@ -78,6 +78,7 @@ import Testing
                 devices: InMemoryPlayDevices([PlayDestinationTests.tv(livingRoom, "Living Room")], now: { fixed }), browser: browser,
                 sender: sender, device: device, queue: queue)
             dependencies.stopLocal = {}
+            dependencies.gate = StreamGate()
             dependencies.now = { now }
             dependencies.sleep = { _ in }
             dependencies.defaults = try #require(UserDefaults(suiteName: "play-queue-\(UUID().uuidString)"))

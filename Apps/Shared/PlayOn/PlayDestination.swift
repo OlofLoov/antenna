@@ -96,6 +96,12 @@ final class PlayDestination {
         var device: PlayOnDevice
         /// Where a request waits for a TV the network did not reach; nil sends over the network only.
         var queue: (any PlayRequestQueueing)?
+        /// Closed while connected, so no screen opens a stream here.
+        var gate: StreamGate = .app
+        /// How long a connection lasts without a status from the TV.
+        var liveness = Duration.seconds(10)
+        /// How long "Stopped on Living Room" shows before the bar goes.
+        var stoppedShows = Duration.seconds(3)
         /// Closes every stream this device has open and returns once they are closed.
         var stopLocal: @MainActor () async -> Void = { await OpenEngines.shared.stopAll() }
         var now: @MainActor () -> Date = { .now }
@@ -164,13 +170,130 @@ final class PlayDestination {
         await publish()
         await refresh()
         if active, browsing, !tvs.isEmpty { dependencies.browser.start() }
+        await reconnect()
         _ = try? await dependencies.queue?.sweep(now: dependencies.now())
     }
 
-    /// The scene went to the background: browsing stops.
+    /// The scene went to the background: browsing stops and the connection
+    /// ends, remembering what the TV played so the phone can connect again
+    /// when it comes back (play-on-apple-tv/the-connection-ends-cleanly).
+    /// The phone opens no stream in between.
     func deactivate() {
         active = false
+        if let connection, !connection.stopped {
+            resume = Resume(tv: connection.tv.id, request: connection.status?.requestID)
+            connection.ended = {}
+            connection.disconnectQuietly()
+            self.connection = nil
+        }
         dependencies.browser.stop()
+    }
+
+    // MARK: Connected
+
+    /// The TV this phone is connected to, nil while plays start here
+    /// (play-on-apple-tv/connected-to-a-tv).
+    private(set) var connection: PlayOnConnection?
+
+    /// What the phone was connected to when it went to the background.
+    private struct Resume {
+        var tv: UUID
+        var request: UUID?
+    }
+
+    @ObservationIgnored private var resume: Resume? {
+        didSet { updateGate() }
+    }
+
+    /// Plays the TV's item here once the TV stopped; the screen that owns
+    /// playback sets it (play-on-apple-tv/play-on-this-iphone).
+    @ObservationIgnored var playHere: @MainActor (PlayStatus) -> Void = { _ in }
+
+    /// Sends `item` to the connected TV instead of playing it here; false
+    /// when not connected, so the caller plays it here
+    /// (play-on-apple-tv/play-goes-to-the-tv-while-connected).
+    @discardableResult
+    func playOnTV(_ item: PlayOnItem) -> Bool {
+        guard let tv = connection?.tv else { return false }
+        Task { await send(item, to: tv.id) }
+        return true
+    }
+
+    /// Play or pause on the TV.
+    func playPause() {
+        guard let connection else { return }
+        connection.control(connection.isPlaying ? .pause : .play)
+    }
+
+    /// Leaves the TV playing and lets the phone play on its own again.
+    func disconnect() {
+        connection?.disconnect()
+    }
+
+    /// Stops the TV and plays the same item here from the TV's place.
+    func moveHere() async {
+        guard let connection else { return }
+        let status = await connection.handOff()
+        if let status { playHere(status) }
+    }
+
+    private func connect(_ link: any PlayOnLinking, to tv: PlayTV) {
+        let connection = PlayOnConnection(tv: tv, link: link, liveness: dependencies.liveness, stoppedShows: dependencies.stoppedShows)
+        connection.ended = { [weak self, weak connection] in
+            guard let self, self.connection === connection else { return }
+            self.connection = nil
+            updateGate()
+        }
+        self.connection = connection
+        resume = nil
+        connection.start()
+        updateGate()
+    }
+
+    /// Back in the foreground after being connected: connects again when
+    /// the TV still plays what this phone sent; until then, and if that
+    /// fails, the phone opens no stream.
+    private func reconnect() async {
+        guard let resume, connection == nil else { return }
+        defer { self.resume = nil }
+        guard let tv = tvs.first(where: { $0.id == resume.tv }), let endpoint = await endpoint(for: tv.id),
+            let link = await dependencies.sender.connect(to: tv.device, at: endpoint, within: dependencies.answerLimit)
+        else { return }
+        let first = await firstStatus(on: link)
+        guard let first, first.state != .stopped, resume.request == nil || first.requestID == resume.request else {
+            link.close()
+            return
+        }
+        connect(link, to: tv)
+        connection?.adopt(first)
+    }
+
+    /// The first status the TV sends on a fresh link, which it sends on
+    /// connecting and then every five seconds.
+    private func firstStatus(on link: any PlayOnLinking) async -> PlayStatus? {
+        await withCheckedContinuation { continuation in
+            var done = false
+            let resolve: @MainActor (PlayStatus?) -> Void = { status in
+                guard !done else { return }
+                done = true
+                continuation.resume(returning: status)
+            }
+            link.listen { result in
+                if case .success(.status(let status)) = result { resolve(status) }
+            }
+            link.changed = { state in
+                if case .ended = state { resolve(nil) }
+            }
+            Task {
+                try? await Task.sleep(for: .seconds(6))
+                resolve(nil)
+            }
+        }
+    }
+
+    /// Closed while connected, or while a connection may come back.
+    private func updateGate() {
+        if connection != nil || resume != nil { dependencies.gate.close() } else { dependencies.gate.open() }
     }
 
     /// Writes this device's record when it has a new key or is a day old.
@@ -221,24 +344,43 @@ final class PlayDestination {
         let request = PlayRequest(
             sender: dependencies.device.id, senderName: dependencies.device.name, target: tv.id, source: item.source, item: item.item,
             startPosition: item.start, displayTitle: item.title, created: dependencies.now())
+        if let connection, connection.tv.id == tv.id {
+            // Connected: the request goes over the open link, and nothing plays here.
+            if let result = await connection.send(request, within: dependencies.answerLimit) {
+                notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale, connected: true)
+                return
+            }
+        }
+        connection?.disconnect()
         if let endpoint = await endpoint(for: tv.id) {
             await dependencies.stopLocal()
-            var outcome = await dependencies.sender.send(request, to: tv.device, at: endpoint, within: dependencies.answerLimit)
-            if outcome == .refused {
+            var sent = await dependencies.sender.send(request, to: tv.device, at: endpoint, within: dependencies.answerLimit)
+            if sent.outcome == .refused {
                 // The TV reads the device list again on a refused handshake; give it a moment.
                 try? await dependencies.sleep(.seconds(1))
                 await refresh()
                 if let fresh = devices.first(where: { $0.id == tv.id }) {
                     let again = dependencies.browser.endpoints[tv.id] ?? endpoint
-                    outcome = await dependencies.sender.send(request, to: fresh, at: again, within: dependencies.answerLimit)
+                    sent = await dependencies.sender.send(request, to: fresh, at: again, within: dependencies.answerLimit)
                 }
             }
-            if case .answered(let result) = outcome {
-                notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale)
+            if case .answered(let result) = sent.outcome {
+                if let link = sent.link {
+                    if Self.connects(after: result) { connect(link, to: tv) } else { link.close() }
+                }
+                notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale, connected: connection != nil)
                 return
             }
         }
         await queue(request, for: tv)
+    }
+
+    /// A TV that took the request, or asks for its passcode, keeps the phone connected.
+    static func connects(after result: PlayAnswer.Result) -> Bool {
+        switch result {
+        case .started, .needsPasscode: true
+        case .noLogin, .noSource, .notFound, .waiting, .unsupportedVersion: false
+        }
     }
 
     /// Leaves `request` in iCloud for the TV to offer when Antuna opens
@@ -297,10 +439,15 @@ final class PlayDestination {
         #endif
     }
 
-    static func notice(for result: PlayAnswer.Result, tv: String, item: PlayOnItem, locale: Locale) -> PlayOnNotice {
+    /// The line for the TV's answer; none for a start while connected,
+    /// where the bar already says what plays.
+    static func notice(
+        for result: PlayAnswer.Result, tv: String, item: PlayOnItem, locale: Locale, connected: Bool = false
+    ) -> PlayOnNotice? {
         let text = PlayOnText.line(for: result, tv: tv, item: item.title, sourceName: item.sourceName, locale: locale)
         switch result {
-        case .started, .waiting: return PlayOnNotice(text: text, kind: .sent)
+        case .started: return connected ? nil : PlayOnNotice(text: text, kind: .sent)
+        case .waiting: return PlayOnNotice(text: text, kind: .sent)
         case .noLogin(let source): return PlayOnNotice(text: text, kind: .error, signIn: source)
         case .needsPasscode, .noSource, .notFound, .unsupportedVersion: return PlayOnNotice(text: text, kind: .error)
         }

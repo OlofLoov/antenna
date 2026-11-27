@@ -262,10 +262,15 @@ enum LiveMultiViewKey {
 /// the favorite item; nothing on iPhone.
 struct LiveMultiViewMenuExtra: View {
     let channel: Channel
+    @Environment(\.playDestination) private var destination
 
     var body: some View {
         #if os(macOS) || os(iOS)
-            LiveMultiViewMenuItem(channel: channel)
+            // No multi-view while connected to an Apple TV
+            // (play-on-apple-tv/the-phone-opens-no-stream-while-connected).
+            if destination?.connection == nil {
+                LiveMultiViewMenuItem(channel: channel)
+            }
         #endif
     }
 }

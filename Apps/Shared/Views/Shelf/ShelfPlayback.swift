@@ -111,6 +111,8 @@ final class ShelfPlayback {
     @ObservationIgnored var subtitles = SubtitleMode.auto
     /// Told about each movie or episode, not a trailer, that loads and plays.
     @ObservationIgnored var watched: @MainActor (Target) -> Void = { _ in }
+    /// Sends a title to a connected Apple TV in place of playing it here; true when it did (play-on-apple-tv).
+    @ObservationIgnored var playsElsewhere: (@MainActor (Target, Double) -> Bool)?
 
     @ObservationIgnored let engine: any PlaybackEngine
     @ObservationIgnored private let dependencies: Dependencies
@@ -140,10 +142,8 @@ final class ShelfPlayback {
 
     // MARK: Starting
 
-    /// Plays a movie from where the user stopped, or a series from the
-    /// episode the title page's Play would start, once its episode list loads.
-    /// A movie starts at `position` seconds instead when given, as a request
-    /// from a phone asks (play-on-apple-tv/play-on-from-what-can-be-played).
+    /// Plays a movie from where the user stopped, or from `position` when given, or a series
+    /// from the episode the title page's Play would start, once its episode list loads.
     func play(_ title: ShelfTitle, from position: Double? = nil, library: ShelfLibrary, activity: ShelfActivity) {
         self.activity = activity
         self.library = library
@@ -201,6 +201,7 @@ final class ShelfPlayback {
 
     /// Loads the title with the start position set before the first frame.
     private func start(_ target: Target, from position: Double, source: SourceDescriptor?) {
+        if playsElsewhere?(target, position) == true { return }
         let address: URL?
         if case .trailer(let url, _) = target {
             address = url

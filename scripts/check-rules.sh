@@ -169,12 +169,12 @@ check_except "design-system/one-spacing-and-radius-scale: corner radii from the 
 
 # Glass belongs to the navigation layer: the tab bar, controls over video
 # (the live strips, the Picture in Picture and AirPlay pair, the title
-# player's track buttons) and the reminder banner that floats over every
+# player's track buttons), the Playing on bar and the reminder banner that floats over every
 # screen (design-system/liquid-glass-stays-on-the-navigation-layer).
 # Buttons take glass through the system .glass and .glassProminent styles.
 check_except "design-system/liquid-glass-stays-on-the-navigation-layer: the glass effect only on the navigation layer" \
   '\.glassEffect\(' \
-  'Apps/Shared/Components/Browse/Browse(Timeshift)?Controls\.swift|Apps/Shared/Views/Live/LivePicture\.swift|Apps/Shared/Views/Shelf/TitleTrackControls\.swift|Apps/Shared/Components/Reminders/ReminderBanner\.swift' \
+  'Apps/Shared/Components/Browse/Browse(Timeshift)?Controls\.swift|Apps/Shared/Views/Live/LivePicture\.swift|Apps/Shared/Views/Shelf/TitleTrackControls\.swift|Apps/Shared/Components/Reminders/ReminderBanner\.swift|Apps/Shared/Components/PlayOn/PlayingOn\.swift' \
   Apps
 
 # Glass alone or a plain surface alone: a view whose modifier chain applies

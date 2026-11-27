@@ -42,6 +42,35 @@ public enum PlayOnText {
         return words("Playing on \(words.source(tv))")
     }
 
+    /// The bar's first line for three seconds after the TV stopped.
+    public static func stopped(on tv: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Stopped on \(words.source(tv))")
+    }
+
+    /// The title page's Resume while connected.
+    public static func resumeOn(_ tv: String, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words("Resume on \(words.source(tv))")
+    }
+
+    /// The connected sheet's button that moves what the TV plays to this device.
+    public static func playHere(_ kind: PlayDeviceInfo.Kind, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        switch kind {
+        case .pad: return words("Play on this iPad")
+        case .mac: return words("Play on this Mac")
+        case .phone, .tv: return words("Play on this iPhone")
+        }
+    }
+
+    /// What the TV plays, as the bar's second line: the channel or title,
+    /// then the programme or episode.
+    public static func statusLine(_ status: PlayStatus, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        return words.line([words.source(status.title)] + (status.subtitle.map { [words.source($0)] } ?? []))
+    }
+
     /// The phone's line once a request went through iCloud.
     public static func sent(to tv: String, locale: Locale = .autoupdatingCurrent) -> String {
         let words = Words(locale)

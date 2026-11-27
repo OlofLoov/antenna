@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone connected sheet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/connected-to-a-tv and play-on-apple-tv/play-on-this-iphone: the system sheet at the medium detent that the "Playing on Living Room" bar or the connected picture opens (playOn.sheet, design-system/modals-are-system-presentations). The art (the title's poster, or the channel's logo tile), "Playing on Living Room" muted, the item and its second line (programme or episode), then a 50 pt play or pause button for the TV (playOn.sheet.playPause), "Play on this iPhone" (playOn.sheet.playHere; "this iPad", "this Mac") and "Disconnect" (playOn.sheet.disconnect) as secondary buttons. Disconnect leaves the TV playing; Play on this iPhone stops the TV and plays here from the TV's position. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4)"></div>
+  <div role="dialog" style="position: absolute; left: 0; right: 0; bottom: 0; height: 440px; border-radius: 22px 22px 0 0; background: #161B24; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; gap: 16px; align-items: center">
+      <div style="width: 72px; height: 108px; border-radius: 8px; background: #4A3A2F; flex: 0 0 auto"></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+        <div style="font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #A7B0BF">Playing on Living Room</div>
+        <div style="font-size: 22px; font-weight: 700">Salt Road</div>
+        <div style="font-size: 15px; color: #A7B0BF">1 h 12 min of 1 h 32 min</div>
+      </div>
+    </div>
+    <!-- playOn.sheet.playPause -->
+    <div style="margin-top: 8px; height: 50px; border-radius: 25px; background: {{accent}}; color: #0B0E13; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center">Pause</div>
+    <!-- playOn.sheet.playHere -->
+    <div style="height: 50px; border-radius: 25px; background: rgba(255,255,255,0.14); font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center">Play on this iPhone</div>
+    <!-- playOn.sheet.disconnect -->
+    <div style="height: 50px; border-radius: 25px; background: rgba(255,255,255,0.14); font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center">Disconnect</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

@@ -147,12 +147,78 @@
                     self.answer = answer
                 }
 
-                func send(_ request: PlayRequest, to _: PlayDeviceInfo, at _: NWEndpoint, within limit: Duration) async -> PlaySendOutcome {
+                func send(_ request: PlayRequest, to _: PlayDeviceInfo, at _: NWEndpoint, within limit: Duration) async -> PlaySend {
                     guard let answer else {
                         try? await Task.sleep(for: limit)
-                        return .noAnswer
+                        return PlaySend(outcome: .noAnswer)
                     }
-                    return .answered(answer)
+                    let link = ScriptedTV(answer: answer)
+                    link.play(request)
+                    return PlaySend(outcome: .answered(answer), link: link)
+                }
+
+                func connect(to _: PlayDeviceInfo, at _: NWEndpoint, within _: Duration) async -> (any PlayOnLinking)? { nil }
+            }
+
+            /// A TV on the other end of the link: it plays what it is sent,
+            /// pauses and plays on request, and stops at 1 h 12 min on a hand-off.
+            final class ScriptedTV: PlayOnLinking {
+                var received: @MainActor (Result<PlayMessage, PlayMessage.DecodeError>) -> Void = { _ in }
+                func listen(_ handler: @escaping @MainActor (Result<PlayMessage, PlayMessage.DecodeError>) -> Void) {
+                    received = handler
+                }
+                var changed: @MainActor (PlayLink.State) -> Void = { _ in }
+                private let answer: PlayAnswer.Result
+                private var status: PlayStatus?
+
+                init(answer: PlayAnswer.Result) {
+                    self.answer = answer
+                    // A status every five seconds, as the TV sends one.
+                    Task { @MainActor [weak self] in
+                        while true {
+                            try? await Task.sleep(for: .seconds(5))
+                            guard let self, status?.state != .stopped else { return }
+                            report()
+                        }
+                    }
+                }
+
+                /// What the TV plays after `request`, told once the link is read.
+                func play(_ request: PlayRequest) {
+                    status = PlayStatus(
+                        state: .playing, requestID: request.id, source: request.source, item: request.item, title: request.displayTitle,
+                        position: request.startPosition, duration: 5520)
+                    report()
+                }
+
+                func send(_ message: PlayMessage) {
+                    switch message {
+                    case .play(let request):
+                        received(.success(.answer(PlayAnswer(requestID: request.id, result: answer))))
+                        play(request)
+                    case .control(.pause): set(.paused)
+                    case .control(.play): set(.playing)
+                    case .control(.handOff):
+                        status?.position = 4320
+                        set(.stopped)
+                    case .control(.disconnect), .answer, .status:
+                        break
+                    }
+                }
+
+                func close() {}
+
+                private func set(_ state: PlayStatus.State) {
+                    status?.state = state
+                    report()
+                }
+
+                private func report() {
+                    guard let status else { return }
+                    Task { @MainActor [weak self] in
+                        await Task.yield()
+                        self?.received(.success(.status(status)))
+                    }
                 }
             }
 

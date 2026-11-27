@@ -35,12 +35,12 @@ Ships as a stack: `feat/play-on-apple-tv-1` (groups 1 to 3, the network send), `
 
 ## 5. Browse while connected
 
-- [ ] 5.1 Draw the connected sheet, the bar on iPad and Mac and "Stopped on Living Room" before building them
-- [ ] 5.2 Add `PlayOnConnection` with `status`, the liveness timer, Disconnect, reconnect on foreground and the end on stop or leaving the network, and verify app tests with a scripted fake TV
-- [ ] 5.3 Make every play entry point call `PlayDestination`, make `AppEngine` refuse streams while connected, and verify the counting test that Live, the Guide, a title page, an episode, Search, a reminder and multi-view open no stream while connected
-- [ ] 5.4 Add `PlayingOnBar`, `ConnectedPicture` and the connected sheet with play, pause and "Play on this iPhone", with deterministic previews on iPhone, iPad and Mac, and verify UI tests for pause from the phone and handing a film back at the TV's position
-- [ ] 5.5 Remove "Add to Multi-view" while connected on iPad and Mac, and verify a UI test
-- [ ] 5.6 Add a Journeys step for `iPhone-Live-Connected` anchored on `playOn.live`
+- [x] 5.1 Draw the connected sheet, the bar on iPad and Mac and "Stopped on Living Room" before building them
+- [x] 5.2 Add `PlayOnConnection` with `status`, the liveness timer, Disconnect, reconnect on foreground and the end on stop or leaving the network, and verify app tests with a scripted fake TV
+- [x] 5.3 Make every play entry point call `PlayDestination`, make `AppEngine` refuse streams while connected, and verify the counting test that Live, the Guide, a title page, an episode, Search, a reminder and multi-view open no stream while connected
+- [x] 5.4 Add `PlayingOnBar`, `ConnectedPicture` and the connected sheet with play, pause and "Play on this iPhone", with deterministic previews on iPhone, iPad and Mac, and verify UI tests for pause from the phone and handing a film back at the TV's position
+- [x] 5.5 Remove "Add to Multi-view" while connected on iPad and Mac, and verify a UI test
+- [x] 5.6 Add a Journeys step for `iPhone-Live-Connected` anchored on `playOn.live`
 
 ## 6. Accessibility and copy
 

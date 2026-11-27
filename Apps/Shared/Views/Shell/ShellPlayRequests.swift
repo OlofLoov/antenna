@@ -22,6 +22,8 @@
         @Environment(ShelfPlayback.self) private var playback
         @Environment(ShelfActivity.self) private var activity
         @Environment(\.locale) private var locale
+        /// True after a phone took the item back, until the next request.
+        @State private var handedOff = false
 
         /// How long a source that is still loading has to list the item.
         static let sourceWait = Duration.seconds(10)
@@ -55,8 +57,79 @@
                 .onDisappear { inbox?.detach() }
                 .onChange(of: inbox?.delivery?.id, initial: true) {
                     guard let delivery = inbox?.take() else { return }
+                    handedOff = false
                     Task { delivery.reply(await play(delivery.request)) }
                 }
+                .onChange(of: inbox?.controlRequest?.id) {
+                    guard let control = inbox?.takeControl() else { return }
+                    Task { await act(on: control) }
+                }
+                .task {
+                    // What connected phones see, kept current twice a second
+                    // (play-on-apple-tv/connected-to-a-tv).
+                    while !Task.isCancelled {
+                        inbox?.status = await currentStatus()
+                        try? await Task.sleep(for: .milliseconds(500))
+                    }
+                }
+        }
+
+        // MARK: Connected phones
+
+        /// What the TV plays: the title on screen, else the tuned channel.
+        /// After a hand-off it reads stopped until the next request.
+        private func currentStatus() async -> PlayStatus {
+            let requestID = inbox?.playingRequest
+            if let target = playback.playing, let transport = playback.transport, !handedOff {
+                let title = target.title
+                var item: PlayRequest.Item = .movie(key: PlayItemKeys.title(title))
+                var subtitle: String?
+                if case .episode(let episode, let series) = target {
+                    item = .episode(seriesKey: PlayItemKeys.title(series), episodeKey: PlayItemKeys.episode(episode))
+                    subtitle = episode.title
+                }
+                let position = transport.position
+                return PlayStatus(
+                    state: Self.state(transport.state), requestID: requestID, source: title.sourceID, item: item, title: title.name,
+                    subtitle: subtitle, position: Double(position.time.components.seconds),
+                    duration: position.duration.map { Double($0.components.seconds) }, artworkKey: PlayItemKeys.title(title))
+            }
+            if let channel = model.tuned, !handedOff, model.tab.showsPicture {
+                let state = Self.state(await model.engine.state)
+                return PlayStatus(
+                    state: state, requestID: requestID, source: channel.sourceID, item: .channel(key: PlayItemKeys.channel(channel)),
+                    title: channel.name, artworkKey: PlayItemKeys.channel(channel))
+            }
+            return PlayStatus(state: .stopped, requestID: requestID, title: inbox?.status?.title ?? "")
+        }
+
+        private static func state(_ state: PlaybackState) -> PlayStatus.State {
+            switch state {
+            case .paused: .paused
+            case .idle, .failed, .ended: .stopped
+            case .loading, .playing, .buffering, .reconnecting: .playing
+            }
+        }
+
+        /// Play, pause, or hand the item back to the phone: the TV says
+        /// where it was, then stops and goes back to the page or the picture
+        /// (play-on-apple-tv/play-on-this-iphone).
+        private func act(on control: PlayControl) async {
+            let engine = playback.playing != nil ? playback.engine : model.engine
+            switch control {
+            case .play:
+                if await engine.state == .paused { await engine.play() }
+            case .pause:
+                if await engine.state != .paused { await engine.pause() }
+            case .handOff:
+                var status = await currentStatus()
+                status.state = .stopped
+                handedOff = true
+                inbox?.status = status
+                if playback.playing != nil { await playback.close() } else { await model.engine.stop() }
+            case .disconnect:
+                break
+            }
         }
 
         /// The offer on screen; closing it some other way counts as Not now.
@@ -141,6 +214,7 @@
                 playback.play(episode, of: series, from: position, library: library, activity: activity)
             }
             inbox?.announce(request, locale: locale)
+            inbox?.playingRequest = request.id
             if case .channel(let channel) = target, isLocked(channel) { return .needsPasscode }
             if case .catchup(let channel, _, _) = target, isLocked(channel) { return .needsPasscode }
             return .started

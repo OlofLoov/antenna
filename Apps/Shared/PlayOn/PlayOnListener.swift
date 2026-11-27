@@ -19,8 +19,24 @@ final class PlayOnListener {
     /// Told when a handshake fails, which is how a device the TV does not
     /// know yet shows up; the owner fetches the device list again.
     var refused: @MainActor () -> Void = {}
+    /// Told about play, pause and hand-off from a connected phone; the
+    /// listener forgets a phone that disconnects by itself.
+    var control: @MainActor (PlayControl) -> Void = { _ in }
+    /// What the TV plays now, sent to a phone as soon as its link opens.
+    var currentStatus: @MainActor () -> PlayStatus? = { nil }
     /// The port the listener got, once it is ready.
     private(set) var port: NWEndpoint.Port?
+    /// Links of phones connected to this TV, which get every status
+    /// (play-on-apple-tv/connected-to-a-tv).
+    private var connected: Set<ObjectIdentifier> = []
+
+    /// Sends `status` to every connected phone.
+    func broadcast(_ status: PlayStatus) {
+        for id in connected { links[id]?.send(.status(status)) }
+    }
+
+    /// How many phones are connected, for tests.
+    var connectedCount: Int { connected.count }
 
     private let device: PlayOnDevice
     private let advertises: Bool
@@ -61,6 +77,7 @@ final class PlayOnListener {
         listener = nil
         port = nil
         links.values.forEach { $0.close() }
+        connected = []
         links = [:]
     }
 
@@ -103,10 +120,21 @@ final class PlayOnListener {
         let link = PlayLink(connection)
         let id = ObjectIdentifier(link)
         links[id] = link
-        link.changed = { [weak self] state in
-            guard let self, case .ended(let reason) = state else { return }
-            links[id] = nil
-            if reason == .refused { refused() }
+        link.changed = { [weak self, weak link] state in
+            guard let self else { return }
+            switch state {
+            case .ready:
+                // A phone that got through the handshake is on the account;
+                // it hears what plays from now on, starting now.
+                connected.insert(id)
+                if let status = currentStatus() { link?.send(.status(status)) }
+            case .ended(let reason):
+                links[id] = nil
+                connected.remove(id)
+                if reason == .refused { refused() }
+            case .connecting:
+                break
+            }
         }
         link.received = { [weak self, weak link] result in
             guard let self, let link else { return }
@@ -117,6 +145,12 @@ final class PlayOnListener {
                 }
             case .success(.play(let request)):
                 link.send(.answer(PlayAnswer(requestID: request.id, result: .notFound)))
+            case .success(.control(.disconnect)):
+                // The TV keeps playing and forgets this phone.
+                connected.remove(id)
+                link.close()
+            case .success(.control(let control)):
+                self.control(control)
             case .failure(.unsupportedVersion(let requestID)):
                 if let requestID { link.send(.answer(PlayAnswer(requestID: requestID, result: .unsupportedVersion))) }
             case .success, .failure:

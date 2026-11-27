@@ -22,6 +22,8 @@ public actor RoutedEngine: PlaybackEngine {
     }
 
     private nonisolated let pair: Mutex<Pair>
+    /// Closed while this device may open no stream; nil never closes.
+    public nonisolated let gate: StreamGate?
 
     /// The engine for HLS and the files the system reads.
     public nonisolated var system: any PlaybackEngine { pair.withLock { $0.system } }
@@ -57,7 +59,9 @@ public actor RoutedEngine: PlaybackEngine {
     private var wantsPlay = false
     private let fallbackCast = Broadcast(StreamFallback?.none)
 
-    public init(system: any PlaybackEngine, demuxer: any PlaybackEngine) {
+    /// `gate`, when given, turns every load away while it is closed.
+    public init(system: any PlaybackEngine, demuxer: any PlaybackEngine, gate: StreamGate? = nil) {
+        self.gate = gate
         pair = Mutex(Pair(system: system, demuxer: demuxer))
     }
 
@@ -88,6 +92,8 @@ public actor RoutedEngine: PlaybackEngine {
     /// Being offline, a login not on this device and no free decoder are
     /// reported as they are, since the fallback would fail the same way.
     public func load(_ url: URL, options: PlaybackOptions) async throws {
+        // play-on-apple-tv/the-phone-opens-no-stream-while-connected
+        if let gate, !gate.admits() { throw CancellationError() }
         generation += 1
         let mine = generation
         wantsPlay = false

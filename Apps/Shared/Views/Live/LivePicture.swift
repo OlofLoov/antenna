@@ -104,6 +104,9 @@
                             .transition(.opacity)
                     }
                 }
+                // Connected to an Apple TV, the area shows what the TV plays in
+                // place of video (play-on-apple-tv/the-phone-opens-no-stream-while-connected).
+                .overlay { PlayOnConnectedPicture() }
                 .clipped()
                 .background { LiveSkipKeys(live: live) }
                 .animation(.easeOut(duration: 0.2), value: live.controlsShown)

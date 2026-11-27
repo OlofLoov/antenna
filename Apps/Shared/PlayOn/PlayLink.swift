@@ -67,6 +67,18 @@ final class PlayLink {
     private(set) var state: State = .connecting
     /// Told about each frame the other end sends.
     var received: @MainActor (Result<PlayMessage, PlayMessage.DecodeError>) -> Void = { _ in }
+    /// True while frames wait for `listen(_:)`, as between a handshake and the connection that keeps the link.
+    var holds = false
+    private var held: [Result<PlayMessage, PlayMessage.DecodeError>] = []
+
+    /// Hands every frame, those held first, to `handler` from now on.
+    func listen(_ handler: @escaping @MainActor (Result<PlayMessage, PlayMessage.DecodeError>) -> Void) {
+        received = handler
+        holds = false
+        let waiting = held
+        held = []
+        waiting.forEach(handler)
+    }
     /// Told when the link opens and when it ends.
     var changed: @MainActor (State) -> Void = { _ in }
 
@@ -125,7 +137,7 @@ final class PlayLink {
                 if let content, !content.isEmpty {
                     for result in self.reader.append(content) {
                         if case .failure(.tooLong) = result { return self.end(.garbled) }
-                        self.received(result)
+                        if self.holds { self.held.append(result) } else { self.received(result) }
                     }
                 }
                 if let error { return self.end(Self.reason(error)) }
