@@ -89,6 +89,7 @@ final class TitleUITests: XCTestCase {
     // title-detail-and-episode-picker/what-the-title-is-about, scores replace the provider's rating
     // title-metadata/lookups-can-be-turned-off
     // sources-and-settings/a-switch-for-movie-database-lookups
+    // title-metadata/sample-scores-in-debug-builds-only, the Sample label
     func testSampleScoresShowBelowTheButtonsAndGoWhenLookupsAreOff() throws {
         let app = try launch(sampleScores: true)
         openSection(app, "movies")

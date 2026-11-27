@@ -246,6 +246,7 @@ private let english = Locale(identifier: "en_US")
 
     // MARK: Mock
 
+    // title-metadata/sample-scores-in-debug-builds-only
     @Test("title-detail-and-episode-picker/scores-from-other-sites: the mock gives stable sample scores")
     func mockIsStable() async throws {
         let mock = MockTitleLookup()
