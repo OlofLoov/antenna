@@ -55,6 +55,17 @@ final class PlayOnConnectedUITests: XCTestCase {
         XCTAssertFalse(app.element("title.playOn").exists, "Play already sends, so Play on goes")
     }
 
+    // play-on-apple-tv/connected-to-a-tv (VoiceOver)
+    func testVoiceOverReadsTheBarAndItsAction() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")
+        let app = launch()
+        connectFromTitle(app)
+        let bar = app.element("playOn.bar")
+        expect(bar, "label BEGINSWITH 'Playing on Living Room'")
+        XCTAssertTrue(bar.label.contains("The Long Harbor"), bar.label)
+        XCTAssertEqual(app.buttons["playOn.bar.playPause"].label, "Pause")
+    }
+
     // play-on-apple-tv/connected-to-a-tv
     func testPauseFromThePhone() throws {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .phone, "the narrow layout tests run on an iPhone")

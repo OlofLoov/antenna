@@ -66,6 +66,14 @@ final class PlayOnTVUITests: XCTestCase {
         XCTAssertFalse(element("playOn.offer").exists)
     }
 
+    // play-on-apple-tv/the-tv-offers-a-waiting-request (VoiceOver)
+    func testVoiceOverReadsTheSenderTheItemAndThePlayButton() {
+        launch(offer: "playlist/a2")
+        XCTAssertTrue(element("playOn.offer").waitForExistence(timeout: 20))
+        expect("playOn.offer", "label == \"From Anna's iPhone, Channel a2\"")
+        expect("playOn.offer.play", "hasFocus == true AND label == 'Play'")
+    }
+
     // play-on-apple-tv/the-tv-offers-a-waiting-request
     func testMenuOnTheOfferIsNotNow() {
         launch(offer: "playlist/a2")

@@ -44,7 +44,10 @@ struct FromDeviceOffer<Art: View, Buttons: View>: View {
         .foregroundStyle(Palette.text)
         .background(Palette.scrimTint.opacity(0.92), in: cornerShape(.large))
         .shadow(color: Palette.focusShadow, radius: 16, y: 12)
+        // VoiceOver reads the sending device and the item, then the focused button
+        // (play-on-apple-tv/the-tv-offers-a-waiting-request).
         .accessibilityElement(children: .contain)
+        .accessibilityLabel(Text(verbatim: "\(eyebrow), \(title)"))
         .accessibilityIdentifier("playOn.offer")
     }
 }
