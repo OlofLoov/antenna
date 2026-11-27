@@ -54,7 +54,7 @@ Live streams arrive at their bit rate and never reach 32 MB; a live stream with 
 
 ## Identifiers
 
-- `FilmReadAhead`, `FilmReadAhead.Limits`, `FilmReader` in AntennaDemux.
-- `DemuxEngine.film`, `filmLimits`, `filmStore`, `filmSource(_:url:options:)`.
+- `FilmReadAhead`, `FilmReadAhead.Limits` (with the `TimeshiftStore` the file goes in), `FilmReader` in AntennaDemux.
+- `DemuxEngine.film`, `filmLimits`, `filmSource(_:url:options:)`, `filmReader(for:options:)`, `discardFilm()`.
 - `HTTPByteStream.overflowLimit`, `heldBytes`.
 - `FixtureServer.Behavior.generated(length:)`, `FixtureServer.generated(from:count:)`.
