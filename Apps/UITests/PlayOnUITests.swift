@@ -102,6 +102,28 @@ final class PlayOnUITests: XCTestCase {
         }
     }
 
+    // play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable
+    func testAClosedTVGetsTheRequestThroughICloud() throws {
+        let app = try launch("closed")
+        openMovie(app)
+        let button = app.element("title.playOn")
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+        expectSent(app, "Sent. Living Room offers it when Antuna opens there.")
+    }
+
+    // play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable
+    func testOfflineNothingIsSent() throws {
+        let app = try launch("closed", answer: "offline")
+        openMovie(app)
+        let button = app.element("title.playOn")
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+        let alert = app.alerts.firstMatch
+        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        XCTAssertEqual(alert.label, "You're offline. Nothing was sent.")
+    }
+
     // play-on-apple-tv/the-phone-says-why-the-tv-cannot-play
     func testTheTVsRefusalReadsInWords() throws {
         let app = try launch("one", answer: "needsPasscode")

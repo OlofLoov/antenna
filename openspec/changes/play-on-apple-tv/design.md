@@ -166,12 +166,12 @@ Drawn for groups 2 and 3 (task 1.2):
 - `iPhone-PlayOn-Messages.dc.html`: the line after a send and the error alert, with every message in its note.
 - `TV-FromIPhone-Banner.dc.html`: the TV's "From Anna's iPhone" banner for a network request.
 
+Drawn for group 4: `TV-FromIPhone-Offer-Channel.dc.html`, the offer for a channel with its logo tile and the facts line for each kind; the offline line is in `iPhone-PlayOn-Messages.dc.html`.
+
 Not drawn yet, to draw before the group that builds them:
 
 - The connected sheet: art, item, play or pause, "Play on this iPhone", "Disconnect".
-- The offline message on the phone.
 - iPad and Mac: the bar at the bottom of the window and the connected picture in the side-by-side layout.
-- The TV's offer for a channel (logo tile in place of the poster).
 - "Stopped on Living Room" in the bar.
 
 ## Copy
@@ -194,7 +194,9 @@ Not drawn yet, to draw before the group that builds them:
 | Passcode | Enter the passcode on Living Room. |
 | Old TV app | Update Antuna on Living Room to play from here. |
 | TV behind its paywall or "Who's watching?" | Sent. Living Room plays it once Antuna is ready there. |
-| No answer, before the iCloud queue | Living Room didn't answer. Open Antuna there and try again. |
+| iCloud refused the request for another reason than being offline | Living Room didn't answer. Open Antuna there and try again. |
+| Offline | You're offline. Nothing was sent. |
+| TV offer facts line | Live channel / Catch-up / Movie · Resumes at 40 min / Episode |
 | TV offer eyebrow | From Anna's iPhone |
 | TV offer buttons | Play / Not now |
 
@@ -255,7 +257,10 @@ No data migration. The zones are created on first write. Turning the feature off
 - **The TV listens behind the paywall too.** The listener runs whenever the TV's scene is active and iCloud is signed in, so a request that arrives behind the paywall or "Who's watching?" is kept and answered `waiting`, as the spec's paywall scenario asks. The phone then says "Sent. Living Room plays it once Antuna is ready there." In slice 1 a kept request plays once the shell shows; slice 2 turns it into the offer.
 - **Ended programmes on the TV.** Catch-up of an ended programme starts through `TimeshiftModel.watchCatchup`, the start-over path with the requested programme in place of the one on now.
 - **Signing the TV in from the phone.** On `noLogin` the TV opens the sign-in it shows for the source today, and the phone's alert says why. The "way to sign it in from the iPhone" is that sign-in form, which the iPhone's Apple TV keyboard can fill. A flow that sends the login from the phone would put a secret on the link, so it is left for a later change.
-- **Until the iCloud queue lands.** In the first slice a TV that does not answer within 3 seconds gives "Living Room didn't answer. Open Antuna there and try again." Slice 2 replaces this with the iCloud fallback.
+- **Until the iCloud queue lands.** In the first slice a TV that does not answer within 3 seconds gives "Living Room didn't answer. Open Antuna there and try again." Slice 2 replaces this with the iCloud fallback; the line stays for an iCloud save that fails for another reason than being offline.
+- **A kept request becomes the offer.** From slice 2 a request kept behind the paywall or "Who's watching?" shows as the offer once the shell is up, as the spec's paywall scenario says, rather than playing by itself.
+- **The silent push on tvOS.** The TV app gains a `UIApplicationDelegateAdaptor` that registers for remote notifications and passes the `play-requests` zone push on; the shell's 30-second pickup covers a push that never comes.
+- **Deleting a picked-up request.** The TV deletes the request it picked up only while that request is still the one waiting, so a newer request sent in between stays.
 
 ## Device checks left for the owner
 

@@ -96,6 +96,28 @@ public enum PlayOnText {
         return words("From \(words.source(device))")
     }
 
+    /// The phone's line when it has no network and nothing was sent
+    /// (play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable).
+    public static func offline(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("You're offline. Nothing was sent.")
+    }
+
+    /// The TV offer's facts line: what kind of item it is, and where a film
+    /// or episode resumes, as "Movie · Resumes at 40 min".
+    public static func offerFacts(_ request: PlayRequest, locale: Locale = .autoupdatingCurrent) -> String {
+        let words = Words(locale)
+        let kind: String =
+            switch request.item {
+            case .channel: words("Live channel")
+            case .programme where request.isLive: words("Live channel")
+            case .programme: words("Catch-up")
+            case .movie: words("Movie")
+            case .episode: words("Episode")
+            }
+        guard let start = request.startPosition, let place = ShelfText.length(start, locale: locale) else { return kind }
+        return words.line([kind, words("Resumes at \(place)")])
+    }
+
     /// The phone's line for the TV's answer.
     public static func line(
         for result: PlayAnswer.Result, tv: String, item: String, sourceName: String, locale: Locale = .autoupdatingCurrent

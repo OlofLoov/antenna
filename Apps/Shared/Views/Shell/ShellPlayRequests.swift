@@ -43,12 +43,40 @@
                             }
                     }
                 }
+                .fullScreenCover(item: offered) { request in
+                    ShellPlayOffer(request: request, art: art(for: request)) {
+                        inbox?.playOffered()
+                    } notNow: {
+                        inbox?.dismissOffered()
+                    }
+                    .presentationBackground(Color.black.opacity(0.55))
+                }
                 .onAppear { inbox?.attach() }
                 .onDisappear { inbox?.detach() }
                 .onChange(of: inbox?.delivery?.id, initial: true) {
                     guard let delivery = inbox?.take() else { return }
                     Task { delivery.reply(await play(delivery.request)) }
                 }
+        }
+
+        /// The offer on screen; closing it some other way counts as Not now.
+        private var offered: Binding<PlayRequest?> {
+            Binding(
+                get: { inbox?.offered },
+                set: { if $0 == nil { inbox?.dismissOffered() } })
+        }
+
+        /// The channel's logo or the title's poster, when the TV has it.
+        private func art(for request: PlayRequest) -> ShellPlayOffer.Art {
+            let own = { (id: String) in PlayItemKeys.key(id) }
+            switch request.item {
+            case .channel(let key), .programme(let key, _, _):
+                let channel = model.channels.first { $0.sourceID == request.source && own($0.id) == key }
+                return .logo(channel?.logoURL)
+            case .movie(let key), .episode(let key, _):
+                let title = (library.movies.titles + library.series.titles).first { $0.sourceID == request.source && own($0.id) == key }
+                return .poster(title?.posterURL)
+            }
         }
 
         private func play(_ request: PlayRequest) async -> PlayAnswer.Result {

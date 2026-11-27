@@ -7,7 +7,7 @@
     /// Requests from a phone wait here, outside every gate, until the shell
     /// takes them, as Top Shelf links do. Unlike a shelf link, a request
     /// that arrives behind the paywall or "Who's watching?" is kept and
-    /// plays once the shell shows
+    /// offered once the shell shows
     /// (play-on-apple-tv/the-tv-keeps-its-own-locks-and-profile). A request
     /// id the TV has handled once is not handled again, so the same request
     /// arriving a second way plays once.
@@ -52,13 +52,39 @@
             delivery = Delivery(request: request, reply: reply)
         }
 
-        /// The shell shows: a kept request plays now.
+        /// The shell shows: a request kept behind a gate is offered now.
         func attach() {
             attached = true
             if let kept {
                 self.kept = nil
-                delivery = Delivery(request: kept) { _ in }
+                offered = kept
             }
+        }
+
+        // MARK: Offer
+
+        /// The request the TV offers with Play and Not now: one that waited
+        /// in iCloud, or one that arrived behind a gate
+        /// (play-on-apple-tv/the-tv-offers-a-waiting-request).
+        private(set) var offered: PlayRequest?
+
+        /// Offers `request` unless the TV has handled its id already.
+        func offer(_ request: PlayRequest) {
+            guard !handled.contains(request.id) else { return }
+            handled.insert(request.id)
+            offered = request
+        }
+
+        /// Play on the offer: the shell plays it as it plays a request from the network.
+        func playOffered() {
+            guard let offered else { return }
+            self.offered = nil
+            delivery = Delivery(request: offered) { _ in }
+        }
+
+        /// Not now, or Menu, on the offer: the TV stays where it was.
+        func dismissOffered() {
+            offered = nil
         }
 
         /// The shell went away, as when "Who's watching?" replaces it.
@@ -82,21 +108,37 @@
     /// the TV's record, reads the account's devices, and listens on the home
     /// network for the phones, iPads and Macs among them
     /// (play-on-apple-tv/starts-at-once-on-the-same-network). It stops
-    /// listening in the background, since tvOS suspends the app.
+    /// listening in the background, since tvOS suspends the app. It also
+    /// picks up the request waiting for this TV in iCloud on launch, on
+    /// returning to the foreground, on a push and every 30 seconds while
+    /// active, since pushes can be held back
+    /// (play-on-apple-tv/the-tv-offers-a-waiting-request).
     @MainActor
     final class PlayOnReceiver {
+        /// How often the TV looks for a waiting request while it is active.
+        static let pickupInterval = Duration.seconds(30)
+
         let inbox: PlayRequestInbox
         private let device: PlayOnDevice
         private let devices: any PlayDeviceStoring
+        private let queue: (any PlayRequestQueueing)?
+        private let subscribe: @MainActor () async -> Void
         private let listener: PlayOnListener
         private var published: PlayDeviceInfo?
+        private var subscribed = false
         private var lastRefetch = Date.distantPast
         private var active = false
+        private var polling: Task<Void, Never>?
 
-        init(inbox: PlayRequestInbox, device: PlayOnDevice, devices: any PlayDeviceStoring, advertises: Bool = true) {
+        init(
+            inbox: PlayRequestInbox, device: PlayOnDevice, devices: any PlayDeviceStoring, queue: (any PlayRequestQueueing)? = nil,
+            advertises: Bool = true, subscribe: @escaping @MainActor () async -> Void = {}
+        ) {
             self.inbox = inbox
             self.device = device
             self.devices = devices
+            self.queue = queue
+            self.subscribe = subscribe
             listener = PlayOnListener(device: device, advertises: advertises)
             listener.request = { [weak inbox] request, reply in
                 guard let inbox else { return reply(.waiting) }
@@ -120,12 +162,38 @@
             }
             if let all = try? await devices.all() { listener.accept(all) }
             // The scene may have left the foreground while the records were read.
-            if active { listener.start() }
+            guard active else { return }
+            listener.start()
+            if !subscribed {
+                subscribed = true
+                await subscribe()
+            }
+            polling?.cancel()
+            polling = Task { [weak self] in
+                while !Task.isCancelled {
+                    await self?.pickUp()
+                    try? await Task.sleep(for: Self.pickupInterval)
+                }
+            }
         }
 
         func deactivate() {
             active = false
+            polling?.cancel()
+            polling = nil
             listener.stop()
+        }
+
+        /// Takes the request waiting for this TV, if any: an expired one is
+        /// deleted unread, any other is deleted and offered
+        /// (play-on-apple-tv/requests-expire-and-leave-no-trace). One the TV
+        /// already played from the network is deleted without an offer.
+        func pickUp(now: Date = .now) async {
+            guard let queue, let request = try? await queue.waiting(for: device.id) else { return }
+            try? await queue.delete(request)
+            _ = try? await queue.sweep(now: now)
+            guard !request.isExpired(at: now) else { return }
+            inbox.offer(request)
         }
 
         /// A device the TV does not know yet tried to connect: read the

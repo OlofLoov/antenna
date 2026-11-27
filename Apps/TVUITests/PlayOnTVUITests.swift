@@ -47,6 +47,42 @@ final class PlayOnTVUITests: XCTestCase {
         XCTAssertTrue(element("groups.passcode").waitForExistence(timeout: 10), "the TV asks for its passcode")
     }
 
+    private func launch(offer: String) {
+        app = XCUIApplication()
+        app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-play-offer", offer]
+        app.launchEnvironment["UITESTING_LAST_CHANNEL"] = "a1"
+        app.launchInEnglish()
+    }
+
+    // play-on-apple-tv/the-tv-offers-a-waiting-request
+    func testAWaitingRequestIsOfferedWithFocusOnPlay() {
+        launch(offer: "playlist/a2")
+        XCTAssertTrue(element("playOn.offer").waitForExistence(timeout: 20))
+        expect("playOn.offer.sender", "label CONTAINS 'From Anna'")
+        expect("playOn.offer.title", "label == 'Channel a2'")
+        expect("playOn.offer.play", "hasFocus == true")
+        XCUIRemote.shared.press(.select)
+        expect("shell.debug.engine", "value CONTAINS 'file=a2'")
+        XCTAssertFalse(element("playOn.offer").exists)
+    }
+
+    // play-on-apple-tv/the-tv-offers-a-waiting-request
+    func testMenuOnTheOfferIsNotNow() {
+        launch(offer: "playlist/a2")
+        XCTAssertTrue(element("playOn.offer").waitForExistence(timeout: 20))
+        expect("playOn.offer.play", "hasFocus == true")
+        XCUIRemote.shared.press(.menu)
+        expect("playOn.offer", "exists == false")
+        expect("shell.debug.engine", "value CONTAINS 'file=a1'")
+    }
+
+    // play-on-apple-tv/requests-expire-and-leave-no-trace
+    func testARequestSentAnHourAgoIsNotOffered() {
+        launch(offer: "playlist/a2:old")
+        expect("shell.debug.engine", "value CONTAINS 'file=a1'")
+        XCTAssertFalse(element("playOn.offer").waitForExistence(timeout: 5))
+    }
+
     // play-on-apple-tv/the-phone-says-why-the-tv-cannot-play
     func testAChannelTheSourceLacksIsNotFound() {
         launch(request: "playlist/gone")
