@@ -45,9 +45,9 @@ The owner dropped the API on 2026-11-23 (design.md decisions 6 and 10), so 6.1 a
 - [x] 6.1 Add `Infra/modules/api`: the HTTP API, its distribution at `api.antuna.app` and its certificate, the origin secret and header, the shared origin check in `Services/shared/`, the WAF web ACL with no logging or sampled requests, and the header-stripping policy, with `terraform test` files, citing `hosting/the-api-answers-on-its-own-address`. Dropped on 2026-11-23 with the API; the requirement is removed
 - [x] 6.2 Amend the "no server of our own" line in `openspec/config.yaml` and CLAUDE.md's hard constraints as design.md decision 10 words it. Dropped on 2026-11-23: with no API there is still no server of our own, and the line stays
 - [x] 6.3 Add the website on AWS (CloudFront, S3 and Route 53) to `docs/architecture/c4-context.drawio.svg` and `c4-container.drawio.svg`
-- [ ] 6.4 Record the App Store trader contact answer from decision 8 in `docs/release/`. `docs/release/trader-contact.md` has what is decided; open until the owner gives the trader address and phone number and picks the email
+- [x] 6.4 Record the App Store trader contact answer from decision 8 in `docs/release/`. `docs/release/trader-contact.md` has what is decided. On 2026-11-27 the owner picked the email and gave the address; the phone number is left as a release step in that file
 
 ## 7. Verify
 
 - [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 7.2 `/opsx:verify` passes. Run on 2026-11-24: every other task is done and every requirement is cited by a test; the one finding is the open owner task 6.4
+- [x] 7.2 `/opsx:verify` passes. Run on 2026-11-24: every other task is done and every requirement is cited by a test; the one finding was task 6.4, closed on 2026-11-27

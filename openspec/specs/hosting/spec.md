@@ -1,0 +1,103 @@
+# hosting Specification
+
+## Purpose
+How antuna.app is served from AWS: HTTPS on the domain, only the site's own code in its pages, files that can be read only through the site, no request logs, deploys only from main, a cost alarm for the owner, and no email on the domain. There is no server of our own; the site is static files.
+
+## Requirements
+
+### Requirement: The site is served over HTTPS on Antuna's domain
+The system SHALL serve the website at Antuna's own domain over HTTPS with a certificate for that name, SHALL answer a plain HTTP request with a permanent redirect to the same address over HTTPS, and SHALL tell browsers to use HTTPS for that domain from then on.
+
+#### Scenario: Opening the site
+- **WHEN** someone opens the domain's home address in a browser
+- **THEN** the page loads over HTTPS with a valid certificate for the domain, and the browser shows no warning
+
+#### Scenario: Typing http
+- **WHEN** someone opens the Terms of Use with `http://`
+- **THEN** they land on the same page over HTTPS
+
+#### Scenario: A folder address without a trailing slash
+- **WHEN** someone opens `/privacy` or `/privacy/`
+- **THEN** the Privacy Policy shows at either address
+
+#### Scenario: An address that does not exist
+- **WHEN** someone opens an address the site has no page for
+- **THEN** a short "Page not found" page shows with a link to the home page, with a not-found status
+- **AND** the answer is not the home page or any other page with a success status
+
+#### Scenario: Typing www
+- **WHEN** someone opens the site with `www.` in front of the domain
+- **THEN** they land on the same page at the bare domain, through a permanent redirect
+
+### Requirement: Pages run only the site's own code
+The system SHALL tell browsers, with every page, to run only scripts and styles the site serves itself, never inline ones except the one style that hides the page-change announcement for screen readers, to load images only from the site, to connect to no other address, and to refuse to show the page inside another site's frame. The setup page SHALL run no script at all.
+
+#### Scenario: A script from another address
+- **GIVEN** a page that somehow names a script on another address
+- **WHEN** a browser opens the page
+- **THEN** the browser refuses to load the script
+
+#### Scenario: Inline script
+- **GIVEN** a page with a script written inside the page
+- **WHEN** a browser opens it
+- **THEN** the browser refuses to run it
+
+#### Scenario: A screen reader hears the new page
+- **GIVEN** a screen reader is on
+- **WHEN** the user follows a link in the header to another page of the site
+- **THEN** the screen reader reads the new page's title, the announcement stays hidden on screen, and the browser reports no blocked style
+
+#### Scenario: The setup page
+- **WHEN** an iPhone without Antuna opens a setup link
+- **THEN** the page shows with its styling, and the browser would refuse any script on it
+
+#### Scenario: Framing the site
+- **WHEN** another site puts a page of Antuna's site in a frame
+- **THEN** the browser refuses to show it
+
+### Requirement: The site's files cannot be read around it
+The system SHALL keep the site's stored files private, readable only through the site's own address.
+
+#### Scenario: Asking the storage directly
+- **WHEN** someone requests a page from the storage behind the site instead of the domain
+- **THEN** the request is refused
+
+### Requirement: Nothing keeps a record of requests
+The system SHALL keep no log of the addresses, query strings, bodies or network addresses of requests to the site, and SHALL keep only counts and the deploys themselves.
+
+#### Scenario: Looking for who opened a page
+- **WHEN** the owner looks in the AWS account for which network addresses opened the Privacy Policy
+- **THEN** there is no log that holds it, only a count of requests
+
+### Requirement: Deploys come only from main
+The system SHALL change the site and the infrastructure only from a workflow run on main, authenticated to AWS with a short-lived token for that run, with no AWS key stored in the repository or its settings.
+
+#### Scenario: A pull request changes the infrastructure
+- **WHEN** a pull request edits the infrastructure
+- **THEN** the pull request shows what would change in AWS, and nothing in AWS changes
+
+#### Scenario: The pull request merges
+- **WHEN** it merges to main
+- **THEN** the infrastructure change is applied after the owner approves the run, and the site is uploaded again
+
+#### Scenario: A branch tries to deploy
+- **WHEN** a workflow on any branch other than main asks AWS for the deploy role
+- **THEN** AWS refuses it
+
+#### Scenario: A site edit merges
+- **WHEN** a pull request that edits only a page under the website merges
+- **THEN** the new page is live within 15 minutes with no approval
+
+### Requirement: The owner hears about cost before it grows
+The system SHALL alert the owner when the month's AWS cost passes half of the monthly budget of $20, and again when it passes or is forecast to pass the whole budget.
+
+#### Scenario: A traffic spike
+- **WHEN** the month's forecast passes the budget
+- **THEN** the owner gets an alert that day
+
+### Requirement: The domain receives no email
+The system SHALL publish no mail records for Antuna's domain, so mail sent to any address at it is not accepted.
+
+#### Scenario: Someone writes to the domain
+- **WHEN** someone sends an email to an address at Antuna's domain
+- **THEN** their mail server reports that it could not be delivered

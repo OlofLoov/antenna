@@ -6,12 +6,12 @@ The small static site at the app's own domain: the setup page, the file that let
 ## Requirements
 
 ### Requirement: The site answers every address the app uses
-The system SHALL publish, on the app's domain over HTTPS, the setup page at `/setup`, the Terms of Use at `/terms`, the Privacy Policy at `/privacy` and the association file at `/.well-known/apple-app-site-association`, and the domain the site is published under SHALL be the one the app's setup links and legal links use.
+The system SHALL publish, on Antuna's own domain over HTTPS, the setup page at `/setup`, the Terms of Use at `/terms`, the Privacy Policy at `/privacy` and the association file at `/.well-known/apple-app-site-association`, and that domain SHALL be the one the app's setup links, legal links and App Store addresses use.
 
 #### Scenario: The paywall's links
 - **GIVEN** the paywall on iPhone or Apple TV
 - **WHEN** the user follows Terms of Use or Privacy Policy
-- **THEN** a page with that title opens at the app's domain
+- **THEN** a page with that title opens at Antuna's domain
 
 #### Scenario: The setup page stays
 - **WHEN** an iPhone without Antuna opens a setup link
@@ -20,6 +20,10 @@ The system SHALL publish, on the app's domain over HTTPS, the setup page at `/se
 #### Scenario: A folder starting with a dot
 - **WHEN** the site is published
 - **THEN** the association file under `/.well-known/` is published with the rest and is not left out for its folder's name
+
+#### Scenario: The association file is JSON
+- **WHEN** the association file is fetched
+- **THEN** it is served as JSON, with no redirect
 
 ### Requirement: Setup links open Antuna
 The system SHALL publish an association file that is valid JSON, names exactly one app, Antuna's app id made of a ten-character team id and the app's bundle id, and opens only `/setup` addresses in it, served as JSON from its address with no file extension and no redirect.
@@ -125,7 +129,7 @@ The system SHALL lay out every page at the width of the device without zooming, 
 - **THEN** the browser makes no request beyond the page itself
 
 ### Requirement: The site publishes from main
-The system SHALL publish the site when a change to it lands on main, and only then.
+The system SHALL publish the site to Antuna's domain when a change to it lands on main, and only then, and SHALL remove from the published site any page removed from the repository.
 
 #### Scenario: A change to a page lands
 - **WHEN** a pull request that edits the Privacy Policy merges to main
@@ -134,6 +138,10 @@ The system SHALL publish the site when a change to it lands on main, and only th
 #### Scenario: A change elsewhere lands
 - **WHEN** a pull request that touches only app code merges
 - **THEN** the site is not published again
+
+#### Scenario: A page is removed
+- **WHEN** a pull request that deletes a page merges
+- **THEN** the page's address shows "Page not found" after the publish run
 
 ### Requirement: The header shows the wordmark
 Every page of the site SHALL show the Antuna wordmark in its header, linking home, in near-white letters with teal tips on the dark page and near-black letters with darker teal tips on the light page. Screen readers SHALL read it as "Antuna". The browser tab SHALL show the app icon.
