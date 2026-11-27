@@ -55,6 +55,13 @@ enum PlayingOn {
                 .buttonStyle(.plain)
                 .accessibilityElement(children: .combine)
                 .accessibilityHint("Opens what plays on the TV")
+                // VoiceOver reads "Playing on Living Room" and the item, and offers play or pause here
+                // (play-on-apple-tv/connected-to-a-tv).
+                .accessibilityActions {
+                    if let playing = state.playing {
+                        Button(playing ? "Pause" : "Play", action: actions.playPause)
+                    }
+                }
                 .accessibilityIdentifier("playOn.bar")
                 if let playing = state.playing {
                     PlayPauseButton(playing: playing, action: actions.playPause)

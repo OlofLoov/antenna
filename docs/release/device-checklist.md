@@ -312,6 +312,41 @@ need the device attached to Xcode with the console open.
   Apple TV and open Live on the iPhone once. Expect the source's channels on
   the Apple TV within a few minutes, with no login asked for there, and the
   source still loading on the iPhone after a relaunch.
+- [ ] **play-on-apple-tv 1.3, names and prompts.** Open Antuna on the Apple
+  TV, then on the iPhone open a film and tap Play on. Write down in the archived
+  change's design.md what name the TV shows in the menu (the TV's own name, or
+  "Apple TV"), whether tvOS asked for local network access when Antuna opened,
+  and whether the TV's banner says "From iPhone" or the iPhone's own name.
+  Expect the iOS local network prompt right after that first tap and not before,
+  and the usage text to name the Apple TV.
+- [ ] **play-on-apple-tv 1.3, the device name entitlement.** Ask Apple for
+  `com.apple.developer.device-information.user-assigned-device-name` for the
+  iOS target. Until it is granted the TV's banner reads "From iPhone".
+- [ ] **play-on-apple-tv 7.2, send over the home network.** With Antuna open
+  on the TV, send a channel from the iPhone and time it from the tap until the
+  TV starts to tune. Expect under a second, the "From Anna's iPhone" banner for
+  four seconds, and the iPhone's "Playing on Living Room" bar. Record the time
+  in the archived change's design.md.
+- [ ] **play-on-apple-tv 7.2, one stream.** On a provider that allows one
+  connection, play a channel on the iPhone, then send it to the TV. Expect the
+  TV to play it, and the iPhone to open no stream while it browses Live and the
+  Guide and starts films from their pages, which go to the TV.
+- [ ] **play-on-apple-tv 7.2, play, pause and hand back.** While connected,
+  pause from the bar, then pause with the Siri Remote. Expect each change on the
+  other device within a second. Choose "Play on this iPhone" on a film; expect
+  the TV to stop and the iPhone to play from the TV's place.
+- [ ] **play-on-apple-tv 7.2, a closed TV and the iCloud queue.** With Antuna
+  closed on the TV, send a film. Expect "Sent. Living Room offers it when Antuna
+  opens there." on the iPhone, and the offer with focus on Play when Antuna
+  opens on the TV. Repeat with the iPhone on mobile data while Antuna is open on
+  the TV; expect the offer within a minute.
+- [ ] **play-on-apple-tv 7.2, a guest account.** From an iPhone on another
+  iCloud account on the same Wi-Fi, try to send. Expect the TV not to be listed
+  and the TV to show nothing.
+- [ ] **play-on-apple-tv 7.2, restarts and leaving.** While connected, quit and
+  reopen Antuna on the TV; expect the next send from the iPhone to work after one
+  retry. Leave the house with the iPhone; expect the bar to go within ten
+  seconds. Lock and unlock the iPhone at home; expect the bar to come back.
 
 ## Two devices on one iCloud account
 
@@ -397,7 +432,7 @@ platform exists.
   group change, a guide, a profile, a reminder, watch progress, an item in My
   list, a recent search, and a login sent to an Apple TV), open CloudKit
   Console, pick `iCloud.se.codecrave.antenna`, check the Development schema
-  lists the `CD_` record types and `LoginDrop`, and choose Deploy Schema
+  lists the `CD_` record types, `LoginDrop`, `PlayDevice` and `PlayRequest`, and choose Deploy Schema
   Changes to Production. Do this before each TestFlight or App Store build that
   adds a synced record type. Expect the Production schema to match, and a
   TestFlight build to sync between two devices.

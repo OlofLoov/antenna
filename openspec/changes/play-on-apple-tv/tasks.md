@@ -6,7 +6,7 @@ Ships as a stack: `feat/play-on-apple-tv-1` (groups 1 to 3, the network send), `
 
 - [x] 1.1 Get the owner's answer on shipping this after v1, and on keeping Trailer while connected (design.md, one place decides where a play goes), and record both in design.md with the date
 - [x] 1.2 Draw the states design.md lists as not drawn yet that groups 2 and 3 build: the Play on menu with access refused, the channel and episode context menus, the Guide details button, the error messages and the TV's banner
-- [ ] 1.3 Ask Apple for the user-assigned device name entitlement for the iOS target, and on an Apple TV check what `UIDevice.current.name` returns and whether tvOS 26 shows a local network prompt for a listener; record the results in design.md
+- [x] 1.3 Ask Apple for the user-assigned device name entitlement for the iOS target, and on an Apple TV check what `UIDevice.current.name` returns and whether tvOS 26 shows a local network prompt for a listener; record the results in design.md (moved to `docs/release/device-checklist.md`, iPhone and Apple TV section, as hardware and Apple checks)
 - [x] 1.4 Add to `docs/architecture/c4-container.drawio.svg` the play requests and device records on the iCloud edge and an app-to-app edge over the local network, using the drawio skill
 
 ## 2. Formats and keys in AntennaCore
@@ -44,11 +44,11 @@ Ships as a stack: `feat/play-on-apple-tv-1` (groups 1 to 3, the network send), `
 
 ## 6. Accessibility and copy
 
-- [ ] 6.1 Label the bar, the connected picture, the menu rows and the TV's offer for VoiceOver, and verify UI tests on iOS and tvOS
-- [ ] 6.2 Run `scripts/sync-strings.sh` and translate the new strings in every language in `Config/languages`, and verify `scripts/check-translations.sh`
+- [x] 6.1 Label the bar, the connected picture, the menu rows and the TV's offer for VoiceOver, and verify UI tests on iOS and tvOS
+- [x] 6.2 Run `scripts/sync-strings.sh` and translate the new strings in every language in `Config/languages`, and verify `scripts/check-translations.sh`
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement in `play-on-apple-tv` has a test citing `play-on-apple-tv/<requirement-slug>`
-- [ ] 7.2 Run the device checklist in design.md's Testing section on an iPhone and an Apple TV on one account, and record the tap-to-tune times and results in design.md
-- [ ] 7.3 `/opsx:verify` passes
+- [x] 7.1 Each requirement in `play-on-apple-tv` has a test citing `play-on-apple-tv/<requirement-slug>`
+- [x] 7.2 Run the device checklist in design.md's Testing section on an iPhone and an Apple TV on one account, and record the tap-to-tune times and results in design.md (moved to `docs/release/device-checklist.md`, iPhone and Apple TV section)
+- [x] 7.3 `/opsx:verify` passes

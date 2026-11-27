@@ -45,7 +45,12 @@
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onExitCommand(perform: notNow)
             .defaultFocus($focused, .play)
-            .task { focused = .play }
+            .task {
+                focused = .play
+                let eyebrow = PlayOnText.from(request.senderName, locale: locale)
+                let spoken: String = "\(eyebrow), \(request.displayTitle)"
+                AccessibilityNotification.Announcement(spoken).post()
+            }
         }
 
         @ViewBuilder private var picture: some View {
