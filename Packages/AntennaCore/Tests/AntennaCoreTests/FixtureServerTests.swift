@@ -192,4 +192,21 @@ import Testing
         let (segment, _) = try await Self.session().data(from: base.appending(path: "live/hls/segment0.ts"))
         #expect(segment == (try Data(contentsOf: server.root.appending(path: "hls/segment0.ts"))))
     }
+
+    @Test func servesAnXtreamLiveChannelAtItsPanelAddress() async throws {
+        let server = try FixtureServer()
+        let base = try await server.start()
+        defer { Task { await server.stop() } }
+        await server.alias("/live/u/p/5.m3u8", to: "hls/index.m3u8")
+        await server.alias("/live/u/p/5.ts", to: "channel.ts")
+        let (data, _) = try await Self.session().data(from: base.appending(path: "live/u/p/5.m3u8"))
+        let segments = String(decoding: data, as: UTF8.self).split(separator: "\n").filter { !$0.hasPrefix("#") }
+        #expect(segments.count == 3)
+        #expect(segments.allSatisfy { $0.hasPrefix("/live/hls/segment") })
+        let (segment, _) = try await Self.session().data(from: base.appending(path: String(segments[0].dropFirst())))
+        // An MPEG-TS segment starts with the sync byte.
+        #expect(segment.first == 0x47)
+        let (stream, _) = try await Self.session().data(from: base.appending(path: "live/u/p/5.ts"))
+        #expect(stream == (try Data(contentsOf: server.root.appending(path: "channel.ts"))))
+    }
 }

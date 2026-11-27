@@ -73,7 +73,9 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
     /// information, asked for once (xtream-live-source/server-time-zone). A failed account call
     /// leaves the zone nil and the channels load anyway. A failed category call leaves
     /// them without group names (xtream-live-source/channels-load-without-categories).
-    public func liveLoad() async throws -> (channels: [Channel], timeZoneName: String?) {
+    /// The links are MPEG-TS. `offersHLS` says whether the account's allowed output formats let its
+    /// channels play as HLS for AirPlay (xtream-live-source/the-account-says-whether-hls-is-offered).
+    public func liveLoad() async throws -> XtreamLiveLoad {
         async let categories = try? liveCategories()
         async let streams = liveStreams()
         async let account = try? accountInfo()
@@ -81,12 +83,15 @@ public struct XtreamClient: Sendable, CustomStringConvertible, CustomDebugString
         let loaded = await categories ?? []
         let names = Dictionary(loaded.map { ($0.categoryID, $0.categoryName) }, uniquingKeysWith: { first, _ in first })
         let adult = Set(loaded.filter(\.isAdult).map(\.categoryID))
+        let info = await account
         let channels = try await streams.map { stream in
             channel(
                 from: stream, categoryName: stream.categoryID.flatMap { names[$0] },
                 categoryIsAdult: stream.categoryID.map(adult.contains) ?? false)
         }
-        return (channels, await account?.serverInfo?.timezone)
+        return XtreamLiveLoad(
+            channels: channels, timeZoneName: info?.serverInfo?.timezone,
+            offersHLS: XtreamLiveFormat.offersHLS(allowedOutputFormats: info?.userInfo.allowedOutputFormats))
     }
 
     // MARK: VOD and series endpoints
@@ -317,10 +322,14 @@ public struct XtreamAccountInfo: Decodable, Sendable {
         /// `user_info.auth` when it decodes to an integer, else nil. 0 never reaches callers:
         /// the client throws `XtreamError.unauthorized` instead.
         public var auth: Int?
+        /// `user_info.allowed_output_formats` as sent, such as `["m3u8", "ts", "rtmp"]`. Nil when
+        /// the panel sends none or neither a list nor text; text is split at commas.
+        public var allowedOutputFormats: [String]?
         enum CodingKeys: String, CodingKey {
             case username, status, auth
             case expDate = "exp_date"
             case maxConnections = "max_connections"
+            case allowedOutputFormats = "allowed_output_formats"
         }
         public init(from decoder: any Decoder) throws {
             let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -329,6 +338,11 @@ public struct XtreamAccountInfo: Decodable, Sendable {
             expDate = try c.decodeIfPresent(FlexibleString.self, forKey: .expDate)?.value
             maxConnections = try c.decodeIfPresent(FlexibleString.self, forKey: .maxConnections)?.value
             auth = c.looseInt(.auth)
+            if let list = try? c.decodeIfPresent([FlexibleString].self, forKey: .allowedOutputFormats) {
+                allowedOutputFormats = list.map(\.value)
+            } else if let text = try? c.decodeIfPresent(String.self, forKey: .allowedOutputFormats) {
+                allowedOutputFormats = text.split(separator: ",").map(String.init)
+            }
         }
     }
     /// `server_info`, nil when the panel sends none or it is not an object.
