@@ -16,12 +16,13 @@ storefronts. Apple checks them before the app can go on sale there.
   antuna.app/support, which gives antuna@code-crave.se. That is separate
   from the trader contact, which Apple shows next to it.
 
-## Still open: the owner supplies these
+## Entered by the owner in App Store Connect
 
-The owner enters them in App Store Connect when declaring the trader status.
-They are not written here.
+The owner enters these when declaring the trader status. Apple shows them
+on the EU product pages; they are not repeated here.
 
-- **Address:** the postal address Code Crave is registered at.
-- **Phone number:** a number Apple can verify and buyers can call.
-- **Email:** any domain but antuna.app. antuna@code-crave.se, the support
-  mailbox, would work and keeps one inbox for buyers.
+- **Email:** antuna@code-crave.se, the support mailbox, so buyers reach
+  one inbox. Picked 2026-11-27.
+- **Address:** Code Crave's registered postal address, given 2026-11-27.
+- **Phone number:** still to give. Apple verifies it before the app can go
+  on sale in the EU, so it is needed before the first EU release.
