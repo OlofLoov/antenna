@@ -38,6 +38,12 @@ The system SHALL list as places to play only Apple TVs that run Antuna on the sa
 - **WHEN** the user looks at a title page, a channel, a programme's details or an episode
 - **THEN** there is no Play on button or menu item anywhere
 
+#### Scenario: A TV opens Antuna for the first time while the phone is open
+- **GIVEN** Antuna open on an iPhone, with no Apple TV on the account yet
+- **WHEN** an Apple TV on the account opens Antuna for the first time
+- **THEN** within about 30 seconds, without leaving the app, the iPhone shows Play on with that TV
+- **AND** opening a title page or a programme's details reads the list again, so the TV can show up sooner
+
 ### Requirement: Play on from what can be played
 The system SHALL offer "Play on <TV>" on iPhone, iPad and Mac on a movie's title page, a series' title page, an episode, a channel in Live, the Guide or Search, and a programme's details in the Guide, and SHALL open a list of the TVs when there is more than one.
 
@@ -133,6 +139,11 @@ The system SHALL keep a request for a TV that is not reachable on the network in
 - **GIVEN** the iPhone is not signed in to iCloud
 - **WHEN** the user looks for Play on
 - **THEN** it is not offered, as with no Apple TV on the account
+
+#### Scenario: iCloud Drive is off
+- **GIVEN** an iPhone signed in to iCloud with iCloud Drive turned off, and an Apple TV signed in to the same account
+- **WHEN** Antuna opens on both
+- **THEN** the TV is listed on the iPhone and Play on is offered, as with iCloud Drive on
 
 ### Requirement: The TV offers a waiting request
 The system SHALL show on the Apple TV, when Antuna opens there, comes to the front, or a request arrives while it is open, an offer naming the sending device and the item, "From Anna's iPhone: Salt Road", with Play and Not now, and SHALL play the item on Play and delete the request on either choice.
