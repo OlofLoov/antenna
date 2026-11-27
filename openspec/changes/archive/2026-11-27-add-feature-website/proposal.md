@@ -1,5 +1,7 @@
 # Proposal
 
+Tidied on 2026-11-27 with the site live at antuna.app. Languages (the Swedish and Arabic part below, and the requirement "Languages are added when their listing is ready") moved to `website-languages`. The marketing address and the listing check (the `store-listing` delta), the App Store badge and the boards not yet drawn moved to `website-follow-ups`. The text below is the proposal as first written.
+
 ## Why
 
 The owner, on 2026-11-22: a website that shows every feature of the app, hosted on the new domain from `add-aws-hosting`. Later the same day he took every recommendation in design.md and asked for the site to be a single-page app.
