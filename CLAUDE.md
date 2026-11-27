@@ -156,8 +156,9 @@ associated domains, and the app runs without sync.
 
 ## Hard constraints
 
-- CloudKit-backed SwiftData: every stored property optional or defaulted, no
-  `@Attribute(.unique)`, relationships optional. Duplicates are resolved in code.
+- CloudKit-backed SwiftData: every stored property optional or defaulted and
+  `@Attribute(.allowsCloudEncryption)`, no `@Attribute(.unique)`, relationships
+  optional. Duplicates are resolved in code.
 - Secrets never go in SwiftData or logs. Keychain only, synchronizable. One
   exception: an HPKE-sealed login drop for an Apple TV may sit in the private
   CloudKit database, in encrypted values, for at most 10 minutes, and is

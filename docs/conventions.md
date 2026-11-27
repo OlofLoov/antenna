@@ -28,6 +28,10 @@
 
 - All stored properties optional or with a default. No `@Attribute(.unique)`.
   Relationships optional. Enums stored as raw values with a computed accessor.
+- Every stored property of a synced model is `@Attribute(.allowsCloudEncryption)`,
+  so CloudKit keeps it in an encrypted field. CloudKit cannot encrypt a field
+  that already exists, so the mark goes on with the property.
+  `scripts/check-rules.sh` fails without it.
 - Schema changes are decided in the change's `design.md`, with a migration note.
 
 ## Tests
