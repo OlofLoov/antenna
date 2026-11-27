@@ -4,8 +4,9 @@ import Testing
 @testable import Antenna
 
 /// Where a row's posters sit while one of them is the Apple TV card: each
-/// keeps its slot, the posters after the card are moved aside, and a move
-/// changes only the places it has to
+/// keeps its slot, the posters after the card are moved aside, the row
+/// draws the card over the focused slot, and a move changes only the
+/// places it has to
 /// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv,
 /// movies-and-series-browsing/browsing-stays-responsive).
 @MainActor @Suite struct ShelfCardRoomTests {
@@ -35,22 +36,22 @@ import Testing
         let (room, places, tail) = (row.room, row.places, row.tail)
         room.expand(titles[2].id, true)
         #expect(places.map(\.aside) == [false, false, false, true, true, true])
-        #expect(places.map(\.front) == [false, false, true, false, false, false])
+        #expect(room.spot.card == ShelfCardSpot.Card(title: titles[2], index: 2))
         #expect(tail.aside)
     }
 
-    @Test func aStepAlongTheRowChangesTwoPlaces() {
+    @Test func aStepAlongTheRowMovesOnePosterAndTheCard() {
         let row = makeRow()
         let (room, places) = (row.room, row.places)
         room.expand(titles[2].id, true)
-        let before = places.map { ($0.aside, $0.front) }
+        let before = places.map(\.aside)
         // The poster gaining the highlight tells the room first, then the one losing it.
         room.expand(titles[3].id, true)
         room.expand(titles[2].id, false)
-        let changed = zip(before, places).filter { $0.0 != ($0.1.aside, $0.1.front) }
-        #expect(changed.count == 2)
-        #expect(places[3].front && !places[3].aside)
-        #expect(!places[2].front && !places[2].aside)
+        let changed = zip(before, places).filter { $0.0 != $0.1.aside }
+        #expect(changed.count == 1)
+        #expect(!places[3].aside && !places[2].aside)
+        #expect(room.spot.card == ShelfCardSpot.Card(title: titles[3], index: 3))
     }
 
     @Test func leavingTheRowPutsEveryPosterBack() {
@@ -58,7 +59,8 @@ import Testing
         let (room, places, tail) = (row.room, row.places, row.tail)
         room.expand(titles[1].id, true)
         room.expand(titles[1].id, false)
-        #expect(places.allSatisfy { !$0.aside && !$0.front })
+        #expect(places.allSatisfy { !$0.aside })
+        #expect(room.spot.card == nil)
         #expect(!tail.aside)
     }
 
@@ -76,6 +78,6 @@ import Testing
         room.expand(titles[2].id, true)
         room.order = Array(titles.reversed())
         #expect(places.map(\.aside) == [true, true, false, false, false, false])
-        #expect(places[2].front)
+        #expect(room.spot.card == ShelfCardSpot.Card(title: titles[2], index: 3))
     }
 }

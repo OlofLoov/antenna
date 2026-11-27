@@ -141,6 +141,9 @@ enum ShelfView {
                     LazyHStack(alignment: .top, spacing: metrics.gap) {
                         cards
                     }
+                    .overlay(alignment: .topLeading) {
+                        if let room { ShelfExpandedCard.InRow(spot: room.spot) }
+                    }
                     .padding(.horizontal, metrics.gutter)
                     // Room for the last poster's card, and for the posters moved aside by a card.
                     .padding(.trailing, room == nil ? 0 : ShelfExpandedCard.width - metrics.poster.width)

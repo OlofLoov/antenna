@@ -4,10 +4,17 @@ import SwiftUI
 /// Where an expanded card reads a title's details. Set by the Apple TV
 /// Movies and Series screen around its rows; where it is missing, as in
 /// the genre grids, Search and on iPhone, iPad and Mac, no poster grows.
-struct ExpandedCardSource {
+struct ExpandedCardSource: Equatable {
+    /// Who answers, so a source made again in a redraw reads as the same
+    /// and no poster redraws for it.
+    let owner: ObjectIdentifier
     /// The title's details once the provider has answered, else nil. A card
     /// that reads it redraws only for its own title's answer.
     var details: @MainActor (ShelfTitle) -> ShelfDetails?
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.owner == rhs.owner
+    }
 }
 
 extension EnvironmentValues {
@@ -17,12 +24,13 @@ extension EnvironmentValues {
 }
 
 /// Makes room in a row for its card. Every poster keeps its slot in the
-/// row's lazy stack; the card is drawn over the focused poster's slot and
-/// the posters after it are offset by the card's extra width, so a move
-/// along the row never lays the row out again
+/// row's lazy stack; the row draws the card over the focused poster's slot,
+/// above the stack, and the posters after it are offset by the card's extra
+/// width, so a move along the row never lays the row out again and never
+/// changes the stack's children
 /// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
-/// Each poster reads only its own place, so a move redraws the posters
-/// whose place changes: one for a step along the row.
+/// Each poster reads only its own place, so a step along the row redraws
+/// the one poster whose place changes, and the card.
 @MainActor
 final class ShelfCardRoom {
     /// The row's posters in order, set by the row as its titles change.
@@ -35,8 +43,11 @@ final class ShelfCardRoom {
             }
             if let card = expanded { expanded = places[card.id].map { (card.id, $0.index) } }
             for place in places.values { settle(place) }
+            show()
         }
     }
+    /// The card the row draws, observed alone.
+    let spot = ShelfCardSpot()
     private var places: [String: ShelfCardPlace] = [:]
     /// The poster that is a card, and its position.
     private var expanded: (id: String, index: Int)?
@@ -66,25 +77,44 @@ final class ShelfCardRoom {
             return
         }
         for place in places.values { settle(place) }
+        show()
     }
 
     private func settle(_ place: ShelfCardPlace) {
         let aside = expanded.map { place.index > $0.index } ?? false
-        let front = expanded?.index == place.index
         if place.aside != aside { place.aside = aside }
-        if place.front != front { place.front = front }
+    }
+
+    /// Hands the card's title and slot to the row.
+    private func show() {
+        let card = expanded.flatMap { expanded in
+            order.indices.contains(expanded.index) && order[expanded.index].id == expanded.id
+                ? ShelfCardSpot.Card(title: order[expanded.index], index: expanded.index) : nil
+        }
+        if spot.card != card { spot.card = card }
     }
 
     /// The key of the tile after the posters, which no title id matches.
     private static let tail = "tail"
 }
 
-/// One poster's place in a row with a card: moved aside after the card,
-/// or in front while it is the card.
+/// The card a row draws: its title and the slot it covers.
+@MainActor @Observable
+final class ShelfCardSpot {
+    struct Card: Equatable {
+        var title: ShelfTitle
+        var index: Int
+    }
+
+    var card: Card?
+
+    nonisolated init() {}
+}
+
+/// One poster's place in a row with a card: moved aside after the card.
 @MainActor @Observable
 final class ShelfCardPlace {
     var aside = false
-    var front = false
     @ObservationIgnored var index = 0
 
     nonisolated init() {}
@@ -92,9 +122,8 @@ final class ShelfCardPlace {
 
 extension View {
     /// A poster or tile in a row that makes room for a card: offset by the
-    /// card's extra width while it is after the card. While `title`'s
-    /// poster has the highlight it draws the card over its slot, above the
-    /// other posters. Without a room, as off Apple TV, it stays a poster.
+    /// card's extra width while it is after the card. Without a room, as
+    /// off Apple TV, it stays a poster.
     func makesRoomForTheCard(_ title: ShelfTitle?) -> some View {
         modifier(CardRoomPlace(title: title))
     }
@@ -103,25 +132,37 @@ extension View {
 private struct CardRoomPlace: ViewModifier {
     let title: ShelfTitle?
     @Environment(\.shelfCardRoom) private var room
-    @Environment(\.shelfExpandedCard) private var source
     @Environment(\.shelfMetrics) private var metrics
     @State private var place = ShelfCardPlace()
 
     func body(content: Content) -> some View {
         if let room {
             content
-                .overlay(alignment: .topLeading) {
-                    if place.front, let title, let source {
-                        ShelfExpandedCard.Lifted(title: title, source: source)
-                            .transition(.opacity)
-                    }
-                }
                 .offset(x: place.aside ? ShelfExpandedCard.width - metrics.poster.width : 0)
-                .zIndex(place.front ? 1 : 0)
                 .onAppear { room.arrive(place, id: title?.id) }
                 .onDisappear { room.leave(place, id: title?.id) }
         } else {
             content
+        }
+    }
+}
+
+extension ShelfExpandedCard {
+    /// The row's card over the focused poster's slot, drawn over the row's
+    /// stack rather than in it, so the stack's children stay as they are
+    /// while the card moves. Each title's card fades in and out on its own.
+    struct InRow: View {
+        let spot: ShelfCardSpot
+        @Environment(\.shelfExpandedCard) private var source
+        @Environment(\.shelfMetrics) private var metrics
+
+        var body: some View {
+            if let card = spot.card, let source {
+                Lifted(title: card.title, source: source)
+                    .offset(x: CGFloat(card.index) * (metrics.poster.width + metrics.gap))
+                    .id(card.title.id)
+                    .transition(.opacity)
+            }
         }
     }
 }
@@ -152,7 +193,7 @@ enum ShelfExpandedCard {
 
     /// A poster's face. While its button has focus, where the screen
     /// provides a source and a row's `ShelfCardRoom`, the row draws the
-    /// card over its slot (`makesRoomForTheCard`). The
+    /// card over its slot (`InRow`). The
     /// slot keeps the poster's size, so the row's lazy stack does not lay
     /// out again as the card grows, and the posters after it move aside by
     /// an offset. The card sits outside the button because the system card

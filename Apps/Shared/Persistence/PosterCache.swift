@@ -129,7 +129,16 @@ actor PosterCache {
 
     /// The hex SHA-256 of the address, the entry's name in memory and on disk.
     static func key(_ url: URL) -> String {
-        SHA256.hash(data: Data(url.absoluteString.utf8)).map { String(format: "%02x", $0) }.joined()
+        // Every card on screen looks itself up on the main actor, so no
+        // `String(format:)` per byte.
+        let digits = Array("0123456789abcdef".utf8)
+        var hex: [UInt8] = []
+        hex.reserveCapacity(64)
+        for byte in SHA256.hash(data: Data(url.absoluteString.utf8)) {
+            hex.append(digits[Int(byte >> 4)])
+            hex.append(digits[Int(byte & 0x0f)])
+        }
+        return String(decoding: hex, as: UTF8.self)
     }
 
     /// The poster from memory, else disk, else the network, decoded to
