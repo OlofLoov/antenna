@@ -36,6 +36,10 @@ public actor FixtureServer {
         /// The file at about this many bytes a second, as a live channel
         /// sends it, then nothing more while the connection stays open.
         case paced(bytesPerSecond: Int)
+        /// `length` bytes made as they are sent, `generatedByte(at:)` each,
+        /// honoring a byte range, as fast as the client takes them: a film
+        /// gigabytes long that is never held in memory.
+        case generated(length: Int)
     }
 
     /// One request as the server received it.
@@ -234,6 +238,10 @@ public actor FixtureServer {
         case .redirect(let path):
             let header = head(status: 302, type: "text/plain", length: 0, extra: ["Location: \(normalized(path))"])
             try await Self.send(connection, head: header, body: Data())
+            connection.cancel()
+            return
+        case .generated(let length):
+            try await sendGenerated(length: length, for: request, on: connection)
             connection.cancel()
             return
         case .serve, .ignoreRanges, .quietRanges, .stall, .cut, .paced:

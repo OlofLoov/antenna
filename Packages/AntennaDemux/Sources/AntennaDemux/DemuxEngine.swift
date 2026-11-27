@@ -74,6 +74,11 @@ public final class DemuxEngine: PlaybackEngine {
     /// The last start of the address loaded, kept while a skip reopens it,
     /// so a second skip in a row knows the film can skip and where it counts from.
     var lastStart: DemuxStart?
+    /// The film playing, read ahead to disk, kept over skips and reconnects
+    /// so a skip within what it holds needs no network.
+    var film: FilmReadAhead?
+    /// How far ahead a film reads, how much disk it may take and where; tests set their own.
+    var filmLimits = FilmReadAhead.Limits()
     /// The buffer of the live channel playing, when its load asked for one.
     var timeshift: TimeshiftSession?
     /// The live buffer set aside while a catch-up programme plays.
@@ -214,6 +219,9 @@ public final class DemuxEngine: PlaybackEngine {
     func open(_ url: URL, options: PlaybackOptions, origin: CMTime? = nil, generation mine: Int) async throws {
         let session = self.session
         let sleep = self.sleep
+        if let reader = filmReader(for: url, options: options) {
+            return try await startRun(reader, url: url, options: options, origin: origin, generation: mine)
+        }
         let tune = RetryPolicy.tune(host: url.host(), lastClosed: lastClosed).refusals(final: refusalsAreFinal)
         let ahead = standby.removeValue(forKey: url)
         let connect = Task {
@@ -319,6 +327,7 @@ public final class DemuxEngine: PlaybackEngine {
         release()
         timeshift?.recorder?.cancel()
         timeshift?.recorder = nil
+        discardFilm()
         presentationCast.send(nil)
         tracksCast.send(.empty)
         positionCast.send(.zero)

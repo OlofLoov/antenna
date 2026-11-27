@@ -36,7 +36,7 @@ extension DemuxEngine {
     /// the buffer when the load asked for timeshift and the stream can be
     /// recorded, the connection itself otherwise.
     func timeshiftSource(_ bytes: HTTPByteStream, url: URL, options: PlaybackOptions, generation mine: Int) async throws -> any DemuxBytes {
-        guard let request = options.timeshift else { return SeekableSource(bytes, url: url, session: session) }
+        guard let request = options.timeshift else { return filmSource(bytes, url: url, options: options) }
         let session = timeshift ?? makeTimeshiftSession(url: url, request: request)
         timeshift = session
         guard let buffer = session.recordingBuffer else {

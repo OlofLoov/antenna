@@ -135,6 +135,8 @@ import Testing
     @Test("playback-engine/films-start-where-you-left-off-skip-and-end a second skip while the first reopens the film still skips")
     func skipWhileSkipping() async throws {
         let harness = try await FilmHarness()
+        // Played from its connection: with the film read ahead a skip asks the server for nothing.
+        harness.engine.filmLimits.keepFree = .max / 2
         let position = Recorded(await harness.engine.position())
         try await harness.engine.load(harness.url("channel.mkv"), options: PlaybackOptions(isLive: false))
         await harness.engine.play()

@@ -44,6 +44,40 @@ extension DemuxEngine {
     }
 }
 
+extension DemuxEngine {
+    /// The bytes a film's first run reads: a read-ahead to disk when the
+    /// server skips and gave the length and the device has room
+    /// (playback-engine/films-read-ahead-to-disk), the connection otherwise.
+    /// Live TV, and a load that does not say it is a film, read the connection.
+    func filmSource(_ bytes: HTTPByteStream, url: URL, options: PlaybackOptions) -> any DemuxBytes {
+        guard options.isLive == false,
+            let film = FilmReadAhead.make(bytes, url: url, session: session, limits: filmLimits)
+        else {
+            return SeekableSource(bytes, url: url, session: session)
+        }
+        self.film = film
+        return film.reader()
+    }
+
+    /// A reader over the film read ahead for `url`, for a skip or a
+    /// reconnect. Nil when there is none, and after its download failed for
+    /// good, which deletes it so the film starts over from a new connection.
+    func filmReader(for url: URL, options: PlaybackOptions) -> FilmReader? {
+        guard options.isLive == false, options.timeshift == nil, let film, film.url == url else { return nil }
+        guard film.isUsable else {
+            discardFilm()
+            return nil
+        }
+        return film.reader()
+    }
+
+    /// Stops the film's download and deletes what it read ahead.
+    func discardFilm() {
+        film?.discard()
+        film = nil
+    }
+}
+
 extension Duration {
     /// The duration in seconds, as a Double.
     var inSeconds: Double {
