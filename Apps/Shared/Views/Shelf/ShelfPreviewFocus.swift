@@ -65,6 +65,9 @@ extension EnvironmentValues {
 @MainActor @Observable
 final class ShelfColumnState {
     var column: Int?
+    /// How long the highlight rests on a poster before a move along its
+    /// row becomes the column.
+    static let rest = Duration.milliseconds(250)
 }
 
 extension EnvironmentValues {
@@ -79,11 +82,11 @@ extension EnvironmentValues {
     /// enters it, is the poster at the highlight's column, or the row's
     /// last when it is shorter. The focus engine alone picks the poster
     /// under the middle of the expanded card, one to the right
-    /// (`ShelfColumn`). Only this modifier's body reads the column, so a
-    /// move along a row redraws no poster.
+    /// (`ShelfColumn`). This body runs as the row's titles change; only
+    /// `ShelfRowDefault` reads the column, so a move along a row redraws
+    /// no poster and does not list the row's titles again.
     private struct ShelfRowColumn: ViewModifier {
         let identifier: String
-        @Environment(\.shelfColumn) private var column
         @Environment(ShelfLibrary.self) private var library
         @Environment(ShelfActivity.self) private var activity
         @Environment(\.shelfPrefix) private var prefix
@@ -96,7 +99,7 @@ extension EnvironmentValues {
             return
                 content
                 .focusSection()
-                .defaultFocus($focus, target(in: titles), priority: .userInitiated)
+                .modifier(ShelfRowDefault(focus: $focus, titles: titles))
                 .environment(\.shelfRowFocus, $focus)
                 .environment(\.shelfCardRoom, room)
         }
@@ -111,9 +114,21 @@ extension EnvironmentValues {
             default: return model.rows.first(where: { $0.identifier == identifier })?.titles ?? []
             }
         }
+    }
+
+    /// The row's default focus for a move into it: the poster at the
+    /// highlight's column. It redraws for each new column, alone.
+    private struct ShelfRowDefault: ViewModifier {
+        let focus: FocusState<String?>.Binding
+        let titles: [ShelfTitle]
+        @Environment(\.shelfColumn) private var column
+
+        func body(content: Content) -> some View {
+            content.defaultFocus(focus, target, priority: .userInitiated)
+        }
 
         /// The id of the poster at the column in this row.
-        private func target(in titles: [ShelfTitle]) -> String? {
+        private var target: String? {
             guard let column = column?.column else { return nil }
             return ShelfColumn.landing(column: column, count: titles.count).map { titles[$0].id }
         }

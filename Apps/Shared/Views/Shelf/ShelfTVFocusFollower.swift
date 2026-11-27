@@ -145,12 +145,26 @@
                 return
             }
             follow.spot = ShelfPreviewFollow.Spot(row: row, index: index)
-            if column.column != index { column.column = index }
+            // Every row reads the column for its default focus, so a write
+            // costs each row on screen a redraw and the focus engine a new
+            // default. Along a row it waits for the highlight to rest; a
+            // move up or down sooner is corrected as above.
+            follow.columnWrite?.cancel()
+            if moved == nil {
+                follow.columnWrite = Task { [column] in
+                    try? await Task.sleep(for: ShelfColumnState.rest)
+                    guard !Task.isCancelled, column.column != index else { return }
+                    column.column = index
+                }
+            } else if column.column != index {
+                column.column = index
+            }
         }
 
         /// Asks the poster at `index` of `row` to take the highlight.
         private func request(row: String, index: Int, in titles: [ShelfTitle]) {
             follow.spot = ShelfPreviewFollow.Spot(row: row, index: index)
+            follow.columnWrite?.cancel()
             if column.column != index { column.column = index }
             follow.requests += 1
             let key = "\(row)|\(titles[index].id)"
@@ -252,5 +266,7 @@
         var requests = 0
         /// The request not yet taken, cleared by the next focus change.
         var pending: String?
+        /// The column write waiting for the highlight to rest.
+        var columnWrite: Task<Void, Never>?
     }
 #endif
