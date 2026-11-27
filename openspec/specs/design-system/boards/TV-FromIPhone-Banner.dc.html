@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV From iPhone banner</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/starts-at-once-on-the-same-network: a request that arrived over the home network plays at once, and this banner shows at the top trailing corner inside the safe area for four seconds, in the panel of TV-Reminder-Banner. It takes no focus and has no buttons. The eyebrow names the sending device; the line is the item, or why the TV could not play it ("Living Room isn't signed in to Acme TV.", with the sign-in for that source opening under it). Drawn over full-screen live. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(180deg, #2A3546 0%, #141A24 55%, #0B0E13 100%); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- playOn.banner -->
+  <div role="status" style="position: absolute; right: 80px; top: 60px; width: 640px; box-sizing: border-box; padding: 24px 28px; border-radius: 16px; background: rgba(8,10,14,0.88); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 18px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">&#9647; From Anna's iPhone</div>
+    <div style="font-size: 29px; font-weight: 600">Sport One</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

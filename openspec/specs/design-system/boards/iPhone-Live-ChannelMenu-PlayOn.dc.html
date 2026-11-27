@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone channel menu with Play on</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/play-on-from-what-can-be-played: touch and hold on a channel row in Live, the Guide or Search (right-click on a Mac). The system context menu keeps the items it has today and ends with "Play on Living Room" (channel.menu.playOn). With two or more TVs that item is a "Play on" submenu whose rows are as in iPhone-Title-PlayOn (channel.menu.playOn.device). Search's channel rows have no other item, so their menu holds Play on alone, and no menu shows with no Apple TV on the account. The episode rows of a series page (episode.menu.playOn, after Description) follow the same pattern. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: rgba(11,14,19,1); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- The list behind, blurred by the system while the menu shows -->
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+  <!-- The lifted row, as iPhone-Live -->
+  <div style="position: absolute; left: 16px; top: 300px; width: 358px; height: 64px; border-radius: 14px; background: #1A2029; display: flex; align-items: center; gap: 12px; padding: 0 12px; box-sizing: border-box">
+    <span style="font-size: 13px; color: #A7B0BF; width: 28px; text-align: right">104</span>
+    <div style="width: 40px; height: 40px; border-radius: 8px; background: #2F3A4A; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700">SO</div>
+    <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Sport One</span><span style="font-size: 13px; color: #A7B0BF">Premier League: Arsenal v Liverpool</span></div>
+  </div>
+  <!-- The system context menu -->
+  <div role="menu" style="position: absolute; left: 16px; top: 376px; width: 250px; border-radius: 14px; background: rgba(40,44,52,0.96); overflow: hidden">
+    <!-- browse.menu.favorite -->
+    <div role="menuitem" style="padding: 12px 16px; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08)">Add to Favorites</div>
+    <div role="menuitem" style="padding: 12px 16px; font-size: 17px; border-bottom: 1px solid rgba(255,255,255,0.08); color: #A7B0BF">Add to Multi-view</div>
+    <!-- channel.menu.playOn -->
+    <div role="menuitem" style="padding: 12px 16px; font-size: 17px; display: flex; justify-content: space-between"><span>Play on Living Room</span><span aria-hidden="true">&#9645;</span></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

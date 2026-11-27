@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone guide details with Watch on</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/play-on-from-what-can-be-played: a programme's details sheet in the Guide (as the guide-on-iphone-ipad-and-mac sheet) for a programme on now. "Watch on Living Room" (guide.detail.watchOn) sits under Watch as a secondary button with the same height; with two or more TVs it reads "Play on" and opens the menu of iPhone-Title-PlayOn (guide.detail.watchOn.menu). An ended programme on a channel with catch-up shows it too, and plays the recording on the TV; a programme that has not started shows only Remind me. iPad and Mac add it to the popover in the same place. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.4)"></div>
+  <!-- The sheet at the medium detent -->
+  <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 430px; border-radius: 22px 22px 0 0; background: #161B24; padding: 24px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+    <div style="font-size: 12px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: {{accent}}">Now · Sport One</div>
+    <div style="font-size: 22px; font-weight: 700">Premier League: Arsenal v Liverpool</div>
+    <div style="font-size: 14px; color: #A7B0BF">20:00 – 22:00 · 2 h · Football</div>
+    <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.15)"><div style="width: 78%; height: 4px; border-radius: 2px; background: {{accent}}"></div></div>
+    <!-- guide.watch -->
+    <div style="margin-top: 6px; height: 50px; border-radius: 25px; background: {{accent}}; color: #0B0E13; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center">Watch</div>
+    <!-- guide.detail.watchOn -->
+    <div style="height: 50px; border-radius: 25px; background: rgba(255,255,255,0.14); font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px"><span aria-hidden="true">&#9645;</span>Watch on Living Room</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
