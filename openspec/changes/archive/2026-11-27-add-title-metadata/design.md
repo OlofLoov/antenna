@@ -1,5 +1,7 @@
 # Design
 
+Narrowed on 2026-11-27, after the owner decided on 2026-11-19 against the lookup service in decision 1. Built and archived with this change: decisions 2 (the score format), 4, 5, 6 and 8, and `TitleName.clean(_:)` from decision 3. Decisions 1, 3 (the matching order and `TitleMatch.pick`), 7, 9 and 10, the research and the open questions moved to `title-lookups-later`, which is parked. The rest of this file is as it stood on 2026-11-20.
+
 ## Context
 
 See proposal.md for why. What exists on 2026-11-13:
