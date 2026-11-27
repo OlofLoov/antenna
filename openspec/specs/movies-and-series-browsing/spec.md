@@ -439,6 +439,16 @@ On Apple TV only, the poster with the highlight in a row of Movies or Series SHA
 - **WHEN** the viewer moves the pointer over posters on iPad or Mac
 - **THEN** no card grows and the banner does not change
 
+#### Scenario: The card keeps the row's spacing
+- **GIVEN** the highlight is on a poster in the middle of a row
+- **WHEN** the poster has grown into its card
+- **THEN** the gap between the card and the poster before it, and between the card and the poster after it, is the gap between any two posters in the row
+
+#### Scenario: The highlight is the card
+- **WHEN** a poster grows into its card, or the card goes as the highlight leaves
+- **THEN** the lift and shadow of the highlight are the card's own and wrap the card as it is drawn
+- **AND** no lift, edge or shadow at the poster's size shows around or under the card
+
 ### Requirement: Title details are asked once per title
 The system SHALL ask the provider for a title's details at most once per launch for the banner, the Apple TV expanded card and a Continue watching card together, one request at a time for the cards, and SHALL use that answer when the title's page opens. Retry on a page SHALL ask again.
 
