@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPhone title page, Play on menu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv: the title page of a film with two Apple TVs on the iCloud account, the Play on menu open. Not connected, so Play still plays on the iPhone. Type, controls and spacing as iPhone-Title. -->
+<helmet>
+<style>
+body{margin:0}
+a{color:#5BB8FF}a:hover{color:#8ECDFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8; box-sizing: border-box; display: flex; flex-direction: column">
+  <!-- title.backdrop with the poster, as iPhone-Title-About -->
+  <div style="position: relative; width: 390px; height: 300px; background: linear-gradient(180deg, #3B4A5E 0%, #1B2330 70%, #0B0E13 100%); flex: 0 0 auto; overflow: hidden">
+    <div style="position: absolute; left: 16px; top: 54px">
+      <button type="button" aria-label="Back to Movies" style="font: inherit; width: 44px; height: 44px; border-radius: 22px; border: 0; background: rgba(255,255,255,0.16); backdrop-filter: blur(20px); color: #F2F4F8; display: flex; align-items: center; justify-content: center; cursor: pointer">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+    </div>
+    <div style="position: absolute; left: 125px; top: 60px; width: 140px; height: 210px; border-radius: 10px; background: #4A3A2F; box-shadow: 0 12px 32px rgba(0,0,0,0.45)"></div>
+  </div>
+
+  <div style="padding: 18px 16px 0; display: flex; flex-direction: column; gap: 10px">
+    <div style="font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">Movie · Action</div>
+    <div style="font-size: 28px; font-weight: 800; line-height: 1.05; letter-spacing: -0.5px; font-family: ui-rounded, -apple-system, system-ui, 'Helvetica Neue', sans-serif">Salt Road</div>
+    <div style="display: flex; gap: 8px; align-items: center; font-size: 13px; color: #D7DEE8"><span>2024</span><span>·</span><span>1 h 32 min</span></div>
+    <div style="font-size: 15px; line-height: 1.45; color: #D7DEE8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">A courier crosses the salt flats with a parcel nobody will name, two days ahead of the people who want it back.</div>
+    <!-- title.play plays here: the iPhone is not connected -->
+    <div style="display: flex; gap: 8px; padding-top: 6px">
+      <button type="button" style="font: inherit; font-size: 15px; font-weight: 700; height: 44px; flex: 1 1 auto; border-radius: 10px; border: 0; background: #F2F4F8; color: #0B0E13; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>
+        <span>Play</span>
+      </button>
+    </div>
+    <!-- title.myList and title.playOn under Play. With one Apple TV the button reads "Play on Living Room" and sends at once; with two or more it reads "Play on" and opens the menu below. With no Apple TV on the account it is absent (play-on-apple-tv/apple-tvs-on-the-same-icloud-account). -->
+    <div style="display: flex; gap: 8px">
+      <button type="button" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.14); color: #F2F4F8; white-space: nowrap; cursor: pointer">Add to My list</button>
+      <button type="button" aria-haspopup="menu" aria-expanded="true" style="font: inherit; font-size: 15px; font-weight: 600; height: 44px; padding: 0 16px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.22); color: #F2F4F8; white-space: nowrap; display: flex; align-items: center; gap: 8px; cursor: pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg><span>Play on</span></button>
+    </div>
+  </div>
+
+  <div style="flex: 1 1 auto"></div>
+
+  <!-- Tab bar (live-tv-on-iphone-ipad-mac/the-iphone-tab-bar): Live, Guide, Movies and Series in the system bar, the open tab in the accent, and Search as the system's round search button at the trailing end. No Settings tab: Settings opens from the profile button (profile.button). -->
+  <div style="height: 84px; flex: 0 0 auto; box-sizing: border-box; padding: 8px 8px 24px; border-top: 1px solid rgba(255,255,255,0.08); background: #11151C; display: flex; justify-content: space-around; align-items: flex-start">
+    <div style="display: flex; gap: 10px; align-items: center; width: 100%">
+    <div role="tablist" style="flex: 1 1 auto; height: 52px; border-radius: 26px; background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center">
+      <div role="tab" aria-selected="false" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #A7B0BF; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg>
+        <span>Live</span>
+      </div>
+      <div role="tab" aria-selected="false" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #A7B0BF; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M9 10v9"/></svg>
+        <span>Guide</span>
+      </div>
+      <div role="tab" aria-selected="true" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; color: {{accent}}; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v5M16 4v5"/><path d="M10.5 12.5v4l3.5-2z" fill="currentColor"/></svg>
+        <span>Movies</span>
+      </div>
+      <div role="tab" aria-selected="false" style="display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: #A7B0BF; width: 64px">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="15" height="12" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v9"/><path d="M9 10.5v5l4-2.5z" fill="currentColor"/></svg>
+        <span>Series</span>
+      </div>
+    </div>
+    <div role="button" aria-label="Search" aria-pressed="false" style="width: 52px; height: 52px; border-radius: 26px; background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); color: #F2F4F8; display: flex; align-items: center; justify-content: center; flex: 0 0 auto">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </div>
+  </div>
+  </div>
+
+  <!-- title.playOn.menu: the system Menu (design-system/controls-use-system-styles), one row per Apple TV with its name and a second line saying whether it starts now or waits for Antuna to open there. Reachable TVs first, then by name. With local network access refused, every row reads "Plays when Antuna opens there" and a last row "Allow local network access" opens Settings (play-on-apple-tv/the-local-network-is-asked-for-only-when-needed). -->
+  <div role="menu" style="position: absolute; left: 140px; top: 560px; width: 234px; border-radius: 14px; background: rgba(40,44,52,0.96); backdrop-filter: blur(30px); box-shadow: 0 12px 32px rgba(0,0,0,0.45); overflow: hidden">
+    <!-- title.playOn.menu.device -->
+    <div role="menuitem" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px">Living Room</span><span style="font-size: 13px; color: #A7B0BF">Ready now</span></div>
+      <span style="color: #F2F4F8; display: inline-flex"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg></span>
+    </div>
+    <div role="menuitem" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px">
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px">Bedroom</span><span style="font-size: 13px; color: #A7B0BF">Plays when Antuna opens there</span></div>
+      <span style="color: #A7B0BF; display: inline-flex"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg></span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>
