@@ -232,6 +232,7 @@ struct ShelfRowsContent: View {
             #if os(tvOS)
                 ShelfView.SeeAllTile { seeAll(.recentlyAdded) }
                     .accessibilityIdentifier(seeAllID)
+                    .makesRoomForTheCard(nil)
             #endif
         }
         .environment(\.shelfRow, row.identifier)
@@ -277,6 +278,7 @@ struct ShelfPoster: View {
             }
             ShelfView.MyListMenuItem(isOnMyList: actions.isOnMyList(title)) { actions.toggleMyList(title) }
         }
+        .makesRoomForTheCard(title)
     }
 }
 

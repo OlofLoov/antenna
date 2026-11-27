@@ -59,11 +59,12 @@ Options:
   poster, so a row never changes height and nothing above or below it
   moves; only the posters after it in the same row slide 354 pt aside.
 
-The card is drawn inside the poster's button (`ShelfExpandedCard.Expanding`
-in `ShelfView.PosterCard`), which reads `isFocused`. It grows the moment
-the button takes focus, in its own `withAnimation(.easeOut(0.25))`
-transaction, so the `LazyHStack` slides the posters after it in the same
-movement; with Reduce Motion the sizes change without animation. Only the
+The poster's face (`ShelfExpandedCard.Expanding` in `ShelfView.PosterCard`)
+reads `isFocused`. The card shows the moment the button takes focus, in
+its own `withAnimation(.easeOut(0.25))` transaction, and the posters after
+it slide aside in the same movement; with Reduce Motion they change
+without animation. Decision 7 says how the card is drawn without the row
+laying out again. Only the
 screen's rows set `shelfExpandedCard`; the genre grids, Search and the
 other platforms leave it out, so their posters never grow. Continue
 watching cards are already landscape and do not grow.
@@ -246,6 +247,54 @@ move on the simulator, measured with the debug probe (770 to 1 900 µs over
 48 moves on the walk down and up), so it costs no frames. The rows by the
 highlight now load the posters around its column instead of the one to its
 right.
+
+### 7. The card outside the row's layout
+
+The first build grew the poster's button to 566 pt inside the row's
+`LazyHStack`. Each frame of the growing animation laid the stack out
+again and walked its `ForEach`; Time Profiler put most of the extra main
+thread time there ("Frames against main"). On 2026-11-26 the owner
+approved taking the growth out of the row's layout.
+
+Options:
+- **Grow the button, as before.** About twice main's dropped frames on
+  every walk. Rejected.
+- **A card overlay with the posters after it staying put.** No layout and
+  no moves, but the card covers the next posters, and the spec has them
+  move aside. Rejected.
+- **Fixed slots, the card drawn over the focused slot, the posters after
+  it moved by an offset.** Chosen. An offset changes where a view draws,
+  not its frame, so the stack never measures again.
+
+How:
+- Every poster keeps its 212 pt slot. Each Apple TV row of posters holds
+  a `ShelfCardRoom` (set by `ShelfRowColumn`, which already knows the
+  row's titles). Each poster and the See all tile register a
+  `ShelfCardPlace` with it as they appear (`makesRoomForTheCard`). When a
+  poster takes focus, `Expanding` tells the room inside its animation;
+  the room sets `front` on that poster's place and `aside` on the places
+  after it. Each place is observed alone, so a step along the row
+  redraws only the poster that loses the highlight and the one that gains
+  it; entering a row moves every poster after the column on screen.
+- A place with `aside` is offset by 354 pt, the card's extra width. The
+  row's trailing padding has the same 354 pt for good, so the last
+  poster's card has room and the content size never changes.
+- The card is an overlay on the place, outside the poster's button. The
+  system card style clips its label to the label's frame, so a card inside
+  the button showed only the poster's width of it. The place in front has
+  `zIndex` 1, so the card draws over the posters that slide under it.
+- Outside the button the card has no system lift, so it draws its own: a
+  scale of 1.06 and a shadow. The system lifts a poster by an eighth; at
+  an eighth the card's copy started at x 72, left of the safe area
+  (`testMoviesKeepsTheSafeEdges`). The poster stays drawn under the
+  opaque card, shrunk to 0.9 so the system's lift keeps it inside the
+  card. Hiding it at no opacity took the button out of the accessibility
+  tree, and the UI tests and VoiceOver lost the highlight.
+- The highlight stays on the poster's button, so focus moves, the
+  column-keeping of decision 6, the focus requests, the return from a page
+  and VoiceOver's label and hint work as before. VoiceOver's frame is the
+  poster's slot, not the card. The card is a container with the
+  identifier `<prefix>.card.focused`, which the UI tests measure.
 
 ## Measuring
 
@@ -493,13 +542,75 @@ Tried and not kept:
 - A growing animation of 0.15 s instead of 0.25 s: no fewer dropped
   frames.
 
-What remains: the card itself, about 30 dropped frames per walk along the
-posters, which no single part of it explains, and about 15 more from two
-and a half rows on screen where main shows one. Main changes nothing
-on screen for a move along a row until the 0.8 s rest; the card changes
-on every move. Taking the card's growth out of the row's layout, so the
-lazy stack does not lay out again on each frame, is the next thing to
-try; it is a change to how the card is built and is left for the owner.
+What remained then: the card itself, about 30 dropped frames per walk
+along the posters, which no single part of it explains, and about 15 more
+from two and a half rows on screen where main shows one. Main changes
+nothing on screen for a move along a row until the 0.8 s rest; the card
+changes on every move. Decision 7 took the card's growth out of the
+row's layout; "The card outside the row's layout" has what that bought.
+
+### The card outside the row's layout, 2026-11-27
+
+The same simulator, fixture server and walks (decision 7). Main is
+`056a5fe2`, built with this branch's benchmark file, whose wait for the
+card is left out since main has none. Other agents ran builds and
+simulators on the Mac through the day, at load averages up to 250, so
+every run waited until the one-minute load average was under 7 and the
+five-minute one under 10; the runs taken under load are left out. Runs
+alternated branch and main.
+
+| Walk | Build | Dropped frames (hitch ms) over frames counted |
+|------|-------|-----------------------------------------------|
+| Along the posters | main | 34 (693) / 413, 37 (716) / 411, 31 (641) / 416; 33 (621) / 415, 31 (592) / 446, 34 (666) / 443 |
+| | branch | 80 (1358) / 397, 72 (1269) / 376, 79 (1391) / 365; 80 (1449) / 394, 82 (1514) / 363, 79 (1406) / 371 |
+| Down and up the rows | main | 47 (806) / 612, 34 (664) / 623, 36 (716) / 621; 44 (871) / 612, 32 (635) / 623, 32 (603) / 595 |
+| | branch | 80 (1483) / 573, 65 (1135) / 591, 64 (1197) / 591; 74 (1394) / 582, 65 (1244) / 589, 72 (1220) / 557 |
+
+Against 2026-11-25 the walk down and up went from 75 to 95 dropped frames
+to 64 to 80, and the walk along the posters from 78 to 94 to 72 to 82, with
+main about the same both days. The target, within about 15% of main
+plus 15 frames for the extra rows, is about 40 along the posters and 60
+down and up. Not met.
+
+What each part costs now, turned off one at a time with a launch
+argument (since removed), at the same load:
+
+| Turned off | Along the posters | Down and up the rows |
+|------------|-------------------|----------------------|
+| nothing | 72 to 82 | 64 to 80 |
+| the card's fade (it shows at once) | 74 to 79 | 64 to 69 |
+| the card | 66 to 76 | 63 to 80 |
+| the card, the offsets, the `zIndex` and the poster's shrink | 56 to 63 | 54 to 60 |
+
+A Time Profiler recording of the walk along the posters, main thread
+only, under load, found 14 700 samples on the branch, 8 600 on main, and
+10 300 with the card, the offsets and the `zIndex` turned off. Turning off
+the offsets and the `zIndex` alone did not change the count. The display
+link's per-frame updates went from 5 200 samples to 2 000 without the
+card; main has 1 200.
+
+What this shows:
+- The lazy stacks' own measuring is 22 samples of the display link's
+  5 200. The display link's total is about what it was on 2026-11-25
+  (5 060): the per-frame work moved from laying out the row to animating
+  the card and the posters it moves aside, and walking the row's
+  `ForEach` on each frame of it (470 samples against 55 on main).
+- With no card and nothing moved aside, the branch still drops about 25
+  frames more than main on each walk. That part is not the card: the
+  rows under the focused one, the loads ahead, the column keeping and
+  the debug probes are left, each of which measured within the runs'
+  spread when turned off alone on 2026-11-25.
+- The card costs about 10 frames per walk and the room it makes about 10
+  more. SwiftUI animates each on the main thread, a frame at a time.
+- Showing the card without its fade changes nothing beyond the spread.
+
+Tried and not kept:
+- The card inside the poster's button, as an overlay: the system card
+  style clips it to the poster's width.
+- The poster at no opacity under the card: the button left the
+  accessibility tree.
+- The card flattened with `drawingGroup`: the recordings failed while
+  the Mac's disk was full, and it was not measured.
 
 ## What to check on the device
 

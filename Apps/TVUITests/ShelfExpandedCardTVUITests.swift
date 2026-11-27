@@ -78,9 +78,14 @@ final class ShelfExpandedCardTVUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 1)
     }
 
-    /// The frame of the card with focus, for its size.
+    /// The frame of the poster with focus.
     var focusedFrame: CGRect {
         app.descendants(matching: .any).matching(NSPredicate(format: "hasFocus == true")).firstMatch.frame
+    }
+
+    /// The frame of the card drawn over the focused poster, for its size.
+    var cardFrame: CGRect {
+        element("movies.card.focused").frame
     }
 
     // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv
@@ -97,13 +102,15 @@ final class ShelfExpandedCardTVUITests: XCTestCase {
             Thread.sleep(forTimeInterval: 0.3)
         }
         XCTAssertTrue((120...200).contains(row.frame.minY), "the row's top is at \(row.frame.minY)")
-        XCTAssertGreaterThan(focusedFrame.width, 500, "the focused poster grew into a landscape card: \(focusedFrame)")
+        XCTAssertGreaterThan(cardFrame.width, 500, "the focused poster grew into a landscape card: \(cardFrame)")
+        XCTAssertEqual(
+            cardFrame.midY, focusedFrame.midY, accuracy: 2, "the card sits over the focused poster: \(cardFrame), \(focusedFrame)")
 
         press(.right)
         expect(element("movies.card.focused.title"), "label == 'Snow Day'")
         expect(element("movies.card.focused.facts"), "label CONTAINS '2002'")
         expect(element("movies.card.focused.plot"), "label == 'The story of Snow Day.'")
-        XCTAssertGreaterThan(focusedFrame.width, 500, "the next poster grew in its place: \(focusedFrame)")
+        XCTAssertGreaterThan(cardFrame.width, 500, "the next poster grew in its place: \(cardFrame)")
     }
 
     // design-system/apple-tv-content-stays-in-the-safe-area
@@ -135,7 +142,7 @@ final class ShelfExpandedCardTVUITests: XCTestCase {
         expect(element("movies.card.focused.title"), "exists == true", timeout: 2)
         Thread.sleep(forTimeInterval: 2)
         XCTAssertLessThanOrEqual(infoLoads, before + 1, "only the poster the highlight stopped on is asked about")
-        XCTAssertGreaterThan(focusedFrame.width, 500, "the poster it stopped on is a card: \(focusedFrame)")
+        XCTAssertGreaterThan(cardFrame.width, 500, "the poster it stopped on is a card: \(cardFrame)")
     }
 
     // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, back to the banner
