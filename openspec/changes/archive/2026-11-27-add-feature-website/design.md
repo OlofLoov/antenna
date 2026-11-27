@@ -1,5 +1,7 @@
 # Design
 
+Tidied on 2026-11-27: decision 8 is carried out by `website-languages`, and the boards under "Not drawn yet" are drawn by `website-languages` (the language switch and right to left) and `website-follow-ups` (the rest).
+
 ## Context
 
 See proposal.md for why. What exists on 2026-11-22:

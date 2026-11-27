@@ -1,9 +1,10 @@
+Tidied on 2026-11-27, with the site live: task 1.4's language boards and group 6 moved to `website-languages`; the rest of 1.4, the App Store badge from 3.2, task 5.3 and the browser part of 7.2 moved to `website-follow-ups`.
+
 ## 1. Proposal and boards
 
 - [x] 1.1 Write the proposal, delta specs, design and tasks, and validate with `openspec validate add-feature-website --strict`
 - [x] 1.2 Draw draft boards `Web-Home`, `Web-Home-Phone`, `Web-Feature`, `Web-Pricing` and `Web-Support`
 - [x] 1.3 Fold in the owner's 2026-11-22 decisions on the open questions, and rework the page builder into a prerendered SvelteKit app
-- [ ] 1.4 Draw the boards listed under "Not drawn yet" in design.md: light appearance, phone widths of the other pages, the legal pages with the header and footer, `404.html` and "Coming soon to the App Store". Waits until after launch
 
 ## 2. The app, CI and the CSP
 
@@ -17,7 +18,7 @@
 ## 3. Screenshots
 
 - [x] 3.1 Add `scripts/site-screenshots.sh` and `Web/site/static/images/screenshots.txt`: download the newest `store-screenshots` artifact, pick the listed files, resize with `sips`, write JPEG to `Web/site/static/images/en/`, fail on a missing file
-- [ ] 3.2 Run it and commit the English set, and Apple's App Store badge as SVG. The English set is committed, from the store-screenshots artifact of run 44901285075 on main. The badge waits for Antuna's App Store page; until then every page says "Coming soon to the App Store".
+- [x] 3.2 Run it and commit the English set, from the store-screenshots artifact of run 44901285075 on main. Until Antuna has an App Store page every page says "Coming soon to the App Store"
 - [x] 3.3 Add the provider-name check over every built page's text with the listing check's list, citing `feature-website/nothing-on-the-site-points-to-a-provider`
 
 ## 4. Home and feature pages
@@ -29,18 +30,9 @@
 
 - [x] 5.1 Add the pricing page with no amounts, citing `feature-website/pricing-says-how-buying-works`
 - [x] 5.2 Add the support page with the FAQ and the contact card with antuna@code-crave.se, and a site check that no other page holds an email address, citing `feature-website/support-answers-questions-and-gives-an-email-address`
-- [ ] 5.3 Add `marketing_url.txt` per locale and check it and `support_url.txt` in `scripts/store_metadata.py` (every `support_url.txt` points at `/support/` since 2026-11-23), citing `store-listing/the-listing-links-to-the-site-s-pages`
-
-## 6. Languages
-
-One PR per language, when its store listing is ready. Swedish first. The group waits until after launch.
-
-- [ ] 6.1 Add the optional `[[lang=lang]]` route parameter with a matcher of published languages, `entries` per language, `lang` and `dir` from `hooks.server.ts`, `hreflang` links and the footer language list with full-reload links, with a site check that an unpublished language answers 404 and a missing string fails the build, citing `feature-website/languages-are-added-when-their-listing-is-ready`
-- [ ] 6.2 Add Swedish: `src/lib/strings/sv.json` and the Swedish screenshots, reviewed by the owner
-- [ ] 6.3 Add Arabic with `dir="rtl"` when its listing is no longer held, after the boards' right-to-left versions are drawn
 
 ## 7. Verify
 
-- [ ] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
-- [ ] 7.2 After the first deploy, open a page with JavaScript off, follow links with it on, open a made-up address and check its 404 status, and read the CSP header in the browser's network panel. Checked with curl on 2026-11-24: the prerendered HTML of each page holds its full text, every header and footer link answers 200, a made-up address answers 404 with "Page not found", and every page sends the site CSP. Following links with JavaScript on still needs a browser
-- [ ] 7.3 `/opsx:verify` passes
+- [x] 7.1 Each requirement has a test citing `<capability>/<requirement-slug>`, and `scripts/check-spec-refs.sh` passes
+- [x] 7.2 After the first deploy, check the live site. Checked with curl on 2026-11-24, and again on 2026-11-27 against https://antuna.app: the home page, Pricing, the Privacy Policy, Multi-view and Support answer 200 with their `<h1>` in the first answer; the Privacy Policy's first answer holds its whole text and a plain `<a href="/pricing/">`, so it reads and links with JavaScript off; `/no-such-page-xyz/` answers 404 with "Page not found"; `/` sends the site CSP, with `default-src 'none'`, `script-src 'self'` and `img-src 'self'`, and `/setup/` the stricter setup CSP
+- [x] 7.3 `/opsx:verify` passes
