@@ -12,13 +12,126 @@ struct ExpandedCardSource {
 
 extension EnvironmentValues {
     @Entry var shelfExpandedCard: ExpandedCardSource?
+    /// Set by each Apple TV row of posters, so the posters after a card move aside.
+    @Entry var shelfCardRoom: ShelfCardRoom?
+}
+
+/// Makes room in a row for its card. Every poster keeps its slot in the
+/// row's lazy stack; the card is drawn over the focused poster's slot and
+/// the posters after it are offset by the card's extra width, so a move
+/// along the row never lays the row out again
+/// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
+/// Each poster reads only its own place, so a move redraws the posters
+/// whose place changes: one for a step along the row.
+@MainActor
+final class ShelfCardRoom {
+    /// The row's posters in order, set by the row as its titles change.
+    /// A new order places the posters on screen again.
+    var order: [ShelfTitle] = [] {
+        didSet {
+            guard oldValue != order else { return }
+            for (key, place) in places {
+                place.index = key == Self.tail ? order.count : order.firstIndex { $0.id == key } ?? order.count
+            }
+            if let card = expanded { expanded = places[card.id].map { (card.id, $0.index) } }
+            for place in places.values { settle(place) }
+        }
+    }
+    private var places: [String: ShelfCardPlace] = [:]
+    /// The poster that is a card, and its position.
+    private var expanded: (id: String, index: Int)?
+
+    nonisolated init() {}
+
+    /// Puts a poster that came into view in its place: aside when it is
+    /// after the card. A tile after the posters, such as See all, passes nil.
+    func arrive(_ place: ShelfCardPlace, id: String?) {
+        place.index = id.flatMap { id in order.firstIndex { $0.id == id } } ?? order.count
+        places[id ?? Self.tail] = place
+        settle(place)
+    }
+
+    func leave(_ place: ShelfCardPlace, id: String?) {
+        if places[id ?? Self.tail] === place { places[id ?? Self.tail] = nil }
+    }
+
+    /// Makes `id` the card, or none, and moves the posters whose place
+    /// changes. Call it inside the card's animation, so they slide with it.
+    func expand(_ id: String, _ now: Bool) {
+        if now, let index = places[id]?.index {
+            expanded = (id, index)
+        } else if !now, expanded?.id == id {
+            expanded = nil
+        } else {
+            return
+        }
+        for place in places.values { settle(place) }
+    }
+
+    private func settle(_ place: ShelfCardPlace) {
+        let aside = expanded.map { place.index > $0.index } ?? false
+        let front = expanded?.index == place.index
+        if place.aside != aside { place.aside = aside }
+        if place.front != front { place.front = front }
+    }
+
+    /// The key of the tile after the posters, which no title id matches.
+    private static let tail = "tail"
+}
+
+/// One poster's place in a row with a card: moved aside after the card,
+/// or in front while it is the card.
+@MainActor @Observable
+final class ShelfCardPlace {
+    var aside = false
+    var front = false
+    @ObservationIgnored var index = 0
+
+    nonisolated init() {}
+}
+
+extension View {
+    /// A poster or tile in a row that makes room for a card: offset by the
+    /// card's extra width while it is after the card. While `title`'s
+    /// poster has the highlight it draws the card over its slot, above the
+    /// other posters. Without a room, as off Apple TV, it stays a poster.
+    func makesRoomForTheCard(_ title: ShelfTitle?) -> some View {
+        modifier(CardRoomPlace(title: title))
+    }
+}
+
+private struct CardRoomPlace: ViewModifier {
+    let title: ShelfTitle?
+    @Environment(\.shelfCardRoom) private var room
+    @Environment(\.shelfExpandedCard) private var source
+    @Environment(\.shelfMetrics) private var metrics
+    @State private var place = ShelfCardPlace()
+
+    func body(content: Content) -> some View {
+        if let room {
+            content
+                .overlay(alignment: .topLeading) {
+                    if place.front, let title, let source {
+                        ShelfExpandedCard.Lifted(title: title, source: source)
+                            .transition(.opacity)
+                    }
+                }
+                .offset(x: place.aside ? ShelfExpandedCard.width - metrics.poster.width : 0)
+                .zIndex(place.front ? 1 : 0)
+                .onAppear { room.arrive(place, id: title?.id) }
+                .onDisappear { room.leave(place, id: title?.id) }
+        } else {
+            content
+        }
+    }
 }
 
 /// The landscape card a focused poster grows into on Apple TV, the height
 /// of a poster (`TV-Movies-Expanded`, `TV-Movies-Expanded-Loading`,
 /// `TV-Movies-Expanded-Poster-Only`;
 /// movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
-/// It draws inside the poster's button, so it has no focus of its own.
+/// It draws over the poster's slot, outside its button, so it has no
+/// focus of its own; the poster's button keeps the highlight.
 enum ShelfExpandedCard {
     /// The card's width; its height is the poster's.
     static let width: CGFloat = 566
@@ -29,31 +142,61 @@ enum ShelfExpandedCard {
     static let type = ShelfBanner.Sizes(
         eyebrow: 16, title: 34, facts: 20, badge: 15, description: 20, button: 20, buttonHeight: 44, spacing: 8)
 
-    /// A poster's face: the poster, which grows into the card while its
-    /// button has focus, where the screen provides a source. Without one it
-    /// stays a poster.
+    /// How much the card is lifted while it has the highlight. The system
+    /// card style lifts a poster by an eighth; a wider view it lifts less,
+    /// and at an eighth the card's copy would start left of the safe area.
+    static let lift: CGFloat = 1.06
+    /// The poster's size under its card, so with the system's lift it
+    /// stays inside the card.
+    static let under: CGFloat = 0.9
+
+    /// A poster's face. While its button has focus, where the screen
+    /// provides a source and a row's `ShelfCardRoom`, the row draws the
+    /// card over its slot (`makesRoomForTheCard`). The
+    /// slot keeps the poster's size, so the row's lazy stack does not lay
+    /// out again as the card grows, and the posters after it move aside by
+    /// an offset. The card sits outside the button because the system card
+    /// style clips its label to the label's frame; it draws the lift and
+    /// shadow that style gives a focused poster.
     struct Expanding<Poster: View>: View {
         let title: ShelfTitle
         @ViewBuilder var poster: Poster
         @Environment(\.isFocused) private var focused
         @Environment(\.shelfExpandedCard) private var source
+        @Environment(\.shelfCardRoom) private var room
         @Environment(\.accessibilityReduceMotion) private var reduceMotion
         @State private var expanded = false
 
         var body: some View {
-            Group {
-                if expanded, let source {
-                    let details = source.details(title)
-                    Television(text: BannerText(preview: title, details: details), poster: title.posterURL, backdrop: details?.backdropURL)
-                } else {
-                    poster
+            // Under the card, the poster shrinks inside the button's lift so
+            // no edge of it shows. It stays drawn: at no opacity the button
+            // would leave the accessibility tree.
+            poster
+                .scaleEffect(expanded ? ShelfExpandedCard.under : 1)
+                // In a transaction of its own, so the posters after it slide aside with it.
+                .onChange(of: focused && source != nil && room != nil, initial: true) { _, now in
+                    guard now != expanded else { return }
+                    withAnimation(reduceMotion ? nil : ShelfExpandedCard.grow) {
+                        expanded = now
+                        room?.expand(title.id, now)
+                    }
                 }
-            }
-            // In a transaction of its own, so the posters after it slide aside with it.
-            .onChange(of: focused && source != nil, initial: true) { _, now in
-                guard now != expanded else { return }
-                withAnimation(reduceMotion ? nil : ShelfExpandedCard.grow) { expanded = now }
-            }
+        }
+    }
+
+    /// The card over a focused poster's slot, lifted as the poster was.
+    struct Lifted: View {
+        let title: ShelfTitle
+        let source: ExpandedCardSource
+        @Environment(\.shelfPrefix) private var prefix
+
+        var body: some View {
+            let details = source.details(title)
+            Television(text: BannerText(preview: title, details: details), poster: title.posterURL, backdrop: details?.backdropURL)
+                .shadow(color: .black.opacity(0.45), radius: 24, y: 16)
+                .scaleEffect(ShelfExpandedCard.lift)
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("\(prefix).card.focused")
         }
     }
 
@@ -82,6 +225,8 @@ enum ShelfExpandedCard {
                     .padding(.bottom, 20)
             }
             .frame(width: ShelfExpandedCard.width, height: metrics.poster.height)
+            // Opaque, since the lifted poster stays under it.
+            .background(Palette.ground)
             .clipShape(RoundedRectangle(cornerRadius: metrics.corner, style: .continuous))
             .environment(\.shelfBanner, .still(text: text, art: nil))
         }
@@ -134,12 +279,24 @@ enum ShelfExpandedCard {
             var image: CGImage?
         }
 
+        /// The poster if the cache holds it at the row's size.
+        private var kept: Shown? {
+            guard let loader, let poster,
+                let fit = PosterFit(width: metrics.poster.width, height: metrics.poster.height, scale: scale),
+                let image = loader.kept(poster, fit)?.image
+            else { return nil }
+            return Shown(url: poster, image: image)
+        }
+
         var body: some View {
+            // The poster from memory in the card's first frame, so a card
+            // does not draw twice as it shows.
+            let picture = shown ?? kept
             Palette.surface(0.06)
                 .overlay {
-                    if let shown {
-                        FittedArt(image: shown.image, background: TitlePage.placeholder)
-                            .id(shown.url)
+                    if let picture {
+                        FittedArt(image: picture.image, background: TitlePage.placeholder)
+                            .id(picture.url)
                             .transition(.opacity)
                     }
                 }
@@ -148,7 +305,9 @@ enum ShelfExpandedCard {
                 .task(id: backdrop) {
                     guard let loader else { return }
                     let posterFit = PosterFit(width: metrics.poster.width, height: metrics.poster.height, scale: scale)
-                    if shown == nil, let poster, let fit = posterFit {
+                    if shown == nil, let kept {
+                        shown = kept
+                    } else if shown == nil, let poster, let fit = posterFit {
                         let image = await loader.load(poster, fit)?.image
                         guard !Task.isCancelled else { return }
                         shown = Shown(url: poster, image: image)

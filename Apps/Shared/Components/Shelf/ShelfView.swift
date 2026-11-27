@@ -132,6 +132,7 @@ enum ShelfView {
         @ViewBuilder var header: Header
         @ViewBuilder var cards: Cards
         @Environment(\.shelfMetrics) private var metrics
+        @Environment(\.shelfCardRoom) private var room
 
         var body: some View {
             VStack(alignment: .leading, spacing: metrics.headerSpacing) {
@@ -141,6 +142,8 @@ enum ShelfView {
                         cards
                     }
                     .padding(.horizontal, metrics.gutter)
+                    // Room for the last poster's card, and for the posters moved aside by a card.
+                    .padding(.trailing, room == nil ? 0 : ShelfExpandedCard.width - metrics.poster.width)
                     .padding(.vertical, metrics.corner)
                 }
                 .scrollIndicators(.hidden)

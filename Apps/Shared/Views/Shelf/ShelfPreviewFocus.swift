@@ -88,27 +88,33 @@ extension EnvironmentValues {
         @Environment(ShelfActivity.self) private var activity
         @Environment(\.shelfPrefix) private var prefix
         @FocusState private var focus: String?
+        @State private var room = ShelfCardRoom()
 
         func body(content: Content) -> some View {
-            content
+            let titles = titles
+            room.order = titles
+            return
+                content
                 .focusSection()
-                .defaultFocus($focus, target, priority: .userInitiated)
+                .defaultFocus($focus, target(in: titles), priority: .userInitiated)
                 .environment(\.shelfRowFocus, $focus)
+                .environment(\.shelfCardRoom, room)
+        }
+
+        /// The row's posters, none for Continue watching, whose cards do not grow.
+        private var titles: [ShelfTitle] {
+            let model = library.model(prefix == ShelfTitle.Kind.series.prefix ? .series : .movie)
+            switch identifier {
+            case "continueWatching": return []
+            case "myList": return activity.myList(model)
+            case "recentlyWatched": return activity.recentlyWatched(model)
+            default: return model.rows.first(where: { $0.identifier == identifier })?.titles ?? []
+            }
         }
 
         /// The id of the poster at the column in this row.
-        private var target: String? {
+        private func target(in titles: [ShelfTitle]) -> String? {
             guard let column = column?.column else { return nil }
-            let model = library.model(prefix == ShelfTitle.Kind.series.prefix ? .series : .movie)
-            let titles: [ShelfTitle]
-            switch identifier {
-            case "continueWatching": return nil
-            case "myList": titles = activity.myList(model)
-            case "recentlyWatched": titles = activity.recentlyWatched(model)
-            default:
-                guard let row = model.rows.first(where: { $0.identifier == identifier }) else { return nil }
-                titles = row.titles
-            }
             return ShelfColumn.landing(column: column, count: titles.count).map { titles[$0].id }
         }
     }
