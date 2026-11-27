@@ -10,10 +10,15 @@ import Foundation
 /// calling thread until bytes arrive, the body ends or the stream is
 /// cancelled; call it only from the demuxing thread, never from the main
 /// actor. At most `bufferLimit` bytes are held; past that the download
-/// pauses until FFmpeg catches up.
+/// pauses until FFmpeg catches up. When URLSession delivers on regardless,
+/// a stream that takes ranges closes at `overflowLimit` with
+/// `stoppedSendingData`, and the bytes held still read.
 public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     /// Bytes held before the download pauses.
     public static let bufferLimit = 4 * 1024 * 1024
+    /// Bytes held at which a stream that takes ranges closes, as when
+    /// URLSession keeps delivering after `suspend`.
+    public static let overflowLimit = 32 * 1024 * 1024
 
     private let url: URL
     private let session: URLSession
@@ -41,17 +46,23 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     /// True when a request from the start asks for `bytes=0-`, so a server
     /// that takes ranges answers 206 even when it never says so.
     private let asksForRange: Bool
+    /// The byte the request stops before, when it asks for a closed range.
+    private let end: Int?
     /// The answer's HTTP status, once it came.
     public private(set) var status: Int?
 
     /// `offset` asks for the resource from that byte on, with a Range
     /// header. `asksForRange` sends one from the start too, for a film:
     /// live TV leaves it out, since some servers refuse a range on a stream
-    /// with no end.
-    public init(url: URL, session: URLSession = PlaybackNetwork.makeStreamingSession(), offset: Int = 0, asksForRange: Bool = false) {
+    /// with no end. `end` asks only for the bytes before it.
+    public init(
+        url: URL, session: URLSession = PlaybackNetwork.makeStreamingSession(), offset: Int = 0, end: Int? = nil,
+        asksForRange: Bool = false
+    ) {
         self.url = url
         self.session = session
         self.offset = offset
+        self.end = end
         self.asksForRange = asksForRange
     }
 
@@ -99,7 +110,11 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
     private var request: URLRequest {
         var request = URLRequest(url: url)
         StreamHeaderBook.shared.apply(to: &request)
-        if offset > 0 || asksForRange { request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range") }
+        if let end {
+            request.setValue("bytes=\(offset)-\(end - 1)", forHTTPHeaderField: "Range")
+        } else if offset > 0 || asksForRange {
+            request.setValue("bytes=\(offset)-", forHTTPHeaderField: "Range")
+        }
         return request
     }
 
@@ -179,6 +194,11 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
         waiter?.resume(throwing: CancellationError())
     }
 
+    /// Bytes received and not taken yet.
+    var heldBytes: Int {
+        condition.withLock { held }
+    }
+
     /// Bytes received and not taken. Call with the lock held.
     private var held: Int { buffer.count - head }
 
@@ -244,11 +264,24 @@ public final class HTTPByteStream: NSObject, URLSessionDataDelegate, @unchecked 
 
     public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         condition.lock()
+        // After an overflow close, what URLSession still had on its way is dropped.
+        guard !finished else { return condition.unlock() }
         buffer.append(data)
         trimToWindow()
         if window == nil, held >= Self.bufferLimit, !suspended {
             suspended = true
             dataTask.suspend()
+        }
+        // A task suspended once and resumed goes on delivering whatever
+        // `suspend` says: a film from a fast server came in whole, 2.2 GB
+        // of a 4K episode in ten minutes on Apple TV
+        // (playback-engine/films-keep-memory-steady). Past `overflowLimit`
+        // a stream that can be asked for a range closes; `SeekableSource`
+        // opens it again where the reader got to.
+        if window == nil, held >= Self.overflowLimit, acceptsRanges, expectedLength != nil, !cancelled {
+            if failure == nil { failure = .stoppedSendingData }
+            finished = true
+            dataTask.cancel()
         }
         condition.broadcast()
         condition.unlock()

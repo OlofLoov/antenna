@@ -17,6 +17,8 @@ final class SeekableSource: DemuxBytes, @unchecked Sendable {
     private var stream: HTTPByteStream
     private var cancelled = false
     private(set) var position = 0
+    /// Connections in a row that dropped before they gave a byte.
+    private var emptyDrops = 0
     /// The length of the whole resource, when the server said.
     let length: Int?
     /// True when the server takes byte ranges and gave the length.
@@ -33,10 +35,28 @@ final class SeekableSource: DemuxBytes, @unchecked Sendable {
 
     private var current: HTTPByteStream { lock.withLock { stream } }
 
+    /// Bytes the connection holds that are not read yet.
+    var heldBytes: Int { current.heldBytes }
+
+    /// A film's connection that drops partway is opened again at the byte it
+    /// stopped at, as when it closed because URLSession delivered more than
+    /// `HTTPByteStream.overflowLimit` (playback-engine/films-keep-memory-steady). After three connections
+    /// in a row that drop with no byte, the bytes end with the failure.
     func read(into destination: UnsafeMutablePointer<UInt8>, count: Int) -> Int {
-        let taken = current.read(into: destination, count: count)
-        if taken > 0 { position += taken }
-        return taken
+        while true {
+            let stream = current
+            let taken = stream.read(into: destination, count: count)
+            if taken > 0 {
+                position += taken
+                emptyDrops = 0
+                return taken
+            }
+            guard taken < 0, stream.failureReason == .stoppedSendingData, emptyDrops < 3, canSeek,
+                position < (length ?? 0), !lock.withLock({ cancelled })
+            else { return taken }
+            emptyDrops += 1
+            guard reopen(at: position) else { return -1 }
+        }
     }
 
     func peek(_ count: Int) -> Data {
@@ -59,6 +79,12 @@ final class SeekableSource: DemuxBytes, @unchecked Sendable {
         if target > position, target - position <= 256 * 1024 {
             return skip(target - position)
         }
+        return reopen(at: target)
+    }
+
+    /// Opens a new connection from byte `target` in place of the current one.
+    /// Returns false when the server ignored the range or the request failed.
+    private func reopen(at target: Int) -> Bool {
         // The old connection closes first: many providers allow one
         // connection per account and refuse a second while it is open.
         let next = HTTPByteStream(url: url, session: session, offset: target)

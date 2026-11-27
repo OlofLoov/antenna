@@ -189,6 +189,8 @@ final class DemuxRun: @unchecked Sendable {
                 seekFailed?()
             }
         }
+        // A film read ahead to disk sizes what it holds from its bit rate.
+        if let duration = prepared.demuxer.duration { (bytes as? FilmReader)?.film.setDuration(duration.seconds) }
         var state = PumpState(rateKnown: prepared.video?.stream.frameRate != nil)
         if prepared.demuxer.duration == nil {
             state.timeline = LiveTimeline(wrap: prepared.demuxer.format == "mpegts" ? LiveTimeline.mpegTSWrap : nil)
