@@ -97,6 +97,7 @@ struct SettingsView: View {
             #endif
             #if DEBUG
                 SampleScoresSection()
+                SyncStatusSection()
             #endif
             Section("About") {
                 LabeledContent("Version", value: Self.version)

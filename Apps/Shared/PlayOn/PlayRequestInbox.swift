@@ -203,10 +203,19 @@
             let now = Date.now
             if published.map({ $0.needsRefresh(keyDate: device.keys.keyDate, now: now) }) ?? true {
                 let info = device.info(now: now)
-                if (try? await devices.save(info)) != nil { published = info }
-                _ = try? await devices.sweep(notSeenSince: now.addingTimeInterval(-PlayDeviceInfo.forgetAfter))
+                do {
+                    try await devices.save(info)
+                    published = info
+                } catch {
+                    PlayOnLog.failure("save this device", error)
+                }
+                do {
+                    try await devices.sweep(notSeenSince: now.addingTimeInterval(-PlayDeviceInfo.forgetAfter))
+                } catch {
+                    PlayOnLog.failure("sweep devices", error)
+                }
             }
-            if let all = try? await devices.all() { listener.accept(all) }
+            await readDevices()
             // The scene may have left the foreground while the records were read.
             guard active else { return }
             listener.start()
@@ -239,9 +248,17 @@
         /// (play-on-apple-tv/requests-expire-and-leave-no-trace). One the TV
         /// already played from the network is deleted without an offer.
         func pickUp(now: Date = .now) async {
-            guard let queue, let request = try? await queue.waiting(for: device.id) else { return }
-            try? await queue.delete(request)
-            _ = try? await queue.sweep(now: now)
+            guard let queue else { return }
+            let request: PlayRequest
+            do {
+                guard let waiting = try await queue.waiting(for: device.id) else { return }
+                request = waiting
+            } catch {
+                PlayOnLog.failure("read waiting request", error)
+                return
+            }
+            do { try await queue.delete(request) } catch { PlayOnLog.failure("delete request", error) }
+            do { try await queue.sweep(now: now) } catch { PlayOnLog.failure("sweep requests", error) }
             guard !request.isExpired(at: now) else { return }
             inbox.offer(request)
         }
@@ -251,7 +268,18 @@
         private func refetch() async {
             guard Date.now.timeIntervalSince(lastRefetch) > 5 else { return }
             lastRefetch = .now
-            if let all = try? await devices.all() { listener.accept(all) }
+            await readDevices()
+        }
+
+        /// Reads the account's devices into the listener; a failure keeps the devices it knew.
+        private func readDevices() async {
+            do {
+                let all = try await devices.all()
+                PlayOnLog.read(all)
+                listener.accept(all)
+            } catch {
+                PlayOnLog.failure("read devices", error)
+            }
         }
     }
 #endif

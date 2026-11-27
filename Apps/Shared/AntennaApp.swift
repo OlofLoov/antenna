@@ -43,6 +43,8 @@ struct AntennaApp: App {
     init() {
         #if DEBUG
             UITestingStoreShots.pinClock()
+            // Before the container, so its setup event is recorded.
+            SyncStatus.shared.start()
         #endif
         let container = Self.makeContainer()
         self.container = container

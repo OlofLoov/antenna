@@ -287,6 +287,7 @@
                     .onAppear {
                         AccessibilityNotification.Announcement(Words(locale)("\(details.title), details")).post()
                     }
+                    .task { await destination?.lookForTVs() }
                 }
             }
         }

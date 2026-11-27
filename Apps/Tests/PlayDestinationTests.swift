@@ -103,7 +103,8 @@ import Testing
 
     static func rig(
         _ tvs: [PlayDeviceInfo], found: [UUID] = [livingRoom], outcomes: [PlaySendOutcome] = [],
-        stopLocal: @escaping @MainActor () async -> Void = {}
+        stopLocal: @escaping @MainActor () async -> Void = {}, rereadWait: (@MainActor () async throws -> Void)? = nil,
+        clock: (@MainActor () -> Date)? = nil
     ) throws -> Rig {
         let defaults = try #require(UserDefaults(suiteName: "play-destination-\(UUID().uuidString)"))
         let browser = Browser()
@@ -123,6 +124,8 @@ import Testing
         dependencies.sleep = { _ in }
         dependencies.defaults = defaults
         dependencies.locale = Locale(identifier: "en_US")
+        if let rereadWait { dependencies.rereadWait = rereadWait }
+        if let clock { dependencies.now = clock }
         return Rig(
             destination: PlayDestination(dependencies), browser: browser, sender: sender, devices: devices, defaults: defaults, gate: gate)
     }
@@ -136,6 +139,100 @@ import Testing
         #expect(rig.destination.choice == nil)
         rig.destination.opened()
         #expect(rig.browser.starts == 0)
+    }
+
+    /// Stands in for the 30 seconds between reads: each `tick()` lets one wait end.
+    @MainActor final class Ticker {
+        private var waiting: CheckedContinuation<Void, any Error>?
+        private(set) var waits = 0
+
+        func wait() async throws {
+            waits += 1
+            try await withCheckedThrowingContinuation { waiting = $0 }
+        }
+
+        func tick() {
+            waiting?.resume()
+            waiting = nil
+        }
+
+        var isWaiting: Bool { waiting != nil }
+    }
+
+    /// Lets the destination's tasks run until `done` holds, or gives up.
+    static func settle(_ done: () async -> Bool) async {
+        for _ in 0..<200 where !(await done()) { await Task.yield() }
+    }
+
+    @Test("play-on-apple-tv/apple-tvs-on-the-same-icloud-account: a TV that registers after the phone opened shows within one wait")
+    func tvRegistersLater() async throws {
+        let ticker = Ticker()
+        let rig = try Self.rig([], rereadWait: { try await ticker.wait() })
+        await rig.destination.activate()
+        #expect(rig.destination.choice == nil)
+        await Self.settle { ticker.isWaiting }
+        #expect(await rig.devices.fetches == 1)
+
+        // A wait with still no TV reads again and keeps waiting.
+        ticker.tick()
+        await Self.settle { ticker.waits == 2 && ticker.isWaiting }
+        #expect(await rig.devices.fetches == 2)
+        #expect(rig.destination.choice == nil)
+
+        try await rig.devices.save(Self.tv(Self.livingRoom, "Living Room"))
+        ticker.tick()
+        await Self.settle { rig.destination.choice != nil }
+        #expect(rig.destination.choice?.rows.map(\.name) == ["Living Room"])
+        // With a TV listed the reads stop.
+        await Task.yield()
+        #expect(!ticker.isWaiting)
+        #expect(await rig.devices.fetches == 3)
+    }
+
+    @Test("play-on-apple-tv/apple-tvs-on-the-same-icloud-account: no reads again in the background or with a TV listed")
+    func rereadStops() async throws {
+        let ticker = Ticker()
+        let rig = try Self.rig([], rereadWait: { try await ticker.wait() })
+        await rig.destination.activate()
+        await Self.settle { ticker.isWaiting }
+        rig.destination.deactivate()
+        ticker.tick()
+        await Self.settle { false }
+        #expect(await rig.devices.fetches == 1)
+
+        let listed = try Self.rig([Self.tv(Self.livingRoom, "Living Room")], rereadWait: { try await ticker.wait() })
+        let before = ticker.waits
+        await listed.destination.activate()
+        await Self.settle { false }
+        #expect(ticker.waits == before)
+    }
+
+    @Test(
+        "play-on-apple-tv/apple-tvs-on-the-same-icloud-account: a screen with a Play on control reads the list again while no TV is listed")
+    func lookForTVs() async throws {
+        final class Clock {
+            var now: Date
+            init(_ now: Date) { self.now = now }
+        }
+        let clock = Clock(Self.now)
+        let rig = try Self.rig([], rereadWait: { try await Task.sleep(for: .seconds(3600)) }, clock: { clock.now })
+        await rig.destination.activate()
+        // Read at activation, so not again within 10 seconds.
+        clock.now += 5
+        await rig.destination.lookForTVs()
+        #expect(await rig.devices.fetches == 1)
+
+        try await rig.devices.save(Self.tv(Self.livingRoom, "Living Room"))
+        clock.now += 10
+        await rig.destination.lookForTVs()
+        #expect(await rig.devices.fetches == 2)
+        #expect(rig.destination.choice?.rows.map(\.name) == ["Living Room"])
+
+        // With a TV listed, opening a screen reads nothing.
+        clock.now += 60
+        await rig.destination.lookForTVs()
+        #expect(await rig.devices.fetches == 2)
+        rig.destination.deactivate()
     }
 
     @Test("play-on-apple-tv/apple-tvs-on-the-same-icloud-account: each TV says whether it starts now, ready ones first")
