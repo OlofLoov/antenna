@@ -158,14 +158,20 @@ New boards, in `openspec/specs/design-system/boards/`:
 
 Design-system requirements followed: controls-use-system-styles (the menu and buttons), focus-is-the-lifted-white-card and focus-moves-where-the-remote-points (the offer), apple-tv-content-stays-in-the-safe-area, liquid-glass-stays-on-the-navigation-layer (the bar is a glass capsule on the navigation layer, like the tab bar), targets-are-large-enough-to-hit (44 pt play and pause), channels-without-a-logo-show-initials (the connected picture), copy-fits-in-every-language (labels name the TV, so the bar truncates the item line, never the TV name), accessibility-identifiers-follow-the-board, and modals-are-system-presentations (the connected sheet is a system sheet).
 
+Drawn for groups 2 and 3 (task 1.2):
+
+- `iPhone-Title-PlayOn-Refused.dc.html`: the Play on menu with local network access refused.
+- `iPhone-Live-ChannelMenu-PlayOn.dc.html`: a channel row's context menu with "Play on Living Room"; the episode row's menu follows its note.
+- `iPhone-Guide-Detail-WatchOn.dc.html`: the Guide programme details with "Watch on Living Room".
+- `iPhone-PlayOn-Messages.dc.html`: the line after a send and the error alert, with every message in its note.
+- `TV-FromIPhone-Banner.dc.html`: the TV's "From Anna's iPhone" banner for a network request.
+
 Not drawn yet, to draw before the group that builds them:
 
 - The connected sheet: art, item, play or pause, "Play on this iPhone", "Disconnect".
-- The "Sent. Living Room offers it when Antuna opens there" confirmation and the error messages on the phone (no login, source missing, not found, passcode on the TV, offline, update Antuna on the TV).
-- The Play on menu with local network access refused.
-- A channel row's context menu and an episode row's context menu with "Play on Living Room"; the Guide programme details with "Watch on Living Room".
+- The offline message on the phone.
 - iPad and Mac: the bar at the bottom of the window and the connected picture in the side-by-side layout.
-- The TV's "From Anna's iPhone" banner for a network request, and the offer for a channel (logo tile in place of the poster).
+- The TV's offer for a channel (logo tile in place of the poster).
 - "Stopped on Living Room" in the bar.
 
 ## Copy
@@ -187,6 +193,8 @@ Not drawn yet, to draw before the group that builds them:
 | Not found | Living Room couldn't find %@. |
 | Passcode | Enter the passcode on Living Room. |
 | Old TV app | Update Antuna on Living Room to play from here. |
+| TV behind its paywall or "Who's watching?" | Sent. Living Room plays it once Antuna is ready there. |
+| No answer, before the iCloud queue | Living Room didn't answer. Open Antuna there and try again. |
 | TV offer eyebrow | From Anna's iPhone |
 | TV offer buttons | Play / Not now |
 
@@ -234,6 +242,28 @@ Not drawn yet, to draw before the group that builds them:
 ## Migration Plan
 
 No data migration. The zones are created on first write. Turning the feature off is removing the entry points; the zones can be left or deleted. An old TV build ignores the Bonjour service and the zones, so the phone lists only TVs that wrote a `PlayDevice` record, and an old phone never sends.
+
+## Owner answers
+
+2026-11-27, task 1.1: build it now, without waiting for v1. Trailer stays on the title page while connected, as the one-place decision above proposes.
+
+## Decided while building
+
+- **Item keys, not provider ids.** A playlist channel's `Channel.id` holds its stream link (`m3u#<url>#<n>` or `<tvg-id>#<url>`), and Xtream ids hold the server's host (`xtream#<host>#…`). Sending them would break play-on-apple-tv/a-request-holds-no-link-and-no-login. A request names a channel, film, series or episode by the first 16 bytes of the SHA-256 of its id, as 32 hex characters (`PlayItemKeys` in the app, CryptoKit). The TV hashes the ids of what it has loaded for that source and compares. `PlayRequestMatch` in AntennaCore takes the hash as a function, so Core stays Foundation-only.
+- **A programme carries its end.** `.programme(channelKey:start:end:)`: the expiry rule needs to know whether the programme had ended when it was sent, and the TV needs the end to ask for catch-up.
+- **Frames without `NWProtocolFramer`.** The link reads the TLS stream with `PlayFrames.Reader` from AntennaCore, which splits the same four-byte-length frames. The bytes on the wire are as decided above; the parser is tested in Core with frames split at every size.
+- **The TV listens behind the paywall too.** The listener runs whenever the TV's scene is active and iCloud is signed in, so a request that arrives behind the paywall or "Who's watching?" is kept and answered `waiting`, as the spec's paywall scenario asks. The phone then says "Sent. Living Room plays it once Antuna is ready there." In slice 1 a kept request plays once the shell shows; slice 2 turns it into the offer.
+- **Ended programmes on the TV.** Catch-up of an ended programme starts through `TimeshiftModel.watchCatchup`, the start-over path with the requested programme in place of the one on now.
+- **Signing the TV in from the phone.** On `noLogin` the TV opens the sign-in it shows for the source today, and the phone's alert says why. The "way to sign it in from the iPhone" is that sign-in form, which the iPhone's Apple TV keyboard can fill. A flow that sends the login from the phone would put a secret on the link, so it is left for a later change.
+- **Until the iCloud queue lands.** In the first slice a TV that does not answer within 3 seconds gives "Living Room didn't answer. Open Antuna there and try again." Slice 2 replaces this with the iCloud fallback.
+
+## Device checks left for the owner
+
+Task 1.3 needs a real Apple TV and Apple's answer, neither of which a simulator gives:
+
+- What `UIDevice.current.name` returns on tvOS 26 without an entitlement. The app lists TVs that share a name as "Apple TV", "Apple TV 2" by record creation date either way.
+- Whether tvOS 26 shows a local network prompt for the listener.
+- The user-assigned device name entitlement for the iOS target, which only the owner can request from Apple. Without it the TV's banner reads "From iPhone".
 
 ## Open Questions
 
