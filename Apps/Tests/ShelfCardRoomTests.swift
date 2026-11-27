@@ -1,4 +1,5 @@
 import AntennaCore
+import CoreGraphics
 import Testing
 
 @testable import Antenna
@@ -70,6 +71,34 @@ import Testing
         let late = ShelfCardPlace()
         room.arrive(late, id: titles[4].id)
         #expect(late.aside)
+    }
+
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, the card keeps the row's spacing
+    // The card's lift grew it 17 pt past its slot on each side, leaving 3 pt to each neighbour on the device.
+    @Test(arguments: [0, 1, 4])
+    func theCardKeepsTheRowsGapOnBothSides(index: Int) {
+        let geometry = ShelfExpandedCard.Geometry(metrics: .tv)
+        let card = geometry.card(at: index)
+        let after = geometry.poster(index + 1, card: index)
+        #expect(abs(after.minX - card.maxX - ShelfView.Metrics.tv.gap) < 0.01)
+        if index > 0 {
+            let before = geometry.poster(index - 1, card: index)
+            #expect(abs(card.minX - before.maxX - ShelfView.Metrics.tv.gap) < 0.01)
+        }
+        // The posters further on keep the gap between them.
+        #expect(abs(geometry.poster(index + 2, card: index).minX - after.maxX - ShelfView.Metrics.tv.gap) < 0.01)
+    }
+
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, the highlight is the card
+    // The system card style lifted the poster's slot under the card, so its edge and shadow showed at the poster's size.
+    @Test func theHighlightIsTheCardAsDrawn() {
+        let geometry = ShelfExpandedCard.Geometry(metrics: .tv)
+        let card = geometry.card(at: 2)
+        #expect(card.size == CGSize(width: 566 * ShelfExpandedCard.lift, height: 318 * ShelfExpandedCard.lift))
+        #expect(card.minX == geometry.slot(2))
+        #expect(card.midY == ShelfView.Metrics.tv.poster.height / 2)
+        // The poster's slot is inside the card on every side, so nothing of it shows around the card.
+        #expect(card.contains(geometry.poster(2, card: 2)))
     }
 
     @Test func aNewOrderPlacesThePostersAgain() {
