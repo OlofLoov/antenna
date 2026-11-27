@@ -318,14 +318,12 @@
             var capabilities: EngineCapabilities { EngineCapabilities(supportsPictureInPicture: false) }
 
             func load(_ url: URL, options: PlaybackOptions) async throws {
+                try admit(url)
                 loads += 1
                 append(url.lastPathComponent)
                 trackList.reset(options)
                 buffer.played = { [weak self] in self?.state = .playing }
-                if UITestingTimeshift.catchupFails(url) {
-                    state = .failed(.notFound)
-                    throw PlaybackFailure.notFound
-                }
+                try failScriptedCatchup(url)
                 if url.host() != UITestingTimeshift.catchupHost { buffer.loaded() }
                 switch UITestingPlayback.afterLoad(url.lastPathComponent) {
                 case .success(let next):
@@ -406,6 +404,21 @@
                 case .failed: "failed"
                 }
             return "\(name) loads=\(loads)"
+        }
+    }
+
+    extension UITestingLive.Engine {
+        /// Turns the load away while the app's stream gate is shut, as the
+        /// app's engines do while connected to an Apple TV (play-on-apple-tv).
+        func admit(_ url: URL) throws {
+            guard StreamGate.app.admits() else { throw CancellationError() }
+        }
+
+        /// Fails a catch-up load the timeshift tests script to fail.
+        func failScriptedCatchup(_ url: URL) throws {
+            guard UITestingTimeshift.catchupFails(url) else { return }
+            state = .failed(.notFound)
+            throw PlaybackFailure.notFound
         }
     }
 #endif

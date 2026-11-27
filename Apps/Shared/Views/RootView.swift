@@ -36,6 +36,7 @@
                         // Playback stops before "Who's watching?" (profiles/switching-profile).
                         .environment(\.switchProfile, stopping(live))
                         .modifier(LiveSync(live: live))
+                        .modifier(PlayOnWiring(live: live, library: shelves, playback: playback))
                         .modifier(ShelfSync(library: shelves, playback: playback))
                         .modifier(
                             LaunchTitleRestore(launch: live.launchTitle, library: shelves) { title, key in
@@ -81,6 +82,7 @@
                     .modifier(PhoneSizeClass())
             } else {
                 LiveRegularView()
+                    .overlay(alignment: .bottom) { PlayOnBarHost().padding(.bottom, 24) }
             }
         }
 
@@ -209,6 +211,11 @@
                         .modifier(SearchSupply(picks: picks))
                         .environment(\.tabTaps, taps[.search, default: 0])
                 }
+            }
+            // Above the tab bar on every tab but Live, whose picture says the same
+            // (play-on-apple-tv/connected-to-a-tv).
+            .overlay(alignment: .bottom) {
+                if selection != .live { PlayOnBarHost().padding(.bottom, 64) }
             }
             .environment(\.showSettings, ShowSettingsAction { settingsShown = true })
             .sheet(isPresented: $settingsShown) {

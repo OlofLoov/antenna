@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iPad and Mac Playing on bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/connected-to-a-tv on iPad and Mac: the "Playing on Living Room" bar is a glass capsule centered at the bottom of the window over the content, 56 pt tall and at most 520 pt wide, as on iPhone (playOn.bar, playOn.bar.playPause). In Live's side-by-side layout the picture area shows the connected picture of iPhone-Live-Connected at its own size, and the bar is left out there, as on iPhone. "Stopped on Living Room" replaces the first line for three seconds when the TV stops, with no play or pause button, then the bar goes. Drawn: the Movies grid on iPad with the bar, and the stopped state below it. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1180px; height: 820px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 280px; background: #11151C"></div>
+  <div style="position: absolute; left: 304px; top: 40px; right: 24px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px">
+    <div style="height: 240px; border-radius: 10px; background: #3A2F4A"></div>
+    <div style="height: 240px; border-radius: 10px; background: #2F4A3A"></div>
+    <div style="height: 240px; border-radius: 10px; background: #4A3A2F"></div>
+    <div style="height: 240px; border-radius: 10px; background: #2F3A4A"></div>
+    <div style="height: 240px; border-radius: 10px; background: #4A2F3A"></div>
+  </div>
+  <!-- playOn.bar -->
+  <div style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 96px; width: 520px; height: 56px; border-radius: 28px; background: rgba(60,66,78,0.85); display: flex; align-items: center; gap: 12px; padding: 0 8px 0 20px; box-sizing: border-box">
+    <span aria-hidden="true" style="color: {{accent}}">&#9645;</span>
+    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 13px; font-weight: 600">Playing on Living Room</span><span style="font-size: 13px; color: #A7B0BF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Sport One · Premier League: Arsenal v Liverpool</span></div>
+    <!-- playOn.bar.playPause -->
+    <div style="width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center">&#10074;&#10074;</div>
+  </div>
+  <!-- The bar once the TV stopped -->
+  <div style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 24px; width: 520px; height: 56px; border-radius: 28px; background: rgba(60,66,78,0.85); display: flex; align-items: center; gap: 12px; padding: 0 20px; box-sizing: border-box">
+    <span aria-hidden="true" style="color: #A7B0BF">&#9645;</span>
+    <span style="font-size: 13px; font-weight: 600">Stopped on Living Room</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#5BB8FF","options":["#5BB8FF","#FFB454","#4FD1C5","#C084FC"]},"$preview":{"width":1180,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#5BB8FF' };
+  }
+}
+</script>
+</body>
+</html>

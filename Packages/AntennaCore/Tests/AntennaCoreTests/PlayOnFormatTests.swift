@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 import Testing
 
 @testable import AntennaCore
@@ -195,6 +196,64 @@ import Testing
         #expect(PlayOnKey.sender(identity: PlayOnKey.identity(sender: id)) == id)
         #expect(PlayOnKey.sender(identity: Data("guest".utf8)) == nil)
         #expect(PlayOnKey.keyDate(Date(timeIntervalSince1970: 12.9)) == Date(timeIntervalSince1970: 12))
+    }
+}
+
+@Suite struct PlayOnConnectedTextTests {
+    @Test("play-on-apple-tv/connected-to-a-tv: the bar names the TV, the item and the programme")
+    func bar() {
+        let status = PlayStatus(state: .playing, title: "Sport One", subtitle: "Premier League: Arsenal v Liverpool")
+        #expect(PlayOnText.playing(on: "Living Room", locale: .english) == "Playing on Living Room")
+        #expect(PlayOnText.statusLine(status, locale: .english) == "Sport One · Premier League: Arsenal v Liverpool")
+        #expect(PlayOnText.statusLine(PlayStatus(state: .paused, title: "Salt Road"), locale: .english) == "Salt Road")
+        #expect(PlayOnText.stopped(on: "Living Room", locale: .english) == "Stopped on Living Room")
+    }
+
+    @Test("play-on-apple-tv/play-on-this-iphone: the button names the device it moves to")
+    func playHere() {
+        #expect(PlayOnText.playHere(.phone, locale: .english) == "Play on this iPhone")
+        #expect(PlayOnText.playHere(.pad, locale: .english) == "Play on this iPad")
+        #expect(PlayOnText.playHere(.mac, locale: .english) == "Play on this Mac")
+        #expect(PlayOnText.resumeOn("Living Room", locale: .english) == "Resume on Living Room")
+    }
+}
+
+@Suite struct StreamGateTests {
+    /// Counts loads; plays nothing.
+    final class Counting: PlaybackEngine, @unchecked Sendable {
+        private let loads = Mutex(0)
+        var count: Int { loads.withLock { $0 } }
+        var state: PlaybackState { get async { .idle } }
+        var capabilities: EngineCapabilities { get async { EngineCapabilities(supportsPictureInPicture: false) } }
+        func load(_ url: URL, options: PlaybackOptions) async throws { loads.withLock { $0 += 1 } }
+        func play() async {}
+        func pause() async {}
+        func stop() async {}
+        func handOver() async {}
+        func seek(to time: Duration) async throws {}
+        func selectAudio(_ id: MediaTrack.ID) async {}
+        func selectSubtitle(_ id: MediaTrack.ID?) async {}
+        func states() async -> AsyncStream<PlaybackState> { AsyncStream { $0.finish() } }
+        func presentation() async -> AsyncStream<PresentationInfo?> { AsyncStream { $0.finish() } }
+        func tracks() async -> AsyncStream<TrackList> { AsyncStream { $0.finish() } }
+        func position() async -> AsyncStream<PlaybackPosition> { AsyncStream { $0.finish() } }
+        func subtitleCues() async -> AsyncStream<[SubtitleCue]> { AsyncStream { $0.finish() } }
+    }
+
+    @Test("play-on-apple-tv/the-phone-opens-no-stream-while-connected: a closed gate turns every load away")
+    func closedGate() async throws {
+        let system = Counting(), demuxer = Counting(), gate = StreamGate()
+        let engine = RoutedEngine(system: system, demuxer: demuxer, gate: gate)
+        gate.close()
+        for address in ["http://a.example/1.ts", "http://a.example/2.m3u8", "http://a.example/3.mkv"] {
+            let url = try #require(URL(string: address))
+            await #expect(throws: CancellationError.self) { try await engine.load(url, options: PlaybackOptions()) }
+        }
+        #expect(system.count + demuxer.count == 0)
+        #expect(gate.refused == 3)
+        gate.open()
+        try await engine.load(URL(filePath: "/a/1.ts"), options: PlaybackOptions())
+        #expect(system.count + demuxer.count == 1)
     }
 }
 

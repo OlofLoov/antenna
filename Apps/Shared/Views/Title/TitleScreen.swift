@@ -69,7 +69,7 @@ struct TitleScreen<Page: View>: View {
                 metadata: metadata, posterURL: route.title.posterURL, loading: model.phase == .loading, play: play,
                 isOnMyList: activity.isOnMyList(route.title), problem: problem, expanded: expandsInPlace && expanded,
                 section: backTitle, aboutOpen: aboutOpener,
-                chips: model.credits.chips, returningChip: returningChip, playOn: playOnItem == nil ? nil : destination?.choice),
+                chips: model.credits.chips, returningChip: returningChip, playOn: playOnChoice),
             actions: .init(
                 back: { library.closePage() }, play: start, toggleMyList: { activity.toggleMyList(route.title) },
                 retry: { attempt += 1 }, expand: expand,
@@ -82,6 +82,11 @@ struct TitleScreen<Page: View>: View {
     /// episode Play names from its place
     /// (play-on-apple-tv/play-on-from-what-can-be-played). Nil while a
     /// series has no episode to start.
+    /// The TVs Play on lists; none while connected, where Play already sends.
+    private var playOnChoice: PlayOnChoice? {
+        playOnItem == nil || destination?.connection != nil ? nil : destination?.choice
+    }
+
     private var playOnItem: PlayOnItem? {
         let title = route.title
         switch title.kind {
@@ -226,11 +231,19 @@ struct TitleScreen<Page: View>: View {
         SeriesPlayTarget.resolve(episodes: model.episodes, progress: seriesProgress)
     }
 
+    /// Play or Resume; while connected to an Apple TV, "Play on Living Room"
+    /// or "Resume on Living Room", since Play sends it there
+    /// (play-on-apple-tv/play-goes-to-the-tv-while-connected).
     private var play: TitlePageContext.PlayState {
-        switch route.title.kind {
-        case .movie: .movie(activity.progress(of: route.title))
-        case .series: .series(target, progress: seriesProgress)
+        var state: TitlePageContext.PlayState =
+            switch route.title.kind {
+            case .movie: .movie(activity.progress(of: route.title))
+            case .series: .series(target, progress: seriesProgress)
+            }
+        if let tv = destination?.connection?.tv.name {
+            state.label = state.fraction == nil ? PlayOnText.playOn(tv) : PlayOnText.resumeOn(tv)
         }
+        return state
     }
 
     /// Plays the movie or the episode Play names. Without the login on this

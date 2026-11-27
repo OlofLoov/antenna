@@ -53,10 +53,18 @@ extension RoutedEngine {
     @MainActor static func app() -> RoutedEngine {
         let display = DisplayMatcher()
         let hold = FrameHold()
-        let engine = RoutedEngine(system: AVPlayerEngine(display: display, hold: hold), demuxer: DemuxEngine(display: display, hold: hold))
+        let engine = RoutedEngine(
+            system: AVPlayerEngine(display: display, hold: hold), demuxer: DemuxEngine(display: display, hold: hold), gate: .app)
         OpenEngines.shared.add(engine)
         return engine
     }
+}
+
+extension StreamGate {
+    /// The gate every app engine checks; closed while this phone, iPad or
+    /// Mac is connected to an Apple TV
+    /// (play-on-apple-tv/the-phone-opens-no-stream-while-connected).
+    static let app = StreamGate()
 }
 
 extension PlaybackEngine {

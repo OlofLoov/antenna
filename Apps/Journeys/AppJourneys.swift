@@ -176,6 +176,17 @@ final class AppJourneys: XCTestCase {
         journey.snap("title-play-on", anchor: "title.playOn.menu")
     }
 
+    /// Live while connected to Living Room, the picture area showing what
+    /// the TV plays (play-on-apple-tv, `iPhone-Live-Connected`).
+    func testLiveConnected() {
+        let journey = Journey(self, arguments: ["-ui-testing-live", "channels", "-ui-testing-play-on", "one"])
+        let row = journey.element("browse.row.00000000-0000-0000-0000-0000000000D1.1")
+        if row.waitForExistence(timeout: 10) { row.press(forDuration: 1.2) }
+        let item = journey.app.buttons["channel.menu.playOn"].firstMatch
+        if item.waitForExistence(timeout: 5) { item.tap() }
+        journey.snap("live-connected", anchor: "playOn.live")
+    }
+
     /// A movie playing with its controls up (add-title-transport-controls,
     /// `iPhone-Title-Player-Transport`, `iPad-Title-Player-Transport`).
     func testMoviePlayer() {

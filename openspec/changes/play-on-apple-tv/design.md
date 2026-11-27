@@ -168,11 +168,7 @@ Drawn for groups 2 and 3 (task 1.2):
 
 Drawn for group 4: `TV-FromIPhone-Offer-Channel.dc.html`, the offer for a channel with its logo tile and the facts line for each kind; the offline line is in `iPhone-PlayOn-Messages.dc.html`.
 
-Not drawn yet, to draw before the group that builds them:
-
-- The connected sheet: art, item, play or pause, "Play on this iPhone", "Disconnect".
-- iPad and Mac: the bar at the bottom of the window and the connected picture in the side-by-side layout.
-- "Stopped on Living Room" in the bar.
+Drawn for group 5 (task 5.1): `iPhone-PlayOn-Sheet.dc.html`, the connected sheet; `iPad-PlayOn-Bar.dc.html`, the bar at the bottom of an iPad or Mac window, with "Stopped on Living Room" below it.
 
 ## Copy
 
@@ -260,6 +256,11 @@ No data migration. The zones are created on first write. Turning the feature off
 - **Until the iCloud queue lands.** In the first slice a TV that does not answer within 3 seconds gives "Living Room didn't answer. Open Antuna there and try again." Slice 2 replaces this with the iCloud fallback; the line stays for an iCloud save that fails for another reason than being offline.
 - **A kept request becomes the offer.** From slice 2 a request kept behind the paywall or "Who's watching?" shows as the offer once the shell is up, as the spec's paywall scenario says, rather than playing by itself.
 - **The silent push on tvOS.** The TV app gains a `UIApplicationDelegateAdaptor` that registers for remote notifications and passes the `play-requests` zone push on; the shell's 30-second pickup covers a push that never comes.
+- **The stream gate lives in `RoutedEngine`.** There is no single `AppEngine` object: Live, the title player and every multi-view tile own a `RoutedEngine` made by `RoutedEngine.app()`. Each gets the shared `StreamGate.app` (AntennaCore), and `load` throws `CancellationError` while the gate is shut, so no screen opens a stream while connected. The counting test runs a `RoutedEngine` through the gate.
+- **Where plays turn to the TV.** `LiveModel.pick` and `ShelfPlayback`'s one start function hand the item to `PlayDestination.playOnTV` while connected. Every channel play (Live, the Guide's Watch, Search, a reminder) goes through `pick`, and every film or episode through that start. Live goes on to mark the row as it would, and the gate keeps its load from opening anything.
+- **When the phone counts as connected.** After an answer of `started` or `needsPasscode` on the link; any other answer closes it. A start while connected shows no line, since the bar says it.
+- **Going to the background.** The connection ends without telling the TV, which keeps playing. The phone remembers the TV and the request, keeps the gate shut, and on returning connects again when the TV's first status still names that request. A TV sends its status to every phone that completes the handshake, so a reconnect needs no request.
+- **Frames between the handshake and the connection.** A link the sender hands over holds the frames that arrive before the connection listens, so the TV's first status is not lost.
 - **Deleting a picked-up request.** The TV deletes the request it picked up only while that request is still the one waiting, so a newer request sent in between stays.
 
 ## Device checks left for the owner

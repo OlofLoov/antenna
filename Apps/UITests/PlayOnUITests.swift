@@ -62,7 +62,7 @@ final class PlayOnUITests: XCTestCase {
         XCTAssertEqual(button.label, "Play on Living Room")
         XCTAssertEqual(probe(app), "browser 0", "the browser waits for the first tap on Play on")
         button.tap()
-        expectSent(app, "Playing on Living Room")
+        XCTAssertTrue(app.element("playOn.bar").waitForExistence(timeout: 10), "connected after the send")
         XCTAssertEqual(probe(app), "browser 1")
     }
 
@@ -84,7 +84,7 @@ final class PlayOnUITests: XCTestCase {
         XCTAssertTrue(rows.element(boundBy: 1).label.contains("Plays when Antuna opens there"), rows.element(boundBy: 1).label)
         XCTAssertEqual(probe(app), "browser 1", "opening the menu starts the browser")
         rows.element(boundBy: 0).tap()
-        expectSent(app, "Playing on Living Room")
+        XCTAssertTrue(app.element("playOn.bar").waitForExistence(timeout: 10), "connected after the send")
     }
 
     // play-on-apple-tv/the-local-network-is-asked-for-only-when-needed
@@ -147,8 +147,7 @@ final class PlayOnUITests: XCTestCase {
         XCTAssertTrue(item.waitForExistence(timeout: 5))
         XCTAssertEqual(item.label, "Play on Living Room")
         item.tap()
-        expectSent(app, "Playing on Living Room")
-        XCTAssertTrue(app.element("browse.nothingSelected").exists, "the phone plays nothing itself")
+        XCTAssertTrue(app.element("playOn.live").waitForExistence(timeout: 10), "the picture shows what the TV plays")
     }
 
     // play-on-apple-tv/apple-tvs-on-the-same-icloud-account

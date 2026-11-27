@@ -79,7 +79,7 @@ import Testing
         let sent = request(from: phone)
         let outcome = await NetworkPlaySender(device: phone).send(
             sent, to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3))
-        #expect(outcome == .answered(.needsPasscode))
+        #expect(outcome.outcome == .answered(.needsPasscode))
         #expect(received == [sent])
     }
 
@@ -99,7 +99,7 @@ import Testing
         let port = try await port(of: listener)
         let outcome = await NetworkPlaySender(device: guest).send(
             request(from: guest), to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3))
-        #expect(outcome == .refused)
+        #expect(outcome.outcome == .refused)
         #expect(received == 0)
         // The TV hears about the failed handshake, so it can read the device list again.
         for _ in 0..<100 where refusals == 0 { try await Task.sleep(for: .milliseconds(10)) }
@@ -117,7 +117,7 @@ import Testing
         var stale = tv.info(now: Self.keyDate)
         stale.keyDate = Self.keyDate.addingTimeInterval(-3600)
         let outcome = await NetworkPlaySender(device: phone).send(request(from: phone), to: stale, at: endpoint(port), within: .seconds(3))
-        #expect(outcome == .refused)
+        #expect(outcome.outcome == .refused)
     }
 
     @Test("play-on-apple-tv/the-phone-says-why-the-tv-cannot-play: a request from a newer Antuna is answered unsupportedVersion")
@@ -134,7 +134,7 @@ import Testing
         let port = try await port(of: listener)
         let outcome = await NetworkPlaySender(device: phone).send(
             request(from: phone, version: 2), to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3))
-        #expect(outcome == .answered(.unsupportedVersion))
+        #expect(outcome.outcome == .answered(.unsupportedVersion))
         #expect(received == 0)
     }
 
@@ -148,7 +148,39 @@ import Testing
         let port = try await port(of: listener)
         let outcome = await NetworkPlaySender(device: phone).send(
             request(from: phone), to: tv.info(now: Self.keyDate), at: endpoint(port), within: .milliseconds(500))
-        #expect(outcome == .noAnswer)
+        #expect(outcome.outcome == .noAnswer)
+    }
+
+    @Test("play-on-apple-tv/connected-to-a-tv: a connected phone hears what the TV plays and its play and pause reach the TV")
+    func listenerStatusAndControl() async throws {
+        let listener = PlayOnListener(device: tv, advertises: false)
+        let tvSide = TVSide()
+        let playing = PlayStatus(state: .playing, title: "Sport One")
+        listener.currentStatus = { playing }
+        listener.control = { tvSide.controls.append($0) }
+        listener.accept([phone.info(now: Self.keyDate)])
+        listener.start()
+        defer { listener.stop() }
+        let port = try await port(of: listener)
+        let link = try #require(
+            await NetworkPlaySender(device: phone).connect(to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3)))
+        defer { link.close() }
+        var statuses: [PlayStatus] = []
+        link.listen { result in
+            if case .success(.status(let status)) = result { statuses.append(status) }
+        }
+        for _ in 0..<300 where statuses.isEmpty { try await Task.sleep(for: .milliseconds(10)) }
+        #expect(statuses.first == playing, "the TV says what plays as soon as the phone connects")
+        link.send(.control(.pause))
+        for _ in 0..<300 where tvSide.controls.isEmpty { try await Task.sleep(for: .milliseconds(10)) }
+        #expect(tvSide.controls == [.pause])
+        let paused = PlayStatus(state: .paused, title: "Sport One")
+        listener.broadcast(paused)
+        for _ in 0..<300 where statuses.count < 2 { try await Task.sleep(for: .milliseconds(10)) }
+        #expect(statuses.last == paused)
+        link.send(.control(.disconnect))
+        for _ in 0..<300 where listener.connectedCount > 0 { try await Task.sleep(for: .milliseconds(10)) }
+        #expect(listener.connectedCount == 0, "Disconnect makes the TV forget the phone")
     }
 
     @Test("play-on-apple-tv/a-request-holds-no-link-and-no-login: status and control frames cross the encrypted link")

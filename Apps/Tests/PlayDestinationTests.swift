@@ -40,10 +40,50 @@ import Testing
             self.outcomes = outcomes
         }
 
-        func send(_ request: PlayRequest, to tv: PlayDeviceInfo, at endpoint: NWEndpoint, within limit: Duration) async -> PlaySendOutcome {
+        /// Links handed back with an answer, in order; none leaves the phone unconnected.
+        var links: [FakeLink] = []
+
+        func send(_ request: PlayRequest, to tv: PlayDeviceInfo, at endpoint: NWEndpoint, within limit: Duration) async -> PlaySend {
             onSend()
             sent.append(request)
-            return outcomes.isEmpty ? .answered(.started) : outcomes.removeFirst()
+            let outcome = outcomes.isEmpty ? PlaySendOutcome.answered(.started) : outcomes.removeFirst()
+            guard case .answered = outcome, !links.isEmpty else { return PlaySend(outcome: outcome) }
+            return PlaySend(outcome: outcome, link: links.removeFirst())
+        }
+
+        func connect(to tv: PlayDeviceInfo, at endpoint: NWEndpoint, within limit: Duration) async -> (any PlayOnLinking)? {
+            links.isEmpty ? nil : links.removeFirst()
+        }
+    }
+
+    /// The phone's end of a link to a scripted TV: it keeps what was sent,
+    /// and the test plays the TV's side with `tv(_:)`.
+    final class FakeLink: PlayOnLinking {
+        var received: @MainActor (Result<PlayMessage, PlayMessage.DecodeError>) -> Void = { _ in }
+        func listen(_ handler: @escaping @MainActor (Result<PlayMessage, PlayMessage.DecodeError>) -> Void) { received = handler }
+        var changed: @MainActor (PlayLink.State) -> Void = { _ in }
+        var sent: [PlayMessage] = []
+        var closed = false
+        /// What the TV answers a `play` with, sent back at once; nil sends nothing.
+        var answer: PlayAnswer.Result? = .started
+
+        func send(_ message: PlayMessage) {
+            sent.append(message)
+            if case .play(let request) = message, let answer { tv(.answer(PlayAnswer(requestID: request.id, result: answer))) }
+        }
+
+        func close() {
+            closed = true
+        }
+
+        /// A frame from the TV.
+        func tv(_ message: PlayMessage) {
+            received(.success(message))
+        }
+
+        /// The TV's end of the link drops.
+        func drop() {
+            changed(.ended(.unreachable))
         }
     }
 
@@ -58,6 +98,7 @@ import Testing
         let sender: Sender
         let devices: InMemoryPlayDevices
         let defaults: UserDefaults
+        let gate: StreamGate
     }
 
     static func rig(
@@ -66,6 +107,7 @@ import Testing
     ) throws -> Rig {
         let defaults = try #require(UserDefaults(suiteName: "play-destination-\(UUID().uuidString)"))
         let browser = Browser()
+        let gate = StreamGate()
         browser.found = found
         let sender = Sender(outcomes)
         let fixed = now
@@ -75,11 +117,14 @@ import Testing
             keys: try PlayOnKeyPair(rawRepresentation: Data(repeating: 3, count: 32), keyDate: now))
         var dependencies = PlayDestination.Dependencies(devices: devices, browser: browser, sender: sender, device: device)
         dependencies.stopLocal = stopLocal
+        dependencies.gate = gate
+        dependencies.stoppedShows = .milliseconds(10)
         dependencies.now = { now }
         dependencies.sleep = { _ in }
         dependencies.defaults = defaults
         dependencies.locale = Locale(identifier: "en_US")
-        return Rig(destination: PlayDestination(dependencies), browser: browser, sender: sender, devices: devices, defaults: defaults)
+        return Rig(
+            destination: PlayDestination(dependencies), browser: browser, sender: sender, devices: devices, defaults: defaults, gate: gate)
     }
 
     static let channel = PlayOnItem(item: .channel(key: "4f1c"), source: UUID(), title: "Sport One", sourceName: "Acme TV")

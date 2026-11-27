@@ -15,6 +15,8 @@ final class LiveModel {
 
     private(set) var sources: [LiveSource] = []
     private(set) var channels: [Channel] = []
+    /// Sends a picked channel to a connected Apple TV; true when it did (play-on-apple-tv).
+    @ObservationIgnored var playsElsewhere: (@MainActor (Channel) -> Bool)?
     var catalogue = Catalogue<PersistentIdentifier>(channels: [], groupOrder: [:], favorites: []) { didSet { refreshRows() } }
     var groupRules = GroupRules()
     /// The group whose channels the list shows.
@@ -281,6 +283,10 @@ final class LiveModel {
     func pick(_ channel: Channel) {
         restore.channel = nil
         restore.started = nil
+        // Connected to an Apple TV, the channel goes there; the row still
+        // marks it, and the stream gate keeps the load below from opening
+        // anything (play-on-apple-tv/play-goes-to-the-tv-while-connected).
+        _ = playsElsewhere?(channel)
         // In multi-view the list fills the selected tile (multi-view/change-a-tile-s-channel).
         if let multiView {
             Task { await multiView.change(multiView.session.selected, to: channel) }

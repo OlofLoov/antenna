@@ -297,9 +297,11 @@
     struct GuideNowPlayingBar: View {
         @Environment(LiveModel.self) private var live
         @Environment(\.guideBoardOpenLive) private var openLive
+        @Environment(\.playDestination) private var destination
 
         var body: some View {
-            if let channel = live.playing {
+            // Connected, the Playing on bar takes this one's place (play-on-apple-tv/the-phone-opens-no-stream-while-connected).
+            if destination?.connection == nil, let channel = live.playing {
                 TimelineView(.periodic(from: .now, by: LiveClock.tick)) { context in
                     let text = GuideNowPlaying.text(for: channel, live: live, at: context.date)
                     GuideBoard.Compact.NowPlayingBar(
