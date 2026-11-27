@@ -427,12 +427,22 @@ platform exists.
   `aps-environment`, `keychain-access-groups` with
   `<team id>.se.codecrave.antenna.shared` and, on the iPhone app, the
   associated domain.
+- [ ] **encrypt-synced-library, reset the development schema.** Before the
+  first build with encrypted fields syncs, open CloudKit Console, pick
+  `iCloud.se.codecrave.antenna`, and check the Production schema has no `CD_`
+  record types. Then reset the Development environment. If Production has
+  them, stop: the change's `design.md`, Decision 2, says what to do instead.
+  Expect a device that synced before to upload its library again; if it logs
+  export errors, delete the app on it and install it again.
 - [ ] **add-signing-capabilities 5.2, CloudKit schema in production.** After a
   development build has synced every kind of record (a source, a favorite, a
   group change, a guide, a profile, a reminder, watch progress, an item in My
   list, a recent search, and a login sent to an Apple TV), open CloudKit
   Console, pick `iCloud.se.codecrave.antenna`, check the Development schema
-  lists the `CD_` record types, `LoginDrop`, `PlayDevice` and `PlayRequest`, and choose Deploy Schema
+  lists the `CD_` record types, `LoginDrop`, `PlayDevice` and `PlayRequest`,
+  that every field of the `CD_` types and `deviceName`, `devicePublicKey` and
+  `deviceKeyDate` on `PlayDevice` show as encrypted
+  (source-management/the-synced-library-is-in-encrypted-fields), and choose Deploy Schema
   Changes to Production. Do this before each TestFlight or App Store build that
   adds a synced record type. Expect the Production schema to match, and a
   TestFlight build to sync between two devices.

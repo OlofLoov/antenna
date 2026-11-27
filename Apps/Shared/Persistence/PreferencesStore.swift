@@ -7,17 +7,17 @@ import SwiftData
 /// read and the rest deleted. Every field is defaulted and nothing is unique.
 @Model
 final class PreferencesRecord {
-    var id: UUID = UUID()
-    var openOnLaunchRaw: String = AppPreferences.LaunchScreen.live.rawValue
-    var guideHours: Int = 2
+    @Attribute(.allowsCloudEncryption) var id: UUID = UUID()
+    @Attribute(.allowsCloudEncryption) var openOnLaunchRaw: String = AppPreferences.LaunchScreen.live.rawValue
+    @Attribute(.allowsCloudEncryption) var guideHours: Int = 2
     /// Hours between scheduled refreshes; 0 is manual only.
-    var refreshHours: Int = AppPreferences.RefreshInterval.twelve.rawValue
-    var swipeRaw: String = AppPreferences.Swipe.changesChannel.rawValue
+    @Attribute(.allowsCloudEncryption) var refreshHours: Int = AppPreferences.RefreshInterval.twelve.rawValue
+    @Attribute(.allowsCloudEncryption) var swipeRaw: String = AppPreferences.Swipe.changesChannel.rawValue
     /// Off, Auto or Always (sources-and-settings/choose-when-subtitles-show).
-    var subtitlesRaw: String = SubtitleMode.auto.rawValue
+    @Attribute(.allowsCloudEncryption) var subtitlesRaw: String = SubtitleMode.auto.rawValue
     /// Movie info and scores (sources-and-settings/a-switch-for-movie-database-lookups).
-    var lookupsEnabled: Bool = true
-    var updatedAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var lookupsEnabled: Bool = true
+    @Attribute(.allowsCloudEncryption) var updatedAt: Date = Date.now
 
     init() {}
 

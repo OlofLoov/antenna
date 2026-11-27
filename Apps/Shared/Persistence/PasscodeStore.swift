@@ -11,12 +11,12 @@ import SwiftData
 /// Duplicates keep the earliest `createdAt`; the rest are deleted.
 @Model
 final class PasscodeRecord {
-    var id: UUID = UUID()
-    var salt: Data?
-    var verifier: Data?
-    var createdAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var id: UUID = UUID()
+    @Attribute(.allowsCloudEncryption) var salt: Data?
+    @Attribute(.allowsCloudEncryption) var verifier: Data?
+    @Attribute(.allowsCloudEncryption) var createdAt: Date = Date.now
     /// When the passcode was last set or changed, on any device.
-    var changedAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var changedAt: Date = Date.now
 
     init(salt: Data, verifier: Data, now: Date) {
         self.salt = salt

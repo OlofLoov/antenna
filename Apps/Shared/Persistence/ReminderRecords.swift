@@ -8,16 +8,16 @@ import SwiftData
 /// or login.
 @Model
 final class ReminderRecord {
-    var id: UUID = UUID()
-    var sourceID: UUID?
-    var guideID: String = ""
-    var start: Date = Date.distantPast
-    var stop: Date?
-    var title: String = ""
-    var channelName: String = ""
-    var movedFrom: Date?
-    var notListed: Bool = false
-    var createdAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var id: UUID = UUID()
+    @Attribute(.allowsCloudEncryption) var sourceID: UUID?
+    @Attribute(.allowsCloudEncryption) var guideID: String = ""
+    @Attribute(.allowsCloudEncryption) var start: Date = Date.distantPast
+    @Attribute(.allowsCloudEncryption) var stop: Date?
+    @Attribute(.allowsCloudEncryption) var title: String = ""
+    @Attribute(.allowsCloudEncryption) var channelName: String = ""
+    @Attribute(.allowsCloudEncryption) var movedFrom: Date?
+    @Attribute(.allowsCloudEncryption) var notListed: Bool = false
+    @Attribute(.allowsCloudEncryption) var createdAt: Date = Date.now
 
     init(_ reminder: Reminder) {
         id = reminder.id

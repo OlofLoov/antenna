@@ -171,7 +171,7 @@ import Testing
         }
     }
 
-    @Test("antuna-website/the-privacy-policy-says-where-data-is-kept: iCloud, the Keychain and the ten-minute exception")
+    @Test("antuna-website/the-privacy-policy-says-where-data-is-kept: iCloud, encrypted fields, the Keychain and the ten-minute exception")
     func privacyStorage() throws {
         let html = try read(Self.privacy)
         #expect(
@@ -183,7 +183,9 @@ import Testing
         for phrase in [
             "published by Code Crave", "private iCloud database", "Code Crave cannot read it", "favorites", "preferences",
             "programme reminders", "channel groups", "watch progress", "iCloud Keychain", "at most ten minutes", "Removing a source",
-            "see the Support page", "kept in the mailbox to answer you",
+            "see the Support page", "kept in the mailbox to answer you", "in encrypted fields", "Advanced Data Protection",
+            "end-to-end encrypted: only your devices hold the keys", "Without it, Apple holds the keys",
+            "how many records Antuna keeps, how large they are and when they changed",
         ] {
             #expect(body.contains(phrase), "\(phrase)")
         }

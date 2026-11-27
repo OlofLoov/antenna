@@ -86,11 +86,20 @@ actor InMemoryPlayDevices: PlayDeviceStoring {
 
 /// Device records in the zone `PlayDevices` of the user's private CloudKit
 /// database, outside SwiftData's zone. One `PlayDevice` record per device,
-/// named `device-<id>`, holding only public data. Without a container every
-/// method fails with `notSignedIn` and CloudKit is never called.
+/// named `device-<id>`, holding only public data. The name, public key and
+/// key date are in encrypted values
+/// (source-management/the-synced-library-is-in-encrypted-fields). Without a
+/// container every method fails with `notSignedIn` and CloudKit is never called.
 struct CloudKitPlayDevices: PlayDeviceStoring {
     static let zoneID = CKRecordZone.ID(zoneName: "PlayDevices", ownerName: CKCurrentUserDefaultName)
     static let recordType = "PlayDevice"
+
+    /// The fields kept in `encryptedValues`.
+    enum Key {
+        static let name = "deviceName"
+        static let publicKey = "devicePublicKey"
+        static let keyDate = "deviceKeyDate"
+    }
 
     var container: String? = CloudSync.container
 
@@ -103,14 +112,20 @@ struct CloudKitPlayDevices: PlayDeviceStoring {
         CKRecord.ID(recordName: "device-\(id.uuidString.lowercased())", zoneID: zoneID)
     }
 
-    func save(_ device: PlayDeviceInfo) async throws(PlayOnStoreError) {
-        let record = CKRecord(recordType: Self.recordType, recordID: Self.recordID(device.id))
+    /// The record `save` writes for `device`.
+    static func record(_ device: PlayDeviceInfo) -> CKRecord {
+        let record = CKRecord(recordType: recordType, recordID: recordID(device.id))
         record["kind"] = device.kind.rawValue
-        record["name"] = device.name
-        record["publicKey"] = device.publicKey
-        record["keyDate"] = device.keyDate
+        record.encryptedValues[Key.name] = device.name
+        record.encryptedValues[Key.publicKey] = device.publicKey
+        record.encryptedValues[Key.keyDate] = device.keyDate
         record["lastSeen"] = device.lastSeen
         record["version"] = Int64(device.version)
+        return record
+    }
+
+    func save(_ device: PlayDeviceInfo) async throws(PlayOnStoreError) {
+        let record = Self.record(device)
         let database = try database()
         do {
             do {
@@ -175,10 +190,10 @@ struct CloudKitPlayDevices: PlayDeviceStoring {
         let name = record.recordID.recordName
         guard name.hasPrefix("device-"), let id = UUID(uuidString: String(name.dropFirst("device-".count))),
             let kind = (record["kind"] as? String).flatMap(PlayDeviceInfo.Kind.init(rawValue:)),
-            let publicKey = record["publicKey"] as? Data, let keyDate = record["keyDate"] as? Date
+            let publicKey = record.encryptedValues[Key.publicKey] as? Data, let keyDate = record.encryptedValues[Key.keyDate] as? Date
         else { return nil }
         return PlayDeviceInfo(
-            id: id, kind: kind, name: record["name"] as? String ?? "", publicKey: publicKey, keyDate: keyDate,
+            id: id, kind: kind, name: record.encryptedValues[Key.name] as? String ?? "", publicKey: publicKey, keyDate: keyDate,
             lastSeen: record["lastSeen"] as? Date ?? record.modificationDate ?? .distantPast, created: record.creationDate,
             version: (record["version"] as? Int64).map(Int.init) ?? 1)
     }

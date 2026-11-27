@@ -9,21 +9,21 @@ import SwiftData
 @Model
 final class GroupRecord {
     /// For an own group, the group's id; otherwise a fresh id per record.
-    var id: UUID = UUID()
+    @Attribute(.allowsCloudEncryption) var id: UUID = UUID()
     /// `LiveSession.Group.Kind` raw value: all, named, ungrouped or own.
-    var kindRaw: String = ""
-    var sourceID: UUID?
+    @Attribute(.allowsCloudEncryption) var kindRaw: String = ""
+    @Attribute(.allowsCloudEncryption) var sourceID: UUID?
     /// The provider's category name for a named group.
-    var providerName: String?
+    @Attribute(.allowsCloudEncryption) var providerName: String?
     /// The user's name; required for an own group, optional otherwise.
-    var customName: String?
-    var locked: Bool = false
+    @Attribute(.allowsCloudEncryption) var customName: String?
+    @Attribute(.allowsCloudEncryption) var locked: Bool = false
     /// The user's mark: true for adult, false for not adult, nil to follow
     /// the name rules and the provider's flag (adult-content/correct-a-group).
-    var adult: Bool?
+    @Attribute(.allowsCloudEncryption) var adult: Bool?
     /// The group's place in the user's order; nil keeps the usual place.
-    var sortOrder: Int?
-    var createdAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var sortOrder: Int?
+    @Attribute(.allowsCloudEncryption) var createdAt: Date = Date.now
 
     init(group: CatalogueGroup, now: Date = .now) {
         let stored = LiveSession.Group(group)
@@ -51,11 +51,11 @@ final class GroupRecord {
 /// A channel in one of the user's own groups, shaped like `FavoriteRecord`.
 @Model
 final class GroupMemberRecord {
-    var groupID: UUID?
-    var channelID: String = ""
-    var sourceID: UUID?
-    var sortOrder: Int = 0
-    var addedAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var groupID: UUID?
+    @Attribute(.allowsCloudEncryption) var channelID: String = ""
+    @Attribute(.allowsCloudEncryption) var sourceID: UUID?
+    @Attribute(.allowsCloudEncryption) var sortOrder: Int = 0
+    @Attribute(.allowsCloudEncryption) var addedAt: Date = Date.now
 
     init(groupID: UUID, channelID: String, sourceID: UUID, sortOrder: Int) {
         self.groupID = groupID
@@ -69,11 +69,11 @@ final class GroupMemberRecord {
 /// `profileID` is the first profile, Main.
 @Model
 final class HiddenGroupRecord {
-    var profileID: UUID?
+    @Attribute(.allowsCloudEncryption) var profileID: UUID?
     /// `CatalogueGroup.storageKey` of the hidden group.
-    var groupKey: String = ""
-    var hidden: Bool = true
-    var createdAt: Date = Date.now
+    @Attribute(.allowsCloudEncryption) var groupKey: String = ""
+    @Attribute(.allowsCloudEncryption) var hidden: Bool = true
+    @Attribute(.allowsCloudEncryption) var createdAt: Date = Date.now
 
     init(profileID: UUID?, group: CatalogueGroup) {
         self.profileID = profileID
