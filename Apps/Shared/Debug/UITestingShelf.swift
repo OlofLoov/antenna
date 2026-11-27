@@ -421,6 +421,18 @@
     }
 
     extension UITestingShelf {
+        /// `-ui-testing-section-focus-lands-last` asks for the banner's Play
+        /// button 50 ms after a page opened from a poster closes, which moves
+        /// the highlight off that poster as the focus engine does when its
+        /// own pick lands after the poster asked for focus back.
+        static let sectionFocusLandsLastArgument = "-ui-testing-section-focus-lands-last"
+
+        static var sectionFocusLandsLast: Bool {
+            ProcessInfo.processInfo.arguments.contains(sectionFocusLandsLastArgument)
+        }
+    }
+
+    extension UITestingShelf {
         /// `-ui-testing-slow-series` makes a series answer after three
         /// seconds instead of half of one, long enough for a UI test to see
         /// the title page wait (title-detail-and-episode-picker/the-page-shows-in-one-go).

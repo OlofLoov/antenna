@@ -323,14 +323,25 @@ struct ReturnFocus: ViewModifier {
     @Environment(ShelfLibrary.self) private var library
     @FocusState private var focused: Bool
 
+    /// How many times the poster asks for focus, 100 ms apart.
+    static let attempts = 10
+
     func body(content: Content) -> some View {
         #if os(tvOS)
             content
                 .focused($focused)
                 .task(id: library.returning?.title) {
                     guard let back = library.returning, back.title == title, back.origin == origin else { return }
-                    await Task.yield()
-                    focused = true
+                    // As the page closes the focus engine puts the highlight
+                    // in the section itself, on the banner's Play button or a
+                    // poster in a row above, and that can land after this
+                    // poster asked for it. Ask again until the poster has it.
+                    for _ in 0..<Self.attempts {
+                        focused = true
+                        try? await Task.sleep(for: .milliseconds(100))
+                        guard !Task.isCancelled else { return }
+                        if focused { break }
+                    }
                     library.returned()
                 }
         #else

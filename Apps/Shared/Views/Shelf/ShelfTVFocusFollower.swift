@@ -139,10 +139,10 @@
 
         /// Leaving the rows for the banner scrolls back to the top, and the
         /// preview starts over on the banner's title next time. Not while a
-        /// page or the player covers the rows, so the poster it opened from
-        /// stays loaded to take focus back.
+        /// page or the player covers the rows, or while the poster it opened
+        /// from takes focus back, so that poster stays loaded.
         private func backToTop() {
-            guard library.top == nil, playback.playing == nil else { return }
+            guard library.top == nil, playback.playing == nil, library.returning == nil else { return }
             withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.3)) {
                 position.scrollTo(edge: .top)
             }
