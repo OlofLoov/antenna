@@ -95,7 +95,7 @@ enum ShelfView {
                         }
                 }
             }
-            .posterButtonStyle()
+            .cardPosterButtonStyle()
             .accessibilityLabel(label)
             .accessibilityIdentifier(identifier ?? "\(prefix).card.\(title.id)")
         }
@@ -146,7 +146,7 @@ enum ShelfView {
                     }
                     .padding(.horizontal, metrics.gutter)
                     // Room for the last poster's card, and for the posters moved aside by a card.
-                    .padding(.trailing, room == nil ? 0 : ShelfExpandedCard.width - metrics.poster.width)
+                    .padding(.trailing, room == nil ? 0 : ShelfExpandedCard.Geometry(metrics: metrics).aside)
                     .padding(.vertical, metrics.corner)
                 }
                 .scrollIndicators(.hidden)

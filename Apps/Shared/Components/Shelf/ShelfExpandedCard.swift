@@ -129,6 +129,30 @@ extension View {
     }
 }
 
+extension View {
+    /// A poster's button. In an Apple TV row whose posters grow into cards
+    /// it only holds focus, since the card draws the lift and shadow: the
+    /// system card style would lift the poster's slot under the card, its
+    /// edge and shadow showing at the poster's size. Elsewhere it is
+    /// `posterButtonStyle()`.
+    func cardPosterButtonStyle() -> some View {
+        modifier(CardPosterButtonStyle())
+    }
+}
+
+private struct CardPosterButtonStyle: ViewModifier {
+    @Environment(\.shelfExpandedCard) private var source
+    @Environment(\.shelfCardRoom) private var room
+
+    func body(content: Content) -> some View {
+        if source != nil, room != nil {
+            content.buttonStyle(FocusHolderStyle())
+        } else {
+            content.posterButtonStyle()
+        }
+    }
+}
+
 private struct CardRoomPlace: ViewModifier {
     let title: ShelfTitle?
     @Environment(\.shelfCardRoom) private var room
@@ -138,7 +162,7 @@ private struct CardRoomPlace: ViewModifier {
     func body(content: Content) -> some View {
         if let room {
             content
-                .offset(x: place.aside ? ShelfExpandedCard.width - metrics.poster.width : 0)
+                .offset(x: place.aside ? ShelfExpandedCard.Geometry(metrics: metrics).aside : 0)
                 .onAppear { room.arrive(place, id: title?.id) }
                 .onDisappear { room.leave(place, id: title?.id) }
         } else {
@@ -159,7 +183,7 @@ extension ShelfExpandedCard {
         var body: some View {
             if let card = spot.card, let source {
                 Lifted(title: card.title, source: source)
-                    .offset(x: CGFloat(card.index) * (metrics.poster.width + metrics.gap))
+                    .offset(x: ShelfExpandedCard.Geometry(metrics: metrics).card(at: card.index).minX)
                     .id(card.title.id)
                     .transition(.opacity)
             }
@@ -172,7 +196,8 @@ extension ShelfExpandedCard {
 /// `TV-Movies-Expanded-Poster-Only`;
 /// movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
 /// It draws over the poster's slot, outside its button, so it has no
-/// focus of its own; the poster's button keeps the highlight.
+/// focus of its own; the poster's button keeps focus and draws no look of
+/// its own (`FocusHolderStyle`), and the card draws the lift and shadow.
 enum ShelfExpandedCard {
     /// The card's width; its height is the poster's.
     static let width: CGFloat = 566
@@ -187,9 +212,38 @@ enum ShelfExpandedCard {
     /// card style lifts a poster by an eighth; a wider view it lifts less,
     /// and at an eighth the card's copy would start left of the safe area.
     static let lift: CGFloat = 1.06
-    /// The poster's size under its card, so with the system's lift it
-    /// stays inside the card.
-    static let under: CGFloat = 0.9
+
+    /// Where a row draws its card and the posters around it. The card grows
+    /// from its slot's leading edge and about the row's middle, and the
+    /// posters after it move aside by the lifted card's extra width, so the
+    /// row's gap stays on both sides of the card as drawn.
+    struct Geometry: Equatable {
+        let metrics: ShelfView.Metrics
+
+        /// The card as drawn, lifted.
+        var lifted: CGSize {
+            CGSize(width: ShelfExpandedCard.width * ShelfExpandedCard.lift, height: metrics.poster.height * ShelfExpandedCard.lift)
+        }
+
+        /// How far the posters after the card move aside.
+        var aside: CGFloat { lifted.width - metrics.poster.width }
+
+        /// The leading edge of the slot at `index`, from the row's first slot.
+        func slot(_ index: Int) -> CGFloat {
+            CGFloat(index) * (metrics.poster.width + metrics.gap)
+        }
+
+        /// The card over the slot at `index`, lifted, with the slot's top at 0.
+        func card(at index: Int) -> CGRect {
+            CGRect(origin: CGPoint(x: slot(index), y: (metrics.poster.height - lifted.height) / 2), size: lifted)
+        }
+
+        /// The poster at `index` while the poster at `card` is the card.
+        func poster(_ index: Int, card: Int?) -> CGRect {
+            let moved = card.map { index > $0 } ?? false
+            return CGRect(origin: CGPoint(x: slot(index) + (moved ? aside : 0), y: 0), size: metrics.poster)
+        }
+    }
 
     /// A poster's face. While its button has focus, where the screen
     /// provides a source and a row's `ShelfCardRoom`, the row draws the
@@ -209,11 +263,9 @@ enum ShelfExpandedCard {
         @State private var expanded = false
 
         var body: some View {
-            // Under the card, the poster shrinks inside the button's lift so
-            // no edge of it shows. It stays drawn: at no opacity the button
-            // would leave the accessibility tree.
+            // The poster stays drawn under the opaque card: at no opacity
+            // the button would leave the accessibility tree.
             poster
-                .scaleEffect(expanded ? ShelfExpandedCard.under : 1)
                 // In a transaction of its own, so the posters after it slide aside with it.
                 .onChange(of: focused && source != nil && room != nil, initial: true) { _, now in
                     guard now != expanded else { return }
@@ -235,7 +287,8 @@ enum ShelfExpandedCard {
             let details = source.details(title)
             Television(text: BannerText(preview: title, details: details), poster: title.posterURL, backdrop: details?.backdropURL)
                 .shadow(color: .black.opacity(0.45), radius: 24, y: 16)
-                .scaleEffect(ShelfExpandedCard.lift)
+                // From the slot's leading edge, so the gap before the card stays the row's.
+                .scaleEffect(ShelfExpandedCard.lift, anchor: .leading)
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("\(prefix).card.focused")
         }

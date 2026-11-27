@@ -113,6 +113,32 @@ final class ShelfExpandedCardTVUITests: XCTestCase {
         XCTAssertGreaterThan(cardFrame.width, 500, "the next poster grew in its place: \(cardFrame)")
     }
 
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, the card keeps the row's spacing
+    // movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv, the highlight is the card
+    // On the device the card touched the posters beside it, and the highlight stayed at the poster's size under it.
+    func testTheCardKeepsTheRowsGapOnBothSides() {
+        open("movies", rights: 2)
+        press(.down)
+        expect(element("movies.card.focused.title"), "exists == true")
+        let first = element("movies.card.focused.title").label
+        // The second poster, so there is one on each side of its card.
+        press(.right)
+        expect(element("movies.card.focused.title"), "label != '\(first)'")
+        // The card's growth and the posters' slide are 0.25 seconds.
+        Thread.sleep(forTimeInterval: 1)
+        let card = cardFrame
+        let posters = element("movies.row.recentlyAdded").descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH 'movies.card.xtream'")).allElementsBoundByIndex.map(\.frame)
+        let before = posters.filter { $0.maxX <= card.minX }.max { $0.maxX < $1.maxX }
+        let after = posters.filter { $0.minX >= card.maxX }.min { $0.minX < $1.minX }
+        guard let before, let after else {
+            return XCTFail("a poster on each side of the card \(card): \(posters)")
+        }
+        XCTAssertEqual(card.minX - before.maxX, 20, accuracy: 2, "the gap before the card: \(before), \(card)")
+        XCTAssertEqual(after.minX - card.maxX, 20, accuracy: 2, "the gap after the card: \(card), \(after)")
+        XCTAssertTrue(card.contains(focusedFrame), "the focused poster stays inside its card: \(focusedFrame), \(card)")
+    }
+
     // design-system/apple-tv-content-stays-in-the-safe-area
     // The hero copy and the rows started 64 pt from the side; the safe area is 80.
     func testMoviesKeepsTheSafeEdges() {
