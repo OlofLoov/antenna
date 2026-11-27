@@ -214,9 +214,17 @@ How: each row is a focus section whose default focus, for a move into
 it, is the poster at the highlight's column (`ShelfRowColumn`,
 `.defaultFocus(priority: .userInitiated)`), so the focus engine lands
 there in one move. `ShelfTVFocusFollower` writes the column to a small
-observed `ShelfColumnState`; only the rows' focus modifiers read it, so a
-move along a row redraws no poster. On the walk six rows down and up this
-lands right on all but about 1 move in 12.
+observed `ShelfColumnState`; only each row's `ShelfRowDefault` reads it,
+so a move along a row redraws no poster. On the walk six rows down and up
+this lands right on all but about 1 move in 12.
+
+Each write still gave every row on screen a new default focus, and the
+bisect of 2026-11-27 ("Where the frames go") found that about 12 dropped
+frames per walk along the posters, a third of main's whole count. A move
+along a row now writes the column only once the highlight has rested
+there 0.25 s (`ShelfColumnState.rest`); a move up or down writes it at
+once. A press up or down within 0.25 s of a move along lands where the
+focus engine picks and is corrected as below, one more focus move.
 
 The rest it corrects. The follower remembers the row and position the
 highlight is on. When it lands in another row on a different position
@@ -272,17 +280,23 @@ How:
   row's titles). Each poster and the See all tile register a
   `ShelfCardPlace` with it as they appear (`makesRoomForTheCard`). When a
   poster takes focus, `Expanding` tells the room inside its animation;
-  the room sets `front` on that poster's place and `aside` on the places
-  after it. Each place is observed alone, so a step along the row
-  redraws only the poster that loses the highlight and the one that gains
-  it; entering a row moves every poster after the column on screen.
+  the room sets `aside` on the places after it and names the card's title
+  and slot in its `ShelfCardSpot`. Each place and the spot are observed
+  alone, so a step along the row redraws one poster and the card;
+  entering a row moves every poster after the column on screen.
 - A place with `aside` is offset by 354 pt, the card's extra width. The
   row's trailing padding has the same 354 pt for good, so the last
   poster's card has room and the content size never changes.
-- The card is an overlay on the place, outside the poster's button. The
-  system card style clips its label to the label's frame, so a card inside
-  the button showed only the poster's width of it. The place in front has
-  `zIndex` 1, so the card draws over the posters that slide under it.
+- The row draws the card (`ShelfExpandedCard.InRow`) in an overlay of its
+  lazy stack, at the focused slot's x: the slots are fixed, so that is
+  the position times the poster's width and the gap. It is outside the
+  poster's button, since the system card style clips its label to the
+  label's frame and a card inside the button showed only the poster's
+  width of it. Over the stack it draws above every poster, so no poster
+  needs a `zIndex`, and a move changes no child of the stack. Each
+  title's card has its own identity and fades in and out as before. The
+  first build of this decision drew the card in an overlay on the
+  focused poster's place, with `zIndex` 1 on it.
 - Outside the button the card has no system lift, so it draws its own: a
   scale of 1.06 and a shadow. The system lifts a poster by an eighth; at
   an eighth the card's copy started at x 72, left of the safe area
@@ -611,6 +625,88 @@ Tried and not kept:
   accessibility tree.
 - The card flattened with `drawingGroup`: the recordings failed while
   the Mac's disk was full, and it was not measured.
+
+### Where the frames go, 2026-11-27 evening
+
+The same walks, fixture server (rewritten, the same 600 by 900 and 1920 by
+1080 JPEGs after 100 ms) and simulator model, a fresh clone on tvOS 26.5.
+Main is `e0404add` with this branch's benchmark file. Every run waited for
+a one-minute load average under 7 and a five-minute one under 10. The
+branch here is `91981937`, the commit of "The card outside the row's
+layout", with parts turned off by a launch argument, since removed. The
+card's wait in the benchmark is skipped when the card is off. Each cell
+is two runs of three walks.
+
+| Build or turned off | Along the posters | Down and up the rows |
+|---------------------|-------------------|----------------------|
+| main | 33, 36, 33; 36, 33, 35 | 37, 45, 55; 44, 33, 33 |
+| branch, nothing off | 86, 93, 75; 80, 74, 74 | 91, 71, 77; 74, 69, 65 |
+| the card (with its offsets and the poster's shrink) | 69, 72, 56; 60, 54, 53 | 61, 57, 58; 57, 53, 52 |
+| the card and the column keeping | 47, 49, 49; 43, 46, 47 | 66, 60, 58; 62, 54, 59 |
+| the card and the loads ahead | 60, 55, 55; 59, 56, 60 | 61, 49, 54; 69, 54, 64 |
+| the card and the debug probes | 55, 53, 56; 65, 92, 77 | 63, 52, 56; 77, 67, 51 |
+| the card and the rows below the focused one | 48, 46, 47; 50, 48, 46 | 50, 40, 42; 48, 44, 45 |
+| all five | 39, 36, 40 | 53, 42, 44; 51, 41, 44 |
+
+The rows below were turned off by giving the rows' scroll view a height
+of 640 pt, so the lazy stack builds the focused row and a sliver of the
+next, about what main shows under its preview.
+
+What this shows:
+- With all five off the branch drops what main drops, so the
+  difference is in these five and nothing else.
+- Of the about 25 frames per walk that are not the card: the column
+  keeping about 12 along the posters and none down and up; the rows below
+  about 10 along and 12 down and up; the loads ahead about 3 along the
+  posters; the probes nothing beyond the spread.
+- The card, with the posters it moves aside, is about 15 frames per walk.
+
+What changed:
+- The column is written once the highlight rests along a row (decision
+  6), and the row's titles are listed only when they change, not for each
+  new column (`ShelfRowDefault`).
+- The row draws the card over its stack (decision 7), with no `zIndex`.
+- The card source is equal to itself across the screen's redraws, so a
+  redraw of the screen does not redraw every poster, and a poster's key in
+  memory is hex-encoded without `String(format:)` per byte, since every
+  card looks itself up on the main actor as it shows.
+
+The branch after these, nothing off, against main in the same evening:
+
+| Build | Along the posters | Down and up the rows |
+|-------|-------------------|----------------------|
+| main | 33, 36, 33; 36, 33, 35 | 37, 45, 55; 44, 33, 33 |
+| before (`91981937`) | 86, 93, 75; 80, 74, 74; 79, 73, 80 | 91, 71, 77; 74, 69, 65; 69, 60, 69 |
+| after | 64, 65, 58; 60, 62, 58; 59, 60, 61; 67, 65, 64 | 72, 68, 70; 77, 76, 70; 75, 67, 64; 85, 66, 62 |
+| after, the card off | 42, 63, 46 | 68, 53, 55 |
+
+Along the posters went from 73 to 93 to 58 to 67; down and up stayed
+where it was, 62 to 85. The target, about 40 along and 60 down and up, is
+not met.
+
+What does not explain the card's cost, each turned off alone on the
+build after, two to three walks of each against 58 to 67 and 62 to 85:
+the posters sliding aside (moved at once instead: 60 to 66, 65 to 77),
+the card's fade (61 to 65, 68 to 75), the poster's shrink under it (62 to
+69, 74 to 77), all three together (61 to 63, 67 to 87), the card's
+accessibility (hidden: 58 to 72, 69 to 74), its copy (62 to 65, 59 to 77),
+its picture (62 to 72, 64 to 74) and its shadow (60 to 61, 67 to 74). So
+animating the slide and the card with Core Animation instead of SwiftUI
+would buy nothing these walks can see, and was not built.
+
+A Time Profiler recording of the walk down and up, main thread: 14 630
+samples on the branch after, 13 692 on main. SwiftUI's display-link
+updates were 4 176 against 858 and its rendering 6 777 against 3 966; the
+app's own code is under 1% on both. The system tab bar's glass is about
+1 100 to 1 300 samples on both. SwiftUI updates the screen on every frame
+while anything on it animates; the branch has more on screen (two and a
+half rows) and more changing per move (the card and the posters after
+it), and that per-frame update is what grows, not any one view's body.
+
+What is left: about 22 frames per walk along the posters and about 10
+down and up over the target. The rows below the focused one are the
+board's layout (`TV-Movies-Expanded`); the card is the feature. Neither
+has a part that can be turned off alone for the difference.
 
 ## What to check on the device
 

@@ -174,7 +174,9 @@
         /// Each title's details for its expanded card, read per title
         /// (movies-and-series-browsing/expanded-card-for-the-focused-title-on-apple-tv).
         private var cardSource: ExpandedCardSource {
-            ExpandedCardSource { [library] title in library.model(title.kind).cardDetails.value(title.id) }
+            ExpandedCardSource(owner: ObjectIdentifier(library)) { [library] title in
+                library.model(title.kind).cardDetails.value(title.id)
+            }
         }
 
         /// The system tab bar holds no clock, so the hero draws it in its top right (`TV-Shell-TabView`).
