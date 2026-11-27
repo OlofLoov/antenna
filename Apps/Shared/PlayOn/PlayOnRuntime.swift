@@ -34,6 +34,9 @@ struct PlayOnRuntime: ViewModifier {
                         receiver.deactivate()
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: .playRequestsChanged)) { _ in
+                    Task { await receiver?.pickUp() }
+                }
         #else
             content
                 .environment(\.playDestination, destination)
@@ -72,7 +75,12 @@ enum PlayOnSetup {
             #if DEBUG
                 if let scripted = UITestingPlayOn.receiver { return scripted }
             #endif
-            return { inbox in PlayOnReceiver(inbox: inbox, device: .launching(), devices: CloudKitPlayDevices()) }
+            return { inbox in
+                let queue = CloudKitPlayRequests()
+                return PlayOnReceiver(
+                    inbox: inbox, device: .launching(), devices: CloudKitPlayDevices(), queue: queue,
+                    subscribe: { try? await queue.subscribe() })
+            }
         }
     #else
         static var destination: (() -> PlayDestination)? {
@@ -84,7 +92,8 @@ enum PlayOnSetup {
                 let device = PlayOnDevice.launching()
                 return PlayDestination(
                     .init(
-                        devices: CloudKitPlayDevices(), browser: PlayOnBrowser(), sender: NetworkPlaySender(device: device), device: device)
+                        devices: CloudKitPlayDevices(), browser: PlayOnBrowser(), sender: NetworkPlaySender(device: device), device: device,
+                        queue: CloudKitPlayRequests())
                 )
             }
         }

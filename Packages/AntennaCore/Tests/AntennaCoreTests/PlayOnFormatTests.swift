@@ -198,6 +198,22 @@ import Testing
     }
 }
 
+@Suite struct PlayOnOfferTextTests {
+    @Test("play-on-apple-tv/the-tv-offers-a-waiting-request: the facts line names the kind and where a film resumes")
+    func facts() {
+        let sent = PlayOnFormatTests.sent
+        func facts(_ item: PlayRequest.Item, start: TimeInterval? = nil) -> String {
+            PlayOnText.offerFacts(PlayOnFormatTests.request(item, start: start), locale: .english)
+        }
+        #expect(facts(.channel(key: "c")) == "Live channel")
+        #expect(facts(.programme(channelKey: "c", start: sent.addingTimeInterval(-60), end: sent.addingTimeInterval(60))) == "Live channel")
+        #expect(facts(.programme(channelKey: "c", start: sent.addingTimeInterval(-7200), end: sent.addingTimeInterval(-60))) == "Catch-up")
+        #expect(facts(.movie(key: "m"), start: 2400) == "Movie · Resumes at 40 min")
+        #expect(facts(.episode(seriesKey: "s", episodeKey: "e")) == "Episode")
+        #expect(PlayOnText.offline(.english) == "You're offline. Nothing was sent.")
+    }
+}
+
 @Suite struct PlayOnTextTests {
     @Test("play-on-apple-tv/the-phone-says-why-the-tv-cannot-play: each answer reads as the copy table says")
     func lines() {

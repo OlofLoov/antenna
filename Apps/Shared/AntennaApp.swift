@@ -21,6 +21,8 @@ struct AntennaApp: App {
     #if os(tvOS)
         /// Top Shelf links wait here, outside every gate, until the shell takes them (top-shelf capability).
         @State private var shelfLinks = TopShelfInbox.launching()
+        /// Takes the silent push for a request waiting in iCloud (play-on-apple-tv capability).
+        @UIApplicationDelegateAdaptor(PlayOnAppDelegate.self) private var playOnPush
     #endif
     #if !os(tvOS)
         /// Files shared to Antuna wait here, outside every gate, until a

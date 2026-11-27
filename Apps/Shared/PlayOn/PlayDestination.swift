@@ -94,6 +94,8 @@ final class PlayDestination {
         var browser: any PlayOnBrowsing
         var sender: any PlayOnSending
         var device: PlayOnDevice
+        /// Where a request waits for a TV the network did not reach; nil sends over the network only.
+        var queue: (any PlayRequestQueueing)?
         /// Closes every stream this device has open and returns once they are closed.
         var stopLocal: @MainActor () async -> Void = { await OpenEngines.shared.stopAll() }
         var now: @MainActor () -> Date = { .now }
@@ -155,11 +157,14 @@ final class PlayDestination {
 
     /// The scene became active: write this device's record, read the
     /// account's devices and browse, if the user has opened Play on before.
+    /// Requests nobody picked up before they expired are deleted unread
+    /// (play-on-apple-tv/requests-expire-and-leave-no-trace).
     func activate() async {
         active = true
         await publish()
         await refresh()
         if active, browsing, !tvs.isEmpty { dependencies.browser.start() }
+        _ = try? await dependencies.queue?.sweep(now: dependencies.now())
     }
 
     /// The scene went to the background: browsing stops.
@@ -213,29 +218,46 @@ final class PlayDestination {
         sending = true
         defer { sending = false }
         opened()
-        guard let endpoint = await endpoint(for: tv.id) else {
-            notice = PlayOnNotice(text: PlayOnText.unreachable(tv.name, locale: dependencies.locale), kind: .error)
-            return
-        }
-        await dependencies.stopLocal()
         let request = PlayRequest(
             sender: dependencies.device.id, senderName: dependencies.device.name, target: tv.id, source: item.source, item: item.item,
             startPosition: item.start, displayTitle: item.title, created: dependencies.now())
-        var outcome = await dependencies.sender.send(request, to: tv.device, at: endpoint, within: dependencies.answerLimit)
-        if outcome == .refused {
-            // The TV reads the device list again on a refused handshake; give it a moment.
-            try? await dependencies.sleep(.seconds(1))
-            await refresh()
-            if let fresh = devices.first(where: { $0.id == tv.id }) {
-                let again = dependencies.browser.endpoints[tv.id] ?? endpoint
-                outcome = await dependencies.sender.send(request, to: fresh, at: again, within: dependencies.answerLimit)
+        if let endpoint = await endpoint(for: tv.id) {
+            await dependencies.stopLocal()
+            var outcome = await dependencies.sender.send(request, to: tv.device, at: endpoint, within: dependencies.answerLimit)
+            if outcome == .refused {
+                // The TV reads the device list again on a refused handshake; give it a moment.
+                try? await dependencies.sleep(.seconds(1))
+                await refresh()
+                if let fresh = devices.first(where: { $0.id == tv.id }) {
+                    let again = dependencies.browser.endpoints[tv.id] ?? endpoint
+                    outcome = await dependencies.sender.send(request, to: fresh, at: again, within: dependencies.answerLimit)
+                }
+            }
+            if case .answered(let result) = outcome {
+                notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale)
+                return
             }
         }
-        switch outcome {
-        case .answered(let result):
-            notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale)
-        case .refused, .noAnswer:
-            notice = PlayOnNotice(text: PlayOnText.unreachable(tv.name, locale: dependencies.locale), kind: .error)
+        await queue(request, for: tv)
+    }
+
+    /// Leaves `request` in iCloud for the TV to offer when Antuna opens
+    /// there, after the network found no TV or got no answer. The same
+    /// request never goes both ways at once, and the TV plays a request
+    /// id once (play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable).
+    private func queue(_ request: PlayRequest, for tv: PlayTV) async {
+        let locale = dependencies.locale
+        guard let queue = dependencies.queue else {
+            notice = PlayOnNotice(text: PlayOnText.unreachable(tv.name, locale: locale), kind: .error)
+            return
+        }
+        do {
+            try await queue.save(request)
+            notice = PlayOnNotice(text: PlayOnText.sent(to: tv.name, locale: locale), kind: .sent)
+        } catch .offline {
+            notice = PlayOnNotice(text: PlayOnText.offline(locale), kind: .error)
+        } catch {
+            notice = PlayOnNotice(text: PlayOnText.unreachable(tv.name, locale: locale), kind: .error)
         }
     }
 

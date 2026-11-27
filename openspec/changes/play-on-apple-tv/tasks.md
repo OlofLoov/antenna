@@ -28,10 +28,10 @@ Ships as a stack: `feat/play-on-apple-tv-1` (groups 1 to 3, the network send), `
 
 ## 4. The iCloud queue
 
-- [ ] 4.1 Add the `PlayRequests` zone store with replace-on-send, delete and the expiry sweep, and its in-memory fake, and verify integration tests against the fake
-- [ ] 4.2 Fall back to iCloud when no endpoint answers within 3 seconds, show the sent confirmation, and verify an integration test that a request sent both ways plays once
-- [ ] 4.3 On tvOS, register the zone subscription and fetch on push, launch, foreground and every 30 seconds, then show the offer with focus on Play and Menu as Not now, and verify a UI test for the offer, Not now and an expired request
-- [ ] 4.4 Add a TV Journeys step for `TV-FromIPhone-Offer` anchored on `playOn.offer`
+- [x] 4.1 Add the `PlayRequests` zone store with replace-on-send, delete and the expiry sweep, and its in-memory fake, and verify integration tests against the fake
+- [x] 4.2 Fall back to iCloud when no endpoint answers within 3 seconds, show the sent confirmation, and verify an integration test that a request sent both ways plays once
+- [x] 4.3 On tvOS, register the zone subscription and fetch on push, launch, foreground and every 30 seconds, then show the offer with focus on Play and Menu as Not now, and verify a UI test for the offer, Not now and an expired request
+- [x] 4.4 Add a TV Journeys step for `TV-FromIPhone-Offer` anchored on `playOn.offer`
 
 ## 5. Browse while connected
 

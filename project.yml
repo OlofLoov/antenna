@@ -230,6 +230,7 @@ targets:
       - Apps/TopShelf/TopShelfItems.swift
       - Apps/Tests/LoginSealTests.swift
       - Apps/Tests/PlayOnLinkTests.swift
+      - Apps/Tests/PlayRequestQueueTests.swift
       - path: Config/Antenna.storekit
         buildPhase: resources
     dependencies:

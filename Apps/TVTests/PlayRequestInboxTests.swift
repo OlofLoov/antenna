@@ -13,7 +13,8 @@ import Testing
             created: .now)
     }
 
-    @Test("play-on-apple-tv/the-tv-keeps-its-own-locks-and-profile: behind the paywall or Who's watching the request waits, then plays")
+    @Test(
+        "play-on-apple-tv/the-tv-keeps-its-own-locks-and-profile: behind the paywall or Who's watching the request waits, then is offered")
     func keptBehindGates() {
         let inbox = PlayRequestInbox()
         var answers: [PlayAnswer.Result] = []
@@ -22,8 +23,9 @@ import Testing
         #expect(answers == [.waiting])
         #expect(inbox.delivery?.request == nil)
         inbox.attach()
-        #expect(inbox.take()?.request == request)
+        #expect(inbox.offered == request, "a request kept behind a gate is offered once the shell shows")
         #expect(inbox.take()?.request == nil)
+
     }
 
     @Test("play-on-apple-tv/starts-at-once-on-the-same-network: with the shell up a request goes straight to it")
@@ -60,7 +62,7 @@ import Testing
         inbox.receive(second) { _ in }
         inbox.detach()
         inbox.attach()
-        #expect(inbox.take()?.request == second)
+        #expect(inbox.offered == second)
     }
 
     @Test("play-on-apple-tv/starts-at-once-on-the-same-network: the banner names the sending device and the item")

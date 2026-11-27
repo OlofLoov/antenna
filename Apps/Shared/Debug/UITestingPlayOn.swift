@@ -10,12 +10,15 @@
     /// On iPhone, iPad and Mac, `-ui-testing-play-on <scenario>` swaps iCloud
     /// and the network for a scripted account and a scripted Apple TV:
     /// `one` lists Living Room, ready now; `two` adds Bedroom, not open;
-    /// `refused` lists both with local network access refused; `none` lists
-    /// no TV. `-ui-testing-play-on-answer <result>` sets what the scripted TV
+    /// `refused` lists both with local network access refused; `closed` has
+    /// Living Room with Antuna closed; `none` lists no TV.
+    /// `-ui-testing-play-on-answer <result>` sets what the scripted TV
     /// answers: `started` (the default), `needsPasscode`, `noLogin`,
     /// `noSource`, `notFound`, `waiting`, `unsupportedVersion` or `silent`,
-    /// which never answers. The browser's start is counted, so a test sees
-    /// whether opening Play on started it.
+    /// which never answers, or `offline`, where iCloud cannot be reached
+    /// either. A request the network does not carry waits in an in-memory
+    /// iCloud queue. The browser's start is counted, so a test sees whether
+    /// opening Play on started it.
     ///
     /// On Apple TV, `-ui-testing-play-request <source>/<channel>`, with
     /// `playlist` or `xtream` for the source and a `UITestingShell` channel
@@ -26,6 +29,9 @@
         static let argument = "-ui-testing-play-on"
         static let answerArgument = "-ui-testing-play-on-answer"
         static let requestArgument = "-ui-testing-play-request"
+        /// `-ui-testing-play-offer <source>/<channel>[:old]` leaves a request
+        /// for the TV in a scripted iCloud queue, sent now or an hour ago.
+        static let offerArgument = "-ui-testing-play-offer"
         /// `-ui-testing-play-on-shared <folder>` keeps the device records as
         /// files in a folder on the Mac, so an iPhone simulator and an Apple
         /// TV simulator share an account and talk over the real listener and
@@ -48,7 +54,7 @@
         /// The scenario after the argument, or nil without it. On Apple TV a
         /// request to deliver counts as one.
         static var scenario: String? {
-            value(after: argument) ?? value(after: requestArgument) ?? value(after: sharedArgument)
+            value(after: argument) ?? value(after: requestArgument) ?? value(after: sharedArgument) ?? value(after: offerArgument)
         }
 
         static func tv(_ id: UUID, _ name: String, created: TimeInterval) -> PlayDeviceInfo {
@@ -74,16 +80,18 @@
                     let tvs: [PlayDeviceInfo] =
                         switch scenario {
                         case "none": []
-                        case "one": [tv(livingRoom, "Living Room", created: 1)]
+                        case "one", "closed": [tv(livingRoom, "Living Room", created: 1)]
                         default: [tv(livingRoom, "Living Room", created: 1), tv(bedroom, "Bedroom", created: 2)]
                         }
-                    let browser = Browser(ready: scenario == "refused" ? [] : [livingRoom], denied: scenario == "refused")
+                    let reachable = scenario != "refused" && scenario != "closed"
+                    let browser = Browser(ready: reachable ? [livingRoom] : [], denied: scenario == "refused")
                     let device = PlayOnDevice.launching(UserDefaults(suiteName: "ui-testing-play-on") ?? .standard)
                     var dependencies = PlayDestination.Dependencies(
                         devices: InMemoryPlayDevices(tvs), browser: browser, sender: Sender(answer: answer), device: device)
                     dependencies.defaults = UserDefaults(suiteName: "ui-testing-play-on") ?? .standard
                     dependencies.defaults.removeObject(forKey: PlayDestination.browsingKey)
                     dependencies.answerLimit = .seconds(1)
+                    dependencies.queue = InMemoryPlayRequests(failure: value(after: answerArgument) == "offline" ? .offline : nil)
                     return PlayDestination(dependencies)
                 }
             }
@@ -188,22 +196,31 @@
                     }
                 }
                 return { inbox in
-                    PlayOnReceiver(
-                        inbox: inbox, device: .launching(UserDefaults(suiteName: "ui-testing-play-on") ?? .standard),
-                        devices: InMemoryPlayDevices(), advertises: false)
+                    let device = PlayOnDevice.launching(UserDefaults(suiteName: "ui-testing-play-on") ?? .standard)
+                    let waiting = value(after: offerArgument).flatMap { request(from: $0, for: device.id) }
+                    return PlayOnReceiver(
+                        inbox: inbox, device: device, devices: InMemoryPlayDevices(),
+                        queue: InMemoryPlayRequests(waiting.map { [$0] } ?? []), advertises: false)
                 }
+            }
+
+            /// A request from Anna's iPhone for `<source>/<channel>`, sent an
+            /// hour ago with `:old` after it, else now.
+            private static func request(from spec: String, for target: UUID) -> PlayRequest? {
+                let old = spec.hasSuffix(":old")
+                let parts = spec.replacingOccurrences(of: ":old", with: "").split(separator: "/").map(String.init)
+                guard parts.count == 2 else { return nil }
+                let source = parts[0] == "xtream" ? UITestingShell.xtreamID : UITestingShell.playlistID
+                return PlayRequest(
+                    sender: UUID(), senderName: "Anna's iPhone", target: target, source: source,
+                    item: .channel(key: PlayItemKeys.key("fixture/\(parts[1])")), displayTitle: "Channel \(parts[1])",
+                    created: old ? .now.addingTimeInterval(-3600) : .now)
             }
 
             /// Delivers the request after the argument into `inbox` once the
             /// shell has taken over, or does nothing without it.
             static func deliver(into inbox: PlayRequestInbox) async {
-                guard let spec = value(after: requestArgument) else { return }
-                let parts = spec.split(separator: "/").map(String.init)
-                guard parts.count == 2 else { return }
-                let source = parts[0] == "xtream" ? UITestingShell.xtreamID : UITestingShell.playlistID
-                let request = PlayRequest(
-                    sender: UUID(), senderName: "Anna's iPhone", target: livingRoom, source: source,
-                    item: .channel(key: PlayItemKeys.key("fixture/\(parts[1])")), displayTitle: "Channel \(parts[1])", created: .now)
+                guard let spec = value(after: requestArgument), let request = request(from: spec, for: livingRoom) else { return }
                 // The shell shows the first channel before the request, as a TV already open would.
                 try? await Task.sleep(for: .seconds(3))
                 inbox.receive(request) { result in Answers.shared.last = "\(result)" }

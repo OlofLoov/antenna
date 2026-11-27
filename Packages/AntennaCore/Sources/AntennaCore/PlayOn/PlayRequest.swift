@@ -7,7 +7,7 @@ import Foundation
 /// holds its stream link and an Xtream id holds the server's host. A
 /// request carries no link, address, username, password or token, and
 /// prints its kind and ids only.
-public struct PlayRequest: Sendable, Hashable, Codable, CustomStringConvertible, CustomDebugStringConvertible {
+public struct PlayRequest: Sendable, Hashable, Codable, Identifiable, CustomStringConvertible, CustomDebugStringConvertible {
     /// The format this build writes and reads.
     public static let currentVersion = 1
 

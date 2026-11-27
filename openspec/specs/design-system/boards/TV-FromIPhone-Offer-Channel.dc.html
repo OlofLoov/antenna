@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV offer from iPhone, a channel</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/the-tv-offers-a-waiting-request: as TV-FromIPhone-Offer, for a live channel. The art is the channel's logo on a tile, or its initials when it has none (design-system/channels-without-a-logo-show-initials). The facts line says "Live channel"; an ended programme says "Catch-up", a film "Movie · Resumes at 40 min", an episode "Episode". Drawn over full-screen live, Play focused. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(180deg, #2A3546 0%, #141A24 55%, #0B0E13 100%); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55)"></div>
+  <!-- playOn.offer -->
+  <div role="dialog" aria-label="From Anna's iPhone" style="position: absolute; left: 580px; top: 300px; width: 760px; box-sizing: border-box; padding: 36px; border-radius: 20px; background: rgba(8,10,14,0.92); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; gap: 32px">
+    <!-- playOn.offer.art: the logo tile -->
+    <div style="width: 160px; height: 240px; border-radius: 12px; background: rgba(255,255,255,0.14); flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 700">SO</div>
+    <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+      <!-- playOn.offer.sender -->
+      <div style="font-size: 22px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">From Anna's iPhone</div>
+      <!-- playOn.offer.title -->
+      <div style="font-size: 48px; font-weight: 700; line-height: 1.1; font-family: ui-rounded, -apple-system, system-ui, sans-serif">Sport One</div>
+      <!-- playOn.offer.facts -->
+      <div style="font-size: 25px; color: #D7DEE8">Live channel</div>
+      <div style="flex: 1 1 auto"></div>
+      <div style="display: flex; gap: 20px">
+        <!-- playOn.offer.play, focused -->
+        <div style="font-size: 29px; font-weight: 600; height: 76px; padding: 0 40px; border-radius: 12px; background: #F2F4F8; color: #0B0E13; transform: scale(1.05); display: flex; align-items: center">Play</div>
+        <!-- playOn.offer.notNow -->
+        <div style="font-size: 29px; font-weight: 600; height: 76px; padding: 0 40px; border-radius: 12px; background: rgba(255,255,255,0.12); display: flex; align-items: center">Not now</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
