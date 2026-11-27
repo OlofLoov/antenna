@@ -111,7 +111,10 @@ Apple TV, glass capsule elsewhere),
 `chipStyle(isPicked:on:)`. The parts the app draws itself share `FocusCard`
 and `FocusCardStyle`: guide programme blocks, channel overlay rows and
 groups, zap bar sections, multi-view tiles and their actions, passcode
-digits and episode rows. A button that only holds focus uses `FocusHolderStyle`.
+digits and episode rows. A button that only holds focus uses `FocusHolderStyle`,
+as the poster under the expanded card on Apple TV does: the card draws its own
+lift and shadow (`ShelfExpandedCard`), and posters that grow into no card keep
+`posterButtonStyle()`.
 `scripts/check-rules.sh` fails on a `ButtonStyle` type outside those files.
 
 ## 2. Layout patterns

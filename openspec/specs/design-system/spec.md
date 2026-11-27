@@ -477,7 +477,8 @@ every platform: bordered, bordered prominent, glass, glass prominent,
 borderless, or card on Apple TV. A screen MUST NOT draw its own fill, border
 or focus look for a control. The only exceptions are the parts the reference
 lists as drawn by the app: guide programme blocks, channel overlay rows, zap
-bar sections, multi-view tiles and the passcode digits.
+bar sections, multi-view tiles, the passcode digits and the expanded card on
+Apple TV.
 
 #### Scenario: A primary button on any platform
 - **WHEN** a reviewer finds the main action of a screen, such as Connect, Start watching or Play
@@ -500,8 +501,13 @@ bar sections, multi-view tiles and the passcode digits.
 - **THEN** it fails this requirement; the button is a system style or a plain surface instead
 
 #### Scenario: A poster on Apple TV
-- **WHEN** the viewer moves focus to a poster in a Movies or Series row
+- **WHEN** the viewer moves focus to a poster in a genre grid or Search
 - **THEN** the poster lifts, grows and tilts with the remote the way posters do in the TV app, with no drawn ring
+
+#### Scenario: A poster that grows into its card on Apple TV
+- **WHEN** the viewer moves focus to a poster in a Movies or Series row
+- **THEN** the card it grows into lifts with a shadow around the whole card, with no drawn ring
+- **AND** the poster's button under the card draws no focus look of its own
 
 ### Requirement: Type uses text styles
 Text MUST use the platform's text styles (large title, title 1 to 3,
