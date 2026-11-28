@@ -7,7 +7,7 @@
 </head>
 <body>
 <x-dc>
-<!-- play-on-apple-tv/the-phone-says-why-the-tv-cannot-play: what the phone shows after a send. A TV that started the request, or keeps it behind its paywall, gives a short line at the top over any screen for three seconds (playOn.sent), on the thick system material, never covering the tab bar: "Playing on Living Room", "Sent. Living Room plays it once Antuna is ready there." and, once the iCloud queue ships, "Sent. Living Room offers it when Antuna opens there." A TV that cannot play it gives a system alert with OK (playOn.error, playOn.error.ok), its title the reason: "Living Room isn't signed in to Acme TV.", "Living Room doesn't have Acme TV yet. Try again in a minute.", "Living Room couldn't find Salt Road.", "Enter the passcode on Living Room.", "Update Antuna on Living Room to play from here.", and with no network "You're offline. Nothing was sent." Drawn: the line at the top, and the alert for a missing login. -->
+<!-- play-on-apple-tv/the-phone-says-why-the-tv-cannot-play: what the phone shows after a send. A TV that started the request, or keeps it behind its paywall, gives a short line at the top over any screen for three seconds (playOn.sent), on the thick system material, never covering the tab bar: "Playing on Living Room", "Sent. Living Room plays it once Antuna is ready there." and "Sent. Living Room plays it if Antuna opens there within a minute." The last two carry a Cancel button at their trailing end (playOn.sent.cancel) and stay ten seconds instead of three (play-on-apple-tv/the-phone-can-take-a-request-back). Cancel replaces the line with "Canceled." or "Living Room already has it." for three seconds. A TV that cannot play it gives a system alert with OK (playOn.error, playOn.error.ok), its title the reason: "Living Room isn't signed in to Acme TV.", "Living Room doesn't have Acme TV yet. Try again in a minute.", "Living Room couldn't find Salt Road.", "Enter the passcode on Living Room.", "Update Antuna on Living Room to play from here.", and with no network "You're offline. Nothing was sent." Drawn: the line at the top, the line with Cancel, and the alert for a missing login. -->
 <helmet>
 <style>
 body{margin:0}
@@ -16,6 +16,11 @@ body{margin:0}
 <div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0B0E13; font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
   <!-- playOn.sent -->
   <div style="position: absolute; top: 62px; left: 50%; transform: translateX(-50%); padding: 10px 16px; border-radius: 22px; background: rgba(60,66,78,0.92); font-size: 15px; font-weight: 600; white-space: nowrap">Playing on Living Room</div>
+  <!-- playOn.sent with playOn.sent.cancel -->
+  <div style="position: absolute; top: 120px; left: 16px; right: 16px; display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 16px; border-radius: 22px; background: rgba(60,66,78,0.92); font-size: 15px; font-weight: 600">
+    <span style="flex: 1 1 auto">Sent. Living Room plays it if Antuna opens there within a minute.</span>
+    <span style="flex: 0 0 auto; padding: 6px 12px; border-radius: 16px; background: rgba(255,255,255,0.14); color: #5BB8FF">Cancel</span>
+  </div>
   <div style="position: absolute; inset: 0; top: 400px; background: rgba(0,0,0,0.35)"></div>
   <!-- playOn.error: the system alert -->
   <div role="alertdialog" style="position: absolute; left: 60px; top: 520px; width: 270px; border-radius: 14px; background: rgba(40,44,52,0.97); overflow: hidden; text-align: center">

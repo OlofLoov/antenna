@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apple TV countdown from iPhone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- play-on-apple-tv/the-tv-counts-down-a-waiting-request: a request the TV did not start at once, because it waited in iCloud or the TV kept it behind the paywall or "Who's watching?". The banner shows at the top trailing corner inside the safe area, in the panel of TV-Reminder-Banner and TV-FromIPhone-Banner, over whatever is on screen (drawn over full-screen live). The time line counts down from "Starts in 5" once a second; at zero the item plays with no press on the remote. Cancel has focus on appearance, so one click stops it; Play now plays at once; Menu acts as Cancel and focus goes back where it was. A request that arrives over the home network while the shell shows plays at once and shows TV-FromIPhone-Banner instead. -->
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: linear-gradient(180deg, #2A3546 0%, #141A24 55%, #0B0E13 100%); font-family: -apple-system, system-ui, 'Helvetica Neue', sans-serif; color: #F2F4F8">
+  <!-- playOn.countdown -->
+  <div role="status" aria-label="From Anna's iPhone, Salt Road" style="position: absolute; right: 80px; top: 60px; width: 640px; box-sizing: border-box; padding: 24px 28px; border-radius: 16px; background: rgba(8,10,14,0.88); box-shadow: 0 12px 32px rgba(0,0,0,0.45); display: flex; flex-direction: column; gap: 14px">
+    <!-- playOn.countdown.sender -->
+    <div style="display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #A7B0BF">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A7B0BF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+      <span>From Anna's iPhone</span>
+    </div>
+    <!-- playOn.countdown.title -->
+    <div style="font-size: 29px; font-weight: 600; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Salt Road</div>
+    <!-- playOn.countdown.time, with monospaced digits so the line does not move -->
+    <div style="font-size: 22px; color: #D7DEE8; font-variant-numeric: tabular-nums">Starts in 5</div>
+    <div style="display: flex; gap: 14px; padding-top: 4px">
+      <!-- playOn.countdown.cancel, focused on appearance (design-system/focus-is-the-lifted-white-card) -->
+      <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; height: 64px; padding: 0 28px; border-radius: 10px; border: 0; background: #F2F4F8; color: #0B0E13; box-shadow: 0 12px 32px rgba(0,0,0,0.45); transform: scale(1.05); cursor: pointer">Cancel</button>
+      <!-- playOn.countdown.playNow -->
+      <button type="button" style="font: inherit; font-size: 22px; font-weight: 600; height: 64px; padding: 0 28px; border-radius: 10px; border: 0; background: rgba(255,255,255,0.12); color: #F2F4F8; cursor: pointer">Play now</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
