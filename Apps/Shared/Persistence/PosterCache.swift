@@ -5,7 +5,7 @@ import Foundation
 import ImageIO
 import Synchronization
 
-/// Movie and series posters, decoded and kept in memory up to 50 MB and as
+/// Movie and series posters, decoded and kept in memory up to 80 MB and as
 /// files on disk up to 500 MB (movies-and-series-browsing).
 /// Entries are named by a SHA-256 hash of the poster's address, so no file
 /// name or file holds the address. A poster that fails to load or decode gives nil, and the
@@ -14,103 +14,51 @@ actor PosterCache {
     static let shared = PosterCache()
 
     /// The same on every platform. Posters decode at their card's resting
-    /// size, about 1.1 MB on a 4K Apple TV, so 50 MB holds the two and a half
-    /// rows on screen and the few loaded ahead; the disk holds the rest
-    /// (movies-and-series-browsing/browsing-stays-responsive).
-    static let memoryLimit = 50 * 1024 * 1024
+    /// size, about 1.1 MB on a 4K Apple TV, so 80 MB holds about 70: the
+    /// two and a half rows on screen, the rows loaded ahead of the
+    /// highlight and the scroll, and a banner backdrop. The disk holds the
+    /// rest (movies-and-series-browsing/browsing-stays-responsive).
+    static let memoryLimit = 80 * 1024 * 1024
     static let diskLimit = 500 * 1024 * 1024
+    /// Connections the posters open to one host, as many as a browser opens.
+    static let connectionsPerHost = 6
+    /// Posters loaded ahead at once, one fewer than the connections, so a
+    /// card on screen always finds a connection free. The rest wait in
+    /// line, newest asks first, and a poster nobody wants any more leaves
+    /// the line without being downloaded
+    /// (movies-and-series-browsing/browsing-stays-responsive).
+    static let prefetchLimit = connectionsPerHost - 1
 
-    private nonisolated let memory: Memory
+    /// The posters' own session. The cache keeps the files, so the session keeps none.
+    static let session: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpMaximumConnectionsPerHost = connectionsPerHost
+        configuration.urlCache = nil
+        return URLSession(configuration: configuration)
+    }()
+
+    private nonisolated let memory: PosterMemory
     private let directory: URL
     private let session: URLSession
     private let diskLimit: Int
     private var loading: [String: Load] = [:]
+    /// The posters asked for ahead that wait their turn or load.
+    private var line: PosterLine
     /// The folder's size after the last trim plus every write since, nil
     /// before the first write. It never counts less than the folder holds,
     /// so the folder is listed again only when a write may cross the limit.
     private var usage: Int?
 
     init(
-        directory: URL = URL.cachesDirectory.appending(path: "Posters", directoryHint: .isDirectory), session: URLSession = .shared,
-        memoryLimit: Int = PosterCache.memoryLimit, diskLimit: Int = PosterCache.diskLimit
+        directory: URL = URL.cachesDirectory.appending(path: "Posters", directoryHint: .isDirectory),
+        session: URLSession = PosterCache.session, memoryLimit: Int = PosterCache.memoryLimit, diskLimit: Int = PosterCache.diskLimit,
+        prefetchLimit: Int = PosterCache.prefetchLimit
     ) {
         self.directory = directory
         self.session = session
         self.diskLimit = diskLimit
-        memory = Memory(limit: memoryLimit)
-    }
-
-    /// Decoded posters up to a limit in bytes, letting go of the least
-    /// recently shown first, so the posters on screen and those just loaded
-    /// ahead stay (movies-and-series-browsing/browsing-stays-responsive).
-    /// `NSCache` lets go in no set order. Safe from any thread, so a card can
-    /// look for its poster without waiting for the actor: the entries sit
-    /// behind a mutex, and the memory pressure source is set up once in
-    /// `init`. Empties itself when the system runs low on memory.
-    private final class Memory: @unchecked Sendable {
-        private struct Entry {
-            let poster: Poster
-            var used: UInt64
-            var shown = false
-            var origin = ""
-        }
-
-        private struct State {
-            var entries: [String: Entry] = [:]
-            var cost = 0
-            var clock: UInt64 = 0
-        }
-
-        private let state = Mutex(State())
-        private let limit: Int
-        private let pressure = DispatchSource.makeMemoryPressureSource(eventMask: [.warning, .critical], queue: .global(qos: .utility))
-
-        init(limit: Int) {
-            self.limit = limit
-            pressure.setEventHandler { [weak self] in self?.removeAll() }
-            pressure.activate()
-        }
-
-        deinit {
-            pressure.cancel()
-        }
-
-        func removeAll() {
-            state.withLock { $0 = State() }
-        }
-
-        func object(forKey key: NSString, shown: Bool = true) -> Poster? {
-            state.withLock { state in
-                guard var entry = state.entries[key as String] else { return nil }
-                state.clock += 1
-                entry.used = state.clock
-                entry.shown = entry.shown || shown
-                state.entries[key as String] = entry
-                return entry.poster
-            }
-        }
-
-        func setObject(_ poster: Poster, forKey key: NSString, cost: Int, origin: String = "") {
-            guard cost <= limit else { return }
-            state.withLock { state in
-                state.clock += 1
-                if let old = state.entries[key as String] { state.cost -= old.poster.cost }
-                state.entries[key as String] = Entry(poster: poster, used: state.clock, origin: origin)
-                state.cost += cost
-                while state.cost > limit, let oldest = state.entries.min(by: { $0.value.used < $1.value.used })?.key {
-                    let gone = state.entries.removeValue(forKey: oldest)
-                    state.cost -= gone?.poster.cost ?? 0
-                    #if DEBUG
-                        PosterTrace.evicted.add(1, ordering: .relaxed)
-                        if gone?.shown == false {
-                            PosterTrace.evictedUnshown.add(1, ordering: .relaxed)
-                            if gone?.origin == "along" { PosterTrace.evictedUnshownAlong.add(1, ordering: .relaxed) }
-                            if gone?.origin == "below" { PosterTrace.evictedUnshownRow.add(1, ordering: .relaxed) }
-                        }
-                    #endif
-                }
-            }
-        }
+        line = PosterLine(limit: prefetchLimit)
+        memory = PosterMemory(limit: memoryLimit)
     }
 
     /// The poster for `fit` if it is in memory now, without waiting for the
@@ -167,6 +115,8 @@ actor PosterCache {
             await withCheckedContinuation { continuation in
                 if loading[memoryKey] != nil {
                     loading[memoryKey]?.waiters[waiter] = continuation
+                    // A card on screen does not wait in the line of posters loaded ahead.
+                    if loading[memoryKey]?.task == nil, let pending = line.take(memoryKey) { start(pending) }
                 } else {
                     let id = UUID()
                     let task = Task {
@@ -181,16 +131,46 @@ actor PosterCache {
         }
     }
 
-    /// A load in flight: the work and the callers waiting for it.
+    /// A load in flight or in line: the work, none while in line, and the
+    /// callers waiting for it.
     private struct Load {
         let id: UUID
-        let task: Task<Void, Never>
+        var task: Task<Void, Never>?
         var waiters: [UUID: CheckedContinuation<Poster?, Never>]
+    }
+
+    /// Starts the load of a poster that was in line.
+    private func start(_ pending: PosterLine.Pending) {
+        guard let id = loading[pending.memoryKey]?.id else { return }
+        #if DEBUG
+            PosterTrace.prefetchStarted.add(1, ordering: .relaxed)
+            if pending.origin == "along" { PosterTrace.startedAlong.add(1, ordering: .relaxed) }
+        #endif
+        let ahead = line.loading.contains(pending.memoryKey)
+        loading[pending.memoryKey]?.task = Task(priority: ahead ? .utility : nil) {
+            let poster = await load(pending.url, key: pending.key, memoryKey: pending.memoryKey, fit: pending.fit, origin: pending.origin)
+            finish(pending.memoryKey, id: id, with: poster)
+        }
+    }
+
+    /// Starts posters from the line while fewer than `prefetchLimit` load ahead.
+    private func startFromTheLine() {
+        while let next = line.next() {
+            if let load = loading[next.memoryKey], load.task == nil { start(next) } else { line.remove(next.memoryKey) }
+        }
+    }
+
+    /// Drops a load nobody waits for, running or in line.
+    private func drop(_ memoryKey: String) {
+        loading.removeValue(forKey: memoryKey)?.task?.cancel()
+        line.remove(memoryKey)
     }
 
     /// Hands the load's poster to everyone still waiting.
     private func finish(_ memoryKey: String, id: UUID, with poster: Poster?) {
         guard loading[memoryKey]?.id == id, let done = loading.removeValue(forKey: memoryKey) else { return }
+        line.remove(memoryKey)
+        defer { startFromTheLine() }
         for waiter in done.waiters.values { waiter.resume(returning: poster) }
         // A finished load is no longer wanted by any row.
         for (group, keys) in prefetching where keys.contains(memoryKey) {
@@ -205,8 +185,8 @@ actor PosterCache {
         guard var running = loading[memoryKey], let continuation = running.waiters.removeValue(forKey: waiter) else { return }
         continuation.resume(returning: nil)
         if running.waiters.isEmpty, !prefetching.values.contains(where: { $0.contains(memoryKey) }) {
-            running.task.cancel()
-            loading[memoryKey] = nil
+            drop(memoryKey)
+            startFromTheLine()
             #if DEBUG
                 PosterTrace.cancelledByCard.add(1, ordering: .relaxed)
             #endif
@@ -219,9 +199,15 @@ actor PosterCache {
     /// memory when their cards come into view
     /// (movies-and-series-browsing/browsing-stays-responsive). A card that
     /// asks while one loads joins it. `group` names who asked, such as a
-    /// row, for `stopPrefetching` once it scrolls away.
-    func prefetch(_ urls: [URL], fitting fit: PosterFit, group: String) {
-        var wanted = prefetching[group, default: []]
+    /// row, for `stopPrefetching` once it scrolls away. At most
+    /// `prefetchLimit` load at once; the rest wait in line, these `urls` in
+    /// their order ahead of those asked for before. With `replacing`, the
+    /// group wants these alone, and what it wanted before that no card
+    /// waits for and no other group wants stops, as when the highlight moves.
+    func prefetch(_ urls: [URL], fitting fit: PosterFit, group: String, replacing: Bool = false) {
+        let before = prefetching[group, default: []]
+        var wanted = replacing ? Set<String>() : before
+        var asks: [PosterLine.Pending] = []
         for url in urls {
             let key = Self.key(url)
             let memoryKey = "\(key)@\(fit.key)"
@@ -230,22 +216,21 @@ actor PosterCache {
             #endif
             guard memory.object(forKey: memoryKey as NSString, shown: false) == nil else { continue }
             wanted.insert(memoryKey)
-            guard loading[memoryKey] == nil else { continue }
-            #if DEBUG
-                PosterTrace.prefetchStarted.add(1, ordering: .relaxed)
-                if group.hasPrefix("along") { PosterTrace.startedAlong.add(1, ordering: .relaxed) }
-            #endif
-            let id = UUID()
-            let origin = String(group.prefix { $0 != "." })
-            let task = Task(priority: .utility) {
-                let poster = await load(url, key: key, memoryKey: memoryKey, fit: fit, origin: origin)
-                finish(memoryKey, id: id, with: poster)
+            let pending = PosterLine.Pending(url: url, key: key, memoryKey: memoryKey, fit: fit, origin: String(group.prefix { $0 != "." }))
+            if let load = loading[memoryKey] {
+                // Still in line, it moves up with this ask.
+                if load.task == nil { asks.append(pending) }
+                continue
             }
-            loading[memoryKey] = Load(id: id, task: task, waiters: [:])
+            loading[memoryKey] = Load(id: UUID(), task: nil, waiters: [:])
+            asks.append(pending)
         }
-        // Only loads still running are worth remembering.
+        line.putInFront(asks)
+        // Only loads running or in line are worth remembering.
         wanted = wanted.filter { loading[$0] != nil }
         prefetching[group] = wanted.isEmpty ? nil : wanted
+        if replacing { release(before.subtracting(wanted)) }
+        startFromTheLine()
         #if DEBUG
             traceGauges()
         #endif
@@ -256,18 +241,24 @@ actor PosterCache {
     /// not leave a queue of posters nobody sees.
     func stopPrefetching(_ group: String) {
         guard let keys = prefetching.removeValue(forKey: group) else { return }
+        release(keys)
+        startFromTheLine()
+        #if DEBUG
+            traceGauges()
+        #endif
+    }
+
+    /// Drops the loads of `keys` that no card waits for and no group wants.
+    private func release(_ keys: Set<String>) {
+        guard !keys.isEmpty else { return }
         let others = prefetching.values.reduce(into: Set<String>()) { $0.formUnion($1) }
         for key in keys.subtracting(others) {
             guard let running = loading[key], running.waiters.isEmpty else { continue }
-            running.task.cancel()
-            loading[key] = nil
+            drop(key)
             #if DEBUG
                 PosterTrace.cancelledByRow.add(1, ordering: .relaxed)
             #endif
         }
-        #if DEBUG
-            traceGauges()
-        #endif
     }
 
     #if DEBUG
@@ -293,8 +284,18 @@ actor PosterCache {
     /// The posters rows still want loaded, over every row. For tests.
     var wanted: Int { prefetching.values.reduce(0) { $0 + $1.count } }
 
-    /// The loads in flight, waited for or not. For tests.
+    /// The loads in flight or in line, waited for or not. For tests.
     var inFlight: Int { loading.count }
+
+    /// The loads running, waited for or not, not those in line. For tests.
+    var running: Int { loading.values.filter { $0.task != nil }.count }
+
+    /// The posters asked for ahead that wait in line. For tests.
+    var inLine: Int { line.waiting.count }
+
+    /// The bytes and the number of posters in memory. For tests.
+    nonisolated var memoryCost: Int { memory.cost }
+    nonisolated var memoryCount: Int { memory.count }
 
     /// True when the poster at `url` decoded for `fit` is in memory. For tests.
     func inMemory(_ url: URL, fitting fit: PosterFit) -> Bool {
@@ -393,94 +394,3 @@ actor PosterCache {
         return files.reduce(0) { $0 + ((try? $1.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0) }
     }
 }
-
-/// A decoded poster. Immutable once made, so it can cross actors.
-final class Poster: @unchecked Sendable {
-    let image: CGImage
-
-    /// Decodes `data` at full size, or with `fit` scaled down to cover that
-    /// frame. A picture already that small or smaller decodes as it is.
-    init?(data: Data, fitting fit: PosterFit? = nil) {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
-        if let fit, let side = Self.pixels(of: source).flatMap({ fit.longestSide(pictureWidth: $0.width, pictureHeight: $0.height) }) {
-            let options: [CFString: Any] = [
-                kCGImageSourceCreateThumbnailFromImageAlways: true, kCGImageSourceThumbnailMaxPixelSize: side,
-                kCGImageSourceShouldCacheImmediately: true,
-            ]
-            guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
-            self.image = image
-            return
-        }
-        guard let image = CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary)
-        else { return nil }
-        self.image = image
-    }
-
-    /// The picture's size in pixels as stored, read from its header.
-    private static func pixels(of source: CGImageSource) -> (width: Int, height: Int)? {
-        guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
-            let width = properties[kCGImagePropertyPixelWidth] as? Int, let height = properties[kCGImagePropertyPixelHeight] as? Int
-        else { return nil }
-        return (width, height)
-    }
-
-    init(image: CGImage) {
-        self.image = image
-    }
-
-    /// The decoded size in bytes, what it costs the memory limit.
-    var cost: Int { image.bytesPerRow * image.height }
-}
-
-#if DEBUG
-    /// Where posters go between loading ahead and showing, since launch,
-    /// for the browsing benchmarks. Read by the large shelf's probe.
-    enum PosterTrace {
-        static let prefetchAsked = Atomic<Int>(0)
-        static let prefetchStarted = Atomic<Int>(0)
-        static let cancelledByRow = Atomic<Int>(0)
-        static let cancelledByCard = Atomic<Int>(0)
-        static let evicted = Atomic<Int>(0)
-        static let evictedUnshown = Atomic<Int>(0)
-        static let evictedUnshownAlong = Atomic<Int>(0)
-        static let evictedUnshownRow = Atomic<Int>(0)
-        static let startedAlong = Atomic<Int>(0)
-        static let missCold = Atomic<Int>(0)
-        static let missInFlight = Atomic<Int>(0)
-        static let rowTriggers = Atomic<Int>(0)
-        static let alongTriggers = Atomic<Int>(0)
-        /// Gauges, as of the last prefetch or stop.
-        static let loading = Atomic<Int>(0)
-        static let groups = Atomic<Int>(0)
-        static let wanted = Atomic<Int>(0)
-        /// The row the Apple TV highlight is in and its position there.
-        static let focusedRow = Mutex("")
-        /// Time spent finding the highlight's position in its row, and how
-        /// many times, on the main actor.
-        static let lookupMicros = Atomic<Int>(0)
-        static let lookups = Atomic<Int>(0)
-        /// Moves between rows the focus engine landed off the column, so
-        /// the follower moved the highlight a second time.
-        static let corrections = Atomic<Int>(0)
-
-        static func lookup(since start: ContinuousClock.Instant) {
-            let elapsed = ContinuousClock.now - start
-            let micros = elapsed.components.seconds * 1_000_000 + elapsed.components.attoseconds / 1_000_000_000_000
-            lookupMicros.add(Int(micros), ordering: .relaxed)
-            lookups.add(1, ordering: .relaxed)
-        }
-
-        static var line: String {
-            func v(_ counter: borrowing Atomic<Int>) -> Int { counter.load(ordering: .relaxed) }
-            let counts: [(String, Int)] = [
-                ("ask", v(prefetchAsked)), ("start", v(prefetchStarted)), ("startAlong", v(startedAlong)),
-                ("cxRow", v(cancelledByRow)), ("cxCard", v(cancelledByCard)), ("evict", v(evicted)),
-                ("evictUnshown", v(evictedUnshown)), ("euAlong", v(evictedUnshownAlong)), ("euRow", v(evictedUnshownRow)),
-                ("missCold", v(missCold)), ("missFlight", v(missInFlight)), ("rowTrig", v(rowTriggers)),
-                ("alongTrig", v(alongTriggers)), ("loading", v(loading)), ("groups", v(groups)), ("wanted", v(wanted)),
-                ("lookups", v(lookups)), ("lookupMicros", v(lookupMicros)), ("corrections", v(corrections)),
-            ]
-            return (counts.map { $0.0 + "=" + String($0.1) } + ["row=" + focusedRow.withLock { $0 }]).joined(separator: " ")
-        }
-    }
-#endif
