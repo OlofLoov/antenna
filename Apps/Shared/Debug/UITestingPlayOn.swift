@@ -29,9 +29,9 @@
         static let argument = "-ui-testing-play-on"
         static let answerArgument = "-ui-testing-play-on-answer"
         static let requestArgument = "-ui-testing-play-request"
-        /// `-ui-testing-play-offer <source>/<channel>[:old]` leaves a request
-        /// for the TV in a scripted iCloud queue, sent now or an hour ago.
-        static let offerArgument = "-ui-testing-play-offer"
+        /// `-ui-testing-play-waiting <source>/<channel>[:old]` leaves a request
+        /// for the TV in a scripted iCloud queue, sent now or two minutes ago.
+        static let offerArgument = "-ui-testing-play-waiting"
         /// `-ui-testing-play-on-shared <folder>` keeps the device records as
         /// files in a folder on the Mac, so an iPhone simulator and an Apple
         /// TV simulator share an account and talk over the real listener and
@@ -90,7 +90,7 @@
                         devices: InMemoryPlayDevices(tvs), browser: browser, sender: Sender(answer: answer), device: device)
                     dependencies.defaults = UserDefaults(suiteName: "ui-testing-play-on") ?? .standard
                     dependencies.defaults.removeObject(forKey: PlayDestination.browsingKey)
-                    dependencies.answerLimit = .seconds(1)
+                    dependencies.limits = PlaySendLimits(reach: .seconds(1), answer: .seconds(1))
                     dependencies.queue = InMemoryPlayRequests(failure: value(after: answerArgument) == "offline" ? .offline : nil)
                     return PlayDestination(dependencies)
                 }
@@ -147,9 +147,9 @@
                     self.answer = answer
                 }
 
-                func send(_ request: PlayRequest, to _: PlayDeviceInfo, at _: NWEndpoint, within limit: Duration) async -> PlaySend {
+                func send(_ request: PlayRequest, to _: PlayDeviceInfo, at _: NWEndpoint, limits: PlaySendLimits) async -> PlaySend {
                     guard let answer else {
-                        try? await Task.sleep(for: limit)
+                        try? await Task.sleep(for: limits.answer)
                         return PlaySend(outcome: .noAnswer)
                     }
                     let link = ScriptedTV(answer: answer)
@@ -158,6 +158,9 @@
                 }
 
                 func connect(to _: PlayDeviceInfo, at _: NWEndpoint, within _: Duration) async -> (any PlayOnLinking)? { nil }
+
+                /// The scripted TV has nothing waiting to drop.
+                func cancel(_: UUID, on _: PlayDeviceInfo, at _: NWEndpoint, limits _: PlaySendLimits) async -> Bool { false }
             }
 
             /// A TV on the other end of the link: it plays what it is sent,
@@ -201,7 +204,7 @@
                     case .control(.handOff):
                         status?.position = 4320
                         set(.stopped)
-                    case .control(.disconnect), .answer, .status:
+                    case .control(.disconnect), .answer, .status, .cancel:
                         break
                     }
                 }
@@ -270,8 +273,8 @@
                 }
             }
 
-            /// A request from Anna's iPhone for `<source>/<channel>`, sent an
-            /// hour ago with `:old` after it, else now.
+            /// A request from Anna's iPhone for `<source>/<channel>`, sent two
+            /// minutes ago with `:old` after it, else now.
             private static func request(from spec: String, for target: UUID) -> PlayRequest? {
                 let old = spec.hasSuffix(":old")
                 let parts = spec.replacingOccurrences(of: ":old", with: "").split(separator: "/").map(String.init)
@@ -280,7 +283,7 @@
                 return PlayRequest(
                     sender: UUID(), senderName: "Anna's iPhone", target: target, source: source,
                     item: .channel(key: PlayItemKeys.key("fixture/\(parts[1])")), displayTitle: "Channel \(parts[1])",
-                    created: old ? .now.addingTimeInterval(-3600) : .now)
+                    created: old ? .now.addingTimeInterval(-120) : .now)
             }
 
             /// Delivers the request after the argument into `inbox` once the

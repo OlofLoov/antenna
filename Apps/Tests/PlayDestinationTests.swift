@@ -43,7 +43,7 @@ import Testing
         /// Links handed back with an answer, in order; none leaves the phone unconnected.
         var links: [FakeLink] = []
 
-        func send(_ request: PlayRequest, to tv: PlayDeviceInfo, at endpoint: NWEndpoint, within limit: Duration) async -> PlaySend {
+        func send(_ request: PlayRequest, to tv: PlayDeviceInfo, at endpoint: NWEndpoint, limits: PlaySendLimits) async -> PlaySend {
             onSend()
             sent.append(request)
             let outcome = outcomes.isEmpty ? PlaySendOutcome.answered(.started) : outcomes.removeFirst()
@@ -53,6 +53,15 @@ import Testing
 
         func connect(to tv: PlayDeviceInfo, at endpoint: NWEndpoint, within limit: Duration) async -> (any PlayOnLinking)? {
             links.isEmpty ? nil : links.removeFirst()
+        }
+
+        /// Request ids a cancel went out for, and what the TV answers to each.
+        var canceled: [UUID] = []
+        var cancelAnswer = true
+
+        func cancel(_ id: UUID, on tv: PlayDeviceInfo, at endpoint: NWEndpoint, limits: PlaySendLimits) async -> Bool {
+            canceled.append(id)
+            return cancelAnswer
         }
     }
 
@@ -70,6 +79,7 @@ import Testing
         func send(_ message: PlayMessage) {
             sent.append(message)
             if case .play(let request) = message, let answer { tv(.answer(PlayAnswer(requestID: request.id, result: answer))) }
+            if case .cancel(let id) = message { tv(.answer(PlayAnswer(requestID: id, result: .canceled))) }
         }
 
         func close() {

@@ -64,25 +64,14 @@ public struct PlayRequest: Sendable, Hashable, Codable, Identifiable, CustomStri
 // MARK: Expiry
 
 extension PlayRequest {
-    /// How long a live channel, or a programme on now, waits for a TV.
-    public static let liveLifetime: TimeInterval = 300
-    /// How long a film, an episode or a catch-up recording waits.
-    public static let titleLifetime: TimeInterval = 21_600
-
-    /// True for a channel or a programme that had not ended when sent
+    /// How long any request waits for a TV: a minute, for a channel, a
+    /// programme, a film or an episode alike
     /// (play-on-apple-tv/requests-expire-and-leave-no-trace).
-    public var isLive: Bool {
-        switch item {
-        case .channel: true
-        case .programme(_, _, let end): end > created
-        case .movie, .episode: false
-        }
-    }
+    public static let lifetime: TimeInterval = 60
 
-    /// When the request stops being worth offering: 5 minutes after it was
-    /// sent for live TV, 6 hours for anything else.
+    /// When the request stops being worth playing: a minute after it was sent.
     public var expires: Date {
-        created.addingTimeInterval(isLive ? Self.liveLifetime : Self.titleLifetime)
+        created.addingTimeInterval(Self.lifetime)
     }
 
     /// True once `now` is at or past `expires`.

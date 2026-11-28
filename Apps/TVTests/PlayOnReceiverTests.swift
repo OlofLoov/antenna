@@ -32,46 +32,59 @@ import Testing
             created: sent)
     }
 
-    @Test("play-on-apple-tv/the-tv-offers-a-waiting-request: a waiting request is deleted and offered")
-    func offers() async throws {
+    @Test("play-on-apple-tv/the-tv-counts-down-a-waiting-request: a waiting request is deleted and counted down")
+    func countsDown() async throws {
         let tv = try Self.tv()
         let request = Self.request(to: tv.id)
         let rig = Self.rig([request], tv: tv)
+        rig.inbox.attach()
         await rig.receiver.pickUp()
-        #expect(rig.inbox.offered == request)
+        #expect(rig.inbox.countdown?.request == request)
         #expect(await rig.queue.all.isEmpty)
-        rig.inbox.playOffered()
-        #expect(rig.inbox.offered == nil)
+        rig.inbox.tick(now: .now.addingTimeInterval(PlayCountdown.length))
+        #expect(rig.inbox.countdown == nil)
         #expect(rig.inbox.take()?.request == request)
     }
 
-    @Test("play-on-apple-tv/the-tv-offers-a-waiting-request: Not now leaves the TV where it was")
-    func notNow() async throws {
+    @Test("play-on-apple-tv/the-tv-counts-down-a-waiting-request: Cancel leaves the TV where it was")
+    func cancel() async throws {
         let tv = try Self.tv()
         let rig = Self.rig([Self.request(to: tv.id)], tv: tv)
+        rig.inbox.attach()
         await rig.receiver.pickUp()
-        rig.inbox.dismissOffered()
-        #expect(rig.inbox.offered == nil)
+        rig.inbox.cancelCountdown()
+        #expect(rig.inbox.countdown == nil)
         #expect(rig.inbox.take()?.request == nil)
     }
 
-    @Test("play-on-apple-tv/the-tv-offers-a-waiting-request: a request for another TV is not offered")
+    @Test("play-on-apple-tv/the-tv-counts-down-a-waiting-request: a request for another TV is not counted down")
     func otherTV() async throws {
         let tv = try Self.tv()
         let bedroom = Self.request(to: UUID())
         let rig = Self.rig([bedroom], tv: tv)
         await rig.receiver.pickUp()
-        #expect(rig.inbox.offered == nil)
+        #expect(rig.inbox.countdown == nil)
         #expect(await rig.queue.all == [bedroom])
     }
 
-    @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: a live channel sent an hour ago is deleted with no offer")
+    @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: a live channel sent an hour ago is deleted with no countdown")
     func expired() async throws {
         let tv = try Self.tv()
         let old = Self.request(to: tv.id, item: .channel(key: "c"), sent: .now.addingTimeInterval(-3600))
         let rig = Self.rig([old], tv: tv)
         await rig.receiver.pickUp()
-        #expect(rig.inbox.offered == nil)
+        #expect(rig.inbox.countdown == nil)
+        #expect(await rig.queue.all.isEmpty)
+    }
+
+    @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: a film sent in the afternoon is deleted with no countdown")
+    func oldFilm() async throws {
+        let tv = try Self.tv()
+        let old = Self.request(to: tv.id, sent: .now.addingTimeInterval(-3 * 3600))
+        let rig = Self.rig([old], tv: tv)
+        rig.inbox.attach()
+        await rig.receiver.pickUp()
+        #expect(rig.inbox.countdown == nil)
         #expect(await rig.queue.all.isEmpty)
     }
 
@@ -84,7 +97,7 @@ import Testing
         rig.inbox.receive(request) { _ in }
         #expect(rig.inbox.take()?.request == request)
         await rig.receiver.pickUp()
-        #expect(rig.inbox.offered == nil)
+        #expect(rig.inbox.countdown == nil)
         #expect(await rig.queue.all.isEmpty)
     }
 }

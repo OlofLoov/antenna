@@ -36,7 +36,7 @@ extension PlayDestination {
         let text = PlayOnText.line(for: result, tv: tv, item: item.title, sourceName: item.sourceName, locale: locale)
         switch result {
         case .started: return connected ? nil : PlayOnNotice(text: text, kind: .sent)
-        case .waiting: return PlayOnNotice(text: text, kind: .sent)
+        case .waiting, .canceled: return PlayOnNotice(text: text, kind: .sent)
         case .noLogin(let source): return PlayOnNotice(text: text, kind: .error, signIn: source)
         case .needsPasscode, .noSource, .notFound, .unsupportedVersion: return PlayOnNotice(text: text, kind: .error)
         }

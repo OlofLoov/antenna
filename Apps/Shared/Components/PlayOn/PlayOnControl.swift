@@ -119,19 +119,31 @@ extension PlayOnChoice {
     }
 }
 
-/// The short line at the top after a send (`playOn.sent`).
-struct PlayOnToast: View {
+/// The short line at the top after a send (`playOn.sent`,
+/// `iPhone-PlayOn-Messages`), with what the screen passes at its trailing
+/// end, as Cancel while the request can be taken back.
+struct PlayOnToast<Trailing: View>: View {
     let text: String
+    @ViewBuilder var trailing: Trailing
 
     var body: some View {
-        Text(text)
-            .font(.subheadline.weight(.semibold))
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .background(.thickMaterial, in: Capsule())
-            .padding(.horizontal, 16)
-            .accessibilityIdentifier("playOn.sent")
+        HStack(spacing: 12) {
+            Text(text)
+                .font(.subheadline.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .accessibilityIdentifier("playOn.sent")
+            trailing
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.thickMaterial, in: Capsule())
+        .padding(.horizontal, 16)
+    }
+}
+
+extension PlayOnToast where Trailing == EmptyView {
+    init(text: String) {
+        self.init(text: text) { EmptyView() }
     }
 }
 
@@ -157,4 +169,13 @@ struct PlayOnToast: View {
     PlayOnToast(text: "Playing on Living Room")
         .padding()
         .background(Palette.ground)
+}
+
+#Preview("Play on, sent with Cancel") {
+    PlayOnToast(text: "Sent. Living Room plays it if Antuna opens there within a minute.") {
+        Button("Cancel") {}
+            .font(.subheadline.weight(.semibold))
+    }
+    .padding()
+    .background(Palette.ground)
 }

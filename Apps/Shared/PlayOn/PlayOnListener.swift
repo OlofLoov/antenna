@@ -22,6 +22,9 @@ final class PlayOnListener {
     /// Told about play, pause and hand-off from a connected phone; the
     /// listener forgets a phone that disconnects by itself.
     var control: @MainActor (PlayControl) -> Void = { _ in }
+    /// Told when a phone takes a request back; true when it had not played
+    /// (play-on-apple-tv/the-phone-can-take-a-request-back).
+    var cancel: @MainActor (UUID) -> Bool = { _ in false }
     /// What the TV plays now, sent to a phone as soon as its link opens.
     var currentStatus: @MainActor () -> PlayStatus? = { nil }
     /// The port the listener got, once it is ready.
@@ -53,7 +56,7 @@ final class PlayOnListener {
 
     /// The devices that may send: every phone, iPad and Mac record on the
     /// account, each with the key this TV derives for it. A change restarts
-    /// the listener with the new keys; open links stay up.
+    /// the listener with the new keys on the same port; open links stay up.
     func accept(_ devices: [PlayDeviceInfo]) {
         var keys: [UUID: Data] = [:]
         for sender in devices where sender.kind != .tv && sender.id != device.id {
@@ -151,6 +154,8 @@ final class PlayOnListener {
                 link.close()
             case .success(.control(let control)):
                 self.control(control)
+            case .success(.cancel(let id)):
+                link.send(.answer(PlayAnswer(requestID: id, result: cancel(id) ? .canceled : .started)))
             case .failure(.unsupportedVersion(let requestID)):
                 if let requestID { link.send(.answer(PlayAnswer(requestID: requestID, result: .unsupportedVersion))) }
             case .success, .failure:

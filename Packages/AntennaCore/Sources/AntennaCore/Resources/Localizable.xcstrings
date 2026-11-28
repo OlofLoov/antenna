@@ -172,6 +172,46 @@
         }
       }
     },
+    "%@ already has it." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وصل إلى %@ بالفعل."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ hat es schon."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ya lo tiene."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ l’a déjà."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ já recebeu."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ har redan fått det."
+          }
+        }
+      }
+    },
     "%@ and %@" : {
       "localizations" : {
         "ar" : {
@@ -7933,6 +7973,46 @@
         }
       }
     },
+    "Canceled." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم الإلغاء."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abgebrochen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulé."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelado."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbrutet."
+          }
+        }
+      }
+    },
     "Cast" : {
       "localizations" : {
         "ar" : {
@@ -12967,46 +13047,6 @@
         }
       }
     },
-    "Live channel" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "قناة مباشرة"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Live-Sender"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Canal en directo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chaîne en direct"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Canal ao vivo"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Livekanal"
-          }
-        }
-      }
-    },
     "Loaded · %lld of %lld channels · %lld days" : {
       "localizations" : {
         "ar" : {
@@ -17105,6 +17145,46 @@
         }
       }
     },
+    "Plays if opened within a minute" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُشغَّل إذا فُتح خلال دقيقة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spielt ab, wenn die App binnen einer Minute geöffnet wird"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se reproduce si se abre antes de un minuto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture si l’app s’ouvre dans la minute"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduz se abrir em até um minuto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spelar om appen öppnas inom en minut"
+          }
+        }
+      }
+    },
     "Plays the next episode of a series when one ends. Applies to this device only." : {
       "localizations" : {
         "ar" : {
@@ -17141,46 +17221,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spelar nästa avsnitt i en serie när ett tar slut. Gäller bara den här enheten."
-          }
-        }
-      }
-    },
-    "Plays when Antuna opens there" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يبدأ التشغيل عند فتح Antuna هناك"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läuft, sobald Antuna dort geöffnet wird"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se reproduce cuando se abra Antuna allí"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Démarre à l’ouverture d’Antuna sur cet appareil"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reproduz quando o Antuna abrir lá"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spelas upp när Antuna öppnas där"
           }
         }
       }
@@ -18471,46 +18511,6 @@
         }
       }
     },
-    "Resumes at %@" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يستأنف عند %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weiter bei %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continúa en %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reprend à %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continua em %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsätter vid %@"
-          }
-        }
-      }
-    },
     "Rewind isn't available on this channel" : {
       "localizations" : {
         "ar" : {
@@ -19037,42 +19037,42 @@
         }
       }
     },
-    "Sent. %@ offers it when Antuna opens there." : {
+    "Sent. %@ plays it if Antuna opens there within a minute." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تم الإرسال. سيعرضه %@ عند فتح Antuna هناك."
+            "value" : "تم الإرسال. سيشغّله %@ إذا فُتح Antuna هناك خلال دقيقة."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gesendet. %@ bietet es an, sobald Antuna dort geöffnet wird."
+            "value" : "Gesendet. %@ spielt es ab, wenn Antuna dort innerhalb einer Minute geöffnet wird."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enviado. %@ lo ofrecerá cuando se abra Antuna allí."
+            "value" : "Enviado. %@ lo reproducirá si Antuna se abre allí antes de un minuto."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envoyé. %@ le proposera à l’ouverture d’Antuna."
+            "value" : "Envoyé. %@ le lira si Antuna s’y ouvre dans la minute."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enviado. %@ vai oferecer quando o Antuna abrir lá."
+            "value" : "Enviado. %@ vai reproduzir se o Antuna abrir lá em até um minuto."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skickat. %@ erbjuder det när Antuna öppnas där."
+            "value" : "Skickat. %@ spelar det om Antuna öppnas där inom en minut."
           }
         }
       }
@@ -20245,6 +20245,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Börjar om %@"
+          }
+        }
+      }
+    },
+    "Starts in %lld" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يبدأ خلال %lld"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startet in %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empieza en %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarre dans %lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Começa em %lld"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Startar om %lld"
           }
         }
       }

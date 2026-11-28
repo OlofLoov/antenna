@@ -122,6 +122,9 @@ enum PlayOnSetup {
     /// What a send did: a short line at the top for a TV that started or
     /// keeps the request (`playOn.sent`), an alert for one that cannot play
     /// it (`playOn.error`) (play-on-apple-tv/the-phone-says-why-the-tv-cannot-play).
+    /// A line for a request that can still be taken back has Cancel and
+    /// stays ten seconds instead of three
+    /// (play-on-apple-tv/the-phone-can-take-a-request-back).
     struct PlayOnNotices: ViewModifier {
         let destination: PlayDestination?
 
@@ -129,13 +132,19 @@ enum PlayOnSetup {
             content
                 .overlay(alignment: .top) {
                     if let notice = destination?.notice, notice.kind == .sent {
-                        PlayOnToast(text: notice.text)
-                            .padding(.top, 8)
-                            .transition(.opacity)
-                            .task(id: notice.id) {
-                                try? await Task.sleep(for: .seconds(3))
-                                if destination?.notice?.id == notice.id { destination?.notice = nil }
+                        PlayOnToast(text: notice.text) {
+                            if notice.cancel != nil {
+                                Button("Cancel") { Task { await destination?.cancel() } }
+                                    .font(.subheadline.weight(.semibold))
+                                    .accessibilityIdentifier("playOn.sent.cancel")
                             }
+                        }
+                        .padding(.top, 8)
+                        .transition(.opacity)
+                        .task(id: notice.id) {
+                            try? await Task.sleep(for: notice.cancel == nil ? .seconds(3) : PlayDestination.cancelWindow)
+                            if destination?.notice?.id == notice.id { destination?.notice = nil }
+                        }
                     }
                 }
                 .alert(

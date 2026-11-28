@@ -179,7 +179,7 @@
                             // Inside the page, where the focus engine lets it take the highlight.
                             .overlay {
                                 if tab == model.tab {
-                                    ShellReminderBanner(model: model, catalogue: catalogue, overlay: overlay, focus: $focus)
+                                    ShellBanners(model: model, catalogue: catalogue, overlay: overlay, focus: $focus)
                                 }
                             }
                             .focusScope(pages)

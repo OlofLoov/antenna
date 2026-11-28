@@ -81,7 +81,7 @@ final class PlayOnUITests: XCTestCase {
         XCTAssertTrue(rows.element(boundBy: 0).label.contains("Living Room"), rows.element(boundBy: 0).label)
         XCTAssertTrue(rows.element(boundBy: 0).label.contains("Ready now"), rows.element(boundBy: 0).label)
         XCTAssertTrue(rows.element(boundBy: 1).label.contains("Bedroom"), rows.element(boundBy: 1).label)
-        XCTAssertTrue(rows.element(boundBy: 1).label.contains("Plays when Antuna opens there"), rows.element(boundBy: 1).label)
+        XCTAssertTrue(rows.element(boundBy: 1).label.contains("Plays if opened within a minute"), rows.element(boundBy: 1).label)
         XCTAssertEqual(probe(app), "browser 1", "opening the menu starts the browser")
         rows.element(boundBy: 0).tap()
         XCTAssertTrue(app.element("playOn.bar").waitForExistence(timeout: 10), "connected after the send")
@@ -98,7 +98,8 @@ final class PlayOnUITests: XCTestCase {
         XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 5))
         expect(app.buttons["playOn.menu.settings"], "label == 'Allow local network access'")
         for index in 0..<rows.count {
-            XCTAssertTrue(rows.element(boundBy: index).label.contains("Plays when Antuna opens there"), rows.element(boundBy: index).label)
+            XCTAssertTrue(
+                rows.element(boundBy: index).label.contains("Plays if opened within a minute"), rows.element(boundBy: index).label)
         }
     }
 
@@ -109,7 +110,21 @@ final class PlayOnUITests: XCTestCase {
         let button = app.element("title.playOn")
         XCTAssertTrue(button.waitForExistence(timeout: 10))
         button.tap()
-        expectSent(app, "Sent. Living Room offers it when Antuna opens there.")
+        expectSent(app, "Sent. Living Room plays it if Antuna opens there within a minute.")
+    }
+
+    // play-on-apple-tv/the-phone-can-take-a-request-back
+    func testCancelTakesBackARequestWaitingInICloud() throws {
+        let app = try launch("closed")
+        openMovie(app)
+        let button = app.element("title.playOn")
+        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        button.tap()
+        let cancel = app.buttons["playOn.sent.cancel"].firstMatch
+        XCTAssertTrue(cancel.waitForExistence(timeout: 5), "the Sent line offers Cancel")
+        cancel.tap()
+        expectSent(app, "Canceled.")
+        XCTAssertFalse(app.buttons["playOn.sent.cancel"].exists)
     }
 
     // play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable

@@ -72,6 +72,17 @@ final class PlayOnConnection {
     /// Sends another request over the open link and waits for the TV's
     /// answer; nil when none comes within `limit`.
     func send(_ request: PlayRequest, within limit: Duration = .seconds(3)) async -> PlayAnswer.Result? {
+        await ask(.play(request), id: request.id, within: limit)
+    }
+
+    /// Asks the TV to drop the request with `id`; true when it answers
+    /// `canceled` (play-on-apple-tv/the-phone-can-take-a-request-back).
+    func cancel(_ id: UUID, within limit: Duration = .seconds(3)) async -> Bool {
+        await ask(.cancel(id), id: id, within: limit) == .canceled
+    }
+
+    /// Sends `message` and waits for the answer naming `id`, nil after `limit`.
+    private func ask(_ message: PlayMessage, id: UUID, within limit: Duration) async -> PlayAnswer.Result? {
         guard !isOver else { return nil }
         return await withCheckedContinuation { continuation in
             var done = false
@@ -80,11 +91,11 @@ final class PlayOnConnection {
                 done = true
                 continuation.resume(returning: result)
             }
-            answers[request.id] = resolve
-            link.send(.play(request))
+            answers[id] = resolve
+            link.send(message)
             Task { [weak self] in
                 try? await self?.sleep(limit)
-                self?.answers[request.id] = nil
+                self?.answers[id] = nil
                 resolve(nil)
             }
         }
@@ -152,7 +163,7 @@ final class PlayOnConnection {
             if status.state == .stopped { stop() }
         case .answer(let answer):
             answers.removeValue(forKey: answer.requestID)?(answer.result)
-        case .play, .control:
+        case .play, .control, .cancel:
             break
         }
     }

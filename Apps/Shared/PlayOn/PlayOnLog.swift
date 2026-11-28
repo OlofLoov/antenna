@@ -28,6 +28,28 @@ enum PlayOnLog {
         #endif
     }
 
+    /// A step worth a line, named in fixed text.
+    static func event(_ step: StaticString) {
+        #if DEBUG
+            logger.log("\(step, privacy: .public)")
+        #endif
+    }
+
+    /// A send over the network that failed and is tried again.
+    static func retry(_ failure: PlaySendFailure, attempt: Int) {
+        #if DEBUG
+            logger.log("retry \(attempt + 1, privacy: .public) after \(failure.rawValue, privacy: .public)")
+        #endif
+    }
+
+    /// Why a request went through iCloud instead of the network
+    /// (play-on-apple-tv/starts-at-once-on-the-same-network).
+    static func fallback(_ failure: PlaySendFailure, attempts: Int) {
+        #if DEBUG
+            logger.log("sent through iCloud: \(failure.rawValue, privacy: .public) after \(attempts, privacy: .public) tries")
+        #endif
+    }
+
     /// What a read of the device list returned.
     static func read(_ devices: [PlayDeviceInfo]) {
         #if DEBUG

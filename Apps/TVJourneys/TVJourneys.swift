@@ -77,11 +77,11 @@ final class TVJourneys: XCTestCase {
         waitUntilStill(journey.element("settings.addSource"))
     }
 
-    /// A request that waited in iCloud, offered over Live when Antuna opens
-    /// (play-on-apple-tv, `TV-FromIPhone-Offer`).
-    func testFromIPhoneOffer() {
-        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels", "-ui-testing-play-offer", "playlist/a2"])
-        journey.snap("from-iphone-offer", anchor: "playOn.offer")
+    /// A request that waited in iCloud, counting down over Live when Antuna
+    /// opens (play-on-apple-tv, `TV-FromIPhone-Countdown`).
+    func testFromIPhoneCountdown() {
+        let journey = Journey(self, arguments: ["-ui-testing-shell", "channels", "-ui-testing-play-waiting", "playlist/a2"])
+        journey.snap("from-iphone-countdown", anchor: "playOn.countdown")
     }
 
     /// Add a source from Settings: the kinds, then the Xtream form, in a

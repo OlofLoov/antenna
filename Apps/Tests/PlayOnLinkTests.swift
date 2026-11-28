@@ -78,7 +78,7 @@ import Testing
         let port = try await port(of: listener)
         let sent = request(from: phone)
         let outcome = await NetworkPlaySender(device: phone).send(
-            sent, to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3))
+            sent, to: tv.info(now: Self.keyDate), at: endpoint(port), limits: PlaySendLimits())
         #expect(outcome.outcome == .answered(.needsPasscode))
         #expect(received == [sent])
     }
@@ -98,7 +98,7 @@ import Testing
         defer { listener.stop() }
         let port = try await port(of: listener)
         let outcome = await NetworkPlaySender(device: guest).send(
-            request(from: guest), to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3))
+            request(from: guest), to: tv.info(now: Self.keyDate), at: endpoint(port), limits: PlaySendLimits())
         #expect(outcome.outcome == .refused)
         #expect(received == 0)
         // The TV hears about the failed handshake, so it can read the device list again.
@@ -116,7 +116,8 @@ import Testing
         let port = try await port(of: listener)
         var stale = tv.info(now: Self.keyDate)
         stale.keyDate = Self.keyDate.addingTimeInterval(-3600)
-        let outcome = await NetworkPlaySender(device: phone).send(request(from: phone), to: stale, at: endpoint(port), within: .seconds(3))
+        let outcome = await NetworkPlaySender(device: phone).send(
+            request(from: phone), to: stale, at: endpoint(port), limits: PlaySendLimits())
         #expect(outcome.outcome == .refused)
     }
 
@@ -133,9 +134,28 @@ import Testing
         defer { listener.stop() }
         let port = try await port(of: listener)
         let outcome = await NetworkPlaySender(device: phone).send(
-            request(from: phone, version: 2), to: tv.info(now: Self.keyDate), at: endpoint(port), within: .seconds(3))
+            request(from: phone, version: 2), to: tv.info(now: Self.keyDate), at: endpoint(port), limits: PlaySendLimits())
         #expect(outcome.outcome == .answered(.unsupportedVersion))
         #expect(received == 0)
+    }
+
+    @Test("play-on-apple-tv/the-phone-can-take-a-request-back: a cancel over the link reaches the TV and is answered")
+    func cancelOverTheLink() async throws {
+        let listener = PlayOnListener(device: tv, advertises: false)
+        var asked: [UUID] = []
+        listener.cancel = { id in
+            asked.append(id)
+            return asked.count == 1
+        }
+        listener.accept([phone.info(now: Self.keyDate)])
+        listener.start()
+        defer { listener.stop() }
+        let port = try await port(of: listener)
+        let id = UUID()
+        let sender = NetworkPlaySender(device: phone)
+        #expect(await sender.cancel(id, on: tv.info(now: Self.keyDate), at: endpoint(port), limits: PlaySendLimits()))
+        #expect(!(await sender.cancel(id, on: tv.info(now: Self.keyDate), at: endpoint(port), limits: PlaySendLimits())), "too late")
+        #expect(asked == [id, id])
     }
 
     @Test("play-on-apple-tv/starts-at-once-on-the-same-network: no answer within the limit is no answer")
@@ -147,7 +167,8 @@ import Testing
         defer { listener.stop() }
         let port = try await port(of: listener)
         let outcome = await NetworkPlaySender(device: phone).send(
-            request(from: phone), to: tv.info(now: Self.keyDate), at: endpoint(port), within: .milliseconds(500))
+            request(from: phone), to: tv.info(now: Self.keyDate), at: endpoint(port),
+            limits: PlaySendLimits(reach: .seconds(3), answer: .milliseconds(500)))
         #expect(outcome.outcome == .noAnswer)
     }
 

@@ -15,9 +15,12 @@ enum PlayLinkParameters {
         parameters([(identity, key)])
     }
 
-    /// The TV's parameters: a key for every device it accepts.
+    /// The TV's parameters: a key for every device it accepts. The port can
+    /// be bound again at once, so a restart with new keys leaves no gap.
     static func server(keys: [(identity: Data, key: Data)]) -> NWParameters {
-        parameters(keys)
+        let parameters = parameters(keys)
+        parameters.allowLocalEndpointReuse = true
+        return parameters
     }
 
     private static func parameters(_ keys: [(identity: Data, key: Data)]) -> NWParameters {

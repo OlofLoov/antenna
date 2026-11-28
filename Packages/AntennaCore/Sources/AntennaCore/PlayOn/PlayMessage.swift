@@ -19,6 +19,9 @@ public struct PlayAnswer: Sendable, Hashable {
         case waiting
         /// The request came from a newer Antuna than the TV runs.
         case unsupportedVersion
+        /// The answer to a `cancel`: the TV dropped the request before it played
+        /// (play-on-apple-tv/the-phone-can-take-a-request-back).
+        case canceled
     }
 
     public var requestID: UUID
@@ -88,6 +91,9 @@ public enum PlayMessage: Sendable, Hashable {
     case status(PlayStatus)
     /// Phone to TV.
     case control(PlayControl)
+    /// Phone to TV: drop the request with this id if it has not played. The
+    /// TV answers `canceled`, or `started` when it already plays it.
+    case cancel(UUID)
 
     /// The frame version this build writes and reads.
     public static let currentVersion = 1
@@ -115,9 +121,10 @@ extension PlayMessage {
         var answer: AnswerBody?
         var status: StatusBody?
         var control: PlayControl?
+        var cancel: UUID?
 
         enum CodingKeys: String, CodingKey {
-            case type, request, answer, status, control
+            case type, request, answer, status, control, cancel
             case version = "v"
         }
     }
@@ -158,6 +165,9 @@ extension PlayMessage {
         case .control(let control):
             envelope.type = "control"
             envelope.control = control
+        case .cancel(let id):
+            envelope.type = "cancel"
+            envelope.cancel = id
         }
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
@@ -200,6 +210,9 @@ extension PlayMessage {
         case "control":
             guard let control = envelope.control else { throw .malformed }
             self = .control(control)
+        case "cancel":
+            guard let id = envelope.cancel else { throw .malformed }
+            self = .cancel(id)
         default:
             throw .unknownType
         }
@@ -227,7 +240,7 @@ extension PlayMessage {
             case version = "v"
         }
 
-        var isKnown: Bool { ["play", "answer", "status", "control"].contains(type) }
+        var isKnown: Bool { ["play", "answer", "status", "control", "cancel"].contains(type) }
     }
 }
 
@@ -246,6 +259,7 @@ extension PlayMessage.AnswerBody {
         case .notFound: result = "notFound"
         case .waiting: result = "waiting"
         case .unsupportedVersion: result = "unsupportedVersion"
+        case .canceled: result = "canceled"
         }
     }
 
@@ -258,6 +272,7 @@ extension PlayMessage.AnswerBody {
         case "notFound": .notFound
         case "waiting": .waiting
         case "unsupportedVersion": .unsupportedVersion
+        case "canceled": .canceled
         default: nil
         }
     }
