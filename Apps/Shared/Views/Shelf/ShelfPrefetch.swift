@@ -6,6 +6,9 @@ import SwiftUI
 struct PosterPrefetcher: Sendable {
     /// Loads the posters at the addresses for the frame, for a group such as a row.
     var prefetch: @Sendable ([URL], PosterFit, String) async -> Void
+    /// Loads these posters for a group in place of what it asked for
+    /// before, and stops what it no longer wants that no card waits for.
+    var retarget: @Sendable ([URL], PosterFit, String) async -> Void
     /// Stops what a group asked for that no card waits for.
     var stop: @Sendable (String) async -> Void
     /// Which way each row is scrolling.
@@ -29,6 +32,10 @@ final class PrefetchTrail {
     func forget(_ line: String) {
         trail.forget(line)
     }
+
+    func highlight(in row: Int, of line: String) -> PosterPrefetch.Vertical {
+        trail.highlight(in: row, of: line)
+    }
 }
 
 extension EnvironmentValues {
@@ -41,18 +48,19 @@ extension EnvironmentValues {
 
 /// What Movies and Series load ahead, on every platform
 /// (movies-and-series-browsing/browsing-stays-responsive): when a poster
-/// in a row shows, the next three in the direction the row is scrolling
+/// in a row shows, the next six in the direction the row is scrolling
 /// (none while a row that just came into view shows its first posters),
-/// and when a row shows, the posters the next row in the direction of the
-/// scroll shows first: the row under it on the way down, the row above on
-/// the way up. On Apple TV, the rows above and below the highlight also
+/// and when a row shows, the posters the next two rows in the direction of
+/// the scroll show first: the rows under it on the way down, the rows
+/// above on the way up. On Apple TV, the two rows past the highlight in the
+/// direction it last moved between rows and the one row behind it also
 /// load the posters around its column, which they show once it moves into
 /// them. Continue watching, My list and Recently watched are short
-/// and load as they show; under them the first category row loads ahead. Once a row
+/// and load as they show; under them the first category rows load ahead. Once a row
 /// scrolls away, what it asked for that no card waits for stops loading.
 /// Every poster decodes at its card's size on screen, the frame the card
-/// asks for, so the 50 MB of posters in memory hold what is on screen and
-/// this much more.
+/// asks for, so the 80 MB of posters in memory hold what is on screen and
+/// this much more. `PosterCache` loads 5 of them at a time.
 extension View {
     func prefetchesAlongTheRow(_ title: ShelfTitle) -> some View {
         modifier(PrefetchAlong(title: title))
@@ -154,10 +162,12 @@ private struct PrefetchNextRow: ViewModifier {
 
 /// A move up or down keeps the highlight's column, and the row it lands in
 /// scrolls sideways to show it once the highlight has moved along a row.
-/// The rows above and below the highlight load the posters around that
-/// column while it rests, since their start, which loaded as they came
-/// into view, is not what they will show then. A new position stops what
-/// the last one asked for that no card waits for.
+/// The rows by the highlight load the posters around that column, since
+/// their start, which loaded as they came into view, is not what they will
+/// show then: two rows in the direction it last moved between rows, one
+/// behind (`PosterPrefetch.aroundHighlight`). A new position takes the
+/// place of the last one's asks, and what it no longer wants that no card
+/// waits for stops; what both want keeps loading.
 private struct PrefetchAroundHighlight: ViewModifier {
     let row: String?
     let title: ShelfTitle?
@@ -172,15 +182,20 @@ private struct PrefetchAroundHighlight: ViewModifier {
         content.task(id: title?.id) {
             guard let prefetcher else { return }
             let group = "focus.\(prefix)"
-            await prefetcher.stop(group)
-            guard let row, let title, width > 0, let fit = RowPosterFit(metrics: metrics, scale: scale).fit else { return }
+            guard let row, let title, width > 0, let fit = RowPosterFit(metrics: metrics, scale: scale).fit else {
+                await prefetcher.stop(group)
+                return
+            }
             let rows = library.model(title.kind).rows
             #if DEBUG
                 let start = ContinuousClock.now
             #endif
             guard let position = rows.firstIndex(where: { $0.identifier == row }),
                 let column = rows[position].titles.firstIndex(where: { $0.id == title.id })
-            else { return }
+            else {
+                await prefetcher.stop(group)
+                return
+            }
             #if DEBUG
                 PosterTrace.lookup(since: start)
             #endif
@@ -188,11 +203,11 @@ private struct PrefetchAroundHighlight: ViewModifier {
                 PosterTrace.focusedRow.withLock { $0 = "\(row)#\(column)" }
             #endif
             let visible = PosterPrefetch.visible(width: width, poster: metrics.poster.width, gap: metrics.gap, gutter: metrics.gutter)
-            let urls = [position - 1, position + 1].filter { rows.indices.contains($0) }.flatMap { neighbor in
-                let titles = rows[neighbor].titles
-                return PosterPrefetch.around(column, count: titles.count, visible: visible).compactMap { titles[$0].posterURL }
-            }
-            await prefetcher.prefetch(urls, fit, group)
+            let going = prefetcher.trail.highlight(in: position, of: group)
+            let spans = PosterPrefetch.aroundHighlight(
+                row: position, column: column, counts: rows.map(\.titles.count), visible: visible, going: going)
+            let urls = spans.flatMap { span in span.columns.compactMap { rows[span.row].titles[$0].posterURL } }
+            await prefetcher.retarget(urls, fit, group)
         }
     }
 }

@@ -3,15 +3,15 @@ import Testing
 
 /// The posters loaded ahead of the highlight or the scroll.
 @Suite struct PosterPrefetchTests {
-    @Test("movies-and-series-browsing/browsing-stays-responsive the next three posters along a row load")
+    @Test("movies-and-series-browsing/browsing-stays-responsive the next six posters along a row load")
     func along() {
-        #expect(PosterPrefetch.ahead(of: 0, count: 100) == 1..<4)
-        #expect(PosterPrefetch.ahead(of: 40, count: 100) == 41..<44)
+        #expect(PosterPrefetch.ahead(of: 0, count: 100) == 1..<7)
+        #expect(PosterPrefetch.ahead(of: 40, count: 100) == 41..<47)
     }
 
     @Test("movies-and-series-browsing/browsing-stays-responsive moving back along a row loads the posters before")
     func backward() {
-        #expect(PosterPrefetch.ahead(of: 40, count: 100, going: .backward) == 37..<40)
+        #expect(PosterPrefetch.ahead(of: 40, count: 100, going: .backward) == 34..<40)
         #expect(PosterPrefetch.ahead(of: 1, count: 100, going: .backward) == 0..<1)
         #expect(PosterPrefetch.ahead(of: 0, count: 100, going: .backward).isEmpty)
     }
@@ -27,21 +27,21 @@ import Testing
     @Test("movies-and-series-browsing/browsing-stays-responsive the direction of travel follows the posters that show")
     func trail() {
         var trail = PosterPrefetch.Trail()
-        #expect(trail.shown(7, in: "drama", count: 100) == 8..<11, "a row's first poster loads forward")
-        #expect(trail.shown(8, in: "drama", count: 100) == 9..<12)
-        #expect(trail.shown(3, in: "drama", count: 100) == 0..<3, "scrolling back loads the posters before")
-        #expect(trail.shown(20, in: "comedy", count: 100) == 21..<24, "each row has its own direction")
+        #expect(trail.shown(7, in: "drama", count: 100) == 8..<14, "a row's first poster loads forward")
+        #expect(trail.shown(8, in: "drama", count: 100) == 9..<15)
+        #expect(trail.shown(3, in: "drama", count: 100) == 0..<3, "scrolling back loads the posters before, never past the start")
+        #expect(trail.shown(20, in: "comedy", count: 100) == 21..<27, "each row has its own direction")
         trail.forget("drama")
-        #expect(trail.shown(2, in: "drama", count: 100) == 3..<6, "a row seen again starts forward")
+        #expect(trail.shown(2, in: "drama", count: 100) == 3..<9, "a row seen again starts forward")
     }
 
-    @Test("movies-and-series-browsing/browsing-stays-responsive the next row in the scroll's direction loads the posters it shows first")
+    @Test("movies-and-series-browsing/browsing-stays-responsive the next two rows in the scroll's direction load their first posters")
     func nextRow() {
         var trail = PosterPrefetch.Trail()
         let rows = PosterPrefetch.rowsAhead
-        #expect(trail.shown(0, in: "movies", count: 80, along: rows) == 1..<2, "the row under the first")
-        #expect(trail.shown(5, in: "movies", count: 80, along: rows) == 6..<7, "moving down, the row under")
-        #expect(trail.shown(3, in: "movies", count: 80, along: rows) == 2..<3, "moving up, the row above")
+        #expect(trail.shown(0, in: "movies", count: 80, along: rows) == 1..<3, "the two rows under the first")
+        #expect(trail.shown(5, in: "movies", count: 80, along: rows) == 6..<8, "moving down, the rows under")
+        #expect(trail.shown(3, in: "movies", count: 80, along: rows) == 1..<3, "moving up, the rows above")
         #expect(trail.shown(79, in: "series", count: 80, along: rows).isEmpty, "nothing past the last row")
         #expect(PosterPrefetch.start(count: 300, visible: 8) == 0..<8)
         #expect(PosterPrefetch.start(count: 3, visible: 8) == 0..<3)
@@ -58,7 +58,7 @@ import Testing
         for index in 0..<10 {
             #expect(trail.shown(index, in: "drama", count: 100, at: start + .milliseconds(10 * index)).isEmpty)
         }
-        #expect(trail.shown(10, in: "drama", count: 100, at: start + .seconds(1)) == 11..<14, "a scroll along the row loads ahead")
+        #expect(trail.shown(10, in: "drama", count: 100, at: start + .seconds(1)) == 11..<17, "a scroll along the row loads ahead")
         trail.forget("drama")
         #expect(trail.shown(0, in: "drama", count: 100, at: start + .seconds(2)).isEmpty, "back in view, it settles again")
         #expect(trail.remembers("drama"))
@@ -77,6 +77,45 @@ import Testing
         #expect(PosterPrefetch.around(9, count: 100, visible: 8) == 5..<13)
         #expect(PosterPrefetch.around(98, count: 100, visible: 8) == 92..<100, "never past the end")
         #expect(PosterPrefetch.around(9, count: 5, visible: 8) == 0..<5, "a short row whole")
+    }
+
+    // Owner-found on 2026-11-28 on an Apple TV with a large Xtream catalogue: posters showed late as the
+    // highlight moved down the rows, since only the rows right above and below it had loaded around its column.
+    @Test("movies-and-series-browsing/browsing-stays-responsive the highlight loads two rows ahead of its move and one behind")
+    func highlightWindow() {
+        typealias Span = PosterPrefetch.Span
+        let counts = Array(repeating: 100, count: 10)
+        #expect(
+            PosterPrefetch.aroundHighlight(row: 4, column: 0, counts: counts, visible: 8, going: .down)
+                == [Span(row: 5, columns: 0..<8), Span(row: 3, columns: 0..<8), Span(row: 6, columns: 0..<8)],
+            "moving down: the row under, the row above, then the second row under")
+        #expect(
+            PosterPrefetch.aroundHighlight(row: 4, column: 20, counts: counts, visible: 8, going: .up)
+                == [Span(row: 3, columns: 16..<24), Span(row: 5, columns: 16..<24), Span(row: 2, columns: 16..<24)],
+            "moving up: the rows above first, around the column")
+        #expect(
+            PosterPrefetch.aroundHighlight(row: 0, column: 0, counts: counts, visible: 8, going: .up) == [Span(row: 1, columns: 0..<8)],
+            "the first row has nothing above it")
+        #expect(
+            PosterPrefetch.aroundHighlight(row: 9, column: 0, counts: counts, visible: 8, going: .down) == [Span(row: 8, columns: 0..<8)],
+            "the last row has nothing under it")
+        #expect(
+            PosterPrefetch.aroundHighlight(row: 1, column: 30, counts: [100, 100, 5, 0], visible: 8, going: .down)
+                == [Span(row: 2, columns: 0..<5), Span(row: 0, columns: 26..<34)],
+            "a short row loads whole, an empty row nothing")
+        #expect(PosterPrefetch.aroundHighlight(row: 12, column: 0, counts: counts, visible: 8).isEmpty, "a row outside the section")
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive the highlight's direction follows its moves between rows")
+    func highlightDirection() {
+        var trail = PosterPrefetch.Trail()
+        #expect(trail.highlight(in: 3, of: "focus.movies") == .down, "down at first")
+        #expect(trail.highlight(in: 2, of: "focus.movies") == .up)
+        #expect(trail.highlight(in: 2, of: "focus.movies") == .up, "a move along the row keeps the last direction")
+        #expect(trail.highlight(in: 5, of: "focus.movies") == .down)
+        #expect(trail.highlight(in: 0, of: "focus.series") == .down, "each section has its own")
+        trail.forget("focus.movies")
+        #expect(trail.highlight(in: 1, of: "focus.movies") == .down, "forgotten, down again")
     }
 
     @Test("movies-and-series-browsing/browsing-stays-responsive a row shows as many posters as fit its width")

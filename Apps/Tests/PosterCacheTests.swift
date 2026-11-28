@@ -31,9 +31,9 @@ import UniformTypeIdentifiers
         return url
     }
 
-    @Test("movies-and-series-browsing/rows-in-a-predictable-order the limits are 50 MB in memory and 500 MB on disk")
+    @Test("movies-and-series-browsing/rows-in-a-predictable-order the limits are 80 MB in memory and 500 MB on disk")
     func limits() {
-        #expect(PosterCache.memoryLimit == 50 * 1024 * 1024)
+        #expect(PosterCache.memoryLimit == 80 * 1024 * 1024)
         #expect(PosterCache.diskLimit == 500 * 1024 * 1024)
     }
 
@@ -249,6 +249,69 @@ import UniformTypeIdentifiers
         #expect(await cache.inFlight == 1, "the row still wants it")
         #expect(!SilentURLProtocol.stopped(url))
         await cache.stopPrefetching("row")
+        try await eventually { await cache.inFlight == 0 }
+    }
+
+    // Owner-found on 2026-11-28 on an Apple TV: posters showed late as the highlight moved, so more loads
+    // ahead. The app was killed at about 2.1 GB earlier for other reasons; posters must not add to that.
+    @Test("movies-and-series-browsing/browsing-stays-responsive posters in memory never pass the limit, however many load ahead")
+    func memoryStaysWithinItsLimit() async throws {
+        let urls = try (0..<12).map { try poster("bound-\($0)") }
+        let frame = try #require(PosterFit(width: 64, height: 64, scale: 1))
+        // A 64 by 64 poster costs 16 KB; five fit.
+        let limit = 5 * 64 * 64 * 4
+        let cache = PosterCache(directory: cacheFolder, memoryLimit: limit)
+        await cache.prefetch(urls, fitting: frame, group: "rows")
+        try await eventually { await cache.inFlight == 0 }
+        #expect(cache.memoryCost <= limit)
+        #expect(cache.memoryCount == 5, "the limit holds five, the rest stay on disk")
+        for url in urls.suffix(3) { _ = await cache.poster(for: url, fitting: frame) }
+        #expect(cache.memoryCost <= limit)
+        #expect(PosterCache.memoryLimit == 80 * 1024 * 1024)
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive five posters load ahead at a time, and a card does not wait in line")
+    func prefetchWaitsInLine() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [SilentURLProtocol.self]
+        let cache = PosterCache(directory: cacheFolder, session: URLSession(configuration: configuration))
+        let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
+        let urls = try (0..<10).map { try #require(URL(string: "https://silent.example/line-\($0)-\(UUID().uuidString).jpg")) }
+        await cache.prefetch(urls, fitting: card, group: "row")
+        #expect(PosterCache.prefetchLimit == 5, "one fewer than the 6 connections, so a card finds one free")
+        #expect(await cache.running == 5)
+        #expect(await cache.inLine == 5)
+        try await eventually { urls.prefix(5).allSatisfy { SilentURLProtocol.started($0) } }
+        #expect(!urls.suffix(5).contains { SilentURLProtocol.started($0) }, "the rest wait their turn")
+        // A card on screen asks for the last in line. It starts now, outside the five.
+        let waiting = Task { await cache.poster(for: urls[9], fitting: card) }
+        try await eventually { SilentURLProtocol.started(urls[9]) }
+        #expect(await cache.running == 6)
+        #expect(await cache.inLine == 4)
+        waiting.cancel()
+        _ = await waiting.value
+        await cache.stopPrefetching("row")
+        try await eventually { await cache.inFlight == 0 }
+        #expect(await cache.inLine == 0, "the line empties with the row")
+        #expect(!SilentURLProtocol.started(urls[5]), "a poster that waited in line was never downloaded")
+    }
+
+    @Test("movies-and-series-browsing/browsing-stays-responsive a new highlight position keeps what it shares with the last")
+    func retargetKeepsWhatItShares() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [SilentURLProtocol.self]
+        let cache = PosterCache(directory: cacheFolder, session: URLSession(configuration: configuration))
+        let card = try #require(PosterFit(width: 212, height: 318, scale: 1))
+        let urls = try (0..<6).map { try #require(URL(string: "https://silent.example/focus-\($0)-\(UUID().uuidString).jpg")) }
+        await cache.prefetch(Array(urls[0..<4]), fitting: card, group: "focus", replacing: true)
+        try await eventually { urls[0..<4].allSatisfy { SilentURLProtocol.started($0) } }
+        await cache.prefetch(Array(urls[2..<6]), fitting: card, group: "focus", replacing: true)
+        try await eventually { SilentURLProtocol.stopped(urls[0]) && SilentURLProtocol.stopped(urls[1]) }
+        #expect(SilentURLProtocol.stopped(urls[0]) && SilentURLProtocol.stopped(urls[1]), "the last position's own stop")
+        #expect(!SilentURLProtocol.stopped(urls[2]) && !SilentURLProtocol.stopped(urls[3]), "what both want keeps loading")
+        try await eventually { SilentURLProtocol.started(urls[4]) && SilentURLProtocol.started(urls[5]) }
+        #expect(await cache.wanted == 4)
+        await cache.stopPrefetching("focus")
         try await eventually { await cache.inFlight == 0 }
     }
 

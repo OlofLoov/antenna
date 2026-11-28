@@ -436,3 +436,26 @@ extension ShelfLargeTVUITests {
         return probe.exists ? (probe.value as? String ?? "") : "none"
     }
 }
+
+extension ShelfLargeTVUITests {
+    /// Twelve rows down, once, then along the row the highlight ends in:
+    /// rows the walks above never reach, so on a fresh install every poster
+    /// comes from the poster host, as on a first browse of a big catalogue.
+    func testHitchesMovingDeepDownTheRows() throws {
+        try XCTSkipUnless(benchmarks, "runs with TEST_RUNNER_ANTENNA_BENCHMARKS=1")
+        open("movies")
+        enterRows("movies")
+        expectBothSources("movies")
+        measureGaps("deep down the rows", times: 1) {
+            for _ in 0..<12 {
+                remote.press(.down)
+                Thread.sleep(forTimeInterval: 0.4)
+            }
+            for _ in 0..<10 {
+                remote.press(.right)
+                Thread.sleep(forTimeInterval: 0.25)
+            }
+            Thread.sleep(forTimeInterval: 1)
+        }
+    }
+}

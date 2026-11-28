@@ -107,6 +107,7 @@ struct ShelfSync: ViewModifier {
         load: { await PosterCache.shared.poster(for: $0, fitting: $1) }, kept: { PosterCache.shared.kept($0, fitting: $1) })
     private static let prefetcher = PosterPrefetcher(
         prefetch: { await PosterCache.shared.prefetch($0, fitting: $1, group: $2) },
+        retarget: { await PosterCache.shared.prefetch($0, fitting: $1, group: $2, replacing: true) },
         stop: { await PosterCache.shared.stopPrefetching($0) })
 
     private static var loadsAhead: Bool {

@@ -3,15 +3,20 @@ import Foundation
 /// Which posters to load before they come into view
 /// (movies-and-series-browsing/browsing-stays-responsive). When a poster
 /// shows, the next few in the direction the row is moving load; when a row
-/// shows, the posters the next row in the direction of the scroll shows
-/// first load. The window is small so it fits the poster memory next to
-/// the posters on screen.
+/// shows, the posters the next rows in the direction of the scroll show
+/// first load. On Apple TV the rows by the highlight load the posters
+/// around its column, two rows ahead of a move up or down and one behind.
+/// The window fits the poster memory next to the posters on screen.
 public enum PosterPrefetch {
     /// Posters loaded ahead of the last one shown in a row.
-    public static let along = 3
+    public static let along = 6
     /// Rows past a row that shows, in the direction of the scroll, whose
     /// first posters load.
-    public static let rowsAhead = 1
+    public static let rowsAhead = 2
+    /// Rows by the Apple TV highlight that load the posters around its
+    /// column: ahead of the last move up or down, and behind it.
+    public static let highlightRowsAhead = 2
+    public static let highlightRowsBehind = 1
 
     /// The way a row is scrolling.
     public enum Direction: Sendable {
@@ -52,6 +57,46 @@ public enum PosterPrefetch {
         return first..<max(first, min(count, first + visible))
     }
 
+    /// The way the Apple TV highlight last moved between rows.
+    public enum Vertical: Sendable {
+        case down, up
+    }
+
+    /// Posters of one row to load: the row's position and the posters in it.
+    public struct Span: Equatable, Sendable {
+        public let row: Int
+        public let columns: Range<Int>
+
+        public init(row: Int, columns: Range<Int>) {
+            self.row = row
+            self.columns = columns
+        }
+    }
+
+    /// What the rows by the Apple TV highlight load while it rests on
+    /// `column` of `row`, among rows of `counts` posters: the `visible`
+    /// posters around the column in the `ahead` rows past it in the
+    /// direction it last moved and the `behind` rows on the other side,
+    /// nearest first, ahead before behind at the same distance. Not its own
+    /// row, which loads along as it scrolls, and never past the first or
+    /// last row.
+    public static func aroundHighlight(
+        row: Int, column: Int, counts: [Int], visible: Int, going vertical: Vertical = .down,
+        ahead: Int = highlightRowsAhead, behind: Int = highlightRowsBehind
+    ) -> [Span] {
+        guard counts.indices.contains(row) else { return [] }
+        let step = vertical == .down ? 1 : -1
+        var rows: [Int] = []
+        for distance in 1...max(1, max(ahead, behind)) {
+            if distance <= ahead { rows.append(row + step * distance) }
+            if distance <= behind { rows.append(row - step * distance) }
+        }
+        return rows.filter { counts.indices.contains($0) }.compactMap { neighbor in
+            let columns = around(column, count: counts[neighbor], visible: visible)
+            return columns.isEmpty ? nil : Span(row: neighbor, columns: columns)
+        }
+    }
+
     /// The last poster each row showed, or the last row a section showed,
     /// to tell which way it is moving. A row seen again after scrolling
     /// away starts afresh.
@@ -67,6 +112,7 @@ public enum PosterPrefetch {
 
         private var last: [String: Int] = [:]
         private var arrived: [String: ContinuousClock.Instant] = [:]
+        private var vertical: [String: Vertical] = [:]
 
         public init() {}
 
@@ -87,10 +133,21 @@ public enum PosterPrefetch {
             return PosterPrefetch.ahead(of: index, count: count, going: direction, along: along)
         }
 
+        /// The way the highlight moved to `row` of `line`: up when the row
+        /// is above the last one, down when below, and the way it last
+        /// moved while it stays in the row. Down at first.
+        public mutating func highlight(in row: Int, of line: String) -> Vertical {
+            let previous = last[line]
+            last[line] = row
+            if let previous, previous != row { vertical[line] = row < previous ? .up : .down }
+            return vertical[line] ?? .down
+        }
+
         /// Forgets a row that scrolled away.
         public mutating func forget(_ line: String) {
             last[line] = nil
             arrived[line] = nil
+            vertical[line] = nil
         }
 
         /// True while `line` is remembered, for tests: only rows on screen are.
