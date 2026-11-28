@@ -540,17 +540,29 @@ The system SHALL keep Movies and Series responding to the remote, touch and poin
 #### Scenario: Posters ahead of the highlight
 - **GIVEN** Movies is open on a library of thousands of titles whose posters take a moment to arrive
 - **WHEN** a poster in a row shows
-- **THEN** the next three posters along that row in the direction it is scrolling start loading
-- **AND** when a row shows, the posters the next row in the direction of the scroll shows first start loading: the row under it on the way down, the row above on the way up
+- **THEN** the next six posters along that row in the direction it is scrolling start loading
+- **AND** when a row shows, the posters the next two rows in the direction of the scroll show first start loading: the rows under it on the way down, the rows above on the way up
 - **AND** a row that has just come into view loads nothing along it until it has been in view for half a second
-- **AND** on Apple TV, while the highlight rests on a poster, the rows above and below it load the posters around its column, which they show once the highlight moves into them
+- **AND** on Apple TV, when the highlight lands on a poster, the posters around its column load in the two rows past it in the direction it last moved between rows and in the one row on the other side, the nearest row first
 - **AND** they are decoded at the size of a card on screen, away from the screen, as the posters on screen are
 - **AND** this holds on iPhone, iPad, Mac and Apple TV
+
+#### Scenario: A slow poster host
+- **GIVEN** Movies is open on a library whose posters each take half a second to arrive
+- **WHEN** posters are loading ahead and a poster on screen has not loaded yet
+- **THEN** at most five posters load ahead at a time, over at most six connections to the host, and the poster on screen starts loading at once, not after the ones loading ahead
+- **AND** a poster waiting its turn that the viewer has moved away from before it started is never downloaded
+
+#### Scenario: The highlight moves on before the posters around it load
+- **GIVEN** the highlight is on a poster on Apple TV and the rows by it are loading the posters around its column
+- **WHEN** the highlight moves to the next poster
+- **THEN** the posters both positions want keep loading, and only those the new position does not want stop
 
 #### Scenario: Posters kept in memory
 - **GIVEN** an Apple TV 4K with a large library
 - **WHEN** the viewer moves through dozens of rows
-- **THEN** the decoded posters kept in memory stay under 50 MB, as on iPhone, iPad and Mac, each at the size its card shows it with no room for the focus lift
+- **THEN** the decoded posters kept in memory stay under 80 MB, as on iPhone, iPad and Mac, each at the size its card shows it with no room for the focus lift
+- **AND** the posters loaded ahead never take memory past that limit; the posters shown longest ago go first
 - **AND** the poster files kept on the device stay under 500 MB, so a poster that left memory decodes again from its file
 
 #### Scenario: Moving along a row and down the rows on Apple TV
