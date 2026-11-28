@@ -28,7 +28,7 @@ public enum PlayOnText {
 
     /// A menu row's second line for a TV that is not reachable now.
     public static func playsWhenOpen(_ locale: Locale = .autoupdatingCurrent) -> String {
-        Words(locale)("Plays when Antuna opens there")
+        Words(locale)("Plays if opened within a minute")
     }
 
     /// The menu's last row while local network access is refused.
@@ -71,10 +71,10 @@ public enum PlayOnText {
         return words.line([words.source(status.title)] + (status.subtitle.map { [words.source($0)] } ?? []))
     }
 
-    /// The phone's line once a request went through iCloud.
+    /// The phone's line once a request went through iCloud, where it waits a minute.
     public static func sent(to tv: String, locale: Locale = .autoupdatingCurrent) -> String {
         let words = Words(locale)
-        return words("Sent. \(words.source(tv)) offers it when Antuna opens there.")
+        return words("Sent. \(words.source(tv)) plays it if Antuna opens there within a minute.")
     }
 
     /// The phone's line when the TV keeps the request behind its paywall or "Who's watching?".
@@ -119,7 +119,7 @@ public enum PlayOnText {
         return words("\(words.source(tv)) didn't answer. Open Antuna there and try again.")
     }
 
-    /// The eyebrow on the TV's banner and offer: "From Anna's iPhone".
+    /// The eyebrow on the TV's banners: "From Anna's iPhone".
     public static func from(_ device: String, locale: Locale = .autoupdatingCurrent) -> String {
         let words = Words(locale)
         return words("From \(words.source(device))")
@@ -131,20 +131,23 @@ public enum PlayOnText {
         Words(locale)("You're offline. Nothing was sent.")
     }
 
-    /// The TV offer's facts line: what kind of item it is, and where a film
-    /// or episode resumes, as "Movie · Resumes at 40 min".
-    public static func offerFacts(_ request: PlayRequest, locale: Locale = .autoupdatingCurrent) -> String {
+    /// The TV's countdown line, "Starts in 5", with the whole seconds left
+    /// (play-on-apple-tv/the-tv-counts-down-a-waiting-request).
+    public static func startsIn(_ seconds: Int, locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Starts in \(seconds)")
+    }
+
+    /// The phone's line once Cancel took the request back
+    /// (play-on-apple-tv/the-phone-can-take-a-request-back).
+    public static func canceled(_ locale: Locale = .autoupdatingCurrent) -> String {
+        Words(locale)("Canceled.")
+    }
+
+    /// The phone's line when Cancel came too late: the TV has the request
+    /// and the phone could not reach it, or it plays already.
+    public static func alreadyHas(_ tv: String, locale: Locale = .autoupdatingCurrent) -> String {
         let words = Words(locale)
-        let kind: String =
-            switch request.item {
-            case .channel: words("Live channel")
-            case .programme where request.isLive: words("Live channel")
-            case .programme: words("Catch-up")
-            case .movie: words("Movie")
-            case .episode: words("Episode")
-            }
-        guard let start = request.startPosition, let place = ShelfText.length(start, locale: locale) else { return kind }
-        return words.line([kind, words("Resumes at \(place)")])
+        return words("\(words.source(tv)) already has it.")
     }
 
     /// The phone's line for the TV's answer.
@@ -159,6 +162,7 @@ public enum PlayOnText {
         case .notFound: notFound(tv, item: item, locale: locale)
         case .waiting: waiting(on: tv, locale: locale)
         case .unsupportedVersion: updateTV(tv, locale: locale)
+        case .canceled: canceled(locale)
         }
     }
 }

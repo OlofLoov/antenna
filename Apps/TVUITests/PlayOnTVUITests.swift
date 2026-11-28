@@ -47,48 +47,70 @@ final class PlayOnTVUITests: XCTestCase {
         XCTAssertTrue(element("groups.passcode").waitForExistence(timeout: 10), "the TV asks for its passcode")
     }
 
-    private func launch(offer: String) {
+    private func launch(waiting: String) {
         app = XCUIApplication()
-        app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-play-offer", offer]
+        app.launchArguments = ["-ui-testing-shell", "channels", "-ui-testing-play-waiting", waiting]
         app.launchEnvironment["UITESTING_LAST_CHANNEL"] = "a1"
         app.launchInEnglish()
     }
 
-    // play-on-apple-tv/the-tv-offers-a-waiting-request
-    func testAWaitingRequestIsOfferedWithFocusOnPlay() {
-        launch(offer: "playlist/a2")
-        XCTAssertTrue(element("playOn.offer").waitForExistence(timeout: 20))
-        expect("playOn.offer.sender", "label CONTAINS 'From Anna'")
-        expect("playOn.offer.title", "label == 'Channel a2'")
-        expect("playOn.offer.play", "hasFocus == true")
+    // play-on-apple-tv/the-tv-counts-down-a-waiting-request
+    func testAWaitingRequestCountsDownAndPlaysWithNoPress() {
+        launch(waiting: "playlist/a2")
+        XCTAssertTrue(element("playOn.countdown").waitForExistence(timeout: 20))
+        expect("playOn.countdown.cancel", "hasFocus == true")
+        // Nobody presses anything; the channel plays when the countdown ends.
+        expect("shell.debug.engine", "value CONTAINS 'file=a2'", timeout: 15)
+        expect("playOn.countdown", "exists == false", timeout: 5)
+    }
+
+    // play-on-apple-tv/the-tv-counts-down-a-waiting-request (VoiceOver)
+    func testVoiceOverReadsTheSenderTheItemAndCancel() {
+        launch(waiting: "playlist/a2")
+        XCTAssertTrue(element("playOn.countdown").waitForExistence(timeout: 20))
+        expect("playOn.countdown", "label == \"From Anna's iPhone, Channel a2\"")
+        expect("playOn.countdown.cancel", "hasFocus == true AND label == 'Cancel'")
+    }
+
+    // play-on-apple-tv/the-tv-counts-down-a-waiting-request
+    func testOneClickCancels() {
+        launch(waiting: "playlist/a2")
+        XCTAssertTrue(element("playOn.countdown").waitForExistence(timeout: 20))
+        expect("playOn.countdown.cancel", "hasFocus == true")
         XCUIRemote.shared.press(.select)
-        expect("shell.debug.engine", "value CONTAINS 'file=a2'")
-        XCTAssertFalse(element("playOn.offer").exists)
-    }
-
-    // play-on-apple-tv/the-tv-offers-a-waiting-request (VoiceOver)
-    func testVoiceOverReadsTheSenderTheItemAndThePlayButton() {
-        launch(offer: "playlist/a2")
-        XCTAssertTrue(element("playOn.offer").waitForExistence(timeout: 20))
-        expect("playOn.offer", "label == \"From Anna's iPhone, Channel a2\"")
-        expect("playOn.offer.play", "hasFocus == true AND label == 'Play'")
-    }
-
-    // play-on-apple-tv/the-tv-offers-a-waiting-request
-    func testMenuOnTheOfferIsNotNow() {
-        launch(offer: "playlist/a2")
-        XCTAssertTrue(element("playOn.offer").waitForExistence(timeout: 20))
-        expect("playOn.offer.play", "hasFocus == true")
-        XCUIRemote.shared.press(.menu)
-        expect("playOn.offer", "exists == false")
+        expect("playOn.countdown", "exists == false")
+        // Past the end of the countdown, the TV still shows what it showed.
+        Thread.sleep(forTimeInterval: 6)
         expect("shell.debug.engine", "value CONTAINS 'file=a1'")
+    }
+
+    // play-on-apple-tv/the-tv-counts-down-a-waiting-request
+    func testMenuOnTheCountdownCancels() {
+        launch(waiting: "playlist/a2")
+        XCTAssertTrue(element("playOn.countdown").waitForExistence(timeout: 20))
+        expect("playOn.countdown.cancel", "hasFocus == true")
+        XCUIRemote.shared.press(.menu)
+        expect("playOn.countdown", "exists == false")
+        Thread.sleep(forTimeInterval: 6)
+        expect("shell.debug.engine", "value CONTAINS 'file=a1'")
+    }
+
+    // play-on-apple-tv/the-tv-counts-down-a-waiting-request
+    func testPlayNowPlaysAtOnce() {
+        launch(waiting: "playlist/a2")
+        XCTAssertTrue(element("playOn.countdown").waitForExistence(timeout: 20))
+        expect("playOn.countdown.cancel", "hasFocus == true")
+        XCUIRemote.shared.press(.right)
+        expect("playOn.countdown.playNow", "hasFocus == true")
+        XCUIRemote.shared.press(.select)
+        expect("shell.debug.engine", "value CONTAINS 'file=a2'", timeout: 4)
     }
 
     // play-on-apple-tv/requests-expire-and-leave-no-trace
-    func testARequestSentAnHourAgoIsNotOffered() {
-        launch(offer: "playlist/a2:old")
+    func testARequestSentTwoMinutesAgoIsNotCountedDown() {
+        launch(waiting: "playlist/a2:old")
         expect("shell.debug.engine", "value CONTAINS 'file=a1'")
-        XCTAssertFalse(element("playOn.offer").waitForExistence(timeout: 5))
+        XCTAssertFalse(element("playOn.countdown").waitForExistence(timeout: 5))
     }
 
     // play-on-apple-tv/the-phone-says-why-the-tv-cannot-play

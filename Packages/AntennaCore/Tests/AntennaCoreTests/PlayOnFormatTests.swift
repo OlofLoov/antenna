@@ -45,6 +45,7 @@ import Testing
                     position: 4320, duration: 5520, artworkKey: "77ab")),
             .status(PlayStatus(state: .stopped, title: "Sport One")),
             .control(.play), .control(.pause), .control(.handOff), .control(.disconnect),
+            .cancel(request.id), .answer(PlayAnswer(requestID: request.id, result: .canceled)),
         ]
         var bytes = Data()
         for message in messages { bytes.append(try PlayFrames.frame(message)) }
@@ -98,25 +99,74 @@ import Testing
         #expect(!printed.contains("Salt Road"))
     }
 
-    @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: live TV waits 5 minutes, anything else 6 hours")
+    @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: every request waits one minute, whatever it names")
     func expiry() {
         let onNow = PlayRequest.Item.programme(
             channelKey: "c", start: Self.sent.addingTimeInterval(-600), end: Self.sent.addingTimeInterval(600))
         let ended = PlayRequest.Item.programme(
             channelKey: "c", start: Self.sent.addingTimeInterval(-7200), end: Self.sent.addingTimeInterval(-1))
-        let lifetimes: [(PlayRequest.Item, TimeInterval)] = [
-            (.channel(key: "c"), 300), (onNow, 300), (ended, 21_600), (.movie(key: "m"), 21_600),
-            (.episode(seriesKey: "s", episodeKey: "e"), 21_600),
+        let items: [PlayRequest.Item] = [
+            .channel(key: "c"), onNow, ended, .movie(key: "m"), .episode(seriesKey: "s", episodeKey: "e"),
         ]
-        for (item, lifetime) in lifetimes {
+        for item in items {
             let request = Self.request(item)
-            #expect(request.expires == Self.sent.addingTimeInterval(lifetime))
-            #expect(!request.isExpired(at: Self.sent.addingTimeInterval(lifetime - 1)))
-            #expect(request.isExpired(at: Self.sent.addingTimeInterval(lifetime)))
+            #expect(request.expires == Self.sent.addingTimeInterval(60))
+            #expect(!request.isExpired(at: Self.sent.addingTimeInterval(59)))
+            #expect(request.isExpired(at: Self.sent.addingTimeInterval(60)))
         }
-        // A live channel sent an hour ago, a film three hours ago.
-        #expect(Self.request(.channel(key: "c")).isExpired(at: Self.sent.addingTimeInterval(3600)))
-        #expect(!Self.request(.movie(key: "m")).isExpired(at: Self.sent.addingTimeInterval(3 * 3600)))
+        // A film sent three hours ago is as gone as a channel sent two minutes ago.
+        #expect(Self.request(.movie(key: "m")).isExpired(at: Self.sent.addingTimeInterval(3 * 3600)))
+        #expect(Self.request(.channel(key: "c")).isExpired(at: Self.sent.addingTimeInterval(120)))
+    }
+
+    @Test("play-on-apple-tv/the-phone-can-take-a-request-back: an older TV reads a cancel frame as unknown")
+    func cancelFrame() throws {
+        let id = UUID()
+        let json = try #require(String(data: try PlayMessage.cancel(id).encoded(), encoding: .utf8))
+        #expect(json.contains("\"type\":\"cancel\""))
+        #expect(json.contains(id.uuidString))
+        let missing = Data(#"{"type":"cancel","v":1}"#.utf8)
+        #expect(throws: PlayMessage.DecodeError.malformed) { try PlayMessage(decoding: missing) }
+    }
+}
+
+@Suite struct PlayCountdownTests {
+    static let start = Date(timeIntervalSince1970: 1_800_000_000)
+
+    @Test("play-on-apple-tv/the-tv-counts-down-a-waiting-request: the countdown reads 5 to 1 and is due after five seconds")
+    func counts() {
+        let countdown = PlayCountdown(PlayOnFormatTests.request(.movie(key: "m")), started: Self.start)
+        #expect(countdown.secondsLeft(at: Self.start) == 5)
+        #expect(countdown.secondsLeft(at: Self.start.addingTimeInterval(0.2)) == 5)
+        #expect(countdown.secondsLeft(at: Self.start.addingTimeInterval(1)) == 4)
+        #expect(countdown.secondsLeft(at: Self.start.addingTimeInterval(4.5)) == 1)
+        #expect(!countdown.isDue(at: Self.start.addingTimeInterval(4.9)))
+        #expect(countdown.isDue(at: Self.start.addingTimeInterval(5)))
+        #expect(countdown.secondsLeft(at: Self.start.addingTimeInterval(9)) == 0)
+        #expect(PlayOnText.startsIn(5, locale: .english) == "Starts in 5")
+    }
+}
+
+@Suite struct PlaySendRetryTests {
+    @Test("play-on-apple-tv/starts-at-once-on-the-same-network: a refused handshake is tried twice more, with longer waits")
+    func refused() {
+        #expect(PlaySendRetry.delay(after: .refused, attempt: 1) == .seconds(1))
+        #expect(PlaySendRetry.delay(after: .refused, attempt: 2) == .seconds(2))
+        #expect(PlaySendRetry.delay(after: .refused, attempt: 3) == nil)
+    }
+
+    @Test("play-on-apple-tv/starts-at-once-on-the-same-network: a dropped connection is tried again after half a second")
+    func unreachable() {
+        #expect(PlaySendRetry.delay(after: .unreachable, attempt: 1) == .milliseconds(500))
+        #expect(PlaySendRetry.delay(after: .unreachable, attempt: 2) == .milliseconds(500))
+        #expect(PlaySendRetry.delay(after: .unreachable, attempt: 3) == nil)
+    }
+
+    @Test("play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable: no TV, refused access and no answer go to iCloud at once")
+    func straightToICloud() {
+        for failure in [PlaySendFailure.notFound, .accessRefused, .noAnswer] {
+            #expect(PlaySendRetry.delay(after: failure, attempt: 1) == nil)
+        }
     }
 }
 
@@ -257,22 +307,6 @@ import Testing
     }
 }
 
-@Suite struct PlayOnOfferTextTests {
-    @Test("play-on-apple-tv/the-tv-offers-a-waiting-request: the facts line names the kind and where a film resumes")
-    func facts() {
-        let sent = PlayOnFormatTests.sent
-        func facts(_ item: PlayRequest.Item, start: TimeInterval? = nil) -> String {
-            PlayOnText.offerFacts(PlayOnFormatTests.request(item, start: start), locale: .english)
-        }
-        #expect(facts(.channel(key: "c")) == "Live channel")
-        #expect(facts(.programme(channelKey: "c", start: sent.addingTimeInterval(-60), end: sent.addingTimeInterval(60))) == "Live channel")
-        #expect(facts(.programme(channelKey: "c", start: sent.addingTimeInterval(-7200), end: sent.addingTimeInterval(-60))) == "Catch-up")
-        #expect(facts(.movie(key: "m"), start: 2400) == "Movie · Resumes at 40 min")
-        #expect(facts(.episode(seriesKey: "s", episodeKey: "e")) == "Episode")
-        #expect(PlayOnText.offline(.english) == "You're offline. Nothing was sent.")
-    }
-}
-
 @Suite struct PlayOnTextTests {
     @Test("play-on-apple-tv/the-phone-says-why-the-tv-cannot-play: each answer reads as the copy table says")
     func lines() {
@@ -286,7 +320,12 @@ import Testing
         #expect(line(.noSource(source: source)) == "Living Room doesn't have Acme TV yet. Try again in a minute.")
         #expect(line(.notFound) == "Living Room couldn't find Salt Road.")
         #expect(line(.unsupportedVersion) == "Update Antuna on Living Room to play from here.")
-        #expect(PlayOnText.sent(to: "Living Room", locale: .english) == "Sent. Living Room offers it when Antuna opens there.")
+        #expect(
+            PlayOnText.sent(to: "Living Room", locale: .english) == "Sent. Living Room plays it if Antuna opens there within a minute.")
+        #expect(PlayOnText.playsWhenOpen(.english) == "Plays if opened within a minute")
+        #expect(PlayOnText.canceled(.english) == "Canceled.")
+        #expect(PlayOnText.alreadyHas("Living Room", locale: .english) == "Living Room already has it.")
+        #expect(PlayOnText.offline(.english) == "You're offline. Nothing was sent.")
         #expect(PlayOnText.from("Anna's iPhone", locale: .english) == "From Anna's iPhone")
         #expect(PlayOnText.playOn("Living Room", locale: .english) == "Play on Living Room")
         #expect(PlayOnText.watchOn("Living Room", locale: .english) == "Watch on Living Room")

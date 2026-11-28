@@ -49,7 +49,7 @@ import Testing
     @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: the sweep deletes what expired and keeps the rest")
     func sweeps() async throws {
         let channel = Self.request("Sport One", item: .channel(key: "c"), sent: Self.now.addingTimeInterval(-3600))
-        let film = Self.request("Salt Road", to: Self.bedroom, sent: Self.now.addingTimeInterval(-3 * 3600))
+        let film = Self.request("Salt Road", to: Self.bedroom, sent: Self.now.addingTimeInterval(-30))
         let queue = InMemoryPlayRequests([channel, film])
         #expect(try await queue.sweep(now: Self.now) == 1)
         #expect(try await queue.waiting(for: Self.livingRoom) == nil)
@@ -95,7 +95,7 @@ import Testing
             await destination.activate()
             await destination.send(Self.film, to: Self.livingRoom)
             #expect(sender.sent.isEmpty)
-            #expect(destination.notice?.text == "Sent. Living Room offers it when Antuna opens there.")
+            #expect(destination.notice?.text == "Sent. Living Room plays it if Antuna opens there within a minute.")
             #expect(destination.notice?.kind == .sent)
             let waiting = try #require(try await queue.waiting(for: Self.livingRoom))
             #expect(waiting.item == .movie(key: "m"))
@@ -111,7 +111,7 @@ import Testing
             #expect(sender.sent.count == 1)
             // The same request, so a TV that took it from the network plays it once.
             #expect(try await queue.waiting(for: Self.livingRoom)?.id == sender.sent.first?.id)
-            #expect(destination.notice?.text == "Sent. Living Room offers it when Antuna opens there.")
+            #expect(destination.notice?.text == "Sent. Living Room plays it if Antuna opens there within a minute.")
         }
 
         @Test("play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable: offline, nothing is sent")
@@ -124,6 +124,46 @@ import Testing
             #expect(destination.notice?.kind == .error)
             await queue.fail(with: nil)
             #expect(try await queue.waiting(for: Self.livingRoom) == nil)
+        }
+
+        @Test("play-on-apple-tv/the-phone-can-take-a-request-back: Cancel before the TV picks it up deletes it from iCloud")
+        func cancelQueued() async throws {
+            let queue = InMemoryPlayRequests()
+            let (destination, sender) = try Self.destination(reachable: false, queue: queue)
+            await destination.activate()
+            await destination.send(Self.film, to: Self.livingRoom)
+            #expect(destination.notice?.cancel != nil)
+            await destination.cancel()
+            #expect(try await queue.waiting(for: Self.livingRoom) == nil)
+            #expect(sender.canceled.isEmpty, "iCloud had it, so the network is not asked")
+            #expect(destination.notice?.text == "Canceled.")
+        }
+
+        @Test("play-on-apple-tv/the-phone-can-take-a-request-back: once the TV took it, Cancel asks the TV over the network")
+        func cancelPickedUp() async throws {
+            let queue = InMemoryPlayRequests()
+            let (destination, sender) = try Self.destination(reachable: true, outcome: .noAnswer, queue: queue)
+            await destination.activate()
+            await destination.send(Self.film, to: Self.livingRoom)
+            let request = try #require(try await queue.waiting(for: Self.livingRoom))
+            // The TV picks it up and counts it down.
+            try await queue.delete(request)
+            await destination.cancel()
+            #expect(sender.canceled == [request.id])
+            #expect(destination.notice?.text == "Canceled.")
+        }
+
+        @Test("play-on-apple-tv/the-phone-can-take-a-request-back: a TV that took it and is not on the network already has it")
+        func cancelUnreachable() async throws {
+            let queue = InMemoryPlayRequests()
+            let (destination, sender) = try Self.destination(reachable: false, queue: queue)
+            await destination.activate()
+            await destination.send(Self.film, to: Self.livingRoom)
+            let request = try #require(try await queue.waiting(for: Self.livingRoom))
+            try await queue.delete(request)
+            await destination.cancel()
+            #expect(sender.canceled.isEmpty)
+            #expect(destination.notice?.text == "Living Room already has it.")
         }
 
         @Test("play-on-apple-tv/requests-expire-and-leave-no-trace: the phone deletes expired requests when it opens")

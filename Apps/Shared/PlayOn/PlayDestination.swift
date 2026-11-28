@@ -54,6 +54,9 @@ struct PlayOnNotice: Identifiable, Equatable {
     var kind: Kind
     /// The source to sign the TV in to, when its login is missing there.
     var signIn: UUID?
+    /// The request Cancel on this line takes back, while it can
+    /// (play-on-apple-tv/the-phone-can-take-a-request-back).
+    var cancel: UUID?
 }
 
 /// The Play on control's rows: each Apple TV on the account and whether it
@@ -104,10 +107,10 @@ final class PlayDestination {
         var sleep: @MainActor (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
         var defaults: UserDefaults = .standard
         var locale = Locale.autoupdatingCurrent
-        /// How long a send over the network may take before it gives up.
-        var answerLimit = Duration.seconds(3)
-        /// How long a TV that was just opened in the menu has to show up on the network.
-        var discoveryWait = Duration.milliseconds(1500)
+        /// How long a send over the network has to reach the TV, and then for its answer.
+        var limits = PlaySendLimits()
+        /// How long a TV the browser has not found yet has to show up on the network.
+        var discoveryWait = Duration.seconds(3)
         /// Waits between reads of the device list while the account has no TV yet.
         var rereadWait: @MainActor () async throws -> Void = { try await Task.sleep(for: PlayDestination.rereadInterval) }
     }
@@ -115,13 +118,19 @@ final class PlayDestination {
     /// How often the device list is read again while the scene is active and no TV is listed.
     static let rereadInterval = Duration.seconds(30)
 
+    /// How long the "Sent" line offers Cancel: long enough for an open TV
+    /// to pick the request up and count it down.
+    static let cancelWindow = Duration.seconds(10)
+
     /// Where `browsing` is kept: true once the user opened Play on with a TV on the account.
     static let browsingKey = "playOn.browsing"
 
     /// Every device record on the account, as last fetched.
     private(set) var devices: [PlayDeviceInfo] = []
     /// The latest line about a send; the screen clears it once shown.
-    var notice: PlayOnNotice?
+    var notice: PlayOnNotice? {
+        didSet { if notice?.cancel == nil { pending = nil } }
+    }
     /// True while a send is on its way.
     private(set) var sending = false
 
@@ -172,9 +181,11 @@ final class PlayDestination {
     /// (play-on-apple-tv/requests-expire-and-leave-no-trace).
     func activate() async {
         active = true
+        // Browsing first, so the TV is found while iCloud answers
+        // (play-on-apple-tv/starts-at-once-on-the-same-network).
+        if browsing { dependencies.browser.start() }
         await publish()
         await refresh()
-        if active, browsing, !tvs.isEmpty { dependencies.browser.start() }
         rereadUntilATVShows()
         await reconnect()
         do {
@@ -278,7 +289,7 @@ final class PlayDestination {
         if let status { playHere(status) }
     }
 
-    private func connect(_ link: any PlayOnLinking, to tv: PlayTV) {
+    func connect(_ link: any PlayOnLinking, to tv: PlayTV) {
         let connection = PlayOnConnection(tv: tv, link: link, liveness: dependencies.liveness, stoppedShows: dependencies.stoppedShows)
         connection.ended = { [weak self, weak connection] in
             guard let self, self.connection === connection else { return }
@@ -298,7 +309,7 @@ final class PlayDestination {
         guard let resume, connection == nil else { return }
         defer { self.resume = nil }
         guard let tv = tvs.first(where: { $0.id == resume.tv }), let endpoint = await endpoint(for: tv.id),
-            let link = await dependencies.sender.connect(to: tv.device, at: endpoint, within: dependencies.answerLimit)
+            let link = await dependencies.sender.connect(to: tv.device, at: endpoint, within: dependencies.limits.reach)
         else { return }
         let first = await firstStatus(on: link)
         guard let first, first.state != .stopped, resume.request == nil || first.requestID == resume.request else {
@@ -385,58 +396,65 @@ final class PlayDestination {
     /// Sends `item` to `tv` and leaves a notice saying how it went. Over the
     /// network the phone first closes every stream it has open, so the
     /// provider sees one connection
-    /// (play-on-apple-tv/starts-at-once-on-the-same-network). A TV that does
-    /// not know this device's key yet gets one more try after the device
-    /// list is read again.
+    /// (play-on-apple-tv/starts-at-once-on-the-same-network). A refused
+    /// handshake or a dropped connection is tried again as `PlaySendRetry`
+    /// says, reading the device list again after a refusal, before the
+    /// request goes through iCloud.
     func send(_ item: PlayOnItem, to id: UUID) async {
         guard let tv = tvs.first(where: { $0.id == id }), !sending else { return }
         sending = true
         defer { sending = false }
+        pending = nil
         opened()
         let request = PlayRequest(
             sender: dependencies.device.id, senderName: dependencies.device.name, target: tv.id, source: item.source, item: item.item,
             startPosition: item.start, displayTitle: item.title, created: dependencies.now())
         if let connection, connection.tv.id == tv.id {
             // Connected: the request goes over the open link, and nothing plays here.
-            if let result = await connection.send(request, within: dependencies.answerLimit) {
+            if let result = await connection.send(request, within: dependencies.limits.answer) {
                 notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale, connected: true)
                 return
             }
         }
         connection?.disconnect()
+        let failure: PlaySendFailure
+        var attempts = 0
         if let endpoint = await endpoint(for: tv.id) {
             await dependencies.stopLocal()
-            var sent = await dependencies.sender.send(request, to: tv.device, at: endpoint, within: dependencies.answerLimit)
-            if sent.outcome == .refused {
-                // The TV reads the device list again on a refused handshake; give it a moment.
-                try? await dependencies.sleep(.seconds(1))
-                await refresh()
-                if let fresh = devices.first(where: { $0.id == tv.id }) {
-                    let again = dependencies.browser.endpoints[tv.id] ?? endpoint
-                    sent = await dependencies.sender.send(request, to: fresh, at: again, within: dependencies.answerLimit)
+            var target = tv.device
+            var at = endpoint
+            while true {
+                attempts += 1
+                let sent = await dependencies.sender.send(request, to: target, at: at, limits: dependencies.limits)
+                if case .answered(let result) = sent.outcome {
+                    return answered(result, link: sent.link, request: request, item: item, tv: tv)
                 }
-            }
-            if case .answered(let result) = sent.outcome {
-                if let link = sent.link {
-                    if Self.connects(after: result) { connect(link, to: tv) } else { link.close() }
+                let failed = sent.outcome.failure ?? .noAnswer
+                guard let wait = PlaySendRetry.delay(after: failed, attempt: attempts) else {
+                    failure = failed
+                    break
                 }
-                notice = Self.notice(for: result, tv: tv.name, item: item, locale: dependencies.locale, connected: connection != nil)
-                return
+                PlayOnLog.retry(failed, attempt: attempts)
+                try? await dependencies.sleep(wait)
+                if failed == .refused {
+                    // The TV reads the device list again on a refused handshake; so does the phone.
+                    await refresh()
+                    target = devices.first(where: { $0.id == tv.id }) ?? target
+                }
+                at = dependencies.browser.endpoints[tv.id] ?? at
             }
+        } else {
+            failure = dependencies.browser.denied ? .accessRefused : .notFound
         }
+        PlayOnLog.fallback(failure, attempts: attempts)
         await queue(request, for: tv)
     }
 
-    /// A TV that took the request, or asks for its passcode, keeps the phone connected.
-    static func connects(after result: PlayAnswer.Result) -> Bool {
-        switch result {
-        case .started, .needsPasscode: true
-        case .noLogin, .noSource, .notFound, .waiting, .unsupportedVersion: false
-        }
-    }
+    /// The request the "Sent" line's Cancel takes back, cleared with the line.
+    @ObservationIgnored var pending: PlayPending?
 
-    /// Leaves `request` in iCloud for the TV to offer when Antuna opens
-    /// there, after the network found no TV or got no answer. The same
+    /// Leaves `request` in iCloud for the TV to count down if Antuna opens
+    /// there within a minute, after the network found no TV or got no answer. The same
     /// request never goes both ways at once, and the TV plays a request
     /// id once (play-on-apple-tv/waits-in-icloud-when-the-tv-is-not-reachable).
     private func queue(_ request: PlayRequest, for tv: PlayTV) async {
@@ -447,7 +465,8 @@ final class PlayDestination {
         }
         do {
             try await queue.save(request)
-            notice = PlayOnNotice(text: PlayOnText.sent(to: tv.name, locale: locale), kind: .sent)
+            notice = PlayOnNotice(text: PlayOnText.sent(to: tv.name, locale: locale), kind: .sent, cancel: request.id)
+            pending = PlayPending(request: request, tv: tv, queued: true)
         } catch .offline {
             PlayOnLog.failure("save request", PlayOnStoreError.offline)
             notice = PlayOnNotice(text: PlayOnText.offline(locale), kind: .error)

@@ -336,10 +336,22 @@ need the device attached to Xcode with the console open.
   other device within a second. Choose "Play on this iPhone" on a film; expect
   the TV to stop and the iPhone to play from the TV's place.
 - [ ] **play-on-apple-tv 7.2, a closed TV and the iCloud queue.** With Antuna
-  closed on the TV, send a film. Expect "Sent. Living Room offers it when Antuna
-  opens there." on the iPhone, and the offer with focus on Play when Antuna
-  opens on the TV. Repeat with the iPhone on mobile data while Antuna is open on
-  the TV; expect the offer within a minute.
+  closed on the TV, send a film. Expect "Sent. Living Room plays it if Antuna
+  opens there within a minute." with Cancel on the iPhone. Open Antuna on the TV
+  within the minute; expect "Starts in 5" with focus on Cancel, and the film to
+  start with no press on the remote. Send again and open the TV after more than
+  a minute; expect no countdown. Repeat with the iPhone on mobile data while
+  Antuna is open on the TV; expect the countdown within a minute.
+- [ ] **count-down-play-on-requests, cancel.** Send to a closed TV and tap
+  Cancel on the iPhone; expect "Canceled." and nothing on the TV when Antuna
+  opens. With the TV counting down, tap Cancel on the iPhone; expect the banner
+  to go. Press select on a countdown; expect it to stop and focus to go back.
+- [ ] **count-down-play-on-requests, the network path.** With Antuna open on
+  the TV, quit Antuna on the iPhone from the App Switcher, open it and send a
+  channel within a few seconds. Expect the TV to start it at once, with no
+  countdown. Put the TV to sleep, wake it, and send right away; expect the
+  same. In Console, filter the `playOn` category for `sent through iCloud` to
+  see why a send fell back.
 - [ ] **play-on-apple-tv 7.2, a guest account.** From an iPhone on another
   iCloud account on the same Wi-Fi, try to send. Expect the TV not to be listed
   and the TV to show nothing.
